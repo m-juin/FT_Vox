@@ -3,7 +3,7 @@
 
 #include <vulkan/vulkan.h>
 
-namespace SplineDesigner
+namespace Vox
 {
 	namespace Front
 	{
@@ -44,6 +44,6 @@ namespace SplineDesigner
 			} // namespace Images
 		} // namespace Rendering
 	} // namespace Front
-} // namespace SplineDesigner
+} // namespace Vox
 
 #endif // __DEPTHIMAGE_HPP__

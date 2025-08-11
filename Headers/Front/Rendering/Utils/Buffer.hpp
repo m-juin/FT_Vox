@@ -4,7 +4,7 @@
 #include <vulkan/vulkan.h>
 #include <stdexcept>
 
-namespace SplineDesigner
+namespace Vox
 {
 	namespace Front
 	{

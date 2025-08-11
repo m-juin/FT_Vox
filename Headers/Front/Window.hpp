@@ -6,7 +6,7 @@
 
 class GLFWwindow;
 
-namespace SplineDesigner
+namespace Vox
 {
     namespace Front
     {
@@ -31,7 +31,7 @@ namespace SplineDesigner
         };
     } // namespace Front
     
-} // namespace SplineDesigner
+} // namespace Vox
 
 
 #endif // __WINDOW_HPP__

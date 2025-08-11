@@ -7,7 +7,7 @@
 #include "Front/Rendering/ValidationLayers.hpp"
 #include "Front/Rendering/SwapChain.hpp"
 
-namespace SplineDesigner
+namespace Vox
 {
 	namespace Front
 	{
@@ -131,4 +131,4 @@ namespace SplineDesigner
 			Device::~Device() {}
 		} // namespace Rendering
 	} // namespace Front
-} // namespace SplineDesigner
+} // namespace Vox

@@ -5,7 +5,7 @@
 #include <vector>
 #include <vulkan/vulkan.h>
 
-namespace SplineDesigner
+namespace Vox
 {
 	namespace Front
 	{
@@ -41,5 +41,5 @@ namespace SplineDesigner
 			} // namespace Utils
 		} // namespace Rendering
 	} // namespace Front
-} // namespace SplineDesigner
+} // namespace Vox
 #endif // __FINDFORMAT_HPP__

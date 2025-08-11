@@ -1,7 +1,7 @@
 #include "Front/Rendering/ValidationLayers.hpp"
 #include <vulkan/vulkan.h>
 
-namespace SplineDesigner
+namespace Vox
 {
 	namespace Front
 	{
@@ -31,4 +31,4 @@ namespace SplineDesigner
 			}
 		} // namespace Rendering
 	} // namespace Front
-} // namespace SplineDesigner
+} // namespace Vox

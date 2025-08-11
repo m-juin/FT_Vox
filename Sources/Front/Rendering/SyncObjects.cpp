@@ -4,7 +4,7 @@
 
 #include <stdexcept>
 
-namespace SplineDesigner
+namespace Vox
 {
 	namespace Front
 	{
@@ -44,4 +44,4 @@ namespace SplineDesigner
 			SyncObjects::~SyncObjects() {}
 		} // namespace Rendering
 	} // namespace Front
-} // namespace SplineDesigner
+} // namespace Vox

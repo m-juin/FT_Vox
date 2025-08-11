@@ -3,7 +3,7 @@
 
 #include <vulkan/vulkan.h>
 
-namespace SplineDesigner
+namespace Vox
 {
 	namespace Front
 	{

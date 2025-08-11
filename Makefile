@@ -1,4 +1,4 @@
-NAME := SplineDesigner
+NAME := FT_Vox
 
 CXX := clang++
 

@@ -5,7 +5,7 @@
 
 #include <vector>
 
-namespace SplineDesigner
+namespace Vox
 {
     namespace Front
     {
@@ -65,7 +65,7 @@ namespace SplineDesigner
         
     } // namespace Front
     
-} // namespace SplineDesigner
+} // namespace Vox
 
 
 #endif // __VULKANMANAGER_HPP__

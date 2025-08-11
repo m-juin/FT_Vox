@@ -1,4 +1,4 @@
-namespace SplineDesigner
+namespace Vox
 {
 	namespace Utils
 	{

@@ -4,7 +4,7 @@
 #include <vector>
 #include <vulkan/vulkan.h>
 
-namespace SplineDesigner
+namespace Vox
 {
 	namespace Front
 	{
@@ -64,6 +64,6 @@ namespace SplineDesigner
 
 	} // namespace Front
 
-} // namespace SplineDesigner
+} // namespace Vox
 
 #endif // __SWAPCHAIN_HPP__

@@ -5,7 +5,7 @@
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
-namespace SplineDesigner
+namespace Vox
 {
 	namespace Front
 	{
@@ -17,7 +17,7 @@ namespace SplineDesigner
 				exit(1);
 			}
 			glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-			this->_window = glfwCreateWindow(width, height, "SplineDesigner", nullptr, nullptr);
+			this->_window = glfwCreateWindow(width, height, "FT_Vox", nullptr, nullptr);
 			if (this->_window == nullptr)
 			{
 				glfwTerminate();
@@ -39,4 +39,4 @@ namespace SplineDesigner
 			glfwTerminate();
 		}
 	} // namespace Front
-} // namespace SplineDesigner
+} // namespace Vox

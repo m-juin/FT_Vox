@@ -9,7 +9,7 @@
 #include <array>
 #include <stdexcept>
 
-namespace SplineDesigner
+namespace Vox
 {
 	namespace Front
 	{
@@ -103,4 +103,4 @@ namespace SplineDesigner
 			CommandsPool::~CommandsPool() {}
 		} // namespace Rendering
 	} // namespace Front
-} // namespace SplineDesigner
+} // namespace Vox

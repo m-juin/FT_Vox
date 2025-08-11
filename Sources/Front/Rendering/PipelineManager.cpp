@@ -6,7 +6,7 @@
 
 #include <array>
 
-namespace SplineDesigner
+namespace Vox
 {
 	namespace Front
 	{
@@ -83,4 +83,4 @@ namespace SplineDesigner
 			PipelineManager::~PipelineManager() {}
 		} // namespace Rendering
 	} // namespace Front
-} // namespace SplineDesigner
+} // namespace Vox

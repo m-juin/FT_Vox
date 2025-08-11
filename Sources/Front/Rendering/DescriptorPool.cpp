@@ -5,7 +5,7 @@
 
 #include <stdexcept>
 
-namespace SplineDesigner
+namespace Vox
 {
 	namespace Front
 	{
@@ -28,4 +28,4 @@ namespace SplineDesigner
 			DescriptorPool::~DescriptorPool() {}
 		} // namespace Rendering
 	} // namespace Front
-} // namespace SplineDesigner
+} // namespace Vox

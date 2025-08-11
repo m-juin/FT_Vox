@@ -10,7 +10,7 @@
 
 #include <GLFW/glfw3.h>
 
-namespace SplineDesigner
+namespace Vox
 {
 	namespace Front
 	{
@@ -236,4 +236,4 @@ namespace SplineDesigner
 		} // namespace Rendering
 	} // namespace Front
 
-} // namespace SplineDesigner
+} // namespace Vox

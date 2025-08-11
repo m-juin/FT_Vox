@@ -1,7 +1,7 @@
 #ifndef __COLORS_HPP__
 #define __COLORS_HPP__
 
-namespace SplineDesigner
+namespace Vox
 {
 	namespace Utils
 	{
@@ -22,6 +22,6 @@ namespace SplineDesigner
 		} // namespace Colors
 	} // namespace Utils
 
-} // namespace SplineDesigner
+} // namespace Vox
 
 #endif // __COLORS_HPP__

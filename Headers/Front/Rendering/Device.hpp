@@ -5,7 +5,7 @@
 
 #include <vector>
 
-namespace SplineDesigner
+namespace Vox
 {
 	namespace Front
 	{
@@ -35,6 +35,6 @@ namespace SplineDesigner
 			};
 		} // namespace Rendering
 	} // namespace Front
-} // namespace SplineDesigner
+} // namespace Vox
 
 #endif // __DEVICE_HPP__
