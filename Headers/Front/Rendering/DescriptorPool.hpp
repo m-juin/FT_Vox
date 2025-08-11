@@ -1,17 +1,18 @@
 #ifndef __DESCRIPTORPOOL_HPP__
 #define __DESCRIPTORPOOL_HPP__
 
+#include "Utils/Singleton.hpp"
 #include <vulkan/vulkan.h>
 
 namespace Vox::Front::Rendering
 {
 	class Device;
 
-	class DescriptorPool
+	class DescriptorPool : public Vox::Utils::Singleton<DescriptorPool>
 	{
+		friend class Vox::Utils::Singleton<DescriptorPool>;
 		private:
 			VkDescriptorPool _pool;
-			Device *_device;
 			/* private */
 
 			DescriptorPool();
@@ -21,7 +22,6 @@ namespace Vox::Front::Rendering
 			{
 				return this->_pool;
 			};
-			DescriptorPool(Device *device);
 			~DescriptorPool();
 	};
 } // namespace Vox::Front::Rendering

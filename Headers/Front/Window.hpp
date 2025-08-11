@@ -4,18 +4,20 @@
 #include <cstdint>
 #include <vulkan/vulkan.h>
 
+#include "Utils/Singleton.hpp"
+
 class GLFWwindow;
 
 namespace Vox::Front
 {
-	class Window
+	class Window : public Vox::Utils::Singleton<Window>
 	{
+		friend class Vox::Utils::Singleton<Window>;
 		private:
 			GLFWwindow *_window;
 			VkSurfaceKHR _surface;
 			/* private */
-			Window(void);
-
+			Window(uint16_t width = 1920, uint16_t height = 1080);
 		public:
 			GLFWwindow *GetWindow()
 			{
@@ -25,11 +27,8 @@ namespace Vox::Front
 			{
 				return this->_surface;
 			};
-
-			void SetupSurface(VkInstance &instance);
-
-			Window(uint16_t width = 1920, uint16_t height = 1080);
 			~Window();
+			void SetupSurface();
 	};
 
 } // namespace Vox::Front

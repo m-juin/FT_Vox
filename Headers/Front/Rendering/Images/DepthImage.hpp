@@ -25,19 +25,14 @@ namespace Vox::Front::Rendering
 
 				VkImageView _view;
 				VkSampler _sampler;
-
-				Device *_device;
 				/* private */
-
-				DepthImage();
 
 			public:
 				VkImageView &GetView()
 				{
 					return this->_view;
 				};
-
-				DepthImage(Device *device, SwapChain *swap);
+				DepthImage();
 				~DepthImage();
 		};
 	} // namespace Images

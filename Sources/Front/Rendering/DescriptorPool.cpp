@@ -7,7 +7,7 @@
 
 namespace Vox::Front::Rendering
 {
-	DescriptorPool::DescriptorPool(Device *device)
+	DescriptorPool::DescriptorPool()
 	{
 		VkDescriptorPoolCreateInfo poolInfo{};
 		poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
@@ -15,10 +15,8 @@ namespace Vox::Front::Rendering
 		poolInfo.pPoolSizes = nullptr;
 		poolInfo.maxSets = 0;
 
-		if (vkCreateDescriptorPool(device->GetLogicalDevice(), &poolInfo, nullptr, &this->_pool) != VK_SUCCESS)
+		if (vkCreateDescriptorPool(Device::GetInstance().GetLogicalDevice(), &poolInfo, nullptr, &this->_pool) != VK_SUCCESS)
 			throw std::runtime_error("Failed to create descriptor pool!");
-
-		_device = device;
 	}
 
 	DescriptorPool::~DescriptorPool() {}

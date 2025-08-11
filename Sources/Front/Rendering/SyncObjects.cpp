@@ -11,7 +11,7 @@ namespace Vox::Front::Rendering
 		this->_currentFrame = (this->_currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
 	}
 
-	SyncObjects::SyncObjects(Device *device)
+	SyncObjects::SyncObjects()
 	{
 		this->_imageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
 		this->_renderFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
@@ -24,16 +24,17 @@ namespace Vox::Front::Rendering
 		fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
 		fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
+		Front::Rendering::Device &device = Device::GetInstance();
+
 		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
 		{
-			if (vkCreateSemaphore(device->GetLogicalDevice(), &semaphoreInfo, nullptr, &_imageAvailableSemaphores[i]) !=
+			if (vkCreateSemaphore(device.GetLogicalDevice(), &semaphoreInfo, nullptr, &_imageAvailableSemaphores[i]) !=
 					VK_SUCCESS ||
-				vkCreateSemaphore(device->GetLogicalDevice(), &semaphoreInfo, nullptr, &_renderFinishedSemaphores[i]) !=
+				vkCreateSemaphore(device.GetLogicalDevice(), &semaphoreInfo, nullptr, &_renderFinishedSemaphores[i]) !=
 					VK_SUCCESS ||
-				vkCreateFence(device->GetLogicalDevice(), &fenceInfo, nullptr, &_inFlightFences[i]) != VK_SUCCESS)
+				vkCreateFence(device.GetLogicalDevice(), &fenceInfo, nullptr, &_inFlightFences[i]) != VK_SUCCESS)
 				throw std::runtime_error("Failed to create synchronization objects for a frame!");
 		}
-		this->_device = device;
 	}
 
 	SyncObjects::~SyncObjects() {}

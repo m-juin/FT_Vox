@@ -2,8 +2,6 @@
 
 #include "Utils/Colors.hpp"
 
-using namespace Vox;
-
 #include "Front/Rendering/CommandsPool.hpp"
 #include "Front/Rendering/DescriptorPool.hpp"
 #include "Front/Rendering/Device.hpp"
@@ -17,72 +15,79 @@ using namespace Vox;
 
 #include <GLFW/glfw3.h>
 
-Front::Window *win;
-Front::Rendering::VulkanManager *vkManager;
+using namespace Vox::Front;
+
+// Front::Window *win;
+// Front::Rendering::VulkanManager *vkManager;
 
 int main()
 {
-	win = new Front::Window(1920, 1080);
-	vkManager = new Front::Rendering::VulkanManager();
-	win->SetupSurface(vkManager->GetVkInstance());
+	Window::Init(1920, 1080);
+	Rendering::VulkanManager::Init();
+	Window::GetInstance().SetupSurface();
 
-	vkManager->SetDevice(new Front::Rendering::Device(vkManager->GetVkInstance(), win->GetSurface()));
-	vkManager->SetSwapChain(new Front::Rendering::SwapChain(vkManager->GetDevice(), win));
-	vkManager->SetDescPool(new Front::Rendering::DescriptorPool(vkManager->GetDevice()));
-	vkManager->SetPipelineManager(
-		new Front::Rendering::PipelineManager(vkManager->GetSwapChain(), vkManager->GetDevice()));
-	vkManager->SetDepthImage(
-		new Front::Rendering::Images::DepthImage(vkManager->GetDevice(), vkManager->GetSwapChain()));
-	vkManager->GetSwapChain()->CreateFrameBuffer(vkManager->GetPipelineManager()->GetRenderPass(),
-												 vkManager->GetDepthImage()->GetView());
-	vkManager->SetCommandsPool(new Front::Rendering::CommandsPool(vkManager->GetDevice(), win->GetSurface()));
-	vkManager->SetSyncObjects(new Front::Rendering::SyncObjects(vkManager->GetDevice()));
-	vkManager->GetCommandsPool()->CreateCommandBuffer();
+	Rendering::Device::Init(Rendering::VulkanManager::GetInstance().GetVkInstance(), Window::GetInstance().GetSurface());
 
-	while (!glfwWindowShouldClose(win->GetWindow()))
+	Rendering::Device &device = Rendering::Device::GetInstance();
+
+	Rendering::SwapChain::Init();
+	Rendering::DescriptorPool::Init();
+	Rendering::PipelineManager::Init();
+	Rendering::VulkanManager::GetInstance().SetDepthImage(
+		new Rendering::Images::DepthImage());
+	Rendering::SwapChain::GetInstance().CreateFrameBuffer(Rendering::PipelineManager::GetInstance().GetRenderPass(), Rendering::VulkanManager::GetInstance().GetDepthImage()->GetView());
+	Rendering::CommandsPool::Init(Window::GetInstance().GetSurface());
+	Rendering::SyncObjects::Init();
+
+	Rendering::CommandsPool &pool = Rendering::CommandsPool::GetInstance();
+	Rendering::SyncObjects &sync = Rendering::SyncObjects::GetInstance();
+	Rendering::SwapChain &swap = Rendering::SwapChain::GetInstance();
+
+	pool.CreateCommandBuffer();
+
+	while (!glfwWindowShouldClose(Window::GetInstance().GetWindow()))
 	{
-		VkFence fence = vkManager->GetSyncObjects()->GetCurrentFence();
-		uint32_t currentFrame = vkManager->GetSyncObjects()->GetCurrentFrame();
-		vkWaitForFences(vkManager->GetDevice()->GetLogicalDevice(), 1, &fence, VK_TRUE, UINT64_MAX);
+		VkFence fence = sync.GetCurrentFence();
+		uint32_t currentFrame = sync.GetCurrentFrame();
+		vkWaitForFences(device.GetLogicalDevice(), 1, &fence, VK_TRUE, UINT64_MAX);
 
 		uint32_t imageIndex = 0;
 		VkResult result = vkAcquireNextImageKHR(
-			vkManager->GetDevice()->GetLogicalDevice(), vkManager->GetSwapChain()->GetVulkanInstance(), UINT64_MAX,
-			vkManager->GetSyncObjects()->GetCurrentImageSemaphore(), VK_NULL_HANDLE, &imageIndex);
+			device.GetLogicalDevice(), swap.GetVulkanInstance(), UINT64_MAX,
+			sync.GetCurrentImageSemaphore(), VK_NULL_HANDLE, &imageIndex);
 		if (result == VK_ERROR_OUT_OF_DATE_KHR)
 		{
 			// TODO Recreate SwapCain.
-			vkManager->GetSyncObjects()->GoToNextFrame();
+			sync.GoToNextFrame();
 			continue;
 		}
 		else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)
 			throw std::runtime_error("Failed to acquire swap chain image!");
 
-		vkResetFences(vkManager->GetDevice()->GetLogicalDevice(), 1, &fence);
+		vkResetFences(device.GetLogicalDevice(), 1, &fence);
 
-		vkManager->GetCommandsPool()->ResetBuffer(currentFrame);
-		vkManager->GetCommandsPool()->BeginRecord(imageIndex, currentFrame, vkManager->GetSwapChain(),
-												  vkManager->GetPipelineManager());
+		pool.ResetBuffer(currentFrame);
+		pool.BeginRecord(imageIndex, currentFrame);
 		// Here goes all render code;
-		vkManager->GetCommandsPool()->EndRecord(currentFrame);
+		pool.EndRecord(currentFrame);
 
 		VkSubmitInfo submitInfo{};
 		submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
-		VkSemaphore waitSemaphores[] = {vkManager->GetSyncObjects()->GetCurrentImageSemaphore()};
+		VkSemaphore waitSemaphores[] = {sync.GetCurrentImageSemaphore()};
 		VkPipelineStageFlags waitStages[] = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
 		submitInfo.waitSemaphoreCount = 1;
 		submitInfo.pWaitSemaphores = waitSemaphores;
 		submitInfo.pWaitDstStageMask = waitStages;
 
 		submitInfo.commandBufferCount = 1;
-		submitInfo.pCommandBuffers = &vkManager->GetCommandsPool()->GetBuffer(currentFrame);
+		submitInfo.pCommandBuffers = &pool.GetBuffer(currentFrame);
 		;
 
-		VkSemaphore signalSemaphores[] = {vkManager->GetSyncObjects()->GetCurrentRenderFinishedSemaphore()};
+		VkSemaphore signalSemaphores[] = {sync.GetCurrentRenderFinishedSemaphore()};
 		submitInfo.signalSemaphoreCount = 1;
 		submitInfo.pSignalSemaphores = signalSemaphores;
-		if (vkQueueSubmit(vkManager->GetSwapChain()->GetGraphicQueue(), 1, &submitInfo, fence) != VK_SUCCESS)
+		if (vkQueueSubmit(swap.GetGraphicQueue(), 1, &submitInfo, fence) != VK_SUCCESS)
 			throw std::runtime_error("Failed to submit draw command buffer!");
 
 		VkPresentInfoKHR presentInfo{};
@@ -91,13 +96,13 @@ int main()
 		presentInfo.waitSemaphoreCount = 1;
 		presentInfo.pWaitSemaphores = signalSemaphores;
 
-		VkSwapchainKHR swapChains[] = {vkManager->GetSwapChain()->GetVulkanInstance()};
+		VkSwapchainKHR swapChains[] = {swap.GetVulkanInstance()};
 		presentInfo.swapchainCount = 1;
 		presentInfo.pSwapchains = swapChains;
 
 		presentInfo.pImageIndices = &imageIndex;
 
-		result = vkQueuePresentKHR(vkManager->GetSwapChain()->GetPresentQueue(), &presentInfo);
+		result = vkQueuePresentKHR(swap.GetPresentQueue(), &presentInfo);
 
 		if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR) // || FrameBufferResized
 		{
@@ -107,8 +112,16 @@ int main()
 		else if (result != VK_SUCCESS)
 			throw std::runtime_error("Failed to present swap chain image!");
 
-		vkManager->GetSyncObjects()->GoToNextFrame();
+		sync.GoToNextFrame();
 		glfwPollEvents();
 	}
-	vkDeviceWaitIdle(vkManager->GetDevice()->GetLogicalDevice());
+	vkDeviceWaitIdle(device.GetLogicalDevice());
+
+	CleanUp();
+}
+
+void CleanUp()
+{
+	Rendering::SwapChain::Clean();
+	Rendering::PipelineManager::Clean();
 }

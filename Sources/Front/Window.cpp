@@ -1,4 +1,5 @@
 #include "Front/Window.hpp"
+#include "Front/Rendering/VulkanManager.hpp"
 
 #include <iostream>
 
@@ -23,9 +24,9 @@ namespace Vox::Front
 		}
 	}
 
-	void Window::SetupSurface(VkInstance &instance)
+	void Window::SetupSurface()
 	{
-		if (glfwCreateWindowSurface(instance, this->_window, nullptr, &this->_surface) != VK_SUCCESS)
+		if (glfwCreateWindowSurface(Front::Rendering::VulkanManager::GetInstance().GetVkInstance(), this->_window, nullptr, &this->_surface) != VK_SUCCESS)
 			throw std::runtime_error("Failed to create window surface!");
 	}
 

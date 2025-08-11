@@ -8,10 +8,10 @@
 
 namespace Vox::Front::Rendering
 {
-	void PipelineManager::CreateRenderPass(SwapChain *swapChain, Device *device)
+	void PipelineManager::CreateRenderPass()
 	{
 		VkAttachmentDescription colorAttachment{};
-		colorAttachment.format = swapChain->GetFormat();
+		colorAttachment.format = SwapChain::GetInstance().GetFormat();
 		colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
 		colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 		colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
@@ -21,7 +21,7 @@ namespace Vox::Front::Rendering
 		colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
 		VkAttachmentDescription depthAttachment{};
-		depthAttachment.format = Utils::FindDepthFormat(device->GetPhysicalDevice());
+		depthAttachment.format = Utils::FindDepthFormat(Device::GetInstance().GetPhysicalDevice());
 		depthAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
 		depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 		depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
@@ -65,14 +65,17 @@ namespace Vox::Front::Rendering
 		renderPassInfo.dependencyCount = 1;
 		renderPassInfo.pDependencies = &dependency;
 
-		if (vkCreateRenderPass(device->GetLogicalDevice(), &renderPassInfo, nullptr, &this->_renderPass) != VK_SUCCESS)
+		if (vkCreateRenderPass(Device::GetInstance().GetLogicalDevice(), &renderPassInfo, nullptr, &this->_renderPass) != VK_SUCCESS)
 			throw std::runtime_error("failed to create render pass!");
 	}
 
-	PipelineManager::PipelineManager(SwapChain *swapChain, Device *device)
+	PipelineManager::PipelineManager()
 	{
-		this->CreateRenderPass(swapChain, device);
-		this->_device = device;
+		this->CreateRenderPass();
 	}
-	PipelineManager::~PipelineManager() {}
+
+	PipelineManager::~PipelineManager()
+	{
+
+	}
 } // namespace Vox::Front::Rendering

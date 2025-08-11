@@ -4,66 +4,75 @@
 #include <vector>
 #include <vulkan/vulkan.h>
 
-namespace Vox
+#include "Utils/Singleton.hpp"
+
+namespace Vox::Front
 {
-	namespace Front
+	namespace Rendering
 	{
-		class Window;
 
-		namespace Rendering
+		struct SwapChainSupportDetails
 		{
-			class Device;
-
-			struct SwapChainSupportDetails
-			{
 				VkSurfaceCapabilitiesKHR capabilities;
 				std::vector<VkSurfaceFormatKHR> formats;
 				std::vector<VkPresentModeKHR> presentModes;
-			};
-			SwapChainSupportDetails QuerySwapChainSupport(VkPhysicalDevice &device, VkSurfaceKHR &surface);
+		};
+		SwapChainSupportDetails QuerySwapChainSupport(VkPhysicalDevice &device, VkSurfaceKHR &surface);
 
-			class SwapChain
-			{
+		class SwapChain : public Vox::Utils::Singleton<SwapChain>
+		{
+			friend class Vox::Utils::Singleton<SwapChain>;
+			private:
+				VkSwapchainKHR _swapChain;
 
-				private:
-					VkSwapchainKHR _swapChain;
+				std::vector<VkImage> _images;
+				std::vector<VkImageView> _imageViews;
+				std::vector<VkFramebuffer> _framebuffers;
 
-					std::vector<VkImage> _images;
-					std::vector<VkImageView> _imageViews;
-					std::vector<VkFramebuffer> _framebuffers;
+				VkFormat _imageFormat;
+				VkExtent2D _extent;
 
-					VkFormat _imageFormat;
-					VkExtent2D _extent;
+				VkQueue _graphicQueue;
+				VkQueue _presentQueue;
 
-					VkQueue _graphicQueue;
-					VkQueue _presentQueue;
+				void CreateSwapChain();
+				void CreateImageViews(VkImageAspectFlags aspectFlags);
+				/* private */
+				SwapChain();
 
-					void CreateSwapChain(Device *device, Window *win);
-                    void CreateImageViews(VkImageAspectFlags aspectFlags, Device *device);
-					/* private */
-					
-					Device *_device;
-					SwapChain();
+				void CleanSwapChain();
 
-                    void CleanSwapChain();
+			public:
+				~SwapChain();
+				void CreateFrameBuffer(VkRenderPass &renderPass, VkImageView &depthView);
 
-				public:
-					SwapChain(Device *device, Window *win);
-					~SwapChain();
+				VkQueue &GetPresentQueue()
+				{
+					return this->_presentQueue;
+				};
+				VkQueue &GetGraphicQueue()
+				{
+					return this->_graphicQueue;
+				};
+				VkSwapchainKHR &GetVulkanInstance()
+				{
+					return this->_swapChain;
+				};
+				VkFramebuffer &GetFrameBuffer(uint8_t index)
+				{
+					return this->_framebuffers[index];
+				};
+				VkFormat GetFormat()
+				{
+					return this->_imageFormat;
+				};
+				VkExtent2D GetExtent()
+				{
+					return this->_extent;
+				};
+		};
+	} // namespace Rendering
 
-					void CreateFrameBuffer(VkRenderPass &renderPass, VkImageView &depthView);
-
-					VkQueue &GetPresentQueue() {return this->_presentQueue;};
-					VkQueue &GetGraphicQueue() {return this->_graphicQueue;};
-					VkSwapchainKHR &GetVulkanInstance() {return this->_swapChain;};
-					VkFramebuffer &GetFrameBuffer(uint8_t index) {return this->_framebuffers[index];};
-					VkFormat GetFormat() {return this->_imageFormat;};
-					VkExtent2D GetExtent() {return this->_extent;};
-			};
-		} // namespace Rendering
-
-	} // namespace Front
-
-} // namespace Vox
+} // namespace Vox::Front
 
 #endif // __SWAPCHAIN_HPP__

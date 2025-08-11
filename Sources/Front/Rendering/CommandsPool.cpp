@@ -21,7 +21,7 @@ namespace Vox::Front::Rendering
 		allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 		allocInfo.commandBufferCount = (uint32_t)this->_buffers.size();
 
-		if (vkAllocateCommandBuffers(_device->GetLogicalDevice(), &allocInfo, this->_buffers.data()) != VK_SUCCESS)
+		if (vkAllocateCommandBuffers(Device::GetInstance().GetLogicalDevice(), &allocInfo, this->_buffers.data()) != VK_SUCCESS)
 			throw std::runtime_error("Failed to allocate command buffers!");
 	}
 
@@ -30,9 +30,9 @@ namespace Vox::Front::Rendering
 		vkResetCommandBuffer(this->_buffers[bufferIndex], 0);
 	}
 
-	void CommandsPool::BeginRecord(uint32_t imageIndex, uint32_t frame, SwapChain *swap,
-								   PipelineManager *pipelineManager)
+	void CommandsPool::BeginRecord(uint32_t imageIndex, uint32_t frame)
 	{
+		Front::Rendering::SwapChain &swap = SwapChain::GetInstance();
 		VkCommandBufferBeginInfo beginInfo{};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
@@ -41,10 +41,10 @@ namespace Vox::Front::Rendering
 
 		VkRenderPassBeginInfo renderPassInfo{};
 		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-		renderPassInfo.renderPass = pipelineManager->GetRenderPass();
-		renderPassInfo.framebuffer = swap->GetFrameBuffer(imageIndex);
+		renderPassInfo.renderPass = PipelineManager::GetInstance().GetRenderPass();
+		renderPassInfo.framebuffer = swap.GetFrameBuffer(imageIndex);
 		renderPassInfo.renderArea.offset = {0, 0};
-		renderPassInfo.renderArea.extent = swap->GetExtent();
+		renderPassInfo.renderArea.extent = swap.GetExtent();
 
 		std::array<VkClearValue, 2> clearValues{};
 		clearValues[0].color = {{0.0f, 0.0f, 0.0f, 1.0f}};
@@ -57,8 +57,8 @@ namespace Vox::Front::Rendering
 		VkViewport viewport{};
 		viewport.x = 0.0f;
 		viewport.y = 0.0f;
-		viewport.width = (float)swap->GetExtent().width;
-		viewport.height = (float)swap->GetExtent().height;
+		viewport.width = (float)swap.GetExtent().width;
+		viewport.height = (float)swap.GetExtent().height;
 		viewport.minDepth = 0.0f;
 		viewport.maxDepth = 1.0f;
 
@@ -66,7 +66,7 @@ namespace Vox::Front::Rendering
 
 		VkRect2D scissor{};
 		scissor.offset = {0, 0};
-		scissor.extent = swap->GetExtent();
+		scissor.extent = swap.GetExtent();
 
 		vkCmdSetScissor(this->_buffers[frame], 0, 1, &scissor);
 	}
@@ -79,20 +79,19 @@ namespace Vox::Front::Rendering
 			throw std::runtime_error("Failed to record command buffer!");
 	}
 
-	CommandsPool::CommandsPool(Device *device, VkSurfaceKHR &surface)
+	CommandsPool::CommandsPool(VkSurfaceKHR &surface)
 	{
 		QueueFamilyIndices queueFamilyIndices =
-			QueueFamilyIndices::findQueueFamilies(device->GetPhysicalDevice(), surface);
+			QueueFamilyIndices::findQueueFamilies(Device::GetInstance().GetPhysicalDevice(), surface);
 
 		VkCommandPoolCreateInfo poolInfo{};
 		poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
 		poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 		poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
 
-		if (vkCreateCommandPool(device->GetLogicalDevice(), &poolInfo, nullptr, &this->_pool) != VK_SUCCESS)
+		if (vkCreateCommandPool(Device::GetInstance().GetLogicalDevice(), &poolInfo, nullptr, &this->_pool) != VK_SUCCESS)
 			throw std::runtime_error("Failed to create command pool!");
 
-		this->_device = device;
 	}
 
 	CommandsPool::~CommandsPool() {}

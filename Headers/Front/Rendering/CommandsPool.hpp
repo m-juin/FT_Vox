@@ -5,20 +5,17 @@
 
 #include <vector>
 
+#include "Utils/Singleton.hpp"
+
 namespace Vox::Front::Rendering
 {
-	class Device;
-	class SwapChain;
-	class PipelineManager;
-
-	class CommandsPool
+	class CommandsPool : public Vox::Utils::Singleton<CommandsPool>
 	{
+		friend class Vox::Utils::Singleton<CommandsPool>;
 		private:
 			VkCommandPool _pool;
 
 			std::vector<VkCommandBuffer> _buffers;
-
-			Device *_device;
 			/* private */
 			CommandsPool();
 
@@ -26,7 +23,7 @@ namespace Vox::Front::Rendering
 			void CreateCommandBuffer();
 			void ResetBuffer(uint32_t bufferIndex);
 
-			void BeginRecord(uint32_t imageIndex, uint32_t frame, SwapChain *swap, PipelineManager *pipelineManager);
+			void BeginRecord(uint32_t imageIndex, uint32_t frame);
 			void EndRecord(uint32_t frame);
 
 			VkCommandPool &GetPool()
@@ -38,7 +35,7 @@ namespace Vox::Front::Rendering
 				return this->_buffers[index];
 			};
 
-			CommandsPool(Device *device, VkSurfaceKHR &surface);
+			CommandsPool(VkSurfaceKHR &surface);
 			~CommandsPool();
 	};
 

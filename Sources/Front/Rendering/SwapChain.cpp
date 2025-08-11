@@ -1,5 +1,6 @@
 #include "Front/Rendering/SwapChain.hpp"
 #include "Front/Rendering/Device.hpp"
+#include "Front/Window.hpp"
 #include "Front/Rendering/QueueFamilyIndices.hpp"
 #include "Front/Window.hpp"
 
@@ -12,16 +13,17 @@
 
 namespace Vox::Front::Rendering
 {
-	SwapChain::SwapChain(Device *device, Window *win)
+	SwapChain::SwapChain()
 	{
-		this->CreateSwapChain(device, win);
+		this->CreateSwapChain();
+
+		Vox::Front::Rendering::Device &device = Device::GetInstance();
 
 		QueueFamilyIndices indices =
-			QueueFamilyIndices::findQueueFamilies(device->GetPhysicalDevice(), win->GetSurface());
+			QueueFamilyIndices::findQueueFamilies(device.GetPhysicalDevice(), Window::GetInstance().GetSurface());
 
-		vkGetDeviceQueue(device->GetLogicalDevice(), indices.graphicsFamily.value(), 0, &this->_graphicQueue);
-		vkGetDeviceQueue(device->GetLogicalDevice(), indices.presentFamily.value(), 0, &this->_presentQueue);
-		_device = device;
+		vkGetDeviceQueue(device.GetLogicalDevice(), indices.graphicsFamily.value(), 0, &this->_graphicQueue);
+		vkGetDeviceQueue(device.GetLogicalDevice(), indices.presentFamily.value(), 0, &this->_presentQueue);
 	}
 
 	SwapChain::~SwapChain()
@@ -84,7 +86,7 @@ namespace Vox::Front::Rendering
 		return VK_PRESENT_MODE_FIFO_KHR;
 	}
 
-	VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities, Window *win)
+	VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities)
 	{
 		if (capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max())
 		{
@@ -93,7 +95,7 @@ namespace Vox::Front::Rendering
 		else
 		{
 			int width, height;
-			glfwGetFramebufferSize(win->GetWindow(), &width, &height);
+			glfwGetFramebufferSize(Window::GetInstance().GetWindow(), &width, &height);
 
 			VkExtent2D actualExtent = {static_cast<uint32_t>(width), static_cast<uint32_t>(height)};
 
@@ -106,7 +108,7 @@ namespace Vox::Front::Rendering
 		}
 	}
 
-	void SwapChain::CreateImageViews(VkImageAspectFlags aspectFlags, Device *device)
+	void SwapChain::CreateImageViews(VkImageAspectFlags aspectFlags)
 	{
 		this->_imageViews.resize(this->_images.size());
 
@@ -127,7 +129,7 @@ namespace Vox::Front::Rendering
 			createInfo.subresourceRange.baseArrayLayer = 0;
 			createInfo.subresourceRange.layerCount = 1;
 
-			if (vkCreateImageView(device->GetLogicalDevice(), &createInfo, nullptr, &this->_imageViews[i]) !=
+			if (vkCreateImageView(Device::GetInstance().GetLogicalDevice(), &createInfo, nullptr, &this->_imageViews[i]) !=
 				VK_SUCCESS)
 				throw std::runtime_error("Failed to create image views!");
 		}
@@ -150,20 +152,22 @@ namespace Vox::Front::Rendering
 			framebufferInfo.height = this->_extent.height;
 			framebufferInfo.layers = 1;
 
-			if (vkCreateFramebuffer(this->_device->GetLogicalDevice(), &framebufferInfo, nullptr,
+			if (vkCreateFramebuffer(Device::GetInstance().GetLogicalDevice(), &framebufferInfo, nullptr,
 									&this->_framebuffers[i]) != VK_SUCCESS)
 				throw std::runtime_error("Failed to create framebuffer!");
 		}
 	}
 
-	void SwapChain::CreateSwapChain(Device *device, Window *win)
+	void SwapChain::CreateSwapChain()
 	{
+		Vox::Front::Window &win = Window::GetInstance();
+		Vox::Front::Rendering::Device &device = Device::GetInstance();
 		SwapChainSupportDetails swapChainSupport =
-			QuerySwapChainSupport(device->GetPhysicalDevice(), win->GetSurface());
+			QuerySwapChainSupport(device.GetPhysicalDevice(), win.GetSurface());
 
 		VkSurfaceFormatKHR surfaceFormat = ChooseSwapSurfaceFormat(swapChainSupport.formats);
 		VkPresentModeKHR presentMode = ChooseSwapPresentMode(swapChainSupport.presentModes);
-		VkExtent2D extent = ChooseSwapExtent(swapChainSupport.capabilities, win);
+		VkExtent2D extent = ChooseSwapExtent(swapChainSupport.capabilities);
 
 		uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
 		if (swapChainSupport.capabilities.maxImageCount > 0 && imageCount > swapChainSupport.capabilities.maxImageCount)
@@ -173,7 +177,7 @@ namespace Vox::Front::Rendering
 
 		VkSwapchainCreateInfoKHR createInfo{};
 		createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
-		createInfo.surface = win->GetSurface();
+		createInfo.surface = win.GetSurface();
 
 		createInfo.minImageCount = imageCount;
 		createInfo.imageFormat = surfaceFormat.format;
@@ -183,7 +187,7 @@ namespace Vox::Front::Rendering
 		createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
 		QueueFamilyIndices indices =
-			QueueFamilyIndices::findQueueFamilies(device->GetPhysicalDevice(), win->GetSurface());
+			QueueFamilyIndices::findQueueFamilies(device.GetPhysicalDevice(), win.GetSurface());
 		uint32_t queueFamilyIndices[] = {indices.graphicsFamily.value(), indices.presentFamily.value()};
 
 		if (indices.graphicsFamily != indices.presentFamily)
@@ -204,25 +208,27 @@ namespace Vox::Front::Rendering
 
 		createInfo.oldSwapchain = VK_NULL_HANDLE;
 
-		if (vkCreateSwapchainKHR(device->GetLogicalDevice(), &createInfo, nullptr, &this->_swapChain) != VK_SUCCESS)
+		if (vkCreateSwapchainKHR(device.GetLogicalDevice(), &createInfo, nullptr, &this->_swapChain) != VK_SUCCESS)
 			throw std::runtime_error("Failed to create swap chain!");
 
-		vkGetSwapchainImagesKHR(device->GetLogicalDevice(), this->_swapChain, &imageCount, nullptr);
+		vkGetSwapchainImagesKHR(device.GetLogicalDevice(), this->_swapChain, &imageCount, nullptr);
 		this->_images.resize(imageCount);
-		vkGetSwapchainImagesKHR(device->GetLogicalDevice(), this->_swapChain, &imageCount, this->_images.data());
+		vkGetSwapchainImagesKHR(device.GetLogicalDevice(), this->_swapChain, &imageCount, this->_images.data());
 
 		this->_imageFormat = surfaceFormat.format;
 		this->_extent = extent;
 
-		this->CreateImageViews(VK_IMAGE_ASPECT_COLOR_BIT, device);
+		this->CreateImageViews(VK_IMAGE_ASPECT_COLOR_BIT);
 	}
 
 	void SwapChain::CleanSwapChain()
 	{
+		Vox::Front::Rendering::Device &device = Device::GetInstance();
+
 		for (auto framebuffer : this->_framebuffers)
-			vkDestroyFramebuffer(_device->GetLogicalDevice(), framebuffer, nullptr);
+			vkDestroyFramebuffer(device.GetLogicalDevice(), framebuffer, nullptr);
 		for (auto imageView : this->_imageViews)
-			vkDestroyImageView(_device->GetLogicalDevice(), imageView, nullptr);
-		vkDestroySwapchainKHR(_device->GetLogicalDevice(), this->_swapChain, nullptr);
+			vkDestroyImageView(device.GetLogicalDevice(), imageView, nullptr);
+		vkDestroySwapchainKHR(device.GetLogicalDevice(), this->_swapChain, nullptr);
 	}
 } // namespace Vox::Front::Rendering

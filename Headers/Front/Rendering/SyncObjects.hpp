@@ -4,23 +4,21 @@
 #include <vulkan/vulkan.h>
 
 #include <vector>
+#include "Utils/Singleton.hpp"
 
 namespace Vox::Front::Rendering
 {
 	constexpr uint16_t MAX_FRAMES_IN_FLIGHT = 2;
 
-	class Device;
-
-	class SyncObjects
+	class SyncObjects : public Utils::Singleton<SyncObjects>
 	{
+		friend class Utils::Singleton<SyncObjects>;
 		private:
 			std::vector<VkSemaphore> _imageAvailableSemaphores;
 			std::vector<VkSemaphore> _renderFinishedSemaphores;
 			std::vector<VkFence> _inFlightFences;
 
 			uint8_t _currentFrame = 0;
-
-			Device *_device;
 
 		public:
 			uint8_t GetCurrentFrame()
@@ -46,7 +44,7 @@ namespace Vox::Front::Rendering
 			{
 				return this->_inFlightFences[this->_currentFrame];
 			};
-			SyncObjects(Device *device);
+			SyncObjects();
 			~SyncObjects();
 	};
 } // namespace Vox::Front::Rendering

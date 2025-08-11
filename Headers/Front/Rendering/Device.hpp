@@ -5,18 +5,23 @@
 
 #include <vector>
 
+#include "Utils/Singleton.hpp"
 namespace Vox::Front::Rendering
 {
 	const std::vector<const char *> deviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
-	class Device
+	class Device : public Vox::Utils::Singleton<Device>
 	{
+		friend class Vox::Utils::Singleton<Device>;
 		private:
 			VkPhysicalDevice _physicalDevice;
 			VkDevice _logicalDevice;
 
 			Device();
 
+			Device(VkInstance &instance, VkSurfaceKHR &surface);
 		public:
+
+			~Device();
 			VkPhysicalDevice &GetPhysicalDevice()
 			{
 				return _physicalDevice;
@@ -25,9 +30,6 @@ namespace Vox::Front::Rendering
 			{
 				return _logicalDevice;
 			};
-
-			Device(VkInstance &instance, VkSurfaceKHR &surface);
-			~Device();
 	};
 }
 

@@ -3,22 +3,21 @@
 
 #include <vulkan/vulkan.h>
 
+#include "Utils/Singleton.hpp"
+
 namespace Vox::Front::Rendering
 {
-	class SwapChain;
-	class Device;
 
-	class PipelineManager
+	class PipelineManager : public Vox::Utils::Singleton<PipelineManager>
 	{
 		private:
+			friend class Vox::Utils::Singleton<PipelineManager>;
 			VkRenderPass _renderPass;
-			void CreateRenderPass(SwapChain *swapChain, Device *device);
+			void CreateRenderPass();
 
-			Device *_device;
 			PipelineManager();
 
 		public:
-			PipelineManager(SwapChain *swapChain, Device *device);
 			~PipelineManager();
 
 			VkRenderPass &GetRenderPass()

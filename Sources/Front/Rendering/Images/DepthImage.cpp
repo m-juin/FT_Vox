@@ -12,6 +12,9 @@ namespace Vox::Front::Rendering::Images
 	void DepthImage::CreateImage(VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage,
 								 VkMemoryPropertyFlags properties)
 	{
+
+		Front::Rendering::Device &device = Device::GetInstance();
+
 		VkImageCreateInfo imageInfo{};
 		imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
 		imageInfo.imageType = VK_IMAGE_TYPE_2D;
@@ -27,24 +30,24 @@ namespace Vox::Front::Rendering::Images
 		imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
 		imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-		if (vkCreateImage(this->_device->GetLogicalDevice(), &imageInfo, nullptr, &this->_image) != VK_SUCCESS)
+		if (vkCreateImage(device.GetLogicalDevice(), &imageInfo, nullptr, &this->_image) != VK_SUCCESS)
 			throw std::runtime_error("failed to create image!");
 
 		VkMemoryRequirements memRequirements;
-		vkGetImageMemoryRequirements(this->_device->GetLogicalDevice(), this->_image, &memRequirements);
+		vkGetImageMemoryRequirements(device.GetLogicalDevice(), this->_image, &memRequirements);
 
 		VkMemoryAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 		allocInfo.allocationSize = memRequirements.size;
 		allocInfo.memoryTypeIndex = Utils::Buffer::FindMemoryType(memRequirements.memoryTypeBits, properties,
-																  this->_device->GetPhysicalDevice());
+																  device.GetPhysicalDevice());
 
-		if (vkAllocateMemory(this->_device->GetLogicalDevice(), &allocInfo, nullptr, &this->_memory) != VK_SUCCESS)
+		if (vkAllocateMemory(device.GetLogicalDevice(), &allocInfo, nullptr, &this->_memory) != VK_SUCCESS)
 		{
 			throw std::runtime_error("failed to allocate image memory!");
 		}
 
-		vkBindImageMemory(this->_device->GetLogicalDevice(), this->_image, this->_memory, 0);
+		vkBindImageMemory(device.GetLogicalDevice(), this->_image, this->_memory, 0);
 	}
 
 	void DepthImage::CreateView(VkFormat format, VkImageAspectFlags aspectFlags)
@@ -60,14 +63,14 @@ namespace Vox::Front::Rendering::Images
 		viewInfo.subresourceRange.baseArrayLayer = 0;
 		viewInfo.subresourceRange.layerCount = 1;
 
-		if (vkCreateImageView(this->_device->GetLogicalDevice(), &viewInfo, nullptr, &this->_view) != VK_SUCCESS)
+		if (vkCreateImageView(Device::GetInstance().GetLogicalDevice(), &viewInfo, nullptr, &this->_view) != VK_SUCCESS)
 			throw std::runtime_error("Failed to create texture image view!!");
 	}
 
 	void DepthImage::CreateSampler()
 	{
 		VkPhysicalDeviceProperties properties{};
-		vkGetPhysicalDeviceProperties(this->_device->GetPhysicalDevice(), &properties);
+		vkGetPhysicalDeviceProperties(Device::GetInstance().GetPhysicalDevice(), &properties);
 
 		VkSamplerCreateInfo samplerInfo{};
 		samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
@@ -85,16 +88,16 @@ namespace Vox::Front::Rendering::Images
 		samplerInfo.compareOp = VK_COMPARE_OP_ALWAYS;
 		samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_NEAREST;
 
-		if (vkCreateSampler(this->_device->GetLogicalDevice(), &samplerInfo, nullptr, &this->_sampler) != VK_SUCCESS)
+		if (vkCreateSampler(Device::GetInstance().GetLogicalDevice(), &samplerInfo, nullptr, &this->_sampler) != VK_SUCCESS)
 			throw std::runtime_error("Failed to create texture sampler!");
 	}
 
-	DepthImage::DepthImage(Device *device, SwapChain *swap)
+	DepthImage::DepthImage()
 	{
-		this->_device = device;
-		this->_width = swap->GetExtent().width;
-		this->_height = swap->GetExtent().height;
-		VkFormat format = Utils::FindDepthFormat(device->GetPhysicalDevice());
+
+		this->_width = SwapChain::GetInstance().GetExtent().width;
+		this->_height = SwapChain::GetInstance().GetExtent().height;
+		VkFormat format = Utils::FindDepthFormat(Device::GetInstance().GetPhysicalDevice());
 		this->CreateImage(format, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
 						  VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 		this->CreateView(format, VK_IMAGE_ASPECT_DEPTH_BIT);

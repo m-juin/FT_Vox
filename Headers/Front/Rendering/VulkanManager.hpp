@@ -4,68 +4,45 @@
 #include <vulkan/vulkan.h>
 
 #include <vector>
+#include "Utils/Singleton.hpp"
 
-namespace Vox
+
+namespace Vox::Front::Rendering
 {
-    namespace Front
-    {
-        namespace Rendering
-        {
-            class Device;
-            class SwapChain;
-            class DescriptorPool;
-            class PipelineManager;
-            class SyncObjects;
-            class CommandsPool;
+	namespace Images
+	{
+		class DepthImage;
+	} // namespace Images
 
-            namespace Images { class DepthImage; } // namespace Images
-            
+	class VulkanManager : public Vox::Utils::Singleton<VulkanManager>
+	{
+        friend class Vox::Utils::Singleton<VulkanManager>;
+		private:
+			VkInstance _instance;
+			Images::DepthImage *_depthImage;
 
-            class VulkanManager
-            {
+			VkDebugUtilsMessengerEXT _debugMessenger;
 
-                private:
-                    VkInstance _instance;
-                    Device *_device;
-                    SwapChain *_swapChain;
-                    DescriptorPool *_descPool;
-                    PipelineManager *_pipelineManager;
-                    SyncObjects *_syncObjects;
-                    CommandsPool *_commandsPool;
-                    Images::DepthImage *_depthImage;
+			std::vector<const char *> GetRequiredExtensions();
 
-                    VkDebugUtilsMessengerEXT _debugMessenger;
+		public:
+			VkInstance &GetVkInstance()
+			{
+				return this->_instance;
+			};
+			Images::DepthImage *GetDepthImage()
+			{
+				return this->_depthImage;
+			};
 
-                    std::vector<const char *> GetRequiredExtensions();
+			void SetDepthImage(Images::DepthImage *image)
+			{
+				this->_depthImage = image;
+			};
 
-                public:
-                    VkInstance &GetVkInstance() {return this->_instance;};
-
-                    SwapChain *GetSwapChain() {return this->_swapChain;};
-                    Device *GetDevice() {return this->_device;};
-                    DescriptorPool *GetDescPool() {return this->_descPool;};
-                    PipelineManager *GetPipelineManager() {return this->_pipelineManager;};
-                    Images::DepthImage *GetDepthImage() {return this->_depthImage;};
-                    SyncObjects *GetSyncObjects() {return this->_syncObjects;};
-                    CommandsPool *GetCommandsPool() {return this->_commandsPool;};
-
-                    void SetSwapChain(SwapChain *swapChain) {this->_swapChain = swapChain;};
-                    void SetDevice(Device *device) {this->_device = device;};
-                    void SetDescPool(DescriptorPool *descPool) {this->_descPool = descPool;};
-                    void SetPipelineManager(PipelineManager *manager) {this->_pipelineManager = manager;};
-                    void SetDepthImage(Images::DepthImage *image) {this->_depthImage = image;};
-                    void SetSyncObjects(SyncObjects *objects) {this->_syncObjects = objects;};
-                    void SetCommandsPool(CommandsPool *pool) {this->_commandsPool = pool;};
-
-                    VulkanManager();
-                    ~VulkanManager();
-            
-            };
-        } // namespace Rendering
-        
-    } // namespace Front
-    
-} // namespace Vox
-
+			VulkanManager();
+			~VulkanManager();
+	};
+} // namespace Vox::Front::Rendering
 
 #endif // __VULKANMANAGER_HPP__
