@@ -5,45 +5,50 @@
 
 #include <vector>
 
-namespace Vox
+namespace Vox::Front::Rendering
 {
-	namespace Front
+	constexpr uint16_t MAX_FRAMES_IN_FLIGHT = 2;
+
+	class Device;
+
+	class SyncObjects
 	{
-		namespace Rendering
-		{
-            constexpr uint16_t MAX_FRAMES_IN_FLIGHT = 2;
+		private:
+			std::vector<VkSemaphore> _imageAvailableSemaphores;
+			std::vector<VkSemaphore> _renderFinishedSemaphores;
+			std::vector<VkFence> _inFlightFences;
 
-            class Device;
+			uint8_t _currentFrame = 0;
 
-			class SyncObjects
+			Device *_device;
+
+		public:
+			uint8_t GetCurrentFrame()
 			{
-				private:
-
-					std::vector<VkSemaphore> _imageAvailableSemaphores;
-					std::vector<VkSemaphore> _renderFinishedSemaphores;
-					std::vector<VkFence> _inFlightFences;
-
-                    uint8_t _currentFrame = 0;
-
-                    Device *_device;
-
-				public:
-
-                    uint8_t GetCurrentFrame() {return this->_currentFrame;};
-
-					void GoToNextFrame();
-
-					std::vector<VkFence> GetFences() {return this->_inFlightFences;};
-					VkSemaphore &GetCurrentImageSemaphore() {return this->_imageAvailableSemaphores[this->_currentFrame];};
-					VkSemaphore &GetCurrentRenderFinishedSemaphore() {return this->_renderFinishedSemaphores[this->_currentFrame];};
-					VkFence &GetCurrentFence() {return this->_inFlightFences[this->_currentFrame];};
-					SyncObjects(Device *device);
-					~SyncObjects();
+				return this->_currentFrame;
 			};
-		} // namespace Rendering
 
-	} // namespace Front
+			void GoToNextFrame();
 
-} // namespace Vox
+			std::vector<VkFence> GetFences()
+			{
+				return this->_inFlightFences;
+			};
+			VkSemaphore &GetCurrentImageSemaphore()
+			{
+				return this->_imageAvailableSemaphores[this->_currentFrame];
+			};
+			VkSemaphore &GetCurrentRenderFinishedSemaphore()
+			{
+				return this->_renderFinishedSemaphores[this->_currentFrame];
+			};
+			VkFence &GetCurrentFence()
+			{
+				return this->_inFlightFences[this->_currentFrame];
+			};
+			SyncObjects(Device *device);
+			~SyncObjects();
+	};
+} // namespace Vox::Front::Rendering
 
 #endif // __SYNCOBJECTS_HPP__

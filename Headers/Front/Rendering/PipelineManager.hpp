@@ -3,33 +3,28 @@
 
 #include <vulkan/vulkan.h>
 
-namespace Vox
+namespace Vox::Front::Rendering
 {
-	namespace Front
+	class SwapChain;
+	class Device;
+
+	class PipelineManager
 	{
-		namespace Rendering
-		{
-            class SwapChain;
-            class Device;
+		private:
+			VkRenderPass _renderPass;
+			void CreateRenderPass(SwapChain *swapChain, Device *device);
 
-            class PipelineManager
-            {
-                private:
-                    VkRenderPass _renderPass;
-                    void CreateRenderPass(SwapChain *swapChain, Device *device);
+			Device *_device;
+			PipelineManager();
 
-                    Device *_device;
-                    PipelineManager();
+		public:
+			PipelineManager(SwapChain *swapChain, Device *device);
+			~PipelineManager();
 
-                public:
-                    PipelineManager(SwapChain *swapChain, Device *device);
-                    ~PipelineManager();
-
-                    VkRenderPass& GetRenderPass() {return this->_renderPass;};
-            };
-        }
-    } // namespace Rendering
-    
-} // namespace Front
-
+			VkRenderPass &GetRenderPass()
+			{
+				return this->_renderPass;
+			};
+	};
+} // namespace Vox::Front::Rendering
 #endif // __PIPELINEMANAGER_HPP__

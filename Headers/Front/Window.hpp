@@ -6,32 +6,32 @@
 
 class GLFWwindow;
 
-namespace Vox
+namespace Vox::Front
 {
-    namespace Front
-    {
-        class Window
-        {        
-            private:
-                GLFWwindow* _window;
-                VkSurfaceKHR _surface;
-                /* private */
-                Window(void);
+	class Window
+	{
+		private:
+			GLFWwindow *_window;
+			VkSurfaceKHR _surface;
+			/* private */
+			Window(void);
 
-            public:
+		public:
+			GLFWwindow *GetWindow()
+			{
+				return this->_window;
+			};
+			VkSurfaceKHR &GetSurface()
+			{
+				return this->_surface;
+			};
 
-                GLFWwindow* GetWindow() {return this->_window;};
-                VkSurfaceKHR &GetSurface() {return this->_surface;};
+			void SetupSurface(VkInstance &instance);
 
-                void SetupSurface(VkInstance &instance);
+			Window(uint16_t width = 1920, uint16_t height = 1080);
+			~Window();
+	};
 
-                Window(uint16_t width = 1920, uint16_t height = 1080);
-                ~Window();
-        
-        };
-    } // namespace Front
-    
-} // namespace Vox
-
+} // namespace Vox::Front
 
 #endif // __WINDOW_HPP__

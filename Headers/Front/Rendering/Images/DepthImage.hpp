@@ -3,47 +3,44 @@
 
 #include <vulkan/vulkan.h>
 
-namespace Vox
+namespace Vox::Front::Rendering
 {
-	namespace Front
+	class Device;
+	class SwapChain;
+	namespace Images
 	{
-		namespace Rendering
+		class DepthImage
 		{
-			class Device;
-			class SwapChain;
-			namespace Images
-			{
-				class DepthImage
+			private:
+				void CreateImage(VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage,
+								 VkMemoryPropertyFlags properties);
+				void CreateView(VkFormat format, VkImageAspectFlags aspectFlags);
+				void CreateSampler();
+
+				uint16_t _width;
+				uint16_t _height;
+
+				VkImage _image;
+				VkDeviceMemory _memory;
+
+				VkImageView _view;
+				VkSampler _sampler;
+
+				Device *_device;
+				/* private */
+
+				DepthImage();
+
+			public:
+				VkImageView &GetView()
 				{
-					private:
-						void CreateImage(VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage,
-										 VkMemoryPropertyFlags properties);
-						void CreateView(VkFormat format, VkImageAspectFlags aspectFlags);
-						void CreateSampler();
-
-						uint16_t _width;
-						uint16_t _height;
-
-						VkImage _image;
-						VkDeviceMemory _memory;
-
-						VkImageView _view;
-						VkSampler _sampler;
-
-						Device *_device;
-						/* private */
-
-						DepthImage();
-
-					public:
-						VkImageView &GetView() {return this->_view;};
-
-						DepthImage(Device *device, SwapChain *swap);
-						~DepthImage();
+					return this->_view;
 				};
-			} // namespace Images
-		} // namespace Rendering
-	} // namespace Front
-} // namespace Vox
+
+				DepthImage(Device *device, SwapChain *swap);
+				~DepthImage();
+		};
+	} // namespace Images
+} // namespace Vox::Front::Rendering
 
 #endif // __DEPTHIMAGE_HPP__

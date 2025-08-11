@@ -3,29 +3,26 @@
 
 #include <vulkan/vulkan.h>
 
-namespace Vox
+namespace Vox::Front::Rendering
 {
-	namespace Front
+	class Device;
+
+	class DescriptorPool
 	{
-		namespace Rendering
-		{
-            class Device;
+		private:
+			VkDescriptorPool _pool;
+			Device *_device;
+			/* private */
 
-            class DescriptorPool
-            {
-                private:
-                    VkDescriptorPool _pool;
-                    Device *_device;
-                    /* private */
+			DescriptorPool();
 
-                    DescriptorPool();
-                public:
-                    VkDescriptorPool &GetPool() {return this->_pool;};
-                    DescriptorPool(Device *device);
-                    ~DescriptorPool();
-            
-            };  
-        }
-    }
-}
+		public:
+			VkDescriptorPool &GetPool()
+			{
+				return this->_pool;
+			};
+			DescriptorPool(Device *device);
+			~DescriptorPool();
+	};
+} // namespace Vox::Front::Rendering
 #endif // __DESCRIPTORPOOL_HPP__

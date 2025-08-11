@@ -4,9 +4,6 @@ CXX := clang++
 
 CXXFLAGS := -Werror -Wextra -Wall -std=c++17
 
-# Libs := -ILibs/ -lglfw -lvulkan
-# Libs := -ILibs/ -lglfw3 -lvulkan-1
-
 Libs = -ILibs/
 
 HDRS_ROOT := Headers

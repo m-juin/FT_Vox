@@ -1,61 +1,55 @@
 #ifndef __QUEUEFAMILYINDICES_HPP__
 #define __QUEUEFAMILYINDICES_HPP__
 
-#include <vulkan/vulkan.h>
 #include <vector>
+#include <vulkan/vulkan.h>
 
 #include "Utils/Optional.hpp"
 
-namespace Vox
+namespace Vox::Front::Rendering
 {
-	namespace Front
+	struct QueueFamilyIndices
 	{
-		namespace Rendering
-		{
-			struct QueueFamilyIndices
+			Utils::optional<uint32_t> graphicsFamily;
+			Utils::optional<uint32_t> presentFamily;
+
+			bool isComplete()
 			{
-					Utils::optional<uint32_t> graphicsFamily;
-					Utils::optional<uint32_t> presentFamily;
+				return graphicsFamily.hasValue() && presentFamily.hasValue();
+			}
 
-					bool isComplete()
-					{
-						return graphicsFamily.hasValue() && presentFamily.hasValue();
-					}
+			static QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device, VkSurfaceKHR &surface)
+			{
+				QueueFamilyIndices indices;
 
-					static QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device, VkSurfaceKHR &surface)
-					{
-						QueueFamilyIndices indices;
+				uint32_t queueFamilyCount = 0;
+				vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);
 
-						uint32_t queueFamilyCount = 0;
-						vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);
+				std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
+				vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data());
 
-						std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
-						vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data());
+				int i = 0;
+				for (const auto &queueFamily : queueFamilies)
+				{
+					if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
+						indices.graphicsFamily = i;
 
-						int i = 0;
-						for (const auto &queueFamily : queueFamilies)
-						{
-							if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
-								indices.graphicsFamily = i;
+					VkBool32 presentSupport = false;
+					vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface, &presentSupport);
 
-							VkBool32 presentSupport = false;
-							vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface, &presentSupport);
+					if (presentSupport)
+						indices.presentFamily = i;
 
-							if (presentSupport)
-								indices.presentFamily = i;
+					if (indices.isComplete())
+						break;
 
-							if (indices.isComplete())
-								break;
+					i++;
+				}
 
-							i++;
-						}
+				return indices;
+			}
+	};
 
-						return indices;
-					}
-			};
-
-		} // namespace Rendering
-	} // namespace Front
-} // namespace Vox
+} // namespace Vox::Front::Rendering
 
 #endif // __QUEUEFAMILYINDICES_HPP__

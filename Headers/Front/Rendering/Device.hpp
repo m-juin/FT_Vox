@@ -5,36 +5,30 @@
 
 #include <vector>
 
-namespace Vox
+namespace Vox::Front::Rendering
 {
-	namespace Front
+	const std::vector<const char *> deviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
+	class Device
 	{
-		namespace Rendering
-		{
-			const std::vector<const char *> deviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
-			class Device
+		private:
+			VkPhysicalDevice _physicalDevice;
+			VkDevice _logicalDevice;
+
+			Device();
+
+		public:
+			VkPhysicalDevice &GetPhysicalDevice()
 			{
-				private:
-					VkPhysicalDevice _physicalDevice;
-					VkDevice _logicalDevice;
-
-					Device();
-
-				public:
-					VkPhysicalDevice &GetPhysicalDevice()
-					{
-						return _physicalDevice;
-					};
-					VkDevice &GetLogicalDevice()
-					{
-						return _logicalDevice;
-					};
-
-					Device(VkInstance &instance, VkSurfaceKHR &surface);
-					~Device();
+				return _physicalDevice;
 			};
-		} // namespace Rendering
-	} // namespace Front
-} // namespace Vox
+			VkDevice &GetLogicalDevice()
+			{
+				return _logicalDevice;
+			};
+
+			Device(VkInstance &instance, VkSurfaceKHR &surface);
+			~Device();
+	};
+}
 
 #endif // __DEVICE_HPP__
