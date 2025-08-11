@@ -37,5 +37,13 @@ namespace Vox::Front::Rendering
 		}
 	}
 
-	SyncObjects::~SyncObjects() {}
+	SyncObjects::~SyncObjects()
+	{
+		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
+		{
+			vkDestroySemaphore(Device::GetInstance().GetLogicalDevice(), this->_renderFinishedSemaphores[i], nullptr);
+			vkDestroySemaphore(Device::GetInstance().GetLogicalDevice(), this->_imageAvailableSemaphores[i], nullptr);
+			vkDestroyFence(Device::GetInstance().GetLogicalDevice(), this->_inFlightFences[i], nullptr);
+		}
+	}
 } // namespace Vox::Front::Rendering

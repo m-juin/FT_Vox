@@ -19,5 +19,8 @@ namespace Vox::Front::Rendering
 			throw std::runtime_error("Failed to create descriptor pool!");
 	}
 
-	DescriptorPool::~DescriptorPool() {}
+	DescriptorPool::~DescriptorPool()
+	{
+		vkDestroyDescriptorPool(Device::GetInstance().GetLogicalDevice(), this->_pool, nullptr);
+	}
 } // namespace Vox::Front::Rendering

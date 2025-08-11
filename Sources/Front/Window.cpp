@@ -32,6 +32,7 @@ namespace Vox::Front
 
 	Window::~Window()
 	{
+		vkDestroySurfaceKHR(Rendering::VulkanManager::GetInstance().GetVkInstance(), this->_surface, nullptr);
 		if (this->_window != nullptr)
 			glfwDestroyWindow(this->_window);
 

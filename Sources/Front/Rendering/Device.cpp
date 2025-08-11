@@ -122,5 +122,8 @@ namespace Vox::Front::Rendering
 		this->_logicalDevice = CreateLogicalDevice(this->_physicalDevice, surface);
 	}
 
-	Device::~Device() {}
+	Device::~Device()
+	{
+		vkDestroyDevice(this->_logicalDevice, nullptr);
+	}
 } // namespace Vox::Front::Rendering

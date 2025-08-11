@@ -76,6 +76,6 @@ namespace Vox::Front::Rendering
 
 	PipelineManager::~PipelineManager()
 	{
-
+		vkDestroyRenderPass(Device::GetInstance().GetLogicalDevice(), this->_renderPass, nullptr);
 	}
 } // namespace Vox::Front::Rendering

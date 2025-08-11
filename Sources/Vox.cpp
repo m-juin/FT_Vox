@@ -20,6 +20,19 @@ using namespace Vox::Front;
 // Front::Window *win;
 // Front::Rendering::VulkanManager *vkManager;
 
+void CleanUp()
+{
+	Rendering::SwapChain::Clean();
+	Rendering::PipelineManager::Clean();
+	Rendering::DescriptorPool::Clean();
+	Rendering::SyncObjects::Clean();
+	Rendering::CommandsPool::Clean();
+	Rendering::Device::Clean();
+
+	Window::Clean();
+	Rendering::VulkanManager::Clean();
+}
+
 int main()
 {
 	Window::Init(1920, 1080);
@@ -118,10 +131,4 @@ int main()
 	vkDeviceWaitIdle(device.GetLogicalDevice());
 
 	CleanUp();
-}
-
-void CleanUp()
-{
-	Rendering::SwapChain::Clean();
-	Rendering::PipelineManager::Clean();
 }

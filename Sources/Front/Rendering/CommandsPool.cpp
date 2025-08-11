@@ -94,5 +94,8 @@ namespace Vox::Front::Rendering
 
 	}
 
-	CommandsPool::~CommandsPool() {}
+	CommandsPool::~CommandsPool()
+	{
+		vkDestroyCommandPool(Device::GetInstance().GetLogicalDevice(), this->_pool, nullptr);
+	}
 } // namespace Vox::Front::Rendering
