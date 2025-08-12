@@ -54,6 +54,8 @@ namespace Vox::Front::Rendering::Utils::Buffers
 
 	void StaticBuffer::Update(void *newData, VkDeviceSize newDataSize)
 	{
+        (void)newData;
+        (void)newDataSize;
 		throw std::runtime_error("This error should not happen! Probably an error in the program.");
 	}
 } // namespace Vox::Front::Rendering::Utils::Buffers
