@@ -1,7 +1,9 @@
 #include "Front/Rendering/SwapChain.hpp"
 #include "Front/Rendering/Device.hpp"
-#include "Front/Window.hpp"
 #include "Front/Rendering/QueueFamilyIndices.hpp"
+#include "Front/Rendering/Pipelines/PipelinesManager.hpp"
+#include "Front/Rendering/VulkanManager.hpp"
+#include "Front/Rendering/Images/DepthImage.hpp"
 #include "Front/Window.hpp"
 
 #include <algorithm>
@@ -129,8 +131,8 @@ namespace Vox::Front::Rendering
 			createInfo.subresourceRange.baseArrayLayer = 0;
 			createInfo.subresourceRange.layerCount = 1;
 
-			if (vkCreateImageView(Device::GetInstance().GetLogicalDevice(), &createInfo, nullptr, &this->_imageViews[i]) !=
-				VK_SUCCESS)
+			if (vkCreateImageView(Device::GetInstance().GetLogicalDevice(), &createInfo, nullptr,
+								  &this->_imageViews[i]) != VK_SUCCESS)
 				throw std::runtime_error("Failed to create image views!");
 		}
 	}
@@ -158,12 +160,32 @@ namespace Vox::Front::Rendering
 		}
 	}
 
+	void SwapChain::RecreateSwapChain()
+	{
+		Front::Window &win = Window::GetInstance();
+		int width = 0, height = 0;
+		glfwGetFramebufferSize(win.GetWindow(), &width, &height);
+		while (width == 0 || height == 0)
+		{
+			glfwGetFramebufferSize(win.GetWindow(), &width, &height);
+			glfwWaitEvents();
+		}
+
+		vkDeviceWaitIdle(Device::GetInstance().GetLogicalDevice());
+
+		this->CleanSwapChain();
+
+		this->CreateSwapChain();
+		VulkanManager::GetInstance().SetDepthImage(new Rendering::Images::DepthImage());
+		// DrawManager::GetInstance().CreateDepthImage();
+		this->CreateFrameBuffer(Pipelines::PipelinesManager::GetInstance().GetRenderPass(), VulkanManager::GetInstance().GetDepthImage()->GetView());
+	}
+
 	void SwapChain::CreateSwapChain()
 	{
 		Vox::Front::Window &win = Window::GetInstance();
 		Vox::Front::Rendering::Device &device = Device::GetInstance();
-		SwapChainSupportDetails swapChainSupport =
-			QuerySwapChainSupport(device.GetPhysicalDevice(), win.GetSurface());
+		SwapChainSupportDetails swapChainSupport = QuerySwapChainSupport(device.GetPhysicalDevice(), win.GetSurface());
 
 		VkSurfaceFormatKHR surfaceFormat = ChooseSwapSurfaceFormat(swapChainSupport.formats);
 		VkPresentModeKHR presentMode = ChooseSwapPresentMode(swapChainSupport.presentModes);

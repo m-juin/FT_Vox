@@ -70,6 +70,8 @@ namespace Vox::Front
 				{
 					return this->_extent;
 				};
+
+				void RecreateSwapChain();
 		};
 	} // namespace Rendering
 

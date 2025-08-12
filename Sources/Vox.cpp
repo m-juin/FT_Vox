@@ -5,7 +5,7 @@
 #include "Front/Rendering/CommandsPool.hpp"
 #include "Front/Rendering/DescriptorPool.hpp"
 #include "Front/Rendering/Device.hpp"
-#include "Front/Rendering/PipelineManager.hpp"
+#include "Front/Rendering/Pipelines/PipelinesManager.hpp"
 #include "Front/Rendering/SwapChain.hpp"
 #include "Front/Rendering/SyncObjects.hpp"
 #include "Front/Rendering/VulkanManager.hpp"
@@ -23,7 +23,7 @@ using namespace Vox::Front;
 void CleanUp()
 {
 	Rendering::SwapChain::Clean();
-	Rendering::PipelineManager::Clean();
+	Rendering::Pipelines::PipelinesManager::Clean();
 	Rendering::DescriptorPool::Clean();
 	Rendering::SyncObjects::Clean();
 	Rendering::CommandsPool::Clean();
@@ -45,10 +45,10 @@ int main()
 
 	Rendering::SwapChain::Init();
 	Rendering::DescriptorPool::Init();
-	Rendering::PipelineManager::Init();
+	Rendering::Pipelines::PipelinesManager::Init();
 	Rendering::VulkanManager::GetInstance().SetDepthImage(
 		new Rendering::Images::DepthImage());
-	Rendering::SwapChain::GetInstance().CreateFrameBuffer(Rendering::PipelineManager::GetInstance().GetRenderPass(), Rendering::VulkanManager::GetInstance().GetDepthImage()->GetView());
+	Rendering::SwapChain::GetInstance().CreateFrameBuffer(Rendering::Pipelines::PipelinesManager::GetInstance().GetRenderPass(), Rendering::VulkanManager::GetInstance().GetDepthImage()->GetView());
 	Rendering::CommandsPool::Init(Window::GetInstance().GetSurface());
 	Rendering::SyncObjects::Init();
 
@@ -70,7 +70,7 @@ int main()
 			sync.GetCurrentImageSemaphore(), VK_NULL_HANDLE, &imageIndex);
 		if (result == VK_ERROR_OUT_OF_DATE_KHR)
 		{
-			// TODO Recreate SwapCain.
+			swap.RecreateSwapChain();
 			sync.GoToNextFrame();
 			continue;
 		}
@@ -120,7 +120,8 @@ int main()
 		if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR) // || FrameBufferResized
 		{
 			// this->ChangeFBStatus(false);
-			// SwapChain::GetInstance().Recreate(PipelineManager::GetInstance().GetRenderPass());
+			swap.RecreateSwapChain();
+			// SwapChain::GetInstance().Recreate(PipelinesManager::GetInstance().GetRenderPass());
 		}
 		else if (result != VK_SUCCESS)
 			throw std::runtime_error("Failed to present swap chain image!");

@@ -1,6 +1,6 @@
 #include "Front/Rendering/CommandsPool.hpp"
 #include "Front/Rendering/Device.hpp"
-#include "Front/Rendering/PipelineManager.hpp"
+#include "Front/Rendering/Pipelines/PipelinesManager.hpp"
 #include "Front/Rendering/SwapChain.hpp"
 
 #include "Front/Rendering/QueueFamilyIndices.hpp"
@@ -41,7 +41,7 @@ namespace Vox::Front::Rendering
 
 		VkRenderPassBeginInfo renderPassInfo{};
 		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-		renderPassInfo.renderPass = PipelineManager::GetInstance().GetRenderPass();
+		renderPassInfo.renderPass = Pipelines::PipelinesManager::GetInstance().GetRenderPass();
 		renderPassInfo.framebuffer = swap.GetFrameBuffer(imageIndex);
 		renderPassInfo.renderArea.offset = {0, 0};
 		renderPassInfo.renderArea.extent = swap.GetExtent();

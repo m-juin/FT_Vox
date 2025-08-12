@@ -1,4 +1,4 @@
-#include "Front/Rendering/PipelineManager.hpp"
+#include "Front/Rendering/Pipelines/PipelinesManager.hpp"
 
 #include "Front/Rendering/Device.hpp"
 #include "Front/Rendering/SwapChain.hpp"
@@ -6,9 +6,9 @@
 
 #include <array>
 
-namespace Vox::Front::Rendering
+namespace Vox::Front::Rendering::Pipelines
 {
-	void PipelineManager::CreateRenderPass()
+	void PipelinesManager::CreateRenderPass()
 	{
 		VkAttachmentDescription colorAttachment{};
 		colorAttachment.format = SwapChain::GetInstance().GetFormat();
@@ -69,12 +69,12 @@ namespace Vox::Front::Rendering
 			throw std::runtime_error("failed to create render pass!");
 	}
 
-	PipelineManager::PipelineManager()
+	PipelinesManager::PipelinesManager()
 	{
 		this->CreateRenderPass();
 	}
 
-	PipelineManager::~PipelineManager()
+	PipelinesManager::~PipelinesManager()
 	{
 		vkDestroyRenderPass(Device::GetInstance().GetLogicalDevice(), this->_renderPass, nullptr);
 	}

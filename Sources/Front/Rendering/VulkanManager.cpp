@@ -1,6 +1,8 @@
 #include "Front/Rendering/VulkanManager.hpp"
 #include "Front/Rendering/ValidationLayers.hpp"
 
+#include "Front/Rendering/Images/DepthImage.hpp"
+
 #include <iostream>
 #include <stdexcept>
 
@@ -8,6 +10,13 @@
 
 namespace Vox::Front::Rendering
 {
+	void VulkanManager::SetDepthImage(Images::DepthImage *image)
+	{
+		if (this->_depthImage != nullptr)
+			delete this->_depthImage;
+		this->_depthImage = image;
+	}
+
 	std::vector<const char *> VulkanManager::GetRequiredExtensions()
 	{
 		uint32_t glfwExtensionCount = 0;

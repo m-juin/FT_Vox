@@ -19,7 +19,7 @@ namespace Vox::Front::Rendering
         friend class Vox::Utils::Singleton<VulkanManager>;
 		private:
 			VkInstance _instance;
-			Images::DepthImage *_depthImage;
+			Images::DepthImage *_depthImage = nullptr;
 
 			VkDebugUtilsMessengerEXT _debugMessenger;
 
@@ -35,10 +35,7 @@ namespace Vox::Front::Rendering
 				return this->_depthImage;
 			};
 
-			void SetDepthImage(Images::DepthImage *image)
-			{
-				this->_depthImage = image;
-			};
+			void SetDepthImage(Images::DepthImage *image);
 
 			VulkanManager();
 			~VulkanManager();
