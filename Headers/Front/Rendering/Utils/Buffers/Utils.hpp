@@ -5,7 +5,7 @@
 #include <vulkan/vulkan.h>
 
 
-namespace Vox::Front::Rendering::Utils::Buffer
+namespace Vox::Front::Rendering::Utils::Buffers::Utils
 {
 	inline uint32_t FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties, VkPhysicalDevice &device)
 	{

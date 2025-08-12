@@ -1,0 +1,32 @@
+#ifndef __ABUFFER_HPP__
+#define __ABUFFER_HPP__
+
+#include <vulkan/vulkan.h>
+#include <vector>
+
+namespace Vox::Front::Rendering::Utils::Buffers
+{
+	class ABuffer
+	{
+		public:
+			ABuffer(uint32_t frameCount) : _buffers(frameCount), _memories(frameCount) {};
+			~ABuffer()
+            {
+                
+            };
+
+            virtual void Create() = 0;
+            virtual void Update(void *newData, VkDeviceSize newDataSize) = 0;
+
+		protected:
+            std::vector<VkBuffer> _buffers;
+            std::vector<VkDeviceMemory> _memories;
+
+            VkDeviceSize _size;
+            VkBufferUsageFlags _usage;
+            VkMemoryPropertyFlags _memoryProprety;
+			/* private */
+	};
+} // namespace Vox::Front::Rendering::Utils::Buffers
+
+#endif // __ABUFFER_HPP__

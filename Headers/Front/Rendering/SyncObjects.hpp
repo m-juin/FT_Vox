@@ -10,9 +10,9 @@ namespace Vox::Front::Rendering
 {
 	constexpr uint16_t MAX_FRAMES_IN_FLIGHT = 2;
 
-	class SyncObjects : public Utils::Singleton<SyncObjects>
+	class SyncObjects : public Vox::Utils::Singleton<SyncObjects>
 	{
-		friend class Utils::Singleton<SyncObjects>;
+		friend class Vox::Utils::Singleton<SyncObjects>;
 		private:
 			std::vector<VkSemaphore> _imageAvailableSemaphores;
 			std::vector<VkSemaphore> _renderFinishedSemaphores;
@@ -24,6 +24,11 @@ namespace Vox::Front::Rendering
 			uint8_t GetCurrentFrame()
 			{
 				return this->_currentFrame;
+			};
+
+			uint8_t GetNextFrame()
+			{
+				return (this->_currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
 			};
 
 			void GoToNextFrame();

@@ -2,7 +2,7 @@
 #include "Front/Rendering/Device.hpp"
 #include "Front/Rendering/SwapChain.hpp"
 
-#include "Front/Rendering/Utils/Buffer.hpp"
+#include "Front/Rendering/Utils/Buffers/Utils.hpp"
 #include "Front/Rendering/Utils/FindFormat.hpp"
 
 #include <stdexcept>
@@ -39,7 +39,7 @@ namespace Vox::Front::Rendering::Images
 		VkMemoryAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 		allocInfo.allocationSize = memRequirements.size;
-		allocInfo.memoryTypeIndex = Utils::Buffer::FindMemoryType(memRequirements.memoryTypeBits, properties,
+		allocInfo.memoryTypeIndex = Utils::Buffers::Utils::FindMemoryType(memRequirements.memoryTypeBits, properties,
 																  device.GetPhysicalDevice());
 
 		if (vkAllocateMemory(device.GetLogicalDevice(), &allocInfo, nullptr, &this->_memory) != VK_SUCCESS)
