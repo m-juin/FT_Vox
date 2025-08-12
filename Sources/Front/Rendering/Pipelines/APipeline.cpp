@@ -25,5 +25,5 @@ namespace Vox::Front::Rendering::Pipelines
 		return shaderModule;
 	}
 
-	APipeline::APipeline(VkDescriptorSetLayout &layout) {}
+	APipeline::APipeline() {}
 } // namespace Vox::Front::Rendering::Pipelines

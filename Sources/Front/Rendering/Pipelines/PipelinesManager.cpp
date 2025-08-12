@@ -8,6 +8,13 @@
 
 namespace Vox::Front::Rendering::Pipelines
 {
+	template<typename T>
+	T* PipelinesManager::operator[](std::string name)
+	{
+		if (this->_pipelines.find(name) == this->_pipelines.end()) return nullptr;
+		return static_cast<T *>(this->_pipelines[name]);
+	}
+
 	void PipelinesManager::CreateRenderPass()
 	{
 		VkAttachmentDescription colorAttachment{};

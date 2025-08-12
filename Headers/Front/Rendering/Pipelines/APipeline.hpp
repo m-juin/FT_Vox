@@ -25,7 +25,7 @@ namespace Vox::Front::Rendering::Pipelines
 
 			VkShaderModule CreateShaderModule(const std::vector<char> &code);
 			virtual void CreatePipeline(VkDescriptorSetLayout &layout) = 0;
-			APipeline(VkDescriptorSetLayout &layout);
+			APipeline();
 	};
 } // namespace Vox::Front::Rendering::Pipelines
 
