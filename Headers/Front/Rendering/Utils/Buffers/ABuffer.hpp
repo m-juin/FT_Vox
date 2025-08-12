@@ -10,7 +10,7 @@ namespace Vox::Front::Rendering::Utils::Buffers
 	{
 		public:
 			ABuffer(uint32_t frameCount) : _buffers(frameCount), _memories(frameCount) {};
-			~ABuffer()
+			virtual ~ABuffer()
             {
                 
             };
