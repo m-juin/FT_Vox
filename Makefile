@@ -15,7 +15,7 @@ rwildcard=$(foreach d,$(wildcard $(1:=/*)),$(call rwildcard,$d,$2) $(filter $(su
 HDRS := $(call rwildcard, $(HDRS_ROOT), *.hpp)
 SRCS := $(call rwildcard, $(SRCS_ROOT), *.cpp)
 
-Includes := -I./$(HDRS_ROOT) 
+Includes := -I./$(HDRS_ROOT) -IExt/
 
 OBJS := $(patsubst $(SRCS_ROOT)/%.cpp,$(OBJS_ROOT)/%.o,$(SRCS))
 

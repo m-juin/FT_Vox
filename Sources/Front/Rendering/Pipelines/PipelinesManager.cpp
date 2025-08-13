@@ -1,5 +1,8 @@
 #include "Front/Rendering/Pipelines/PipelinesManager.hpp"
 
+#include "Front/Rendering/Pipelines/StaticGUIPipeline.hpp"
+
+
 #include "Front/Rendering/Device.hpp"
 #include "Front/Rendering/SwapChain.hpp"
 #include "Front/Rendering/Utils/FindFormat.hpp"
@@ -79,6 +82,8 @@ namespace Vox::Front::Rendering::Pipelines
 	PipelinesManager::PipelinesManager()
 	{
 		this->CreateRenderPass();
+
+		this->_pipelines["StaticGUI"] = new StaticGUIPipeline();
 	}
 
 	PipelinesManager::~PipelinesManager()

@@ -6,7 +6,6 @@
 
 namespace Vox::Utils::Files
 {
-
 	inline std::vector<char> ReadFile(const std::string &filename)
 	{
 		std::ifstream file(filename, std::ios::ate | std::ios::binary);
