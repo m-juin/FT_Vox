@@ -12,19 +12,19 @@ namespace MGL::Matrix
 			{
 				this->SetIdentity();
 			};
-			Matrix4(const double m_[16])
+			Matrix4(const float m_[16])
 			{
 				for (size_t i = 0; i < 16; i++)
 					m[i] = m_[i];
 			};
 			~Matrix4() {};
 
-			double &operator()(size_t row, size_t col)
+			float &operator()(size_t row, size_t col)
 			{
 				return m[row * 4 + col];
 			}
 
-			const double &operator()(size_t row, size_t col) const
+			const float &operator()(size_t row, size_t col) const
 			{
 				return m[row * 4 + col];
 			}
@@ -33,9 +33,9 @@ namespace MGL::Matrix
 			{
 				for (size_t i = 0; i < 16; i++)
 				{
-					m[i] = 0.0;
+					m[i] = 0.0f;
 				}
-				m[15] = 1.0;
+				m[15] = 1.0f;
 			}
 
 			Matrix4 operator*(const Matrix4 &m1) const
@@ -45,7 +45,7 @@ namespace MGL::Matrix
 				{
 					for (size_t j = 0; j < 4; j++)
 					{
-						result(i, j) = 0.0;
+						result(i, j) = 0.0f;
 						for (size_t k = 0; k < 4; k++)
 						{
 							result(i, j) += (*this)(i, k) * m1(k, j);
@@ -60,7 +60,7 @@ namespace MGL::Matrix
 				Vectors::Vector4<float> result;
 				for (size_t i = 0; i < 4; i++)
 				{
-					result[i] = 0.0;
+					result[i] = 0.0f;
 					for (size_t j = 0; j < 4; j++)
 					{
 						result[i] += (*this)(i, j) * v[j];
@@ -70,7 +70,7 @@ namespace MGL::Matrix
 			}
 
 		private:
-			double m[16];
+			float m[16];
 	};
 
 	std::ostream &operator<<(std::ostream &os, const Matrix4 &dt)
@@ -88,12 +88,12 @@ namespace MGL::Matrix
 		return os;
 	}
 
-	Vectors::Vector4<double> operator*(const Matrix::Matrix4 &m1, const Vectors::Vector4<double> &v)
+	Vectors::Vector4<float> operator*(const Matrix::Matrix4 &m1, const Vectors::Vector4<float> &v)
 	{
-		Vectors::Vector4<double> result;
+		Vectors::Vector4<float> result;
 		for (size_t i = 0; i < 4; i++)
 		{
-			result[i] = 0.0;
+			result[i] = 0.0f;
 			for (size_t j = 0; j < 4; j++)
 			{
 				result[i] += (m1)(i, j) * v[j];
