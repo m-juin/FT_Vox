@@ -55,7 +55,6 @@ clean:
 fclean: clean cleanShaders
 	@printf '$(ERASE_LINE)\033[1;36mCleaning project executable...\033[1;30m'
 	@rm -rf $(NAME)
-	@rm -rf $(NAME)
 	@printf '$(ERASE_LINE)\033[1;32mProject cleaned.\033[1;30m\n'
 
 include Shaders.mk
