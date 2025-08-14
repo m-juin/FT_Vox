@@ -37,7 +37,7 @@ $(OBJS_ROOT)/%.o: $(SRCS_ROOT)/%.cpp $(HDRS)
 
 all: $(NAME)
 
-$(NAME): createFold $(OBJS)
+$(NAME): createFold shaders $(OBJS)
 	@printf '$(ERASE_LINE)\033[1;37mCompiling the executable \033[1;35m${NAME}\033[1;37m...'
 	@$(CXX) $(CXXFLAGS) $(OBJS) -o $@ $(Libs) 
 	@printf '$(ERASE_LINE)\033[1;32mCompilation ended\033[1;30m\n'
@@ -48,6 +48,15 @@ createFold:
 	@printf '$(ERASE_LINE)\033[1;37mObject folder created at "$(OBJS_ROOT)".\n'
 
 clean:
-	@printf '$(ERASE_LINE)\033[1;36mCleaning project...\033[1;30m'
-	@rm -rf $(OBJS_ROOT) $(NAME)
+	@printf '$(ERASE_LINE)\033[1;36mCleaning project sources...\033[1;30m'
+	@rm -rf $(OBJS_ROOT)
+	@printf '$(ERASE_LINE)\033[1;32mProject sources cleaned.\033[1;30m\n'
+
+fclean: clean cleanShaders
+	@printf '$(ERASE_LINE)\033[1;36mCleaning project executable...\033[1;30m'
+	@rm -rf $(NAME)
+	@rm -rf $(NAME)
 	@printf '$(ERASE_LINE)\033[1;32mProject cleaned.\033[1;30m\n'
+
+
+include Shaders.mk
