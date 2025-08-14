@@ -103,6 +103,12 @@ namespace Vox::Front::Rendering::Images
 		this->CreateView(format, VK_IMAGE_ASPECT_DEPTH_BIT);
 	}
 
-	DepthImage::~DepthImage() {}
+	DepthImage::~DepthImage()
+	{
+		std::cout << "Depth image deletion\n" << std::endl;
+		VkDevice device = Device::GetInstance().GetLogicalDevice();
+		vkDestroyImageView(device, this->_view, nullptr);
+		vkDestroyImage(device, this->_image, nullptr);
+	}
 
 } // namespace Vox::Front::Rendering::Images

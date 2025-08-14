@@ -27,6 +27,7 @@ void CleanUp()
 	Rendering::DescriptorPool::Clean();
 	Rendering::SyncObjects::Clean();
 	Rendering::CommandsPool::Clean();
+	delete Rendering::VulkanManager::GetInstance().GetDepthImage();
 	Rendering::Device::Clean();
 
 	Window::Clean();

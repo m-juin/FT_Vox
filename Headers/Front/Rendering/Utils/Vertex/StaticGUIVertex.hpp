@@ -19,9 +19,9 @@ namespace Vox::Front::Rendering::Utils::Vertex
 							MGL::Vectors::Vector4<float> texColor)
 				: position(position), texCoord(texCoord), texColor(texColor) {};
 			StaticGUIVertex()
-				: position(MGL::Vectors::Vector2<float>(0.0f, 0.0f)),
-				  texCoord(MGL::Vectors::Vector2<float>(0.0f, 0.0f)),
-				  texColor(MGL::Vectors::Vector4<float>(1.0f, 1.0f, 1.0f, 1.0f)) {};
+				: position(MGL::Vectors::Vector2<float>(0.0f)),
+				  texCoord(MGL::Vectors::Vector2<float>(0.0f)),
+				  texColor(MGL::Vectors::Vector4<float>(1.0f)) {};
 
 			bool operator==(const StaticGUIVertex &m1) const
 			{

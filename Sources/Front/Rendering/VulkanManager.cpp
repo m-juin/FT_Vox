@@ -113,5 +113,8 @@ namespace Vox::Front::Rendering
 		this->_debugMessenger = SetupDebugMessenger(this->_instance);
 	}
 
-	VulkanManager::~VulkanManager() {}
+	VulkanManager::~VulkanManager()
+	{
+		
+	}
 } // namespace Vox::Front::Rendering

@@ -162,6 +162,9 @@ namespace Vox::Front::Rendering
 
 	void SwapChain::RecreateSwapChain()
 	{
+		vkDeviceWaitIdle(Device::GetInstance().GetLogicalDevice());
+		this->CleanSwapChain();
+
 		Front::Window &win = Window::GetInstance();
 		int width = 0, height = 0;
 		glfwGetFramebufferSize(win.GetWindow(), &width, &height);
@@ -170,10 +173,6 @@ namespace Vox::Front::Rendering
 			glfwGetFramebufferSize(win.GetWindow(), &width, &height);
 			glfwWaitEvents();
 		}
-
-		vkDeviceWaitIdle(Device::GetInstance().GetLogicalDevice());
-
-		this->CleanSwapChain();
 
 		this->CreateSwapChain();
 		VulkanManager::GetInstance().SetDepthImage(new Rendering::Images::DepthImage());
@@ -251,6 +250,7 @@ namespace Vox::Front::Rendering
 			vkDestroyFramebuffer(device.GetLogicalDevice(), framebuffer, nullptr);
 		for (auto imageView : this->_imageViews)
 			vkDestroyImageView(device.GetLogicalDevice(), imageView, nullptr);
+		
 		vkDestroySwapchainKHR(device.GetLogicalDevice(), this->_swapChain, nullptr);
 	}
 } // namespace Vox::Front::Rendering
