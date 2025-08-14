@@ -58,5 +58,6 @@ fclean: clean cleanShaders
 	@rm -rf $(NAME)
 	@printf '$(ERASE_LINE)\033[1;32mProject cleaned.\033[1;30m\n'
 
-
 include Shaders.mk
+
+.PHONY: all $(NAME) createFold clean fclean

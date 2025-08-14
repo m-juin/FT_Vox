@@ -26,3 +26,5 @@ cleanShaders:
 	@printf '$(ERASE_LINE)\033[1;31mCleaning shaders.\033[1;30m'
 	@rm -rf $(SHADER_ROOT)
 	@printf '$(ERASE_LINE)\033[1;32mShaders cleaned.\n\033[1;30m'
+
+.PHONY: shaders cleanShaders
