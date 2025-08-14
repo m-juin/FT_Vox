@@ -8,7 +8,7 @@
 #include <algorithm>
 #include <iostream>
 
-namespace Vox::Front::Interfaces::BaseClass
+namespace Vox::Front::Interfaces::Elements::Bases
 {
 	class AContainer : public AElement
 	{
