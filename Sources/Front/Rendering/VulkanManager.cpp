@@ -71,11 +71,17 @@ namespace Vox::Front::Rendering
 	{
 		VkDebugUtilsMessengerCreateInfoEXT createInfo;
 		PopulateDebugMessengerCreateInfo(createInfo);
+		VkDebugUtilsMessengerEXT debugMessenger = nullptr;
 
-		VkDebugUtilsMessengerEXT debugMessenger;
+		auto vkCreateDebugUtilsMessengerEXT =
+			(PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
+		if (vkCreateDebugUtilsMessengerEXT != nullptr)
+		{
+			auto result = vkCreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger);
+			if (result != VK_SUCCESS)
+				throw std::runtime_error("failed to set up debug messenger!");
+		}
 
-		if (CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger) != VK_SUCCESS)
-			throw std::runtime_error("failed to set up debug messenger!");
 		return debugMessenger;
 	}
 
@@ -115,6 +121,12 @@ namespace Vox::Front::Rendering
 
 	VulkanManager::~VulkanManager()
 	{
-		
+		auto vkDestroyDebugUtilsMessengerEXT = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(
+			this->_instance, "vkDestroyDebugUtilsMessengerEXT");
+		if (vkDestroyDebugUtilsMessengerEXT != nullptr)
+		{
+			vkDestroyDebugUtilsMessengerEXT(this->_instance, this->_debugMessenger, nullptr);
+		}
+		vkDestroyInstance(this->_instance, nullptr);
 	}
 } // namespace Vox::Front::Rendering

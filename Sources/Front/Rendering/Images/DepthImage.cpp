@@ -107,6 +107,7 @@ namespace Vox::Front::Rendering::Images
 	{
 		std::cout << "Depth image deletion\n" << std::endl;
 		VkDevice device = Device::GetInstance().GetLogicalDevice();
+		vkFreeMemory(device, this->_memory, nullptr);
 		vkDestroyImageView(device, this->_view, nullptr);
 		vkDestroyImage(device, this->_image, nullptr);
 	}

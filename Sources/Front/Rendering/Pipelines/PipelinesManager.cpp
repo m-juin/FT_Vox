@@ -89,5 +89,8 @@ namespace Vox::Front::Rendering::Pipelines
 	PipelinesManager::~PipelinesManager()
 	{
 		vkDestroyRenderPass(Device::GetInstance().GetLogicalDevice(), this->_renderPass, nullptr);
+		for (auto &pair : this->_pipelines)
+			delete pair.second;
+
 	}
 } // namespace Vox::Front::Rendering
