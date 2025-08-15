@@ -11,6 +11,8 @@
 #include "Front/Rendering/VulkanManager.hpp"
 #include "Front/Window.hpp"
 
+#include "Front/Interfaces/InterfacesManager.hpp"
+
 #include "Front/Rendering/Images/DepthImage.hpp"
 
 #include <GLFW/glfw3.h>
@@ -22,6 +24,8 @@ using namespace Vox::Front;
 
 void CleanUp()
 {
+	Interfaces::InterfacesManager::Clean();
+
 	Rendering::SwapChain::Clean();
 	Rendering::Pipelines::PipelinesManager::Clean();
 	Rendering::DescriptorPool::Clean();
@@ -58,6 +62,8 @@ int main()
 	Rendering::SwapChain &swap = Rendering::SwapChain::GetInstance();
 
 	pool.CreateCommandBuffer();
+
+	Interfaces::InterfacesManager::Init();
 
 	while (!glfwWindowShouldClose(Window::GetInstance().GetWindow()))
 	{

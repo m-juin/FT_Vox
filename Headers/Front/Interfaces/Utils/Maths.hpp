@@ -1,7 +1,7 @@
 #ifndef __MATHS_HPP__
 #define __MATHS_HPP__
 
-#include "Ext/MathGraphicalLib/Vectors/Vector2.hpp"
+#include "MathGraphicalLib/Vectors/Vector2.hpp"
 
 namespace Vox::Front::Interfaces::Utils::Maths
 {

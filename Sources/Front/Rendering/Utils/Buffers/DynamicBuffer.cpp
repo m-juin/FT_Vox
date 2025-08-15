@@ -17,7 +17,7 @@ namespace Vox::Front::Rendering::Utils::Buffers
 
 	DynamicBuffer::~DynamicBuffer() {}
 
-	void DynamicBuffer::Create()
+	void DynamicBuffer::Create(void *initialData)
 	{
 		Device &device = Device::GetInstance();
 
@@ -54,6 +54,8 @@ namespace Vox::Front::Rendering::Utils::Buffers
 			vkBindBufferMemory(device.GetLogicalDevice(), _buffers[i], _memories[i], 0);
 			vkMapMemory(device.GetLogicalDevice(), _memories[i], 0, _size, 0, &_mappedMemories[i]);
 		}
+
+		std::memcpy(_mappedMemories[SyncObjects::GetInstance().GetNextFrame()], initialData, this->_size);
 	}
 
 	void DynamicBuffer::Update(void *newData, VkDeviceSize newDataSize)

@@ -15,7 +15,7 @@ namespace Vox::Front::Rendering::Utils::Buffers
                 
             };
 
-            virtual void Create() = 0;
+            virtual void Create(void *initialData) = 0;
             virtual void Update(void *newData, VkDeviceSize newDataSize) = 0;
 
 		protected:

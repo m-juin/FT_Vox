@@ -33,7 +33,7 @@ namespace MGL::Vectors
 			};
 
         T &operator[](size_t pos) {return this->m[pos];}
-        T &operator[](size_t pos) const {return this->m[pos];}
+        const T &operator[](size_t pos) const {return this->m[pos];}
 
         public:
             T m[2];

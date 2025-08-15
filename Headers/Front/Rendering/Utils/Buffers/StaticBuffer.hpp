@@ -11,7 +11,7 @@ namespace Vox::Front::Rendering::Utils::Buffers
             StaticBuffer(uint32_t frameCount, VkDeviceSize size, VkBufferUsageFlags usage);
             ~StaticBuffer();
     
-            void Create() override;
+            void Create(void *initialData) override;
             void Update(void *newData, VkDeviceSize newDataSize) override;
 
         private:

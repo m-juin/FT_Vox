@@ -2,7 +2,7 @@ NAME := FT_Vox
 
 CXX := clang++
 
-CXXFLAGS := -Werror -Wextra -Wall -std=c++17
+CXXFLAGS := -Werror -Wextra -Wall -std=c++17 -g
 
 Libs = -ILibs/
 

@@ -11,7 +11,7 @@ namespace Vox::Front::Rendering::Utils::Buffers
             DynamicBuffer(uint32_t frameCount, VkDeviceSize size, VkBufferUsageFlags usage);
             ~DynamicBuffer();
     
-            void Create() override;
+            void Create(void *initialData) override;
             void Update(void *newData, VkDeviceSize newDataSize) override;
 
         private:
