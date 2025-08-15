@@ -6,6 +6,8 @@
 #include <string>
 #include <memory>
 
+#include <iostream>
+
 namespace Vox::Front::Scenes
 {
     class Sc_Menu : public AScene
@@ -13,7 +15,7 @@ namespace Vox::Front::Scenes
     public:
         static constexpr const char* getName()
         {
-            return "menu";
+            return "Menu";
         }
         
         Sc_Menu() : AScene() {}
@@ -26,6 +28,7 @@ namespace Vox::Front::Scenes
         const std::string& GetName() const override
         {
             static const std::string name = getName();
+            std::cout << name << std::endl;
             return name;
         }
     };

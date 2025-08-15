@@ -9,7 +9,7 @@
 
 namespace Vox::Front::Scenes
 {
-    using SceneCreator = std::function<std::unique_ptr<AScene>(const std::string&)>;
+    using SceneCreator = std::function<std::unique_ptr<AScene>()>;
 
     extern std::unordered_map<std::string, SceneCreator> g_sceneFactories;
 
@@ -17,8 +17,8 @@ namespace Vox::Front::Scenes
     void RegisterSceneFactory()
     {
         static_assert(std::is_base_of_v<AScene, T>, "T doit hériter de AScene");
-        g_sceneFactories[T::getName()] = [](const std::string& name) {
-            return std::make_unique<T>(name);
+        g_sceneFactories[T::getName()] = []() {
+            return std::make_unique<T>();
         };
     }
 

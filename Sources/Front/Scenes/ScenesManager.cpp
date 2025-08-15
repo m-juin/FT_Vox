@@ -1,10 +1,15 @@
-#include "ScenesManager.hpp"
+#include "Front/Scenes/ScenesManager.hpp"
+#include "Front/Scenes/Sc_Menu.hpp"
+#include <iostream>
 
 namespace Vox::Front::Scenes
 {
     std::unordered_map<std::string, SceneCreator> g_sceneFactories;
 
-    ScenesManager::ScenesManager() : _currentScene(nullptr) {}
+    ScenesManager::ScenesManager() : _currentScene(nullptr)
+    {
+        RegisterSceneFactory<Sc_Menu>();
+    }
     
     ScenesManager::~ScenesManager()
     {
@@ -23,10 +28,16 @@ namespace Vox::Front::Scenes
             _currentScene.reset();
         }
         
+
+        std::cout << "Trying to load : " << sceneName << "\n\nList of avalaible scenes:\n" << std::endl;
+        for (auto key : g_sceneFactories)
+        {
+            std::cout << "\t" << key.first << std::endl;
+        }
         auto factoryIt = g_sceneFactories.find(sceneName);
         if (factoryIt != g_sceneFactories.end())
         {
-            _currentScene = factoryIt->second(sceneName);
+            _currentScene = factoryIt->second();
             if (_currentScene)
             {
                 _currentScene->Load();

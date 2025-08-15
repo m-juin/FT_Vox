@@ -14,6 +14,7 @@
 #include "Front/Interfaces/InterfacesManager.hpp"
 
 #include "Front/Rendering/Images/DepthImage.hpp"
+#include "Game/GameManager.hpp"
 
 #include <GLFW/glfw3.h>
 
@@ -63,7 +64,8 @@ int main()
 
 	pool.CreateCommandBuffer();
 
-	Interfaces::InterfacesManager::Init();
+	// Interfaces::InterfacesManager::Init();
+	Vox::Game::GameManager::Init();
 
 	while (!glfwWindowShouldClose(Window::GetInstance().GetWindow()))
 	{
