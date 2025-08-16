@@ -1,6 +1,8 @@
 #include "Front/Interfaces/Elements/Image.hpp"
 
+#include "Front/Rendering/CommandsPool.hpp"
 #include "Front/Rendering/SwapChain.hpp"
+#include "Front/Rendering/SyncObjects.hpp"
 
 #include "Front/Interfaces/Utils/Maths.hpp"
 
@@ -8,7 +10,7 @@ namespace Vox::Front::Interfaces::Elements
 {
 	Image::Image(Vector2 pos, Vector2 size) : Bases::AElement(pos, size)
 	{
-        this->ResetVertex();
+		this->ResetVertex();
 
 		B_Vertices = new buffer(1, 4 * sizeof(vert), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
 		B_Indices = new buffer(1, 6 * sizeof(size_t), VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
@@ -37,15 +39,15 @@ namespace Vox::Front::Interfaces::Elements
 		if (mode >= 1 && this->B_Indices)
 			delete this->B_Indices;
 	}
-    
-    void Image::ResetVertex()
-    {
-        this->CleanBuffers(0);
 
-        const Vector2 screenSize(Rendering::SwapChain::GetInstance().GetExtent().width,
+	void Image::ResetVertex()
+	{
+		this->CleanBuffers(0);
+
+		const Vector2 screenSize(Rendering::SwapChain::GetInstance().GetExtent().width,
 								 Rendering::SwapChain::GetInstance().GetExtent().height);
 
-        this->vertex[0] =
+		this->vertex[0] =
 			vert(Utils::Maths::PointPixelToVulkan(this->_pos, screenSize), {0.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f});
 		this->vertex[1] =
 			vert(Utils::Maths::PointPixelToVulkan({this->_pos[0] + this->_size[0], this->_pos[1]}, screenSize),
@@ -56,16 +58,25 @@ namespace Vox::Front::Interfaces::Elements
 		this->vertex[2] = vert(Utils::Maths::PointPixelToVulkan(
 								   {this->_pos[0] + this->_size[0], this->_pos[1] + this->_size[1]}, screenSize),
 							   {1.0f, 1.0f}, {1.0f, 1.0f, 1.0f, 1.0f});
-    }
+	}
 
-	void Image::Draw() {}
+	void Image::Draw()
+	{
+		auto cmdBuffer =
+			Rendering::CommandsPool::GetInstance().GetBuffer(Rendering::SyncObjects::GetInstance().GetCurrentFrame());
+			
+		VkDeviceSize offsets[] = {0};
+		vkCmdBindVertexBuffers(cmdBuffer, 0, 1, &this->B_Vertices->GetBuffer(0), offsets);
+		vkCmdBindIndexBuffer(cmdBuffer, this->B_Indices->GetBuffer(0), 0, VK_INDEX_TYPE_UINT32);
+		vkCmdDrawIndexed(cmdBuffer, 6, 1, 0, 0, 0);
+	}
 
 	void Image::SetPos(const Vector2 newPos)
 	{
 		if (newPos == this->_pos)
 			return;
 		this->_pos = newPos;
-        this->ResetVertex();
+		this->ResetVertex();
 	}
 
 	void Image::SetSize(const Vector2 newSize)
@@ -74,6 +85,6 @@ namespace Vox::Front::Interfaces::Elements
 			return;
 		this->_size = newSize;
 		CleanBuffers(0);
-        this->ResetVertex();
+		this->ResetVertex();
 	}
 } // namespace Vox::Front::Interfaces::Elements

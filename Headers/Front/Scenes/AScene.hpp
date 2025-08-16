@@ -15,7 +15,7 @@ namespace Vox::Front::Scenes
 			virtual ~AScene() = default;
 			virtual void Load() = 0;
 			virtual void Unload() = 0;
-			virtual void Draw() = 0;
+			virtual void Render() = 0;
 			virtual const std::string &GetName() const = 0;
 
         protected:

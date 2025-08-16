@@ -6,6 +6,12 @@
 
 namespace Vox::Front::Scenes
 {
+    void ScenesManager::RenderCurrentScene()
+    {
+        if (this->_currentScene)
+            this->_currentScene->Render();
+    }
+
     std::unordered_map<std::string, SceneCreator> g_sceneFactories;
 
     ScenesManager::ScenesManager() : _currentScene(nullptr)

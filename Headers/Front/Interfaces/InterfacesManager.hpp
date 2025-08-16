@@ -16,6 +16,7 @@ namespace Vox::Front::Interfaces
         public:
             void ResetInterfacesList();
             void RegisterInterface(AInterface *inte);
+            void Render();
             InterfacesManager();
             ~InterfacesManager();
     

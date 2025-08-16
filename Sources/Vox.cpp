@@ -90,7 +90,7 @@ int main()
 
 		pool.ResetBuffer(currentFrame);
 		pool.BeginRecord(imageIndex, currentFrame);
-		GameManager::GetInstance().Render()
+		Vox::Game::GameManager::GetInstance().Render();
 		pool.EndRecord(currentFrame);
 
 		VkSubmitInfo submitInfo{};

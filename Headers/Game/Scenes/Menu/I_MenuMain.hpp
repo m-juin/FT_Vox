@@ -11,8 +11,9 @@ namespace Vox::Game::Scenes::Menu::Interfaces
             I_MenuMain(Vector2 pos = {0, 0}, Vector2 size = {0, 0});
             ~I_MenuMain();
     
-			void SetPos(const Vector2 newPos);
-			void SetSize(const Vector2 newSize);
+			void SetPos(const Vector2 newPos) override;
+			void SetSize(const Vector2 newSize) override;
+            void Render() override;
 
         private:
             /* private */

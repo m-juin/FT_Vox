@@ -29,4 +29,12 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 		this->_size = newSize;
 		this->FindElement("IMG_Front")->elem->SetSize({this->_size[0] - 200, this->_size[1] - 200});
 	}
+	
+	void I_MenuMain::Render()
+	{
+		for (auto &elem : this->_content)
+			if (elem.elem)
+				elem.elem->Draw();
+
+	}
 } // namespace Vox::Front::Interfaces

@@ -19,9 +19,11 @@ namespace Vox::Game::Scenes::Menu
 		// Implémentation du déchargement du menu
 	}
 
-	void Sc_Menu::Draw()
+	void Sc_Menu::Render()
 	{
 		std::cout << "Dessin du menu..." << std::endl;
+		auto &iManager = Front::Interfaces::InterfacesManager::GetInstance();
+		iManager.Render();
 		// Implémentation du dessin du menu
 	}
 	

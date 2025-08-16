@@ -14,6 +14,12 @@ namespace Vox::Front::Interfaces
     {
         this->_content.insert(inte);
     }
+	
+	void InterfacesManager::Render()
+	{
+		for (auto interface : this->_content)
+			interface->Render();
+	}
 
 	InterfacesManager::InterfacesManager() {}
 

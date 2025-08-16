@@ -14,7 +14,9 @@ namespace Vox::Game
         public:
             GameManager();
             ~GameManager();
-    
+
+            void Render();
+
             Front::Scenes::ScenesManager &GetSceneManager() {return this->_scManager;};
         private:
             Front::Scenes::ScenesManager _scManager;

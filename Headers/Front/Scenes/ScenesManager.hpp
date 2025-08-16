@@ -25,6 +25,7 @@ namespace Vox::Front::Scenes
     class ScenesManager
     {
     public:
+        void RenderCurrentScene();
         ScenesManager();
         ~ScenesManager();
         bool LoadScene(const std::string& sceneName);

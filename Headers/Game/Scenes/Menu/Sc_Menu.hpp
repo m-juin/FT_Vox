@@ -23,7 +23,7 @@ namespace Vox::Game::Scenes::Menu
 
 			void Load() override;
 			void Unload() override;
-			void Draw() override;
+			void Render() override;
 			void InitSceneData() override;
 
 			const std::string &GetName() const override
