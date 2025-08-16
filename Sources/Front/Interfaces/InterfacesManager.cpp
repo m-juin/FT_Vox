@@ -1,6 +1,7 @@
 #include "Front/Interfaces/InterfacesManager.hpp"
 
 #include "Front/Rendering/SwapChain.hpp"
+#include "Front/Rendering/Pipelines/PipelinesManager.hpp"
 
 namespace Vox::Front::Interfaces
 {
@@ -17,6 +18,7 @@ namespace Vox::Front::Interfaces
 	
 	void InterfacesManager::Render()
 	{
+		Rendering::Pipelines::PipelinesManager::GetInstance().BindPipeline("StaticGUI");
 		for (auto interface : this->_content)
 			interface->Render();
 	}

@@ -24,6 +24,8 @@ namespace Vox::Front::Rendering::Pipelines
 		public:
 			~PipelinesManager();
 
+			void BindPipeline(const std::string &key);
+
 			VkRenderPass &GetRenderPass()
 			{
 				return this->_renderPass;
@@ -32,5 +34,6 @@ namespace Vox::Front::Rendering::Pipelines
 			template<typename T>
 			T *operator[](std::string name);
 	};
+	
 } // namespace Vox::Front::Rendering::Pipelines
 #endif // __PIPELINESMANAGER_HPP__
