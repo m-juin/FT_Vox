@@ -3,7 +3,7 @@
 
 #include "Utils/Singleton.hpp"
 
-#include <vector>
+#include <set>
 
 #include "AInterface.hpp"
 
@@ -14,11 +14,13 @@ namespace Vox::Front::Interfaces
         friend class Utils::Singleton<InterfacesManager>;
 
         public:
+            void ResetInterfacesList();
+            void RegisterInterface(AInterface *inte);
             InterfacesManager();
             ~InterfacesManager();
     
         private:;
-            std::vector<AInterface *> _content;
+            std::set<AInterface *> _content;
             /* private */
     
     };

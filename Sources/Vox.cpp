@@ -64,7 +64,7 @@ int main()
 
 	pool.CreateCommandBuffer();
 
-	// Interfaces::InterfacesManager::Init();
+	Interfaces::InterfacesManager::Init();
 	Vox::Game::GameManager::Init();
 
 	while (!glfwWindowShouldClose(Window::GetInstance().GetWindow()))
@@ -90,7 +90,7 @@ int main()
 
 		pool.ResetBuffer(currentFrame);
 		pool.BeginRecord(imageIndex, currentFrame);
-		// Here goes all render code;
+		GameManager::GetInstance().Render()
 		pool.EndRecord(currentFrame);
 
 		VkSubmitInfo submitInfo{};
@@ -104,7 +104,6 @@ int main()
 
 		submitInfo.commandBufferCount = 1;
 		submitInfo.pCommandBuffers = &pool.GetBuffer(currentFrame);
-		;
 
 		VkSemaphore signalSemaphores[] = {sync.GetCurrentRenderFinishedSemaphore()};
 		submitInfo.signalSemaphoreCount = 1;

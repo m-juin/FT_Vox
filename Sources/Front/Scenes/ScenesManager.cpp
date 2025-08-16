@@ -1,6 +1,8 @@
 #include "Front/Scenes/ScenesManager.hpp"
-#include "Front/Scenes/Sc_Menu.hpp"
+#include "Game/Scenes/Menu/Sc_Menu.hpp"
 #include <iostream>
+
+#include "Front/Interfaces/InterfacesManager.hpp"
 
 namespace Vox::Front::Scenes
 {
@@ -8,7 +10,7 @@ namespace Vox::Front::Scenes
 
     ScenesManager::ScenesManager() : _currentScene(nullptr)
     {
-        RegisterSceneFactory<Sc_Menu>();
+        RegisterSceneFactory<Game::Scenes::Menu::Sc_Menu>();
     }
     
     ScenesManager::~ScenesManager()
@@ -25,6 +27,7 @@ namespace Vox::Front::Scenes
         if (_currentScene)
         {
             _currentScene->Unload();
+            Front::Interfaces::InterfacesManager::GetInstance().ResetInterfacesList();
             _currentScene.reset();
         }
         

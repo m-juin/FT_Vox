@@ -52,11 +52,12 @@ clean:
 	@rm -rf $(OBJS_ROOT)
 	@printf '$(ERASE_LINE)\033[1;32mProject sources cleaned.\033[1;30m\n'
 
+include Shaders.mk
+
 fclean: clean cleanShaders
 	@printf '$(ERASE_LINE)\033[1;36mCleaning project executable...\033[1;30m'
 	@rm -rf $(NAME)
 	@printf '$(ERASE_LINE)\033[1;32mProject cleaned.\033[1;30m\n'
 
-include Shaders.mk
 
 .PHONY: all $(NAME) createFold clean fclean

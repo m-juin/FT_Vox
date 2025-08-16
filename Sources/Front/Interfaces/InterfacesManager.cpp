@@ -1,22 +1,24 @@
 #include "Front/Interfaces/InterfacesManager.hpp"
 
-#include "Front/Interfaces/Menu.hpp"
-
 #include "Front/Rendering/SwapChain.hpp"
 
 namespace Vox::Front::Interfaces
 {
-    InterfacesManager::InterfacesManager()
-    {
-        const Vector2 screenSize(Rendering::SwapChain::GetInstance().GetExtent().width,
-								 Rendering::SwapChain::GetInstance().GetExtent().height);
+	void InterfacesManager::ResetInterfacesList()
+	{
+		for (AInterface *interface : this->_content)
+			delete interface;
+	}
 
-        this->_content.push_back(new Menu({0, 0}, screenSize));
-    }
-    
-    InterfacesManager::~InterfacesManager()
+	void InterfacesManager::RegisterInterface(AInterface *inte)
     {
-        for (AInterface *interface : this->_content)
-            delete interface;
+        this->_content.insert(inte);
     }
-}
+
+	InterfacesManager::InterfacesManager() {}
+
+	InterfacesManager::~InterfacesManager()
+	{
+		this->ResetInterfacesList();
+	}
+} // namespace Vox::Front::Interfaces
