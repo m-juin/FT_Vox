@@ -5,3 +5,4 @@ FT_Vox*
 Test/
 test
 Shaders/*
+Ext/stb/*

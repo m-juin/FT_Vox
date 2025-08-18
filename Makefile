@@ -29,7 +29,7 @@ else
     Libs += -lglfw3 -lvulkan-1
 endif
 
-# include glfw.mk
+include stb.mk
 
 $(OBJS_ROOT)/%.o: $(SRCS_ROOT)/%.cpp $(HDRS)
 	@printf '$(ERASE_LINE)\033[1;37mCompiling \033[1;35m"$<"\033[1;37m into \033[1;35m"$@"\033[1;37m.'
@@ -37,10 +37,12 @@ $(OBJS_ROOT)/%.o: $(SRCS_ROOT)/%.cpp $(HDRS)
 
 all: $(NAME)
 
-$(NAME): createFold shaders $(OBJS)
+$(NAME): external createFold shaders $(OBJS)
 	@printf '$(ERASE_LINE)\033[1;37mCompiling the executable \033[1;35m${NAME}\033[1;37m...'
 	@$(CPP) $(CPPFLAGS) $(OBJS) -o $@ $(Libs)
 	@printf '$(ERASE_LINE)\033[1;32mCompilation ended\033[1;30m\n'
+
+external: STB_download
 
 createFold:
 	@printf '$(ERASE_LINE)\033[1;31mCreating object folder...\033[1;30m'
@@ -54,7 +56,7 @@ clean:
 
 include Shaders.mk
 
-fclean: clean cleanShaders
+fclean: clean cleanShaders STB_clean
 	@printf '$(ERASE_LINE)\033[1;36mCleaning project executable...\033[1;30m'
 	@rm -rf $(NAME)
 	@printf '$(ERASE_LINE)\033[1;32mProject cleaned.\033[1;30m\n'
