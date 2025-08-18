@@ -12,9 +12,11 @@ namespace Vox::Front::Rendering::Pipelines
             StaticGUIPipeline();
             ~StaticGUIPipeline();
 
-            void CreatePipeline(VkDescriptorSetLayout &layout) override;
+            void CreatePipeline() override;
+			void CreateSet(VkDescriptorPool &descPool) override;
     
         private:
+            void CreateSetLayout() override;
             /* private */
     
     };

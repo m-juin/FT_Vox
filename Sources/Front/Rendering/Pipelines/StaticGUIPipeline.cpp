@@ -2,6 +2,7 @@
 
 #include "Front/Rendering/Utils/Vertex/StaticGUIVertex.hpp"
 
+#include "Front/Rendering/DescriptorPool.hpp"
 #include "Front/Rendering/Device.hpp"
 #include "Front/Rendering/Pipelines/PipelinesManager.hpp"
 
@@ -9,11 +10,14 @@
 
 namespace Vox::Front::Rendering::Pipelines
 {
-	StaticGUIPipeline::StaticGUIPipeline() : APipeline() {}
+	StaticGUIPipeline::StaticGUIPipeline() : APipeline()
+	{
+		this->CreateSet(DescriptorPool::GetInstance().GetPool());
+	}
 
 	StaticGUIPipeline::~StaticGUIPipeline() {}
 
-	void StaticGUIPipeline::CreatePipeline(VkDescriptorSetLayout &layout)
+	void StaticGUIPipeline::CreatePipeline()
 	{
 		auto vertShaderCode = Vox::Utils::Files::ReadFile("Shaders/GUIStaticV1/Shader.vert.spv");
 		auto fragShaderCode = Vox::Utils::Files::ReadFile("Shaders/GUIStaticV1/Shader.frag.spv");
@@ -113,15 +117,14 @@ namespace Vox::Front::Rendering::Pipelines
 		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 		pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 		pipelineLayoutInfo.setLayoutCount = 1;
-		pipelineLayoutInfo.pSetLayouts = &layout;
+		pipelineLayoutInfo.pSetLayouts = &this->_slayout;
 
 		pipelineLayoutInfo.pushConstantRangeCount = 0;
 		pipelineLayoutInfo.pPushConstantRanges = nullptr;
 
 		auto device = Device::GetInstance().GetLogicalDevice();
 
-		if (vkCreatePipelineLayout(device, &pipelineLayoutInfo, nullptr, &this->_layout) !=
-			VK_SUCCESS)
+		if (vkCreatePipelineLayout(device, &pipelineLayoutInfo, nullptr, &this->_layout) != VK_SUCCESS)
 			throw std::runtime_error("Failed to create pipeline layout!");
 
 		VkGraphicsPipelineCreateInfo pipelineInfo{};
@@ -141,11 +144,63 @@ namespace Vox::Front::Rendering::Pipelines
 		pipelineInfo.subpass = 0;
 		pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
-		if (vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr,
-									  &this->_instance) != VK_SUCCESS)
+		if (vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &this->_instance) !=
+			VK_SUCCESS)
 			throw std::runtime_error("Failed to create graphics pipeline!");
 
 		vkDestroyShaderModule(device, fragShaderModule, nullptr);
 		vkDestroyShaderModule(device, vertShaderModule, nullptr);
+	}
+
+	void StaticGUIPipeline::CreateSetLayout()
+	{
+		VkDescriptorSetLayoutBinding samplerLayoutBinding{};
+		samplerLayoutBinding.binding = 0;
+		samplerLayoutBinding.descriptorCount = 1;
+		samplerLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+		samplerLayoutBinding.pImmutableSamplers = nullptr;
+		samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+
+		std::vector<VkDescriptorSetLayoutBinding> bindings = {samplerLayoutBinding};
+
+		VkDescriptorSetLayoutCreateInfo layoutInfo{};
+		layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+		layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
+		layoutInfo.pBindings = bindings.data();
+
+		if (vkCreateDescriptorSetLayout(Device::GetInstance().GetLogicalDevice(), &layoutInfo, nullptr,
+										&this->_slayout) != VK_SUCCESS)
+			throw std::runtime_error("Failed to create descriptor set layout!");
+	}
+
+	void StaticGUIPipeline::CreateSet(VkDescriptorPool &descPool)
+	{
+		this->CreateSetLayout();
+
+		VkDescriptorSetAllocateInfo allocInfo{};
+		allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+		allocInfo.descriptorPool = descPool;
+		allocInfo.descriptorSetCount = static_cast<uint32_t>(1);
+		allocInfo.pSetLayouts = &this->_slayout;
+
+		if (vkAllocateDescriptorSets(Device::GetInstance().GetLogicalDevice(), &allocInfo, &this->_set) != VK_SUCCESS)
+			throw std::runtime_error("Failed to allocate descriptor sets!");
+
+		VkDescriptorImageInfo imageInfo{};
+		imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+		imageInfo.imageView = nullptr;
+		imageInfo.sampler = nullptr;
+
+		std::array<VkWriteDescriptorSet, 1> descriptorWrites{};
+		descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+		descriptorWrites[0].dstSet = this->_set;
+		descriptorWrites[0].dstBinding = 0;
+		descriptorWrites[0].dstArrayElement = 0;
+		descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+		descriptorWrites[0].descriptorCount = 1;
+		descriptorWrites[0].pImageInfo = &imageInfo;
+
+		vkUpdateDescriptorSets(Device::GetInstance().GetLogicalDevice(), static_cast<uint32_t>(descriptorWrites.size()),
+							   descriptorWrites.data(), 0, nullptr);
 	}
 } // namespace Vox::Front::Rendering::Pipelines

@@ -9,7 +9,7 @@ layout(location = 0) out vec4 outColor;
 
 void main() 
 {
-	outColor = texture(textureAtlas, texCoord);
+	// outColor = texture(textureAtlas, texCoord);
 
 	outColor *= inTexColor;
 }

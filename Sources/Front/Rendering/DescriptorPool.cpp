@@ -5,15 +5,21 @@
 
 #include <stdexcept>
 
+#include <array>
+
 namespace Vox::Front::Rendering
 {
 	DescriptorPool::DescriptorPool()
 	{
+		std::array<VkDescriptorPoolSize, 1> poolSizes;
+		poolSizes[0].descriptorCount = 1;
+		poolSizes[0].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+
 		VkDescriptorPoolCreateInfo poolInfo{};
 		poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-		poolInfo.poolSizeCount = static_cast<uint32_t>(0);
-		poolInfo.pPoolSizes = nullptr;
-		poolInfo.maxSets = 0;
+		poolInfo.poolSizeCount = poolSizes.size();
+		poolInfo.pPoolSizes = poolSizes.data();
+		poolInfo.maxSets = 1;
 
 		if (vkCreateDescriptorPool(Device::GetInstance().GetLogicalDevice(), &poolInfo, nullptr, &this->_pool) != VK_SUCCESS)
 			throw std::runtime_error("Failed to create descriptor pool!");

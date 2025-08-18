@@ -1,21 +1,21 @@
 NAME := FT_Vox
 
-CXX := clang++
-
-CXXFLAGS := -Werror -Wextra -Wall -std=c++17 -g
-
-Libs = -ILibs/
+CPP := clang++
 
 HDRS_ROOT := Headers
 SRCS_ROOT := Sources
 OBJS_ROOT := .Objects
+
+CPPFLAGS := -Werror -Wextra -Wall -std=c++17 -g -IHeaders/ -IExt/
+
+Libs = -ILibs/
 
 rwildcard=$(foreach d,$(wildcard $(1:=/*)),$(call rwildcard,$d,$2) $(filter $(subst *,%,$2),$d))
 
 HDRS := $(call rwildcard, $(HDRS_ROOT), *.hpp)
 SRCS := $(call rwildcard, $(SRCS_ROOT), *.cpp)
 
-Includes := -I./$(HDRS_ROOT) -IExt/
+Includes :=
 
 OBJS := $(patsubst $(SRCS_ROOT)/%.cpp,$(OBJS_ROOT)/%.o,$(SRCS))
 
@@ -33,13 +33,13 @@ endif
 
 $(OBJS_ROOT)/%.o: $(SRCS_ROOT)/%.cpp $(HDRS)
 	@printf '$(ERASE_LINE)\033[1;37mCompiling \033[1;35m"$<"\033[1;37m into \033[1;35m"$@"\033[1;37m.'
-	@$(CXX) $(CXXFLAGS) -c $< -o $@ $(Includes)
+	@$(CPP) $(CPPFLAGS) -c $< -o $@
 
 all: $(NAME)
 
 $(NAME): createFold shaders $(OBJS)
 	@printf '$(ERASE_LINE)\033[1;37mCompiling the executable \033[1;35m${NAME}\033[1;37m...'
-	@$(CXX) $(CXXFLAGS) $(OBJS) -o $@ $(Libs) 
+	@$(CPP) $(CPPFLAGS) $(OBJS) -o $@ $(Libs)
 	@printf '$(ERASE_LINE)\033[1;32mCompilation ended\033[1;30m\n'
 
 createFold:
