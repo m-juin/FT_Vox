@@ -1,41 +1,20 @@
 #ifndef __DEPTHIMAGE_HPP__
 #define __DEPTHIMAGE_HPP__
 
-#include <vulkan/vulkan.h>
+#include "VulkanImage.hpp"
 
-namespace Vox::Front::Rendering
+namespace Vox::Front::Rendering::Images
 {
-	class Device;
-	class SwapChain;
-	namespace Images
+	class DepthImage : public VulkanImage
 	{
-		class DepthImage
-		{
-			private:
-				void CreateImage(VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage,
-								 VkMemoryPropertyFlags properties);
-				void CreateView(VkFormat format, VkImageAspectFlags aspectFlags);
-				void CreateSampler();
+		private:
 
-				uint16_t _width;
-				uint16_t _height;
+			/* private */
 
-				VkImage _image;
-				VkDeviceMemory _memory;
-
-				VkImageView _view;
-				VkSampler _sampler;
-				/* private */
-
-			public:
-				VkImageView &GetView()
-				{
-					return this->_view;
-				};
-				DepthImage();
-				~DepthImage();
-		};
-	} // namespace Images
-} // namespace Vox::Front::Rendering
+		public:
+			DepthImage();
+			~DepthImage();
+	};
+} // namespace Vox::Front::Rendering::Images
 
 #endif // __DEPTHIMAGE_HPP__

@@ -12,6 +12,11 @@
 
 namespace Vox::Front::Rendering::Pipelines
 {
+	void PipelinesManager::CreatePipelines()
+	{
+		this->_pipelines["StaticGUI"] = new StaticGUIPipeline();
+	}
+
 	template<typename T>
 	T* PipelinesManager::operator[](std::string name)
 	{
@@ -83,15 +88,13 @@ namespace Vox::Front::Rendering::Pipelines
 	PipelinesManager::PipelinesManager()
 	{
 		this->CreateRenderPass();
-
-		this->_pipelines["StaticGUI"] = new StaticGUIPipeline();
 	}
 
 	void PipelinesManager::BindPipeline(const std::string &key)
 	{
 		auto buffer = Rendering::CommandsPool::GetInstance().GetBuffer(SyncObjects::GetInstance().GetCurrentFrame());
-		std::cout << this->_pipelines[key]->GetPipeline() <<std::endl;
 		vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, this->_pipelines[key]->GetPipeline());
+		vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, this->_pipelines[key]->GetLayout(), 0, 1, &this->_pipelines[key]->GetSet(), 0, nullptr);
 	}
 
 	PipelinesManager::~PipelinesManager()

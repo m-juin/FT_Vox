@@ -8,8 +8,12 @@ namespace Vox::Front::Scenes
 {
     void ScenesManager::RenderCurrentScene()
     {
+        // std::cout << this->_currentScene.get() << std::endl;
         if (this->_currentScene)
+        {
+            // std::cout << "render current scene" << std::endl;
             this->_currentScene->Render();
+        }
     }
 
     std::unordered_map<std::string, SceneCreator> g_sceneFactories;

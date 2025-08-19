@@ -22,6 +22,8 @@ namespace Vox::Front::Rendering::Pipelines
 			PipelinesManager();
 
 		public:
+
+			void CreatePipelines();
 			~PipelinesManager();
 
 			void BindPipeline(const std::string &key);

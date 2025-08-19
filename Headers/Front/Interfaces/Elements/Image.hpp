@@ -15,7 +15,7 @@ namespace Vox::Front::Interfaces::Elements
 	class Image : public Bases::AElement
 	{
 		private:
-			vert vertex[6];
+			vert vertex[4];
 			buffer *B_Vertices = nullptr;
 			buffer *B_Indices = nullptr;
 			/* data */

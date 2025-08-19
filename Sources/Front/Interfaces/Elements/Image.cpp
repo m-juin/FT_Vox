@@ -12,12 +12,12 @@ namespace Vox::Front::Interfaces::Elements
 	{
 		this->ResetVertex();
 
-		B_Vertices = new buffer(1, 4 * sizeof(vert), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
-		B_Indices = new buffer(1, 6 * sizeof(size_t), VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
+		B_Vertices = new buffer(1, 4 * sizeof(vert), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT);
+		B_Indices = new buffer(1, 6 * sizeof(size_t), VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT);
 
 		B_Vertices->Create(&this->vertex);
 
-		size_t *indices = new size_t[6]{0, 1, 2, 2, 3, 1};
+		uint16_t *indices = new uint16_t[6]{0, 1, 2, 2, 3, 0};
 
 		B_Indices->Create(indices);
 
@@ -44,6 +44,9 @@ namespace Vox::Front::Interfaces::Elements
 	{
 		this->CleanBuffers(0);
 
+		std::cout << this->_pos << std::endl;
+		std::cout << this->_size << std::endl;
+
 		const Vector2 screenSize(Rendering::SwapChain::GetInstance().GetExtent().width,
 								 Rendering::SwapChain::GetInstance().GetExtent().height);
 
@@ -52,22 +55,24 @@ namespace Vox::Front::Interfaces::Elements
 		this->vertex[1] =
 			vert(Utils::Maths::PointPixelToVulkan({this->_pos[0] + this->_size[0], this->_pos[1]}, screenSize),
 				 {1.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f});
-		this->vertex[2] =
-			vert(Utils::Maths::PointPixelToVulkan({this->_pos[0], this->_pos[1] + this->_size[1]}, screenSize),
-				 {0.0f, 1.0f}, {1.0f, 1.0f, 1.0f, 1.0f});
 		this->vertex[2] = vert(Utils::Maths::PointPixelToVulkan(
 								   {this->_pos[0] + this->_size[0], this->_pos[1] + this->_size[1]}, screenSize),
 							   {1.0f, 1.0f}, {1.0f, 1.0f, 1.0f, 1.0f});
+		this->vertex[3] =
+			vert(Utils::Maths::PointPixelToVulkan({this->_pos[0], this->_pos[1] + this->_size[1]}, screenSize),
+				 {0.0f, 1.0f}, {1.0f, 1.0f, 1.0f, 1.0f});
+
+		for (auto vert : this->vertex)
+			std::cout << vert.position << std::endl;
 	}
 
 	void Image::Draw()
 	{
 		auto cmdBuffer =
 			Rendering::CommandsPool::GetInstance().GetBuffer(Rendering::SyncObjects::GetInstance().GetCurrentFrame());
-			
 		VkDeviceSize offsets[] = {0};
 		vkCmdBindVertexBuffers(cmdBuffer, 0, 1, &this->B_Vertices->GetBuffer(0), offsets);
-		vkCmdBindIndexBuffer(cmdBuffer, this->B_Indices->GetBuffer(0), 0, VK_INDEX_TYPE_UINT32);
+		vkCmdBindIndexBuffer(cmdBuffer, this->B_Indices->GetBuffer(0), 0, VK_INDEX_TYPE_UINT16);
 		vkCmdDrawIndexed(cmdBuffer, 6, 1, 0, 0, 0);
 	}
 

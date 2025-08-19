@@ -8,11 +8,16 @@
 
 #include "Utils/ReadFile.hpp"
 
+#include "Front/Utils/TexturesAtlas.hpp"
+
+#include "Game/GameManager.hpp"
+
 namespace Vox::Front::Rendering::Pipelines
 {
 	StaticGUIPipeline::StaticGUIPipeline() : APipeline()
 	{
 		this->CreateSet(DescriptorPool::GetInstance().GetPool());
+		this->CreatePipeline();
 	}
 
 	StaticGUIPipeline::~StaticGUIPipeline() {}
@@ -186,10 +191,12 @@ namespace Vox::Front::Rendering::Pipelines
 		if (vkAllocateDescriptorSets(Device::GetInstance().GetLogicalDevice(), &allocInfo, &this->_set) != VK_SUCCESS)
 			throw std::runtime_error("Failed to allocate descriptor sets!");
 
+		auto guiAtlas = Game::GameManager::GetInstance().GetSceneManager().GetCurrentScene().GetTextureManager()->operator[]("Menu_Main");
+
 		VkDescriptorImageInfo imageInfo{};
 		imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-		imageInfo.imageView = nullptr;
-		imageInfo.sampler = nullptr;
+		imageInfo.imageView = guiAtlas->GetView();
+		imageInfo.sampler = guiAtlas->GetSampler();
 
 		std::array<VkWriteDescriptorSet, 1> descriptorWrites{};
 		descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;

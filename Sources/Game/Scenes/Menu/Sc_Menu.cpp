@@ -1,8 +1,11 @@
 #include "Game/Scenes/Menu/Sc_Menu.hpp"
 #include "Game/Scenes/Menu/I_MenuMain.hpp"
+#include "Game/Scenes/Menu/TManager_Menu.hpp"
 #include <iostream>
 
 #include "Front/Interfaces/InterfacesManager.hpp"
+
+#include "Front/Rendering/SwapChain.hpp"
 
 namespace Vox::Game::Scenes::Menu
 {
@@ -16,21 +19,24 @@ namespace Vox::Game::Scenes::Menu
 	void Sc_Menu::Unload()
 	{
 		std::cout << "Déchargement du menu..." << std::endl;
+		delete this->_textureManager;
 		// Implémentation du déchargement du menu
 	}
 
 	void Sc_Menu::Render()
 	{
-		std::cout << "Dessin du menu..." << std::endl;
+		// std::cout << "Dessin du menu..." << std::endl;
 		auto &iManager = Front::Interfaces::InterfacesManager::GetInstance();
 		iManager.Render();
 		// Implémentation du dessin du menu
 	}
 	
 	void Sc_Menu::InitSceneData()
-	{
+	{	
 		auto &iManager = Front::Interfaces::InterfacesManager::GetInstance();
-		iManager.RegisterInterface(new Interfaces::I_MenuMain());
+		auto extent = Front::Rendering::SwapChain::GetInstance().GetExtent();
+		iManager.RegisterInterface(new Interfaces::I_MenuMain({0, 0}, {extent.width, extent.height}));
+		this->_textureManager = new Scenes::Menu::TManager_Menu();
 	}
 
 	

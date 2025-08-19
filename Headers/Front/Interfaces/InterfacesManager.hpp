@@ -9,9 +9,9 @@
 
 namespace Vox::Front::Interfaces
 {
-    class InterfacesManager : public Utils::Singleton<InterfacesManager>
+    class InterfacesManager : public Vox::Utils::Singleton<InterfacesManager>
     {
-        friend class Utils::Singleton<InterfacesManager>;
+        friend class Vox::Utils::Singleton<InterfacesManager>;
 
         public:
             void ResetInterfacesList();

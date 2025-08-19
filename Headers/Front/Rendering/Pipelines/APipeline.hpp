@@ -13,16 +13,20 @@ namespace Vox::Front::Rendering::Pipelines
 			VkPipeline &GetPipeline()
 			{
 				return this->_instance;
-			};
+			}
 			VkPipelineLayout &GetLayout()
 			{
 				return this->_layout;
-			};
+			}
 
 			VkDescriptorSetLayout &GetSetLayout()
 			{
 				return this->_slayout;
-			};
+			}
+			VkDescriptorSet &GetSet()
+			{
+				return this->_set;
+			}
 
 		protected:
 			VkDescriptorSetLayout _slayout;

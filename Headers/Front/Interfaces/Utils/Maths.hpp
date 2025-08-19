@@ -8,8 +8,8 @@ namespace Vox::Front::Interfaces::Utils::Maths
     inline MGL::Vectors::Vector2<float> PointPixelToVulkan(const MGL::Vectors::Vector2<size_t> point, const MGL::Vectors::Vector2<size_t> screenSize)
     {
         MGL::Vectors::Vector2<float> ret;
-        ret[0] = (((float)point[0] / screenSize[0]) + 1) / 2.0f;
-        ret[1] = (((float)point[1] / screenSize[1]) + 1) / 2.0f;
+        ret[0] = (((float)point[0] / screenSize[0]) * 2.0) - 1.0f;
+        ret[1] = (((float)point[1] / screenSize[1]) * 2.0) - 1.0f;
         return ret;
     }
 } // namespace Vox::Front::Interfaces::Utils::Maths

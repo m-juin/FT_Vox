@@ -14,7 +14,7 @@ namespace Vox::Front::Rendering::Pipelines
 
             void CreatePipeline() override;
 			void CreateSet(VkDescriptorPool &descPool) override;
-    
+            
         private:
             void CreateSetLayout() override;
             /* private */

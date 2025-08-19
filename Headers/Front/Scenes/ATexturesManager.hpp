@@ -4,18 +4,22 @@
 #include <unordered_map>
 #include <iostream>
 
+#include "Front/Utils/TexturesAtlas.hpp"
+
 namespace Vox::Front::Scenes
 {
     class ATexturesManager
     {
         public:
             ATexturesManager() {};
-            ~ATexturesManager() {};
+            virtual ~ATexturesManager() {};
             
             virtual void CreateMap() = 0;
 
-        private:
-            std::unordered_map<std::string, TexturesAtlas> _atlasMap
+            Utils::TexturesAtlas *operator[](const std::string &key) {return this->_atlasMap[key];};
+
+        protected:
+            std::unordered_map<std::string, Utils::TexturesAtlas *> _atlasMap;
             /* private */
     
     };

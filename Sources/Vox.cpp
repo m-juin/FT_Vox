@@ -23,6 +23,8 @@ using namespace Vox::Front;
 // Front::Window *win;
 // Front::Rendering::VulkanManager *vkManager;
 
+#include "Front/Utils/TexturesAtlas.hpp"
+
 void CleanUp()
 {
 	Interfaces::InterfacesManager::Clean();
@@ -66,6 +68,7 @@ int main()
 
 	Interfaces::InterfacesManager::Init();
 	Vox::Game::GameManager::Init();
+	Rendering::Pipelines::PipelinesManager::GetInstance().CreatePipelines();
 
 	while (!glfwWindowShouldClose(Window::GetInstance().GetWindow()))
 	{

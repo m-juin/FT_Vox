@@ -1,9 +1,13 @@
 #include "Front/Utils/TexturesAtlas.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
-#include "Ext/stb/stb_image.h"
+#include "stb/stb_image.h"
 
 #include <cmath>
+
+#include "Front/Rendering/Device.hpp"
+
+#include "Front/Rendering/Utils/Buffers/Utils.hpp"
 
 namespace Vox::Front::Utils
 {
@@ -13,7 +17,8 @@ namespace Vox::Front::Utils
 	}
 
 	TexturesAtlas::TexturesAtlas(std::vector<std::string> atlasTextures, size_t textureSize, size_t textureChannels)
-		: _atlasWidth(0), _atlasHeight(0), _textureSize(textureSize), _textureChannels(textureChannels)
+		: Rendering::Images::VulkanImage(0, 0), _atlasWidth(0), _atlasHeight(0), _textureSize(textureSize),
+		  _textureChannels(textureChannels)
 	{
 		size_t size = atlasTextures.size();
 		if (size == 0)
@@ -22,48 +27,24 @@ namespace Vox::Front::Utils
 		}
 		else if (size == 1)
 		{
-			std::cout << "[WARNING] Atlas build with only one texture." << std::endl;
-			this->_atlasHeight = 1;
+			std::cout << "[WARNING] Atlas built with only one texture." << std::endl;
 			this->_atlasWidth = 1;
+			this->_atlasHeight = 1;
 		}
 		else
 		{
-			uint32_t width = nextPowerOfTwo(static_cast<uint32_t>(std::sqrt(size)));
-			if (width > MAX_TEXTURE_SIZE)
+			uint32_t width = static_cast<uint32_t>(std::ceil(std::sqrt(size)));
+			uint32_t height = static_cast<uint32_t>(std::ceil(static_cast<float>(size) / width));
+
+			if (width > MAX_TEXTURE_SIZE || height > MAX_TEXTURE_SIZE)
 			{
 				throw std::runtime_error("Atlas size exceeds maximum texture dimensions!");
 			}
+
 			this->_atlasWidth = width;
-			this->_atlasHeight = width;
+			this->_atlasHeight = height;
 		}
-		BuildAtlas(std::move(atlasTextures));
-	}
 
-	TexturesAtlas::TexturesAtlas(std::vector<std::string> atlasTextures, uint32_t expectedWidth, size_t textureSize,
-								 size_t textureChannels)
-		: _atlasWidth(0), _atlasHeight(0), _textureSize(textureSize), _textureChannels(textureChannels)
-	{
-		size_t size = atlasTextures.size();
-		if (size == 0)
-		{
-			throw std::runtime_error("Invalid atlas textures list!");
-		}
-		else if (size == 1)
-		{
-			std::cout << "[WARNING] Atlas build with only one texture." << std::endl;
-			this->_atlasHeight = 1;
-			this->_atlasWidth = 1;
-		}
-		else
-		{
-			if (expectedWidth > MAX_TEXTURE_SIZE)
-			{
-				throw std::runtime_error("Expected width exceeds maximum texture dimensions!");
-			}
-
-			this->_atlasWidth = expectedWidth;
-			this->_atlasHeight = static_cast<uint32_t>((size + expectedWidth - 1) / expectedWidth);
-		}
 		BuildAtlas(std::move(atlasTextures));
 	}
 
@@ -76,104 +57,98 @@ namespace Vox::Front::Utils
 		return _textureInfos[index];
 	}
 
-	void TexturesAtlas::BuildVkImage(unsigned char *imgData)
-	{
-		VkBuffer stagingBuffer;
-		VkDeviceMemory stagingBufferMemory;
-
-		VkDeviceSize imgSize = this->_.x * this->_size.y * this->_imgChannels;
-		Buffer::CreateBuffer(imgSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-							 VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer,
-							 stagingBufferMemory);
-
-		VkImageCreateInfo imageInfo{};
-		imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-		imageInfo.imageType = VK_IMAGE_TYPE_2D;
-		imageInfo.extent.width = this->_atlasWidth * this->_textureSize;
-		imageInfo.extent.height = this->_atlasHeight * this->_textureSize;
-		imageInfo.extent.depth = 1;
-		imageInfo.mipLevels = 1;
-		imageInfo.arrayLayers = 1;
-		imageInfo.format = this->_textureChannels == 4 ? VK_FORMAT_R8G8B8A8_UNORM : VK_FORMAT_R8_UNORM;
-		imageInfo.tiling = tiling;
-		imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-		imageInfo.usage = usage;
-		imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
-		imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-
-		if (vkCreateImage(device, &imageInfo, nullptr, &image) != VK_SUCCESS)
-		{
-			throw std::runtime_error("failed to create image!");
-		}
-	}
-
 	void TexturesAtlas::BuildAtlas(std::vector<std::string> &&textures)
 	{
 		this->_textureInfos.reserve(textures.size());
-		float cellWidth = 1.0f / _atlasWidth;
-		float cellHeight = 1.0f / _atlasHeight;
 
-		// Allocation de la mémoire pour l'atlas
-		unsigned char atlasData[(this->_textureSize * this->_textureSize * this->_textureChannels) * textures.size()];
+		size_t atlasSize =
+			(this->_textureSize * this->_textureSize * this->_textureChannels) * nextPowerOfTwo(textures.size());
+		std::cout << nextPowerOfTwo(textures.size()) << std::endl;
+		std::cout << atlasSize << std::endl;
+		std::unique_ptr<unsigned char[]> atlasData(new unsigned char[atlasSize]);
 
-		// Remplissage initial avec des pixels blancs
-		std::fill(atlasData,
-				  atlasData + (this->_textureSize * this->_textureSize * this->_textureChannels * textures.size()),
-				  255);
+		std::fill(atlasData.get(), atlasData.get() + atlasSize, 255);
+
+		this->_width = _textureSize * this->_atlasWidth;
+		this->_height = _textureSize * this->_atlasHeight;
 
 		for (size_t y = 0; y < this->_atlasHeight; y++)
 		{
 			for (size_t x = 0; x < this->_atlasWidth; x++)
 			{
-				size_t index = y * this->_atlasHeight + x;
+				size_t index = y * this->_atlasWidth + x;
 				if (index >= textures.size())
-					break;
+					continue;
 
 				size_t atlasPosY = y * this->_textureSize;
 				size_t atlasPosX = x * this->_textureSize;
 
-				int imgWidth, imgHeight, imgChannels;
-				const unsigned char *imgData =
-					stbi_load(textures[index].c_str(), &imgWidth, &imgHeight, &imgChannels, 0);
-
 				TextureInfo info;
-				info.uOffset = x * cellWidth;
-				info.vOffset = y * cellHeight;
-				info.uSize = cellWidth;
-				info.vSize = cellHeight;
+				info.uOffset = static_cast<float>(x) / _atlasWidth;
+				info.vOffset = static_cast<float>(y) / _atlasHeight;
+				info.uSize = 1.0f / _atlasWidth;
+				info.vSize = 1.0f / _atlasHeight;
 				this->_textureInfos.push_back(info);
 
-				if (imgData == NULL)
+				int imgWidth, imgHeight, imgChannels;
+				unsigned char *imgData =
+					stbi_load(textures[index].c_str(), &imgWidth, &imgHeight, &imgChannels, this->_textureChannels);
+
+				if (!imgData)
 				{
 					std::cout << "[WARNING] Failed to load image \"" << textures[index]
 							  << "\". Using white placeholder." << std::endl;
 					continue;
 				}
 
-				if (imgWidth != this->_textureSize || imgHeight != this->_textureSize ||
-					imgChannels != this->_textureChannels)
+				if ((size_t)imgWidth != this->_textureSize || (size_t)imgHeight != this->_textureSize)
 				{
 					std::cout << "[WARNING] Invalid image format \"" << textures[index]
-							  << "\". Neither img size or channel number is invalid." << std::endl;
-					stbi_image_free((void *)imgData);
+							  << "\". Wrong size or channels, skipping." << std::endl;
+					stbi_image_free(imgData);
 					continue;
 				}
 
-				// Copie des pixels de l'image dans l'atlas
 				for (size_t yTex = 0; yTex < this->_textureSize; yTex++)
 				{
-					for (size_t xTex = 0; xTex < this->_textureSize; xTex++)
-					{
-						size_t srcPos = (yTex * imgWidth + xTex) * this->_textureChannels;
-						size_t dstPos = ((atlasPosY + yTex) * this->_textureSize * this->_textureChannels +
-										 (atlasPosX + xTex) * this->_textureChannels);
+					size_t srcPos = (yTex * this->_textureSize * this->_textureChannels);
+					size_t dstPos = ((atlasPosY + yTex) * (_atlasWidth * this->_textureSize * this->_textureChannels)) +
+									(atlasPosX * _textureChannels);
 
-						std::copy(imgData + srcPos, imgData + srcPos + this->_textureChannels, atlasData + dstPos);
-					}
+					std::copy(imgData + srcPos, imgData + srcPos + (this->_textureChannels * _textureSize),
+							  atlasData.get() + dstPos);
 				}
-
-				stbi_image_free((void *)imgData);
+				stbi_image_free(imgData);
 			}
 		}
+
+		VkBuffer stagingBuffer;
+		VkDeviceMemory stagingBufferMemory;
+
+		Front::Rendering::Utils::Buffers::Utils::CreateBuffer(
+			Front::Rendering::Device::GetInstance().GetLogicalDevice(),
+			Front::Rendering::Device::GetInstance().GetPhysicalDevice(), atlasSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer,
+			stagingBufferMemory);
+
+		void *data;
+		vkMapMemory(Front::Rendering::Device::GetInstance().GetLogicalDevice(), stagingBufferMemory, 0, atlasSize, 0,
+					&data);
+
+		memcpy(data, atlasData.get(), static_cast<size_t>(atlasSize));
+		vkUnmapMemory(Front::Rendering::Device::GetInstance().GetLogicalDevice(), stagingBufferMemory);
+
+		this->CreateImage(VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL,
+						  VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
+						  VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+		this->TransitionImageLayout(VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+		this->CopyBufferToImage(stagingBuffer);
+		this->TransitionImageLayout(VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+
+		vkDestroyBuffer(Front::Rendering::Device::GetInstance().GetLogicalDevice(), stagingBuffer, nullptr);
+		vkFreeMemory(Front::Rendering::Device::GetInstance().GetLogicalDevice(), stagingBufferMemory, nullptr);
+
+		this->CreateView(VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT);
+		this->CreateSampler();
 	}
 } // namespace Vox::Front::Utils
