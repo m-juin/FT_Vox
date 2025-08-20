@@ -4,6 +4,7 @@
 #include "stb/stb_image.h"
 
 #include <cmath>
+#include <algorithm>
 
 #include "Front/Rendering/Device.hpp"
 
@@ -16,7 +17,7 @@ namespace Vox::Front::Utils
 		return 1U << (32 - __builtin_clz(value - 1));
 	}
 
-	TexturesAtlas::TexturesAtlas(std::vector<std::string> atlasTextures, size_t textureSize, size_t textureChannels)
+	TexturesAtlas::TexturesAtlas(std::vector<std::pair<std::string, std::string>> atlasTextures, size_t textureSize, size_t textureChannels)
 		: Rendering::Images::VulkanImage(0, 0), _atlasWidth(0), _atlasHeight(0), _textureSize(textureSize),
 		  _textureChannels(textureChannels)
 	{
@@ -57,7 +58,16 @@ namespace Vox::Front::Utils
 		return _textureInfos[index];
 	}
 
-	void TexturesAtlas::BuildAtlas(std::vector<std::string> &&textures)
+	const TexturesAtlas::TextureInfo &TexturesAtlas::GetTextureInfo(const std::string key) const
+	{
+		if (index >= _textureInfos.size())
+		{
+			throw std::out_of_range("Texture index out of bounds!");
+		}
+		return _textureInfos[index];
+	}
+
+	void TexturesAtlas::BuildAtlas(std::vector<std::pair<std::string, std::string>> &&textures)
 	{
 		this->_textureInfos.reserve(textures.size());
 
@@ -77,33 +87,37 @@ namespace Vox::Front::Utils
 			for (size_t x = 0; x < this->_atlasWidth; x++)
 			{
 				size_t index = y * this->_atlasWidth + x;
-				if (index >= textures.size())
+				auto textKey = textures[index].first;
+				if (index >= textures.size() || std::find_if(this->_textureInfos.begin(), this->_textureInfos.end(), [textKey](TextureInfo &info) {return textKey == info.key;}) != this->_textureInfos.end())
 					continue;
 
 				size_t atlasPosY = y * this->_textureSize;
 				size_t atlasPosX = x * this->_textureSize;
 
-				TextureInfo info;
-				info.uOffset = static_cast<float>(x) / _atlasWidth;
-				info.vOffset = static_cast<float>(y) / _atlasHeight;
-				info.uSize = 1.0f / _atlasWidth;
-				info.vSize = 1.0f / _atlasHeight;
+				TextureInfo info 
+				{
+					textures[index].first,
+					static_cast<float>(x) / _atlasWidth,
+					static_cast<float>(y) / _atlasHeight,
+					1.0f / _atlasWidth,
+					1.0f / _atlasHeight,
+				};
 				this->_textureInfos.push_back(info);
 
 				int imgWidth, imgHeight, imgChannels;
 				unsigned char *imgData =
-					stbi_load(textures[index].c_str(), &imgWidth, &imgHeight, &imgChannels, this->_textureChannels);
+					stbi_load(textures[index].second.c_str(), &imgWidth, &imgHeight, &imgChannels, this->_textureChannels);
 
 				if (!imgData)
 				{
-					std::cout << "[WARNING] Failed to load image \"" << textures[index]
+					std::cout << "[WARNING] Failed to load image \"" << textures[index].second
 							  << "\". Using white placeholder." << std::endl;
 					continue;
 				}
 
 				if ((size_t)imgWidth != this->_textureSize || (size_t)imgHeight != this->_textureSize)
 				{
-					std::cout << "[WARNING] Invalid image format \"" << textures[index]
+					std::cout << "[WARNING] Invalid image format \"" << textures[index].second
 							  << "\". Wrong size or channels, skipping." << std::endl;
 					stbi_image_free(imgData);
 					continue;

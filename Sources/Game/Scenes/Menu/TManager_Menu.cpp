@@ -18,11 +18,9 @@ namespace Vox::Game::Scenes::Menu
     {
         this->_atlasMap["Menu_Main"] = new Front::Utils::TexturesAtlas(
             {
-                "Assets/TexturesPack/1/GUI/blackstone.png",
-                "Assets/TexturesPack/1/GUI/stone.png",
-                "Assets/TexturesPack/1/GUI/cobblestone.png",
-                "Assets/TexturesPack/1/GUI/blackstone.png",
-                "Assets/TexturesPack/1/GUI/blackstone.png",
+                {"BlackStone", "Assets/TexturesPack/1/GUI/blackstone.png"},
+                {"Stone", "Assets/TexturesPack/1/GUI/stone.png"},
+                {"CobbleStone", "Assets/TexturesPack/1/GUI/cobblestone.png"},
             },
             16,
             4

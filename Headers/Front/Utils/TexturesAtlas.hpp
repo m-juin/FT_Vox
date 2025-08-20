@@ -17,6 +17,7 @@ namespace Vox::Front::Utils
 
 			struct TextureInfo
 			{
+				const std::string key;
 				float uOffset;
 				float vOffset;
 				float uSize;
@@ -30,13 +31,13 @@ namespace Vox::Front::Utils
 
 		public:
 			// TexturesAtlas(std::vector<std::string> atlasTextures, size_t textureSize = 32, size_t textureChannels = 4);
-			TexturesAtlas(std::vector<std::string> atlasTextures, size_t textureSize = 32,
+			TexturesAtlas(std::vector<std::pair<std::string, std::string>> atlasTextures, size_t textureSize = 32,
 						  size_t textureChannels = 4);
 			const TextureInfo &GetTextureInfo(size_t index) const;
 
 		private:
 			static uint32_t nextPowerOfTwo(uint32_t value);
-			void BuildAtlas(std::vector<std::string> &&textures);
+			void BuildAtlas(std::vector<std::pair<std::string, std::string>> &&textures);
 	};
 } // namespace Vox::Front::Utils
 
