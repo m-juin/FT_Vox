@@ -19,6 +19,7 @@ namespace Vox::Game::Scenes::Menu
 	void Sc_Menu::Unload()
 	{
 		std::cout << "Déchargement du menu..." << std::endl;
+		Front::Interfaces::InterfacesManager::GetInstance().ResetInterfacesList();
 		delete this->_textureManager;
 		// Implémentation du déchargement du menu
 	}

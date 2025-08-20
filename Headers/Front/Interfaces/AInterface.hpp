@@ -9,7 +9,7 @@ namespace Vox::Front::Interfaces
 	{
 		public:
 			AInterface(Vector2 pos = {0, 0}, Vector2 size = {0, 0}) : AContainer(pos, size) {};
-			~AInterface() {};
+			virtual ~AInterface() {};
 
 			virtual void Render() = 0;
 			virtual void SetPos(const Vector2 newPos) = 0;

@@ -13,7 +13,7 @@ namespace Vox::Front::Interfaces::Elements
 		this->ResetVertex();
 
 		B_Vertices = new buffer(1, 4 * sizeof(vert), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT);
-		B_Indices = new buffer(1, 6 * sizeof(size_t), VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT);
+		B_Indices = new buffer(1, 6 * sizeof(uint16_t), VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT);
 
 		B_Vertices->Create(&this->vertex);
 
@@ -62,8 +62,6 @@ namespace Vox::Front::Interfaces::Elements
 			vert(Utils::Maths::PointPixelToVulkan({this->_pos[0], this->_pos[1] + this->_size[1]}, screenSize),
 				 {0.0f, 1.0f}, {1.0f, 1.0f, 1.0f, 1.0f});
 
-		for (auto vert : this->vertex)
-			std::cout << vert.position << std::endl;
 	}
 
 	void Image::Draw()

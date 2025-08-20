@@ -27,6 +27,7 @@ using namespace Vox::Front;
 
 void CleanUp()
 {
+	Vox::Game::GameManager::Clean();
 	Interfaces::InterfacesManager::Clean();
 
 	Rendering::SwapChain::Clean();

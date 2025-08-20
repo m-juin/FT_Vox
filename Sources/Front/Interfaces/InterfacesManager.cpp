@@ -8,7 +8,8 @@ namespace Vox::Front::Interfaces
 	void InterfacesManager::ResetInterfacesList()
 	{
 		for (AInterface *interface : this->_content)
-			delete interface;
+			if (interface)
+				delete interface;
 	}
 
 	void InterfacesManager::RegisterInterface(AInterface *inte)
@@ -27,6 +28,6 @@ namespace Vox::Front::Interfaces
 
 	InterfacesManager::~InterfacesManager()
 	{
-		this->ResetInterfacesList();
+		// this->ResetInterfacesList();
 	}
 } // namespace Vox::Front::Interfaces

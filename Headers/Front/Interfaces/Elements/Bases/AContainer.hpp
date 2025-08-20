@@ -40,7 +40,7 @@ namespace Vox::Front::Interfaces::Elements::Bases
         AContainer(Vector2 pos = {0, 0}, Vector2 size = {100, 50})
             : AElement(pos, size) {}
 
-        virtual ~AContainer() = default;
+        virtual ~AContainer() {};
 
         inline void AddElement(const std::string &key, std::unique_ptr<AElement> elem, size_t renderIndex = 0)
         {

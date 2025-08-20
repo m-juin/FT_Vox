@@ -7,6 +7,8 @@ namespace Vox::Front::Rendering::Pipelines
 	APipeline::~APipeline()
 	{
 		auto device = Device::GetInstance().GetLogicalDevice();
+
+		vkDestroyDescriptorSetLayout(device, this->_slayout, nullptr);
 		vkDestroyPipeline(device, this->_instance, nullptr);
 		vkDestroyPipelineLayout(device, this->_layout, nullptr);
 	}
@@ -25,5 +27,9 @@ namespace Vox::Front::Rendering::Pipelines
 		return shaderModule;
 	}
 
-	APipeline::APipeline() {}
+	APipeline::APipeline()
+	{
+		this->_set = VK_NULL_HANDLE;
+		this->_slayout = VK_NULL_HANDLE;
+	}
 } // namespace Vox::Front::Rendering::Pipelines

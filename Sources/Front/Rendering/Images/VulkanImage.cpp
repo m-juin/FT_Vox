@@ -10,6 +10,10 @@ namespace Vox::Front::Rendering::Images
 {
 	VulkanImage::VulkanImage(size_t width, size_t height)
 	{
+		this->_sampler = VK_NULL_HANDLE;
+		this->_memory = VK_NULL_HANDLE;
+		this->_image = VK_NULL_HANDLE;
+		this->_view = VK_NULL_HANDLE;
 		this->_width = width;
 		this->_height = height;
 	}
@@ -18,6 +22,8 @@ namespace Vox::Front::Rendering::Images
 	{
 		VkDevice device = Device::GetInstance().GetLogicalDevice();
 		vkFreeMemory(device, this->_memory, nullptr);
+		if (this->_sampler)
+			vkDestroySampler(device, this->_sampler, nullptr);
 		vkDestroyImageView(device, this->_view, nullptr);
 		vkDestroyImage(device, this->_image, nullptr);
 	}
