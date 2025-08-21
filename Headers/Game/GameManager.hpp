@@ -5,11 +5,13 @@
 
 #include "Front/Scenes/ScenesManager.hpp"
 
+#include "Game/Utils/TexturesData.hpp"
+
 namespace Vox::Game
 {
-    class GameManager : public Utils::Singleton<GameManager>
+    class GameManager : public Vox::Utils::Singleton<GameManager>
     {
-        friend class Utils::Singleton<GameManager>;
+        friend class Vox::Utils::Singleton<GameManager>;
 
         public:
             GameManager();
@@ -19,7 +21,10 @@ namespace Vox::Game
             void Render();
 
             Front::Scenes::ScenesManager &GetSceneManager() {return this->_scManager;};
+
+            const std::string GetTexturePackPath() {return Game::Utils::Textures::TPacks_Path + this->_TPack + "/";}
         private:
+            std::string _TPack = "1";
             Front::Scenes::ScenesManager _scManager;
             /* private */
     

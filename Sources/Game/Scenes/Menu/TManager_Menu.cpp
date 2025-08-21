@@ -1,5 +1,6 @@
 #include "Game/Scenes/Menu/TManager_Menu.hpp"
 
+#include "Game/GameManager.hpp"
 
 namespace Vox::Game::Scenes::Menu
 {
@@ -16,11 +17,12 @@ namespace Vox::Game::Scenes::Menu
     
     void TManager_Menu::CreateMap()
     {
+        const std::string T_Path = Game::GameManager::GetInstance().GetTexturePackPath();
         this->_atlasMap["Menu_Main"] = new Front::Utils::TexturesAtlas(
             {
-                {"BlackStone", "Assets/TexturesPack/1/GUI/blackstone.png"},
-                {"Stone", "Assets/TexturesPack/1/GUI/stone.png"},
-                {"CobbleStone", "Assets/TexturesPack/1/GUI/cobblestone.png"},
+                {"BlackStone", T_Path + "GUI/blackstone.png"},
+                {"Stone", T_Path + "GUI/stone.png"},
+                {"CobbleStone", T_Path +"cobblestone.png"},
             },
             16,
             4

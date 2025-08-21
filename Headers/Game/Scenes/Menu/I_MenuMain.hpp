@@ -1,5 +1,5 @@
-#ifndef __I_MENUMain_HPP__
-#define __I_MENUMain_HPP__
+#ifndef __I_MENUMAIN_HPP__
+#define __I_MENUMAIN_HPP__
 
 #include "Front/Interfaces/AInterface.hpp"
 
@@ -21,4 +21,4 @@ namespace Vox::Game::Scenes::Menu::Interfaces
     };
 }
 
-#endif // __MENU_HPP__
+#endif // __MENUMAIN_HPP__
