@@ -11,10 +11,14 @@ namespace Vox::Game
 
     GameManager::GameManager()
     {
-        this->_scManager.LoadScene("Menu");
         // std::cout << this->_scManager.GetCurrentScene().get() << std::endl;
     }
     
+    void GameManager::InitGame()
+    {
+        this->_scManager.LoadScene("Menu");
+    }
+
     GameManager::~GameManager()
     {
         

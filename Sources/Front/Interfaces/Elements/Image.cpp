@@ -6,14 +6,22 @@
 
 #include "Front/Interfaces/Utils/Maths.hpp"
 
+#include "Game/GameManager.hpp"
+#include "Game/Scenes/Menu/Sc_Menu.hpp"
+#include "Game/Scenes/Menu/TManager_Menu.hpp"
+
 namespace Vox::Front::Interfaces::Elements
 {
-	Image::Image(Vector2 pos, Vector2 size) : Bases::AElement(pos, size)
+
+	Image::Image(std::string atlas, std::string key, Vector2 pos, Vector2 size)
+		: Bases::AElement(pos, size), _atlas(atlas), _atlasKey(key)
 	{
 		this->ResetVertex();
 
-		B_Vertices = new buffer(1, 4 * sizeof(vert), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT);
-		B_Indices = new buffer(1, 6 * sizeof(uint16_t), VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT);
+		B_Vertices =
+			new buffer(1, 4 * sizeof(vert), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT);
+		B_Indices =
+			new buffer(1, 6 * sizeof(uint16_t), VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT);
 
 		B_Vertices->Create(&this->vertex);
 
@@ -44,24 +52,45 @@ namespace Vox::Front::Interfaces::Elements
 	{
 		this->CleanBuffers(0);
 
-		std::cout << this->_pos << std::endl;
-		std::cout << this->_size << std::endl;
+		std::cout << this->_atlas << std::endl;
+		std::cout << this->_atlasKey << std::endl;
 
 		const Vector2 screenSize(Rendering::SwapChain::GetInstance().GetExtent().width,
 								 Rendering::SwapChain::GetInstance().GetExtent().height);
 
-		this->vertex[0] =
-			vert(Utils::Maths::PointPixelToVulkan(this->_pos, screenSize), {0.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f});
-		this->vertex[1] =
-			vert(Utils::Maths::PointPixelToVulkan({this->_pos[0] + this->_size[0], this->_pos[1]}, screenSize),
-				 {1.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f});
-		this->vertex[2] = vert(Utils::Maths::PointPixelToVulkan(
-								   {this->_pos[0] + this->_size[0], this->_pos[1] + this->_size[1]}, screenSize),
-							   {1.0f, 1.0f}, {1.0f, 1.0f, 1.0f, 1.0f});
-		this->vertex[3] =
-			vert(Utils::Maths::PointPixelToVulkan({this->_pos[0], this->_pos[1] + this->_size[1]}, screenSize),
-				 {0.0f, 1.0f}, {1.0f, 1.0f, 1.0f, 1.0f});
-
+		if (this->_atlas != "" && this->_atlasKey != "")
+		{
+			std::cout << &Game::GameManager::GetInstance() << std::endl;
+			std::cout << &Game::GameManager::GetInstance().GetSceneManager() << std::endl;
+			std::cout << &Game::GameManager::GetInstance().GetSceneManager().GetCurrentScene() << std::endl;
+			std::cout << Game::GameManager::GetInstance().GetSceneManager().GetCurrentScene().GetName() << std::endl;
+			auto uvData = Game::GameManager::GetInstance().GetSceneManager().GetCurrentScene().GetTextureManager()->operator[](_atlas)->GetTextureInfo(this->_atlasKey);
+			this->vertex[0] =
+				vert(Utils::Maths::PointPixelToVulkan(this->_pos, screenSize), {uvData.uOffset, uvData.vOffset}, {1.0f, 1.0f, 1.0f, 1.0f});
+			this->vertex[1] =
+				vert(Utils::Maths::PointPixelToVulkan({this->_pos[0] + this->_size[0], this->_pos[1]}, screenSize),
+					 {uvData.uOffset + uvData.uSize, uvData.vOffset}, {1.0f, 1.0f, 1.0f, 1.0f});
+			this->vertex[2] = vert(Utils::Maths::PointPixelToVulkan(
+									   {this->_pos[0] + this->_size[0], this->_pos[1] + this->_size[1]}, screenSize),
+								   {uvData.uOffset + uvData.uSize, uvData.vOffset + uvData.vSize}, {1.0f, 1.0f, 1.0f, 1.0f});
+			this->vertex[3] =
+				vert(Utils::Maths::PointPixelToVulkan({this->_pos[0], this->_pos[1] + this->_size[1]}, screenSize),
+					 {uvData.uOffset, uvData.vOffset + uvData.vSize}, {1.0f, 1.0f, 1.0f, 1.0f});
+		}
+		else
+		{
+			this->vertex[0] =
+				vert(Utils::Maths::PointPixelToVulkan(this->_pos, screenSize), {0.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f});
+			this->vertex[1] =
+				vert(Utils::Maths::PointPixelToVulkan({this->_pos[0] + this->_size[0], this->_pos[1]}, screenSize),
+					 {1.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f});
+			this->vertex[2] = vert(Utils::Maths::PointPixelToVulkan(
+									   {this->_pos[0] + this->_size[0], this->_pos[1] + this->_size[1]}, screenSize),
+								   {1.0f, 1.0f}, {1.0f, 1.0f, 1.0f, 1.0f});
+			this->vertex[3] =
+				vert(Utils::Maths::PointPixelToVulkan({this->_pos[0], this->_pos[1] + this->_size[1]}, screenSize),
+					 {0.0f, 1.0f}, {1.0f, 1.0f, 1.0f, 1.0f});
+		}
 	}
 
 	void Image::Draw()

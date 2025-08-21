@@ -9,7 +9,7 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 		std::cout << size << "\n" << std::endl;
 		this->AddElement(
 			"IMG_Front",
-			std::make_unique<Front::Interfaces::Elements::Image>(Vector2{this->_size[0] / 2 - 128, this->_size[1] / 2 - 128}, Vector2{256, 256}),
+			std::make_unique<Front::Interfaces::Elements::Image>("Menu_Main", "Stone", Vector2{this->_size[0] / 2 - 128, this->_size[1] / 2 - 128}, Vector2{256, 256}),
 			0);
 	}
 

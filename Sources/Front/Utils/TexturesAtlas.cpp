@@ -17,7 +17,7 @@ namespace Vox::Front::Utils
 		return 1U << (32 - __builtin_clz(value - 1));
 	}
 
-	TexturesAtlas::TexturesAtlas(std::vector<std::pair<std::string, std::string>> atlasTextures, size_t textureSize, size_t textureChannels)
+	TexturesAtlas::TexturesAtlas(std::vector<std::pair<std::string, std::string>> &&atlasTextures, size_t textureSize, size_t textureChannels)
 		: Rendering::Images::VulkanImage(0, 0), _atlasWidth(0), _atlasHeight(0), _textureSize(textureSize),
 		  _textureChannels(textureChannels)
 	{
@@ -58,13 +58,14 @@ namespace Vox::Front::Utils
 		return _textureInfos[index];
 	}
 
-	const TexturesAtlas::TextureInfo &TexturesAtlas::GetTextureInfo(const std::string key) const
+	const TexturesAtlas::TextureInfo &TexturesAtlas::GetTextureInfo(const std::string &key) const
 	{
-		if (index >= _textureInfos.size())
+		auto it = std::find_if(this->_textureInfos.begin(), this->_textureInfos.end(), [key](const TextureInfo &info) {return key == info.key;});
+		if (it == this->_textureInfos.end())
 		{
 			throw std::out_of_range("Texture index out of bounds!");
 		}
-		return _textureInfos[index];
+		return *it;
 	}
 
 	void TexturesAtlas::BuildAtlas(std::vector<std::pair<std::string, std::string>> &&textures)
@@ -87,8 +88,10 @@ namespace Vox::Front::Utils
 			for (size_t x = 0; x < this->_atlasWidth; x++)
 			{
 				size_t index = y * this->_atlasWidth + x;
+				if (index >= textures.size())
+					continue;
 				auto textKey = textures[index].first;
-				if (index >= textures.size() || std::find_if(this->_textureInfos.begin(), this->_textureInfos.end(), [textKey](TextureInfo &info) {return textKey == info.key;}) != this->_textureInfos.end())
+				if (std::find_if(this->_textureInfos.begin(), this->_textureInfos.end(), [textKey](TextureInfo &info) {return textKey == info.key;}) != this->_textureInfos.end())
 					continue;
 
 				size_t atlasPosY = y * this->_textureSize;

@@ -23,8 +23,12 @@ namespace Vox::Front::Interfaces::Elements
             void CleanBuffers(size_t mode);
             void ResetVertex();
 
+			std::string _atlas;
+			std::string _atlasKey;
+
 		public:
-			Image(Vector2 pos = {0, 0}, Vector2 size = {100, 50});
+			// Image(Vector2 pos = {0, 0}, Vector2 size = {100, 50});
+			Image(std::string atlas = "", std::string key = "", Vector2 pos = {0, 0}, Vector2 size = {100, 50});
 			~Image();
 
 			void Draw();
