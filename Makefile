@@ -30,6 +30,7 @@ else
 endif
 
 include stb.mk
+include FreeType.mk
 
 $(OBJS_ROOT)/%.o: $(SRCS_ROOT)/%.cpp $(HDRS)
 	@printf '$(ERASE_LINE)\033[1;37mCompiling \033[1;35m"$<"\033[1;37m into \033[1;35m"$@"\033[1;37m.'
@@ -42,7 +43,7 @@ $(NAME): external createFold shaders $(OBJS)
 	@$(CPP) $(CPPFLAGS) $(OBJS) -o $@ $(Libs)
 	@printf '$(ERASE_LINE)\033[1;32mCompilation ended\033[1;30m\n'
 
-external: STB_download
+external: STB_download DL_FreeType
 
 createFold:
 	@printf '$(ERASE_LINE)\033[1;31mCreating object folder...\033[1;30m'
@@ -56,10 +57,10 @@ clean:
 
 include Shaders.mk
 
-fclean: clean cleanShaders STB_clean
+fclean: clean cleanShaders STB_clean FTP_Clean
 	@printf '$(ERASE_LINE)\033[1;36mCleaning project executable...\033[1;30m'
 	@rm -rf $(NAME)
 	@printf '$(ERASE_LINE)\033[1;32mProject cleaned.\033[1;30m\n'
 
 
-.PHONY: all $(NAME) createFold clean fclean
+.PHONY: all $(NAME) createFold clean fclean external
