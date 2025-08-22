@@ -42,6 +42,7 @@ namespace Vox::Front::Interfaces::Elements::Bases
 
         virtual ~AContainer() {};
 
+        void ResetVertex() {};
         inline void AddElement(const std::string &key, std::unique_ptr<AElement> elem, size_t renderIndex = 0)
         {
             if (this->FindElement(key) != this->_content.end())

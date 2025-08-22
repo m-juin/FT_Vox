@@ -22,7 +22,7 @@ namespace Vox::Front::Interfaces::Elements
 			/* data */
 
             void CleanBuffers(size_t mode);
-            void ResetVertex();
+            void ResetVertex() override;
 
 			std::string _atlas;
 			std::string _atlasKey;
@@ -32,9 +32,9 @@ namespace Vox::Front::Interfaces::Elements
 			Image(std::string atlas = "", std::string key = "", Bases::Vector2 pos = {0, 0}, Bases::Vector2 size = {100, 50});
 			~Image();
 
-			void Draw();
-			void SetPos(const Bases::Vector2 newPos);
-			void SetSize(const Bases::Vector2 newSize);
+			void Draw() override;
+			void SetPos(const Bases::Vector2 newPos) override;
+			void SetSize(const Bases::Vector2 newSize) override;
 	};
 } // namespace Vox::Front::Interfaces::Elements
 

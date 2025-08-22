@@ -15,6 +15,7 @@ namespace Vox::Front::Interfaces::Elements::Bases
             virtual ~AElement() {};
             virtual void SetPos(const Vector2 newPos) = 0;
             virtual void SetSize(const Vector2 newSize) = 0;
+            virtual void ResetVertex() = 0;
         protected:
             Vector2 _pos;
             Vector2 _size;
