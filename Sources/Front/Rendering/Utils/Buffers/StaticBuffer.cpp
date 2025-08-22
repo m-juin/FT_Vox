@@ -32,7 +32,6 @@ namespace Vox::Front::Rendering::Utils::Buffers
 
 		VkBufferCreateInfo bufferInfo = {};
 		bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-		std::cout << (int)_size << std::endl;
 		bufferInfo.size = _size;
 		bufferInfo.usage = _usage;
 		bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;

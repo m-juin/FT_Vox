@@ -8,10 +8,8 @@ namespace Vox::Front::Scenes
 {
     void ScenesManager::RenderCurrentScene()
     {
-        // std::cout << this->_currentScene.get() << std::endl;
         if (this->_currentScene)
         {
-            // std::cout << "render current scene" << std::endl;
             this->_currentScene->Render();
         }
     }
@@ -41,12 +39,6 @@ namespace Vox::Front::Scenes
             _currentScene.reset();
         }
         
-
-        std::cout << "Trying to load : " << sceneName << "\n\nList of avalaible scenes:\n" << std::endl;
-        for (auto key : g_sceneFactories)
-        {
-            std::cout << "\t" << key.first << std::endl;
-        }
         auto factoryIt = g_sceneFactories.find(sceneName);
         if (factoryIt != g_sceneFactories.end())
         {

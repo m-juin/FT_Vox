@@ -21,6 +21,11 @@ namespace Vox::Front::Rendering::Images
 				return this->_sampler;
 			};
 
+			VulkanImage(const VulkanImage &) = delete;
+			VulkanImage &operator=(const VulkanImage &) = delete;
+			VulkanImage(VulkanImage &&) noexcept = default;
+			VulkanImage &operator=(VulkanImage &&) noexcept = default;
+
 		protected:
 			void TransitionImageLayout(VkImageLayout oldLayout, VkImageLayout newLayout);
 			void CopyBufferToImage(VkBuffer buffer);
@@ -40,6 +45,6 @@ namespace Vox::Front::Rendering::Images
 			VkSampler _sampler;
 			/* private */
 	};
-} // namespace Vox::front::Rendering::Images
+} // namespace Vox::Front::Rendering::Images
 
 #endif // __VULKANIMAGE_HPP__

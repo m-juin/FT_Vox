@@ -24,12 +24,12 @@ namespace Vox::Game::Scenes::Menu
             {
                 {"BlackStone", T_Path + "GUI/blackstone.png"},
                 {"Stone", T_Path + "GUI/stone.png"},
-                {"CobbleStone", T_Path +"cobblestone.png"},
+                {"CobbleStone", T_Path +"GUI/cobblestone.png"},
             },
             16,
             4
         );
 
-        this->_fontImage = std::make_unique<Front::Rendering::Images::FontImage>(Front::Rendering::Images::FontImage(T_Path + "GUI/Fonts/Minecraft.ttf"));
+        this->_fontImage = std::make_unique<Front::Rendering::Images::FontImage>(T_Path + "GUI/Fonts/Minecraft.ttf");
     }
 }

@@ -74,8 +74,6 @@ namespace Vox::Front::Utils
 
 		size_t atlasSize =
 			(this->_textureSize * this->_textureSize * this->_textureChannels) * nextPowerOfTwo(textures.size());
-		std::cout << nextPowerOfTwo(textures.size()) << std::endl;
-		std::cout << atlasSize << std::endl;
 		std::unique_ptr<unsigned char[]> atlasData(new unsigned char[atlasSize]);
 
 		std::fill(atlasData.get(), atlasData.get() + atlasSize, 255);

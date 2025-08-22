@@ -52,18 +52,11 @@ namespace Vox::Front::Interfaces::Elements
 	{
 		this->CleanBuffers(0);
 
-		std::cout << this->_atlas << std::endl;
-		std::cout << this->_atlasKey << std::endl;
-
 		const Bases::Vector2 screenSize(Rendering::SwapChain::GetInstance().GetExtent().width,
 								 Rendering::SwapChain::GetInstance().GetExtent().height);
 
 		if (this->_atlas != "" && this->_atlasKey != "")
 		{
-			std::cout << &Game::GameManager::GetInstance() << std::endl;
-			std::cout << &Game::GameManager::GetInstance().GetSceneManager() << std::endl;
-			std::cout << &Game::GameManager::GetInstance().GetSceneManager().GetCurrentScene() << std::endl;
-			std::cout << Game::GameManager::GetInstance().GetSceneManager().GetCurrentScene().GetName() << std::endl;
 			auto uvData = Game::GameManager::GetInstance().GetSceneManager().GetCurrentScene().GetTextureManager()->operator[](_atlas)->GetTextureInfo(this->_atlasKey);
 			this->vertex[0] =
 				vert(Utils::Maths::PointPixelToVulkan(this->_pos, screenSize), {uvData.uOffset, uvData.vOffset}, {1.0f, 1.0f, 1.0f, 1.0f});

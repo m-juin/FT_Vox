@@ -11,7 +11,7 @@ namespace Vox::Front::Rendering
 {
 	DescriptorPool::DescriptorPool()
 	{
-		std::array<VkDescriptorPoolSize, 2> poolSizes;
+		std::array<VkDescriptorPoolSize, 1> poolSizes;
 		poolSizes[0].descriptorCount = 2;
 		poolSizes[0].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 
