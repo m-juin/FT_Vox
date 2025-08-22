@@ -5,10 +5,9 @@
 
 #include "MathGraphicalLib/Vectors/Vector2.hpp"
 
-using Vector2 = MGL::Vectors::Vector2<size_t>;
-
 namespace Vox::Front::Interfaces::Elements::Bases
 {
+    using Vector2 = MGL::Vectors::Vector2<size_t>;
     class AElement
     {
         public:

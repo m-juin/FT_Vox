@@ -10,6 +10,8 @@
 
 #include "Front/Utils/TexturesAtlas.hpp"
 
+#include "Front/Rendering/Images/FontImage.hpp"
+
 #include "Game/GameManager.hpp"
 
 namespace Vox::Front::Rendering::Pipelines
@@ -159,19 +161,25 @@ namespace Vox::Front::Rendering::Pipelines
 
 	void StaticGUIPipeline::CreateSetLayout()
 	{
-		VkDescriptorSetLayoutBinding samplerLayoutBinding{};
-		samplerLayoutBinding.binding = 0;
-		samplerLayoutBinding.descriptorCount = 1;
-		samplerLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		samplerLayoutBinding.pImmutableSamplers = nullptr;
-		samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+		std::array<VkDescriptorSetLayoutBinding, 2> samplerLayoutBindings{};
+		samplerLayoutBindings[0].binding = 0;
+		samplerLayoutBindings[0].descriptorCount = 1;
+		samplerLayoutBindings[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+		samplerLayoutBindings[0].pImmutableSamplers = nullptr;
+		samplerLayoutBindings[0].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 
-		std::vector<VkDescriptorSetLayoutBinding> bindings = {samplerLayoutBinding};
+		samplerLayoutBindings[1].binding = 1;
+		samplerLayoutBindings[1].descriptorCount = 1;
+		samplerLayoutBindings[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+		samplerLayoutBindings[1].pImmutableSamplers = nullptr;
+		samplerLayoutBindings[1].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+
+		// std::vector<VkDescriptorSetLayoutBinding> bindings = {samplerLayoutBinding};
 
 		VkDescriptorSetLayoutCreateInfo layoutInfo{};
 		layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-		layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
-		layoutInfo.pBindings = bindings.data();
+		layoutInfo.bindingCount = static_cast<uint32_t>(samplerLayoutBindings.size());
+		layoutInfo.pBindings = samplerLayoutBindings.data();
 
 		if (vkCreateDescriptorSetLayout(Device::GetInstance().GetLogicalDevice(), &layoutInfo, nullptr,
 										&this->_slayout) != VK_SUCCESS)
@@ -188,24 +196,41 @@ namespace Vox::Front::Rendering::Pipelines
 		allocInfo.descriptorSetCount = static_cast<uint32_t>(1);
 		allocInfo.pSetLayouts = &this->_slayout;
 
+
 		if (vkAllocateDescriptorSets(Device::GetInstance().GetLogicalDevice(), &allocInfo, &this->_set) != VK_SUCCESS)
 			throw std::runtime_error("Failed to allocate descriptor sets!");
 
-		auto guiAtlas = Game::GameManager::GetInstance().GetSceneManager().GetCurrentScene().GetTextureManager()->operator[]("Menu_Main");
+		auto texturesManager = Game::GameManager::GetInstance().GetSceneManager().GetCurrentScene().GetTextureManager();
 
-		VkDescriptorImageInfo imageInfo{};
-		imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-		imageInfo.imageView = guiAtlas->GetView();
-		imageInfo.sampler = guiAtlas->GetSampler();
+		auto textureAtlas = texturesManager->operator[]("Menu_Main");
+		auto fontAtlas = texturesManager->GetFont();
 
-		std::array<VkWriteDescriptorSet, 1> descriptorWrites{};
+		VkDescriptorImageInfo textureInfo{};
+		textureInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+		textureInfo.imageView = textureAtlas->GetView();
+		textureInfo.sampler = textureAtlas->GetSampler();
+
+		VkDescriptorImageInfo fontInfo{};
+		fontInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+		fontInfo.imageView = fontAtlas.GetView();
+		fontInfo.sampler = fontAtlas.GetSampler();
+
+		std::array<VkWriteDescriptorSet, 2> descriptorWrites{};
 		descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 		descriptorWrites[0].dstSet = this->_set;
 		descriptorWrites[0].dstBinding = 0;
 		descriptorWrites[0].dstArrayElement = 0;
 		descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 		descriptorWrites[0].descriptorCount = 1;
-		descriptorWrites[0].pImageInfo = &imageInfo;
+		descriptorWrites[0].pImageInfo = &textureInfo;
+
+		descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+		descriptorWrites[1].dstSet = this->_set;
+		descriptorWrites[1].dstBinding = 1;
+		descriptorWrites[1].dstArrayElement = 0;
+		descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+		descriptorWrites[1].descriptorCount = 1;
+		descriptorWrites[1].pImageInfo = &fontInfo;
 
 		vkUpdateDescriptorSets(Device::GetInstance().GetLogicalDevice(), static_cast<uint32_t>(descriptorWrites.size()),
 							   descriptorWrites.data(), 0, nullptr);

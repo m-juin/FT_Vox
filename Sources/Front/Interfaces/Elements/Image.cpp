@@ -13,7 +13,7 @@
 namespace Vox::Front::Interfaces::Elements
 {
 
-	Image::Image(std::string atlas, std::string key, Vector2 pos, Vector2 size)
+	Image::Image(std::string atlas, std::string key, Bases::Vector2 pos, Bases::Vector2 size)
 		: Bases::AElement(pos, size), _atlas(atlas), _atlasKey(key)
 	{
 		this->ResetVertex();
@@ -55,7 +55,7 @@ namespace Vox::Front::Interfaces::Elements
 		std::cout << this->_atlas << std::endl;
 		std::cout << this->_atlasKey << std::endl;
 
-		const Vector2 screenSize(Rendering::SwapChain::GetInstance().GetExtent().width,
+		const Bases::Vector2 screenSize(Rendering::SwapChain::GetInstance().GetExtent().width,
 								 Rendering::SwapChain::GetInstance().GetExtent().height);
 
 		if (this->_atlas != "" && this->_atlasKey != "")
@@ -103,7 +103,7 @@ namespace Vox::Front::Interfaces::Elements
 		vkCmdDrawIndexed(cmdBuffer, 6, 1, 0, 0, 0);
 	}
 
-	void Image::SetPos(const Vector2 newPos)
+	void Image::SetPos(const Bases::Vector2 newPos)
 	{
 		if (newPos == this->_pos)
 			return;
@@ -111,7 +111,7 @@ namespace Vox::Front::Interfaces::Elements
 		this->ResetVertex();
 	}
 
-	void Image::SetSize(const Vector2 newSize)
+	void Image::SetSize(const Bases::Vector2 newSize)
 	{
 		if (newSize == this->_size)
 			return;

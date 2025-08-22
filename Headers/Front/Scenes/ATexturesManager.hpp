@@ -6,6 +6,10 @@
 
 #include "Front/Utils/TexturesAtlas.hpp"
 
+#include "Front/Rendering/Images/FontImage.hpp"
+
+#include <memory>
+
 namespace Vox::Front::Scenes
 {
     class ATexturesManager
@@ -16,10 +20,12 @@ namespace Vox::Front::Scenes
             
             virtual void CreateMap() = 0;
 
-            Utils::TexturesAtlas *operator[](const std::string &key) {return this->_atlasMap[key];};
+            Utils::TexturesAtlas *operator[](const std::string &key) {return this->_texturesMap[key];};
+            Front::Rendering::Images::FontImage &GetFont(){return *this->_fontImage;}
 
         protected:
-            std::unordered_map<std::string, Utils::TexturesAtlas *> _atlasMap;
+            std::unordered_map<std::string, Utils::TexturesAtlas *> _texturesMap;
+            std::unique_ptr<Front::Rendering::Images::FontImage>_fontImage;
             /* private */
     
     };

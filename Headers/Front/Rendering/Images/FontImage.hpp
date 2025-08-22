@@ -12,10 +12,9 @@
 
 #include "MathGraphicalLib/Vectors/Vector2.hpp"
 
-template <typename T> using Vector2 = MGL::Vectors::Vector2<T>;
-
 namespace Vox::Front::Rendering::Images
 {
+	template <typename T> using Vector2 = MGL::Vectors::Vector2<T>;
 	struct Character
 	{
 			int x;

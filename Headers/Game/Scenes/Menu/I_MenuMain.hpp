@@ -3,8 +3,11 @@
 
 #include "Front/Interfaces/AInterface.hpp"
 
+#include "MathGraphicalLib/Vectors/Vector2.hpp"
+
 namespace Vox::Game::Scenes::Menu::Interfaces
 {
+    using Vector2 = MGL::Vectors::Vector2<size_t> ;
     class I_MenuMain : public Front::Interfaces::AInterface
     {
         public:

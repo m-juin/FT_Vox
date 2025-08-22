@@ -6,9 +6,9 @@ HDRS_ROOT := Headers
 SRCS_ROOT := Sources
 OBJS_ROOT := .Objects
 
-CPPFLAGS := -Werror -Wextra -Wall -std=c++17 -g -IHeaders/ -IExt/
+CPPFLAGS := -Werror -Wextra -Wall -std=c++17 -g -IHeaders/ -IExt/ -IExt/freeType/include/freetype2
 
-Libs = -ILibs/
+Libs = -ILibs/ -lfreetype
 
 rwildcard=$(foreach d,$(wildcard $(1:=/*)),$(call rwildcard,$d,$2) $(filter $(subst *,%,$2),$d))
 

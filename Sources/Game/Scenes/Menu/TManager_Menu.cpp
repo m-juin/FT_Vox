@@ -2,6 +2,8 @@
 
 #include "Game/GameManager.hpp"
 
+#include "Front/Rendering/Images/FontImage.hpp"
+
 namespace Vox::Game::Scenes::Menu
 {
     TManager_Menu::TManager_Menu()
@@ -11,14 +13,14 @@ namespace Vox::Game::Scenes::Menu
     
     TManager_Menu::~TManager_Menu()
     {
-        for (auto pair : this->_atlasMap)
+        for (auto pair : this->_texturesMap)
             delete pair.second;
     }
     
     void TManager_Menu::CreateMap()
     {
         const std::string T_Path = Game::GameManager::GetInstance().GetTexturePackPath();
-        this->_atlasMap["Menu_Main"] = new Front::Utils::TexturesAtlas(
+        this->_texturesMap["Menu_Main"] = new Front::Utils::TexturesAtlas(
             {
                 {"BlackStone", T_Path + "GUI/blackstone.png"},
                 {"Stone", T_Path + "GUI/stone.png"},
@@ -27,5 +29,7 @@ namespace Vox::Game::Scenes::Menu
             16,
             4
         );
+
+        this->_fontImage = std::make_unique<Front::Rendering::Images::FontImage>(Front::Rendering::Images::FontImage(T_Path + "GUI/Fonts/Minecraft.ttf"));
     }
 }
