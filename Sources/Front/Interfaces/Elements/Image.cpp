@@ -13,8 +13,8 @@
 namespace Vox::Front::Interfaces::Elements
 {
 
-	Image::Image(std::string atlas, std::string key, Bases::Vector2 pos, Bases::Vector2 size)
-		: Bases::AElement(pos, size), _atlas(atlas), _atlasKey(key)
+	Image::Image(std::string atlas, std::string key, Vector2 pos, Vector2 size, Color colorMod)
+		: Bases::AElement(pos, size), _atlas(atlas), _atlasKey(key), _colorMod(colorMod)
 	{
 		this->ResetVertex();
 
@@ -50,39 +50,40 @@ namespace Vox::Front::Interfaces::Elements
 
 	void Image::ResetVertex()
 	{
+
 		this->CleanBuffers(0);
 
-		const Bases::Vector2 screenSize(Rendering::SwapChain::GetInstance().GetExtent().width,
+		const Vector2 screenSize(Rendering::SwapChain::GetInstance().GetExtent().width,
 								 Rendering::SwapChain::GetInstance().GetExtent().height);
 
 		if (this->_atlas != "" && this->_atlasKey != "")
 		{
 			auto uvData = Game::GameManager::GetInstance().GetSceneManager().GetCurrentScene().GetTextureManager()->operator[](_atlas)->GetTextureInfo(this->_atlasKey);
 			this->vertex[0] =
-				vert(Utils::Maths::PointPixelToVulkan(this->_pos, screenSize), {uvData.uOffset, uvData.vOffset}, {1.0f, 1.0f, 1.0f, 1.0f});
+				vert(PointPixelToVulkan(this->_pos, screenSize), {uvData.uOffset, uvData.vOffset}, this->_colorMod);
 			this->vertex[1] =
-				vert(Utils::Maths::PointPixelToVulkan({this->_pos[0] + this->_size[0], this->_pos[1]}, screenSize),
-					 {uvData.uOffset + uvData.uSize, uvData.vOffset}, {1.0f, 1.0f, 1.0f, 1.0f});
-			this->vertex[2] = vert(Utils::Maths::PointPixelToVulkan(
+				vert(PointPixelToVulkan({this->_pos[0] + this->_size[0], this->_pos[1]}, screenSize),
+					 {uvData.uOffset + uvData.uSize, uvData.vOffset}, this->_colorMod);
+			this->vertex[2] = vert(PointPixelToVulkan(
 									   {this->_pos[0] + this->_size[0], this->_pos[1] + this->_size[1]}, screenSize),
-								   {uvData.uOffset + uvData.uSize, uvData.vOffset + uvData.vSize}, {1.0f, 1.0f, 1.0f, 1.0f});
+								   {uvData.uOffset + uvData.uSize, uvData.vOffset + uvData.vSize}, this->_colorMod);
 			this->vertex[3] =
-				vert(Utils::Maths::PointPixelToVulkan({this->_pos[0], this->_pos[1] + this->_size[1]}, screenSize),
-					 {uvData.uOffset, uvData.vOffset + uvData.vSize}, {1.0f, 1.0f, 1.0f, 1.0f});
+				vert(PointPixelToVulkan({this->_pos[0], this->_pos[1] + this->_size[1]}, screenSize),
+					 {uvData.uOffset, uvData.vOffset + uvData.vSize}, this->_colorMod);
 		}
 		else
 		{
 			this->vertex[0] =
-				vert(Utils::Maths::PointPixelToVulkan(this->_pos, screenSize), {0.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f});
+				vert(PointPixelToVulkan(this->_pos, screenSize), {0.0f, 0.0f}, this->_colorMod, E_ImageType::Color);
 			this->vertex[1] =
-				vert(Utils::Maths::PointPixelToVulkan({this->_pos[0] + this->_size[0], this->_pos[1]}, screenSize),
-					 {1.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f});
-			this->vertex[2] = vert(Utils::Maths::PointPixelToVulkan(
+				vert(PointPixelToVulkan({this->_pos[0] + this->_size[0], this->_pos[1]}, screenSize),
+					 {1.0f, 0.0f}, this->_colorMod, E_ImageType::Color);
+			this->vertex[2] = vert(PointPixelToVulkan(
 									   {this->_pos[0] + this->_size[0], this->_pos[1] + this->_size[1]}, screenSize),
-								   {1.0f, 1.0f}, {1.0f, 1.0f, 1.0f, 1.0f});
+								   {1.0f, 1.0f}, this->_colorMod, E_ImageType::Color);
 			this->vertex[3] =
-				vert(Utils::Maths::PointPixelToVulkan({this->_pos[0], this->_pos[1] + this->_size[1]}, screenSize),
-					 {0.0f, 1.0f}, {1.0f, 1.0f, 1.0f, 1.0f});
+				vert(PointPixelToVulkan({this->_pos[0], this->_pos[1] + this->_size[1]}, screenSize),
+					 {0.0f, 1.0f}, this->_colorMod, E_ImageType::Color);
 		}
 	}
 
@@ -96,7 +97,7 @@ namespace Vox::Front::Interfaces::Elements
 		vkCmdDrawIndexed(cmdBuffer, 6, 1, 0, 0, 0);
 	}
 
-	void Image::SetPos(const Bases::Vector2 newPos)
+	void Image::SetPos(const Vector2 newPos)
 	{
 		if (newPos == this->_pos)
 			return;
@@ -104,7 +105,7 @@ namespace Vox::Front::Interfaces::Elements
 		this->ResetVertex();
 	}
 
-	void Image::SetSize(const Bases::Vector2 newSize)
+	void Image::SetSize(const Vector2 newSize)
 	{
 		if (newSize == this->_size)
 			return;

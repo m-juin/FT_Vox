@@ -1,12 +1,10 @@
 #include "Front/Interfaces/Elements/Text.hpp"
 
-#include "Front/Rendering/SwapChain.hpp"
 #include "Front/Rendering/CommandsPool.hpp"
+#include "Front/Rendering/SwapChain.hpp"
 #include "Front/Rendering/SyncObjects.hpp"
 
 #include "Game/GameManager.hpp"
-
-#include "Front/Interfaces/Utils/Maths.hpp"
 
 namespace Vox::Front::Interfaces::Elements
 {
@@ -16,17 +14,16 @@ namespace Vox::Front::Interfaces::Elements
 		this->_textContent = st.content;
 		this->_scale = st.scale;
 
-        ResetVertex();
+		ResetVertex();
 	}
 
-	Text::Text(Bases::Vector2 pos, Bases::Vector2 size, Color color, std::string content, float scale)
-		: AElement(pos, size)
+	Text::Text(Vector2 pos, Vector2 size, Color color, std::string content, float scale) : AElement(pos, size)
 	{
 		this->_textColor = color;
 		this->_textContent = content;
 		this->_scale = scale;
 
-        ResetVertex();
+		ResetVertex();
 	}
 
 	Text::~Text()
@@ -36,7 +33,7 @@ namespace Vox::Front::Interfaces::Elements
 
 	void Text::ResetVertex()
 	{
-        this->CleanBuffer(0);
+		this->CleanBuffer(0);
 		if (this->_textContent.size() == 0)
 			return;
 		float x = this->_pos[0];
@@ -45,8 +42,8 @@ namespace Vox::Front::Interfaces::Elements
 		auto &font =
 			Game::GameManager::GetInstance().GetSceneManager().GetCurrentScene().GetTextureManager()->GetFont();
 
-		const Bases::Vector2 screenSize(Rendering::SwapChain::GetInstance().GetExtent().width,
-										Rendering::SwapChain::GetInstance().GetExtent().height);
+		const Vector2 screenSize(Rendering::SwapChain::GetInstance().GetExtent().width,
+								 Rendering::SwapChain::GetInstance().GetExtent().height);
 
 		auto imgType = E_ImageType::Font;
 
@@ -57,12 +54,12 @@ namespace Vox::Front::Interfaces::Elements
 
 		size_t curIndex = 0;
 
+		float textHeight = (font.GetAscent() - font.GetDescent()) * this->_scale;
+		float baseline = y + (textHeight / 2.0f) + (font.GetDescent() * this->_scale);
+
 		for (auto letter : this->_textContent)
 		{
 			auto chr = font[letter];
-
-			float textHeight = (font.GetAscent() - font.GetDescent()) * this->_scale;
-			float baseline = y + (textHeight / 2.0f) + (font.GetDescent() * this->_scale);
 
 			size_t x0 = x + (chr.bearingX * _scale);
 			size_t x1 = x0 + (chr.width * _scale);
@@ -78,17 +75,17 @@ namespace Vox::Front::Interfaces::Elements
 			float v1 = letterBound.bottomRight[1];
 
 			this->_vertex.push_back(
-				vert(Utils::Maths::PointPixelToVulkan({x0, y0}, screenSize), {u0, v1}, this->_textColor, imgType));
+				Vertex(PointPixelToVulkan({x0, y0}, screenSize), {u0, v1}, this->_textColor, imgType));
 			this->_vertex.push_back(
-				vert(Utils::Maths::PointPixelToVulkan({x0, y1}, screenSize), {u0, v0}, this->_textColor, imgType));
+				Vertex(PointPixelToVulkan({x0, y1}, screenSize), {u0, v0}, this->_textColor, imgType));
 			this->_vertex.push_back(
-				vert(Utils::Maths::PointPixelToVulkan({x1, y0}, screenSize), {u1, v1}, this->_textColor, imgType));
+				Vertex(PointPixelToVulkan({x1, y0}, screenSize), {u1, v1}, this->_textColor, imgType));
 
-			// this->_vertex.push_back(vert(Utils::Maths::PointPixelToVulkan({x1, y0}, screenSize), {u1, v1},
+			// this->_vertex.push_back(vert(PointPixelToVulkan({x1, y0}, screenSize), {u1, v1},
 			// this->_textColor, imgType));
 			this->_vertex.push_back(
-				vert(Utils::Maths::PointPixelToVulkan({x1, y1}, screenSize), {u1, v0}, this->_textColor, imgType));
-			// this->_vertex.push_back(vert(Utils::Maths::PointPixelToVulkan({x0, y1}, screenSize), {u0, v0},
+				Vertex(PointPixelToVulkan({x1, y1}, screenSize), {u1, v0}, this->_textColor, imgType));
+			// this->_vertex.push_back(vert(PointPixelToVulkan({x0, y1}, screenSize), {u0, v0},
 			// this->_textColor, imgType));
 
 			index.push_back(curIndex);
@@ -100,21 +97,19 @@ namespace Vox::Front::Interfaces::Elements
 			index.push_back(curIndex + 1);
 
 			curIndex += 4;
-            x += (chr.advance * _scale);
+			x += (chr.advance * _scale);
 		}
 
-		B_Vertex = new buffer(1, this->_vertex.size() * sizeof(vert),
+		B_Vertex = new buffer(1, this->_vertex.size() * sizeof(Vertex),
 							  VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT);
 		B_Index = new buffer(1, index.size() * sizeof(uint32_t),
 							 VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT);
 
-		std::cout << index.size() << std::endl;
-		std::cout << _vertex.size() << std::endl;
 		B_Vertex->Create(this->_vertex.data());
 		B_Index->Create(index.data());
 
-        for (auto vertex : this->_vertex)
-            std::cout << vertex.position << std::endl;
+		for (auto vertex : this->_vertex)
+			std::cout << vertex.position << std::endl;
 	}
 
 	void Text::Draw()
@@ -129,18 +124,36 @@ namespace Vox::Front::Interfaces::Elements
 		vkCmdDrawIndexed(cmdBuffer, this->_textContent.size() * 6, 1, 0, 0, 0);
 	}
 
-	void Text::SetPos(const Bases::Vector2 newPos)
+	void Text::SetPos(const Vector2 newPos)
 	{
 		if (this->_pos == newPos)
 			return;
 		this->_pos = newPos;
 	}
 
-	void Text::SetSize(const Bases::Vector2 newSize)
+	void Text::SetSize(const Vector2 newSize)
 	{
 		if (this->_size == newSize)
 			return;
 		this->_size = newSize;
+	}
+
+	Vector2 Text::GetTextSize(const std::string &content, const float &scale)
+	{
+		Vector2 size;
+		auto &font =
+			Game::GameManager::GetInstance().GetSceneManager().GetCurrentScene().GetTextureManager()->GetFont();
+
+		size[0] = 0;
+		size[1] = (font.GetAscent() - font.GetDescent()) * scale;
+
+		for (auto letter : content)
+		{
+			auto chr = font[letter];
+			size[0] += (chr.advance * scale);
+		}
+
+		return size;
 	}
 
 	void Text::CleanBuffer(size_t mode)

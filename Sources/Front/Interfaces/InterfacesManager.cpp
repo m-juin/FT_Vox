@@ -23,6 +23,12 @@ namespace Vox::Front::Interfaces
 		for (auto interface : this->_content)
 			interface->Render();
 	}
+	
+	void InterfacesManager::HandleMouseMove(const size_t &xPos, const size_t &yPos) const
+	{
+		for (auto interface : this->_content)
+			interface->IsHover({xPos, yPos});
+	}
 
 	InterfacesManager::InterfacesManager() {}
 

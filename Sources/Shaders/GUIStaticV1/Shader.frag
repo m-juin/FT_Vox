@@ -13,8 +13,13 @@ void main()
 {
 	vec4 text;
 	if (inTexMode == 0)
-		text = vec4(texture(fontAtlas, texCoord).r, texture(fontAtlas, texCoord).r, texture(fontAtlas, texCoord).r, 1.0);
-	else
+	{
+		float alpha = texture(fontAtlas, texCoord).r;   // masque de la font
+    	text = vec4(1.0, 1.0, 1.0, alpha);  
+	}
+	else if (inTexMode == 1)
 		text = texture(textureAtlas, texCoord);
+	else
+		text = vec4(1.0);
 	outColor = text * inTexColor;
 }

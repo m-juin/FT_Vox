@@ -17,6 +17,8 @@ namespace Vox::Front::Interfaces
             void ResetInterfacesList();
             void RegisterInterface(AInterface *inte);
             void Render();
+
+            void HandleMouseMove(const size_t &xPos, const size_t &yPos) const;
             InterfacesManager();
             ~InterfacesManager();
     

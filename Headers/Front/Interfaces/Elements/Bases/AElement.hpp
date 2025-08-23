@@ -3,11 +3,15 @@
 
 #include <cstdint>
 
-#include "MathGraphicalLib/Vectors/Vector2.hpp"
+#include "../Utils/Defines.hpp"
+
+namespace Vox::Front::Interfaces::Elements
+{
+    using namespace Vox::Front::Interfaces::Elements::Utils::Defines;
+}
 
 namespace Vox::Front::Interfaces::Elements::Bases
 {
-    using Vector2 = MGL::Vectors::Vector2<size_t>;
     class AElement
     {
         public:

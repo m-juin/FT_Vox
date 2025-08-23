@@ -27,14 +27,15 @@ namespace Vox::Front::Interfaces::Elements
 			std::string _atlas;
 			std::string _atlasKey;
 
+			Color _colorMod;
 		public:
 			// Image(Vector2 pos = {0, 0}, Vector2 size = {100, 50});
-			Image(std::string atlas = "", std::string key = "", Bases::Vector2 pos = {0, 0}, Bases::Vector2 size = {100, 50});
+			Image(std::string atlas = "", std::string key = "", Vector2 pos = {0, 0}, Vector2 size = {100, 50}, Color colorMod = {1.0, 1.0, 1.0, 1.0});
 			~Image();
 
 			void Draw() override;
-			void SetPos(const Bases::Vector2 newPos) override;
-			void SetSize(const Bases::Vector2 newSize) override;
+			void SetPos(const Vector2 newPos) override;
+			void SetSize(const Vector2 newSize) override;
 	};
 } // namespace Vox::Front::Interfaces::Elements
 

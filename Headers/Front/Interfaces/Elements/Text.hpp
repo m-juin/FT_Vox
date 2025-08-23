@@ -6,9 +6,7 @@
 #include "MathGraphicalLib/Vectors/Vector4.hpp"
 
 #include "Front/Rendering/Utils/Buffers/StaticBuffer.hpp"
-#include "Front/Rendering/Utils/Vertex/StaticGUIVertex.hpp"
 
-using vert = Vox::Front::Rendering::Utils::Vertex::StaticGUIVertex;
 using E_ImageType = Vox::Front::Rendering::Utils::Vertex::E_ImageType;
 using buffer = Vox::Front::Rendering::Utils::Buffers::StaticBuffer;
 
@@ -16,13 +14,12 @@ namespace Vox::Front::Interfaces::Elements
 {
 	class Text : public Bases::AElement
 	{
-			using Color = MGL::Vectors::Vector4<float>;
 
 		public:
 			struct Vox_Text_Constructor
 			{
-					Bases::Vector2 pos;
-					Bases::Vector2 size;
+					Vector2 pos;
+					Vector2 size;
 					Color color;
 					std::string content;
 					float scale;
@@ -39,17 +36,19 @@ namespace Vox::Front::Interfaces::Elements
 
 			Text() = delete;
 			Text(const Vox_Text_Constructor &st);
-			Text(Bases::Vector2 pos = {0, 0}, Bases::Vector2 size = {100, 50}, Color color = {1.0f, 1.0f, 1.0f, 1.0f},
+			Text(Vector2 pos = {0, 0}, Vector2 size = {100, 50}, Color color = {1.0f, 1.0f, 1.0f, 1.0f},
 				 std::string content = "", float scale = 0.5);
 			~Text();
 
 			void ResetVertex() override;
 			void Draw() override;
-			void SetPos(const Bases::Vector2 newPos) override;
-			void SetSize(const Bases::Vector2 newSize) override;
+			void SetPos(const Vector2 newPos) override;
+			void SetSize(const Vector2 newSize) override;
+
+			static Vector2 GetTextSize(const std::string &content, const float &scale);
 
 		private:
-			std::vector<vert> _vertex;
+			std::vector<Vertex> _vertex;
 			buffer *B_Vertex = nullptr;
 			buffer *B_Index = nullptr;
 

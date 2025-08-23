@@ -11,7 +11,8 @@ namespace Vox::Front::Rendering::Utils::Vertex
 {
 	enum class E_ImageType {
 		Font = 0,
-		Texture = 1
+		Texture = 1,
+		Color = 2
 	};
 
 	struct StaticGUIVertex
