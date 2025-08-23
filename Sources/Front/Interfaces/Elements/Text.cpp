@@ -29,7 +29,10 @@ namespace Vox::Front::Interfaces::Elements
         ResetVertex();
 	}
 
-	Text::~Text() {}
+	Text::~Text()
+	{
+		CleanBuffer(2);
+	}
 
 	void Text::ResetVertex()
 	{
@@ -105,6 +108,8 @@ namespace Vox::Front::Interfaces::Elements
 		B_Index = new buffer(1, index.size() * sizeof(uint32_t),
 							 VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT);
 
+		std::cout << index.size() << std::endl;
+		std::cout << _vertex.size() << std::endl;
 		B_Vertex->Create(this->_vertex.data());
 		B_Index->Create(index.data());
 
@@ -121,7 +126,7 @@ namespace Vox::Front::Interfaces::Elements
 		VkDeviceSize offsets[] = {0};
 		vkCmdBindVertexBuffers(cmdBuffer, 0, 1, &this->B_Vertex->GetBuffer(0), offsets);
 		vkCmdBindIndexBuffer(cmdBuffer, this->B_Index->GetBuffer(0), 0, VK_INDEX_TYPE_UINT32);
-		vkCmdDrawIndexed(cmdBuffer, this->_vertex.size() * 6, 1, 0, 0, 0);
+		vkCmdDrawIndexed(cmdBuffer, this->_textContent.size() * 6, 1, 0, 0, 0);
 	}
 
 	void Text::SetPos(const Bases::Vector2 newPos)
