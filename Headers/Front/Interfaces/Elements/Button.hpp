@@ -30,7 +30,7 @@ namespace Vox::Front::Interfaces::Elements
             Button(const Vox_Button_Constructor &st);
             ~Button();
 
-            void OnClick() override;
+            void OnClick(const int &button, const int &action) override;
             void OnHover() override;
             void OnHoverLeave() override;
             bool IsHover(const Vector2 &mousePos) override;

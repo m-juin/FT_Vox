@@ -11,33 +11,32 @@ namespace Vox::Front::Interfaces::Elements::Bases
 			AClickable(Vector2 pos = {0, 0}, Vector2 size = {100, 50}) : AElement(pos, size) {};
 			virtual ~AClickable() {};
 			virtual void OnHover() = 0;
-			virtual void OnClick() = 0;
+			virtual void OnClick(const int &button, const int &action) = 0;
 			virtual void OnHoverLeave() = 0;
 			virtual bool IsHover(const Vector2 &mousePos)
 			{
 				if ((mousePos[0] >= this->_pos[0] && mousePos[0] <= this->_pos[0] + this->_size[0]) &&
 					(mousePos[1] >= this->_pos[1] && mousePos[1] <= this->_pos[1] + this->_size[1]))
 				{
-					if (_currentlyHovered == true)
+					if (currentlyHovered == true)
 						return true;
-					_currentlyHovered = true;
+					currentlyHovered = true;
 					this->OnHover();
 				}
 				else
 				{
-					if (_currentlyHovered == false)
+					if (currentlyHovered == false)
 						return false;
-					_currentlyHovered = false;
+					currentlyHovered = false;
 					this->OnHoverLeave();
 				}
-				return this->_currentlyHovered;
+				return this->currentlyHovered;
 			};
 
 			virtual void SetPos(const Vector2 newPos) = 0;
 			virtual void SetSize(const Vector2 newSize) = 0;
-
-		private:
-			bool _currentlyHovered = false;
+			bool currentlyHovered = false;
+		protected:
 	};
 } // namespace Vox::Front::Interfaces::Elements::Bases
 

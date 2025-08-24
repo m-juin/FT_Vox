@@ -19,6 +19,7 @@ namespace Vox::Front::Interfaces
             void Render();
 
             void HandleMouseMove(const size_t &xPos, const size_t &yPos) const;
+            void HandleMouseClick(const int &button, const int &action) const;
             InterfacesManager();
             ~InterfacesManager();
     

@@ -45,9 +45,16 @@ namespace Vox::Front::Interfaces::Elements::Bases
 		
 	}
 
-	void AContainer::OnClick()
+	void AContainer::OnClick(const int &button, const int &action)
 	{
-		
+		for (auto &elem : this->_content)
+		{
+			if (auto child = dynamic_cast<AClickable *>(elem.elem.get()))
+			{
+				if (child->currentlyHovered)
+					child->OnClick(button, action);
+			}
+		}
 	}
 
 	void AContainer::OnHoverLeave()

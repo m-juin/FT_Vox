@@ -17,12 +17,19 @@ namespace Vox::Game
 
 	void InputManager::LoadInput()
 	{
-		glfwSetCursorPosCallback(Front::Window::GetInstance().GetWindow(), [](GLFWwindow *window, double xPos, double yPos)
-    {
-        (void)window;
-        const auto &im = Front::Interfaces::InterfacesManager::GetInstance();
-        im.HandleMouseMove(xPos, yPos);
+		glfwSetCursorPosCallback(Front::Window::GetInstance().GetWindow(),
+								 [](GLFWwindow *window, double xPos, double yPos)
+								 {
+									 (void)window;
+									 const auto &im = Front::Interfaces::InterfacesManager::GetInstance();
+									 im.HandleMouseMove(xPos, yPos);
+								 });
 
-    });
+		glfwSetMouseButtonCallback(Front::Window::GetInstance().GetWindow(), [](GLFWwindow *window, int button, int action, int mods) {
+			(void)window;
+			(void)mods;
+			const auto &im = Front::Interfaces::InterfacesManager::GetInstance();
+			im.HandleMouseClick(button, action);
+	});
 	}
 } // namespace Vox::Game

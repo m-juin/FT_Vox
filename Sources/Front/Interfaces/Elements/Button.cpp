@@ -3,6 +3,8 @@
 #include "Front/Interfaces/Elements/Image.hpp"
 #include "Front/Interfaces/Elements/Text.hpp"
 
+#include <GLFW/glfw3.h>
+
 namespace Vox::Front::Interfaces::Elements
 {
 
@@ -43,8 +45,10 @@ namespace Vox::Front::Interfaces::Elements
         
     }
     
-    void Button::OnClick()
+    void Button::OnClick(const int &button, const int &action)
     {
+        if (button != GLFW_MOUSE_BUTTON_LEFT || action != GLFW_RELEASE) return ;
+
         std::cout << "[DEBUG] " << "Button is clicked." << std::endl;
     }
     

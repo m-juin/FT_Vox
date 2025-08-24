@@ -3,6 +3,8 @@
 #include "Front/Rendering/SwapChain.hpp"
 #include "Front/Rendering/Pipelines/PipelinesManager.hpp"
 
+#include <GLFW/glfw3.h>
+
 namespace Vox::Front::Interfaces
 {
 	void InterfacesManager::ResetInterfacesList()
@@ -28,6 +30,12 @@ namespace Vox::Front::Interfaces
 	{
 		for (auto interface : this->_content)
 			interface->IsHover({xPos, yPos});
+	}
+	
+	void InterfacesManager::HandleMouseClick(const int &button, const int &action) const
+	{
+		for (auto interface : this->_content)
+			interface->OnClick(button, action);
 	}
 
 	InterfacesManager::InterfacesManager() {}
