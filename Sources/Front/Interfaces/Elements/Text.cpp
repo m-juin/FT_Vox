@@ -144,8 +144,6 @@ namespace Vox::Front::Interfaces::Elements
 		this->_textColor = newColor;
 		for (auto &vert : this->_vertex)
 			vert.texColor = this->_textColor;
-		for (auto vert : this->_vertex)
-			std::cout << vert.texColor << std::endl;
 		this->B_Vertex->Update(this->_vertex.data(), this->_vertex.size() * sizeof(Vertex));
 	}
 

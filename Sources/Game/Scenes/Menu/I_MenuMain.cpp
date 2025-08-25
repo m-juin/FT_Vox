@@ -1,6 +1,6 @@
 #include "Game/Scenes/Menu/I_MenuMain.hpp"
 
-#include "Front/Interfaces/Elements/Button.hpp"
+#include "Front/Interfaces/Elements/Buttons/ColoredButton.hpp"
 #include "Front/Interfaces/Elements/Image.hpp"
 #include "Front/Interfaces/Elements/Text.hpp"
 
@@ -26,7 +26,7 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 			this->AddElement("TXT_Test", std::make_unique<Text>(params), 1);
 		}
 		{
-			Button::Vox_Button_Constructor params{};
+			Buttons::ColoredButton::Vox_ColorButton_Constructor params{};
 			params.pos = {400, 200};
 			params.content = "Test";
 			params.size = {100, 50};
@@ -35,7 +35,7 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 			params.hoverTXTColor = {1.0, 1.0, 1.0, 1.0};
 			params.hoverBGColor = {1.0, 0.0, 1.0, 1.0};
 
-			this->AddElement("BTN_Test", std::make_unique<Button>(params), 1);
+			this->AddElement("BTN_Test", std::make_unique<Buttons::ColoredButton>(params), 1);
 		}
 	}
 

@@ -34,6 +34,7 @@ namespace Vox::Front::Interfaces::Elements
 			void SetSize(const Vector2 newSize) override;
 
 			void SetColor(const Color &newColor);
+			void SetTexture(const std::string &newAtlas, const std::string &newKey);
 	};
 } // namespace Vox::Front::Interfaces::Elements
 

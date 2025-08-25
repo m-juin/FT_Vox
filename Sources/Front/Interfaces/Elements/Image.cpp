@@ -125,4 +125,19 @@ namespace Vox::Front::Interfaces::Elements
 		// this->CleanBuffers(0);
 		// this->B_Vertices->Create(&this->_vertex);
 	}
+	
+	void Image::SetTexture(const std::string &newAtlas, const std::string &newKey)
+	{
+		if (newAtlas == this->_atlas && newKey == this->_atlasKey) return ;
+		this->_atlas = newAtlas;
+		this->_atlasKey = newKey;
+
+		auto uvData = Game::GameManager::GetInstance().GetSceneManager().GetCurrentScene().GetTextureManager()->operator[](_atlas)->GetTextureInfo(this->_atlasKey);
+		this->_vertex[0].texCoord = {uvData.uOffset, uvData.vOffset};
+		this->_vertex[1].texCoord = {uvData.uOffset + uvData.uSize, uvData.vOffset};
+		this->_vertex[2].texCoord = {uvData.uOffset + uvData.uSize, uvData.vOffset + uvData.vSize};
+		this->_vertex[3].texCoord = {uvData.uOffset, uvData.vOffset + uvData.vSize};
+	
+		this->B_Vertices->Update(&this->_vertex, 4 * sizeof(Vertex));
+	}
 } // namespace Vox::Front::Interfaces::Elements
