@@ -5,10 +5,8 @@
 
 #include "MathGraphicalLib/Vectors/Vector4.hpp"
 
-#include "Front/Rendering/Utils/Buffers/StaticBuffer.hpp"
 
 using E_ImageType = Vox::Front::Rendering::Utils::Vertex::E_ImageType;
-using buffer = Vox::Front::Rendering::Utils::Buffers::StaticBuffer;
 
 namespace Vox::Front::Interfaces::Elements
 {
@@ -45,12 +43,14 @@ namespace Vox::Front::Interfaces::Elements
 			void SetPos(const Vector2 newPos) override;
 			void SetSize(const Vector2 newSize) override;
 
+			void SetColor(const Color &newColor);
+
 			static Vector2 GetTextSize(const std::string &content, const float &scale);
 
 		private:
 			std::vector<Vertex> _vertex;
-			buffer *B_Vertex = nullptr;
-			buffer *B_Index = nullptr;
+			dbuffer *B_Vertex = nullptr;
+			dbuffer *B_Index = nullptr;
 
 			Color _textColor;
 			std::string _textContent;

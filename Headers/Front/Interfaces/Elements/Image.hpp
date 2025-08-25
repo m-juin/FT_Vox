@@ -5,20 +5,16 @@
 
 #include "Front/Rendering/Utils/Vertex/StaticGUIVertex.hpp"
 
-#include "Front/Rendering/Utils/Buffers/StaticBuffer.hpp"
-
-using vert = Vox::Front::Rendering::Utils::Vertex::StaticGUIVertex;
 using E_ImageType = Vox::Front::Rendering::Utils::Vertex::E_ImageType;
-using buffer = Vox::Front::Rendering::Utils::Buffers::StaticBuffer;
 
 namespace Vox::Front::Interfaces::Elements
 {
 	class Image : public Bases::AElement
 	{
 		private:
-			vert vertex[4];
-			buffer *B_Vertices = nullptr;
-			buffer *B_Indices = nullptr;
+			Vertex _vertex[4];
+			dbuffer *B_Vertices = nullptr;
+			dbuffer *B_Indices = nullptr;
 			/* data */
 
             void CleanBuffers(size_t mode);
@@ -36,6 +32,8 @@ namespace Vox::Front::Interfaces::Elements
 			void Draw() override;
 			void SetPos(const Vector2 newPos) override;
 			void SetSize(const Vector2 newSize) override;
+
+			void SetColor(const Color &newColor);
 	};
 } // namespace Vox::Front::Interfaces::Elements
 

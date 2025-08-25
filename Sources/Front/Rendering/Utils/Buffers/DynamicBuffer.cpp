@@ -15,7 +15,15 @@ namespace Vox::Front::Rendering::Utils::Buffers
 		_usage = usage;
 	}
 
-	DynamicBuffer::~DynamicBuffer() {}
+	DynamicBuffer::~DynamicBuffer()
+	{
+		VkDevice &device = Device::GetInstance().GetLogicalDevice();
+		for (size_t i = 0; i < _buffers.size(); i++)
+		{
+			vkDestroyBuffer(device, _buffers[i], nullptr);
+			vkFreeMemory(device, _memories[i], nullptr);
+		}
+	}
 
 	void DynamicBuffer::Create(void *initialData)
 	{
@@ -43,7 +51,8 @@ namespace Vox::Front::Rendering::Utils::Buffers
 		allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 		allocInfo.allocationSize = memRequirements.size;
 		allocInfo.memoryTypeIndex = Utils::FindMemoryType(
-			memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, device.GetPhysicalDevice());
+			memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+			device.GetPhysicalDevice());
 
 		for (size_t i = 0; i < _buffers.size(); i++)
 		{
@@ -55,12 +64,22 @@ namespace Vox::Front::Rendering::Utils::Buffers
 			vkMapMemory(device.GetLogicalDevice(), _memories[i], 0, _size, 0, &_mappedMemories[i]);
 		}
 
-		std::memcpy(_mappedMemories[SyncObjects::GetInstance().GetNextFrame()], initialData, this->_size);
+		std::cout << (int)this->_size << std::endl;
+		size_t nextFrame = 0;
+		if (this->_memories.size() != 1)
+			nextFrame = SyncObjects::GetInstance().GetNextFrame();
+
+		std::memcpy(_mappedMemories[nextFrame], initialData, this->_size);
+		// std::memcpy(_mappedMemories[SyncObjects::GetInstance().GetNextFrame()], initialData, this->_size);
 	}
 
 	void DynamicBuffer::Update(void *newData, VkDeviceSize newDataSize)
-    {
-        this->_size = newDataSize;
-        std::memcpy(_mappedMemories[SyncObjects::GetInstance().GetNextFrame()], newData, newDataSize);
-    }
+	{
+		this->_size = newDataSize;
+		size_t nextFrame = 0;
+		if (this->_memories.size() != 1)
+			nextFrame = SyncObjects::GetInstance().GetNextFrame();
+
+		std::memcpy(_mappedMemories[nextFrame], newData, newDataSize);
+	}
 } // namespace Vox::Front::Rendering::Utils::Buffers

@@ -3,11 +3,20 @@
 
 #include "./AElement.hpp"
 
+#include "Utils/CallBacksManager.hpp"
+
+
 namespace Vox::Front::Interfaces::Elements::Bases
 {
+	namespace Constructors
+	{
+		
+	} // namespace Constructors
+	
 	class AClickable : public AElement
 	{
 		public:
+
 			AClickable(Vector2 pos = {0, 0}, Vector2 size = {100, 50}) : AElement(pos, size) {};
 			virtual ~AClickable() {};
 			virtual void OnHover() = 0;
@@ -37,6 +46,8 @@ namespace Vox::Front::Interfaces::Elements::Bases
 			virtual void SetSize(const Vector2 newSize) = 0;
 			bool currentlyHovered = false;
 		protected:
+
+
 	};
 } // namespace Vox::Front::Interfaces::Elements::Bases
 

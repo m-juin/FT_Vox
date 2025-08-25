@@ -32,6 +32,8 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 			params.size = {100, 50};
 			params.bgColor = {0.0, 1.0, 0.0, 1.0};
 			params.textColor = {0.0, 0.0, 1.0, 1.0};
+			params.hoverTXTColor = {1.0, 1.0, 1.0, 1.0};
+			params.hoverBGColor = {1.0, 0.0, 1.0, 1.0};
 
 			this->AddElement("BTN_Test", std::make_unique<Button>(params), 1);
 		}

@@ -100,9 +100,9 @@ namespace Vox::Front::Interfaces::Elements
 			x += (chr.advance * _scale);
 		}
 
-		B_Vertex = new buffer(1, this->_vertex.size() * sizeof(Vertex),
+		B_Vertex = new dbuffer(1, this->_vertex.size() * sizeof(Vertex),
 							  VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT);
-		B_Index = new buffer(1, index.size() * sizeof(uint32_t),
+		B_Index = new dbuffer(1, index.size() * sizeof(uint32_t),
 							 VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT);
 
 		B_Vertex->Create(this->_vertex.data());
@@ -136,6 +136,17 @@ namespace Vox::Front::Interfaces::Elements
 		if (this->_size == newSize)
 			return;
 		this->_size = newSize;
+	}
+	
+	void Text::SetColor(const Color &newColor)
+	{
+		if (this->_textColor == newColor) return ;
+		this->_textColor = newColor;
+		for (auto &vert : this->_vertex)
+			vert.texColor = this->_textColor;
+		for (auto vert : this->_vertex)
+			std::cout << vert.texColor << std::endl;
+		this->B_Vertex->Update(this->_vertex.data(), this->_vertex.size() * sizeof(Vertex));
 	}
 
 	Vector2 Text::GetTextSize(const std::string &content, const float &scale)

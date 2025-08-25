@@ -18,13 +18,15 @@ namespace Vox::Front::Interfaces::Elements
 	{
 		this->ResetVertex();
 
+		std::cout << "image buffer" << std::endl;
 		B_Vertices =
-			new buffer(1, 4 * sizeof(vert), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT);
+			new dbuffer(1, 4 * sizeof(Vertex), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT);
 		B_Indices =
-			new buffer(1, 6 * sizeof(uint16_t), VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT);
+			new dbuffer(1, 6 * sizeof(uint16_t), VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT);
 
-		B_Vertices->Create(&this->vertex);
-
+		std::cout <<"creation" << std::endl;
+		B_Vertices->Create(&this->_vertex);
+		// std::cout <<"creation2" << std::endl; 
 		uint16_t *indices = new uint16_t[6]{0, 1, 2, 2, 3, 0};
 
 		B_Indices->Create(indices);
@@ -59,30 +61,30 @@ namespace Vox::Front::Interfaces::Elements
 		if (this->_atlas != "" && this->_atlasKey != "")
 		{
 			auto uvData = Game::GameManager::GetInstance().GetSceneManager().GetCurrentScene().GetTextureManager()->operator[](_atlas)->GetTextureInfo(this->_atlasKey);
-			this->vertex[0] =
-				vert(PointPixelToVulkan(this->_pos, screenSize), {uvData.uOffset, uvData.vOffset}, this->_colorMod);
-			this->vertex[1] =
-				vert(PointPixelToVulkan({this->_pos[0] + this->_size[0], this->_pos[1]}, screenSize),
+			this->_vertex[0] =
+				Vertex(PointPixelToVulkan(this->_pos, screenSize), {uvData.uOffset, uvData.vOffset}, this->_colorMod);
+			this->_vertex[1] =
+				Vertex(PointPixelToVulkan({this->_pos[0] + this->_size[0], this->_pos[1]}, screenSize),
 					 {uvData.uOffset + uvData.uSize, uvData.vOffset}, this->_colorMod);
-			this->vertex[2] = vert(PointPixelToVulkan(
+			this->_vertex[2] = Vertex(PointPixelToVulkan(
 									   {this->_pos[0] + this->_size[0], this->_pos[1] + this->_size[1]}, screenSize),
 								   {uvData.uOffset + uvData.uSize, uvData.vOffset + uvData.vSize}, this->_colorMod);
-			this->vertex[3] =
-				vert(PointPixelToVulkan({this->_pos[0], this->_pos[1] + this->_size[1]}, screenSize),
+			this->_vertex[3] =
+				Vertex(PointPixelToVulkan({this->_pos[0], this->_pos[1] + this->_size[1]}, screenSize),
 					 {uvData.uOffset, uvData.vOffset + uvData.vSize}, this->_colorMod);
 		}
 		else
 		{
-			this->vertex[0] =
-				vert(PointPixelToVulkan(this->_pos, screenSize), {0.0f, 0.0f}, this->_colorMod, E_ImageType::Color);
-			this->vertex[1] =
-				vert(PointPixelToVulkan({this->_pos[0] + this->_size[0], this->_pos[1]}, screenSize),
+			this->_vertex[0] =
+				Vertex(PointPixelToVulkan(this->_pos, screenSize), {0.0f, 0.0f}, this->_colorMod, E_ImageType::Color);
+			this->_vertex[1] =
+				Vertex(PointPixelToVulkan({this->_pos[0] + this->_size[0], this->_pos[1]}, screenSize),
 					 {1.0f, 0.0f}, this->_colorMod, E_ImageType::Color);
-			this->vertex[2] = vert(PointPixelToVulkan(
+			this->_vertex[2] = Vertex(PointPixelToVulkan(
 									   {this->_pos[0] + this->_size[0], this->_pos[1] + this->_size[1]}, screenSize),
 								   {1.0f, 1.0f}, this->_colorMod, E_ImageType::Color);
-			this->vertex[3] =
-				vert(PointPixelToVulkan({this->_pos[0], this->_pos[1] + this->_size[1]}, screenSize),
+			this->_vertex[3] =
+				Vertex(PointPixelToVulkan({this->_pos[0], this->_pos[1] + this->_size[1]}, screenSize),
 					 {0.0f, 1.0f}, this->_colorMod, E_ImageType::Color);
 		}
 	}
@@ -112,5 +114,15 @@ namespace Vox::Front::Interfaces::Elements
 		this->_size = newSize;
 		CleanBuffers(0);
 		this->ResetVertex();
+	}
+	
+	void Image::SetColor(const Color &newColor)
+	{
+		if (this->B_Vertices == VK_NULL_HANDLE || this->_vertex[0].texColor == newColor) return; 
+		for (auto &vert : this->_vertex)
+			vert.texColor = newColor;
+		this->B_Vertices->Update(&this->_vertex, 4 * sizeof(Vertex));
+		// this->CleanBuffers(0);
+		// this->B_Vertices->Create(&this->_vertex);
 	}
 } // namespace Vox::Front::Interfaces::Elements
