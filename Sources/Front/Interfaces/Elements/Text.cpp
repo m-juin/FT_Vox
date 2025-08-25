@@ -142,6 +142,7 @@ namespace Vox::Front::Interfaces::Elements
 	{
 		if (this->_textColor == newColor) return ;
 		this->_textColor = newColor;
+		if (this->B_Vertex == VK_NULL_HANDLE) return ;
 		for (auto &vert : this->_vertex)
 			vert.texColor = this->_textColor;
 		this->B_Vertex->Update(this->_vertex.data(), this->_vertex.size() * sizeof(Vertex));

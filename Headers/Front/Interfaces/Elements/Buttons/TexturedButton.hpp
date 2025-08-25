@@ -10,11 +10,11 @@ namespace Vox::Front::Interfaces::Elements::Buttons
         public:
             struct Vox_TexturedButton_Constructor : public Vox_Button_Constructor
             {
-                const std::string atlas; 
-                const std::string atlasKey;
+                std::string atlas; 
+                std::string atlasKey;
 
-                const std::string onHoverAtlas;
-                const std::string onHoverAtlasKey;
+                std::string onHoverAtlas;
+                std::string onHoverAtlasKey;
                 
                 Vox_TexturedButton_Constructor() : Vox_Button_Constructor(), atlas(""), atlasKey("") {};
             };

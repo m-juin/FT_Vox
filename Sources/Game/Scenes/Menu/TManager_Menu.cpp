@@ -25,10 +25,19 @@ namespace Vox::Game::Scenes::Menu
                 {"BlackStone", T_Path + "GUI/blackstone.png"},
                 {"Stone", T_Path + "GUI/stone.png"},
                 {"CobbleStone", T_Path +"GUI/cobblestone.png"},
+                {"Button", T_Path + "GUI/button.png"},
+                {"Button_Hover", T_Path + "GUI/button_highlighted.png"},
             },
-            16,
             4
         );
+
+        // this->_texturesMap["Menu_Buttons"] = new Front::Utils::TexturesAtlas(
+        //     {
+        //         {"Button", T_Path + "GUI/button.png"},
+        //         {"Button_Hover", T_Path + "GUI/button_highlighted.png"},
+        //     },
+        //     4
+        // );
         this->_fontImage = std::make_unique<Front::Rendering::Images::FontImage>(T_Path + "GUI/Fonts/Minecraft.ttf");
     }
 }

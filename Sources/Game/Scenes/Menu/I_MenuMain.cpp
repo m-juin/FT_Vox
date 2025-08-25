@@ -1,6 +1,8 @@
 #include "Game/Scenes/Menu/I_MenuMain.hpp"
 
 #include "Front/Interfaces/Elements/Buttons/ColoredButton.hpp"
+
+#include "Front/Interfaces/Elements/Buttons/TexturedButton.hpp"
 #include "Front/Interfaces/Elements/Image.hpp"
 #include "Front/Interfaces/Elements/Text.hpp"
 
@@ -27,15 +29,30 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 		}
 		{
 			Buttons::ColoredButton::Vox_ColorButton_Constructor params{};
+			params.pos = {600, 200};
+			params.content = "Test";
+			params.size = {100, 50};
+			params.bgColor = {0.0, 0.0, 1.0, 1.0};
+			params.hoverBGColor = {1.0, 0.0, 1.0, 1.0};
+			params.textColor = {0.0, 1.0, 1.0, 1.0};
+			params.hoverTXTColor = {1.0, 1.0, 1.0, 1.0};
+
+			this->AddElement("BTN_Test", std::make_unique<Buttons::ColoredButton>(params), 1);
+		}
+
+		{
+			Buttons::TexturedButton::Vox_TexturedButton_Constructor params{};
 			params.pos = {400, 200};
 			params.content = "Test";
 			params.size = {100, 50};
-			params.bgColor = {0.0, 1.0, 0.0, 1.0};
+			params.atlas = "Menu_Main";
+			params.atlasKey = "Button";
 			params.textColor = {0.0, 0.0, 1.0, 1.0};
 			params.hoverTXTColor = {1.0, 1.0, 1.0, 1.0};
-			params.hoverBGColor = {1.0, 0.0, 1.0, 1.0};
+			params.onHoverAtlas = "Menu_Main";
+			params.onHoverAtlasKey = "Button_Hover";
 
-			this->AddElement("BTN_Test", std::make_unique<Buttons::ColoredButton>(params), 1);
+			this->AddElement("BTN_Test1", std::make_unique<Buttons::TexturedButton>(params), 1);
 		}
 	}
 
@@ -48,7 +65,8 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 		this->_pos = newPos;
 		this->FindElement("IMG_Front")->elem->SetPos({this->_pos[0] + 100, this->_pos[1] + 100});
 		this->FindElement("TXT_Test")->elem->SetPos({100, 100});
-		this->FindElement("BTN_Test")->elem->SetPos({400, 200});
+		this->FindElement("BTN_Test1")->elem->SetPos({400, 200});
+		this->FindElement("BTN_Test")->elem->SetPos({600, 200});
 	}
 
 	void I_MenuMain::SetSize(const Vector2 newSize)
