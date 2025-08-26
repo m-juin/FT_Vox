@@ -44,8 +44,11 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 			pm.hoverTXTColor = {1.0, 1.0, 1.0, 1.0};
 			pm.onHoverAtlas = "Menu_Main";
 			pm.onHoverAtlasKey = "Button_Hover";
+			pm.disabledTXTColor = {0.5, 0.5, 0.5, 1.0};
+			pm.onDisabledAtlas = "Menu_Main";
+			pm.onDisabledAtlasKey = "Button_Disabled";
 			pm.size = {(this->_size[0] - this->_size[0] / 4) / 2 - 50, 75};
-			pm.textColor = {0.5, 0.5, 0.5, 1.0};
+			pm.textColor = {0.7, 0.7, 0.7, 1.0};
 			pm.textScale = 0.8f;
 
 			pm.content = "Join World";
@@ -80,6 +83,8 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 					// std::cout << std::boolalpha
 					// 		  << Front::Interfaces::InterfacesManager::GetInstance()["World"]->IsEnabled() << std::endl;
 				});
+
+		this->GetElement<Buttons::TexturedButton>("BTN_Join")->ChangeEnableState(false);
 	}
 
 	I_MenuWorld::~I_MenuWorld() {}

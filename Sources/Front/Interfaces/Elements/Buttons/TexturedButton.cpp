@@ -24,6 +24,21 @@ namespace Vox::Front::Interfaces::Elements::Buttons
 				this->GetElement<Image>("IMG_BackGround")->SetTexture(st.atlas, st.atlasKey);
 				this->GetElement<Text>("TXT_Content")->SetColor(st.textColor);
 			});
+
+		this->_onEnableStatusChangeCallbacks.AddCallBack(
+			[this, st](const bool &newState)
+			{
+				if (newState == true)
+				{
+					this->GetElement<Image>("IMG_BackGround")->SetTexture(st.atlas, st.atlasKey);
+					this->GetElement<Text>("TXT_Content")->SetColor(st.textColor);
+				}
+				else
+				{
+					this->GetElement<Image>("IMG_BackGround")->SetTexture(st.onDisabledAtlas, st.onDisabledAtlasKey);
+					this->GetElement<Text>("TXT_Content")->SetColor(st.disabledTXTColor);
+				}
+			});
 	}
 
 	TexturedButton::~TexturedButton() {}

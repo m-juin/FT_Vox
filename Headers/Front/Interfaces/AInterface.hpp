@@ -13,8 +13,11 @@ namespace Vox::Front::Interfaces
 			virtual ~AInterface() {};
 
 			virtual void Render() = 0;
-			virtual void SetPos(const Elements::Vector2 newPos) = 0;
-			virtual void SetSize(const Elements::Vector2 newSize) = 0;
+			virtual void SetPos(const Elements::Vector2 newPos) override = 0;
+			virtual void SetSize(const Elements::Vector2 newSize) override = 0;
+
+			virtual void OnEnable() override {};
+			virtual void OnDisable() override {};
 
 			bool IsEnabled() {return this->_isEnabled;};
 			void ChangeEnableStatus(bool newState)

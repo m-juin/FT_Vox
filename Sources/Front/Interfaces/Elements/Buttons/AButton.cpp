@@ -21,18 +21,18 @@ namespace Vox::Front::Interfaces::Elements::Buttons
 		this->AddElement("TXT_Content", std::make_unique<Text>(stText), 1);
 
 		// this->_onHoverCallbacks.AddCallBack([this, hoverBGColor_, hoverTXTColor_](void)
-        // {
+		// {
 		// 	std::cout << "newColor:\n\tBG =" << hoverBGColor_ << "\n\tFG =" << hoverTXTColor_ << std::endl;
-        //     this->GetElement<Image>("IMG_BackGround")->SetColor(hoverBGColor_);
-        //     this->GetElement<Text>("TXT_Content")->SetColor(hoverTXTColor_);
-        // });
+		//     this->GetElement<Image>("IMG_BackGround")->SetColor(hoverBGColor_);
+		//     this->GetElement<Text>("TXT_Content")->SetColor(hoverTXTColor_);
+		// });
 
 		// this->_onHoverLeaveCallbacks.AddCallBack([this, bgColor_, textColor_](void)
-        // {
+		// {
 		// 	std::cout << "newColor:\n\tBG =" << bgColor_ << "\n\tFG =" << textColor_ << std::endl;
-        //     this->GetElement<Image>("IMG_BackGround")->SetColor(bgColor_);
-        //     this->GetElement<Text>("TXT_Content")->SetColor(textColor_);
-        // });
+		//     this->GetElement<Image>("IMG_BackGround")->SetColor(bgColor_);
+		//     this->GetElement<Text>("TXT_Content")->SetColor(textColor_);
+		// });
 	}
 
 	AButton::AButton(const Vox_Button_Constructor &st) : AContainer(st.pos, st.size)
@@ -43,7 +43,8 @@ namespace Vox::Front::Interfaces::Elements::Buttons
 		stText.color = st.textColor;
 		stText.content = st.content;
 		Vector2 textSize = Text::GetTextSize(st.content, st.textScale);
-		stText.pos = {this->_pos[0] + (this->_size[0] / 2) - textSize[0] / 2, this->_pos[1] + (size_t)((this->_size[1] / 2) + (8 * st.textScale))};
+		stText.pos = {this->_pos[0] + (this->_size[0] / 2) - textSize[0] / 2,
+					  this->_pos[1] + (size_t)((this->_size[1] / 2) + (8 * st.textScale))};
 		stText.size = this->_size;
 		stText.scale = st.textScale;
 
@@ -54,6 +55,8 @@ namespace Vox::Front::Interfaces::Elements::Buttons
 
 	void AButton::OnClick(const int &button, const int &action)
 	{
+		if (this->_enabled == false)
+			return;
 		this->onClickCallbacks.Notify(button, action);
 
 		// std::cout << "[DEBUG] " << "Button is clicked." << std::endl;
@@ -61,19 +64,33 @@ namespace Vox::Front::Interfaces::Elements::Buttons
 
 	void AButton::OnHover()
 	{
-        this->_onHoverCallbacks.Notify();
+		if (this->_enabled == false)
+			return;
+		this->_onHoverCallbacks.Notify();
 		std::cout << "[DEBUG] " << "Button is Hovered." << std::endl;
 	}
 
 	void AButton::OnHoverLeave()
 	{
-        this->_onHoverLeaveCallbacks.Notify();
+		if (this->_enabled == false)
+			return;
+		this->_onHoverLeaveCallbacks.Notify();
 		std::cout << "[DEBUG] " << "Button stopped Hovered." << std::endl;
 	}
 
 	bool AButton::IsHover(const Vector2 &mousePos)
 	{
 		return AClickable::IsHover(mousePos);
+	}
+
+	void AButton::OnEnable()
+	{
+		this->_onEnableStatusChangeCallbacks.Notify(true);
+	}
+
+	void AButton::OnDisable()
+	{
+		this->_onEnableStatusChangeCallbacks.Notify(false);
 	}
 
 	void AButton::SetPos(Vector2 newPos)
@@ -95,4 +112,4 @@ namespace Vox::Front::Interfaces::Elements::Buttons
 	}
 
 	void AButton::ResetVertex() {}
-} // namespace Vox::Front::Interfaces::Elements
+} // namespace Vox::Front::Interfaces::Elements::Buttons

@@ -29,10 +29,11 @@ namespace Vox::Front::Interfaces::Elements
 						//
 						// Color hoverBGColor;
 						Color hoverTXTColor;
+						Color disabledTXTColor;
 
 						Vox_Button_Constructor()
 							: pos({0, 0}), size({100, 50}), content("Button"), textColor({0.0, 0.0, 0.0, 1.0}), textScale(0.5f),
-							  hoverTXTColor(1.0, 1.0, 1.0, 1.0) {};
+							  hoverTXTColor({1.0, 1.0, 1.0, 1.0}), disabledTXTColor({0.7, 0.7, 0.7, 1.0}) {};
 				};
 
 				AButton() = delete;
@@ -46,6 +47,9 @@ namespace Vox::Front::Interfaces::Elements
 				void OnHoverLeave() override;
 				bool IsHover(const Vector2 &mousePos) override;
 
+				void OnEnable() override;
+				void OnDisable() override;
+
 				void SetPos(Vector2 newPos) override;
 				void SetSize(Vector2 newSize) override;
 
@@ -55,6 +59,7 @@ namespace Vox::Front::Interfaces::Elements
 			protected:
 				Vox::Utils::CallBacksManager<> _onHoverCallbacks;
 				Vox::Utils::CallBacksManager<> _onHoverLeaveCallbacks;
+				Vox::Utils::CallBacksManager<const bool &> _onEnableStatusChangeCallbacks;
 				// std::vector<ClickCallBack> _onClickCallbacks;
 
 				/* private */

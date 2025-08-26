@@ -25,6 +25,7 @@ namespace Vox::Game::Scenes::Menu
                 {"Dirt", T_Path + "GUI/dirt.png"},
                 {"Button", T_Path + "GUI/button.png"},
                 {"Button_Hover", T_Path + "GUI/button_highlighted.png"},
+                {"Button_Disabled", T_Path + "GUI/button_disabled.png"},
             },
             4
         );

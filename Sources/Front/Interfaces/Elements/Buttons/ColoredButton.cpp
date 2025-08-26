@@ -9,18 +9,35 @@ namespace Vox::Front::Interfaces::Elements::Buttons
 	{
 		this->AddElement("IMG_BackGround", std::make_unique<Image>("", "", this->_pos, this->_size, st.bgColor), 0);
 
-		this->_onHoverCallbacks.AddCallBack([this, st](void)
-		{
-			// std::cout << "newColor:\n\tBG =" << st.hoverBGColor << "\n\tFG =" << st.hoverTXTColor << std::endl;
-		    this->GetElement<Image>("IMG_BackGround")->SetColor(st.hoverBGColor);
-			this->GetElement<Text>("TXT_Content")->SetColor(st.hoverTXTColor);
-		});
+		this->_onHoverCallbacks.AddCallBack(
+			[this, st](void)
+			{
+				// std::cout << "newColor:\n\tBG =" << st.hoverBGColor << "\n\tFG =" << st.hoverTXTColor << std::endl;
+				this->GetElement<Image>("IMG_BackGround")->SetColor(st.hoverBGColor);
+				this->GetElement<Text>("TXT_Content")->SetColor(st.hoverTXTColor);
+			});
 
-		this->_onHoverLeaveCallbacks.AddCallBack([this, st](void)
-		{
-			// std::cout << "newColor:\n\tBG =" << st.bgColor << "\n\tFG =" << st.textColor << std::endl;
-		    this->GetElement<Image>("IMG_BackGround")->SetColor(st.bgColor);
-			this->GetElement<Text>("TXT_Content")->SetColor(st.textColor);
-		});
+		this->_onHoverLeaveCallbacks.AddCallBack(
+			[this, st](void)
+			{
+				// std::cout << "newColor:\n\tBG =" << st.bgColor << "\n\tFG =" << st.textColor << std::endl;
+				this->GetElement<Image>("IMG_BackGround")->SetColor(st.bgColor);
+				this->GetElement<Text>("TXT_Content")->SetColor(st.textColor);
+			});
+
+		this->_onEnableStatusChangeCallbacks.AddCallBack(
+			[this, st](const bool &newState)
+			{
+				if (newState == true)
+				{
+					this->GetElement<Image>("IMG_BackGround")->SetColor(st.bgColor);
+					this->GetElement<Text>("TXT_Content")->SetColor(st.textColor);
+				}
+				else
+				{
+					this->GetElement<Image>("IMG_BackGround")->SetColor(st.disabledBGColor);
+					this->GetElement<Text>("TXT_Content")->SetColor(st.disabledTXTColor);
+				}
+			});
 	}
 } // namespace Vox::Front::Interfaces::Elements::Buttons

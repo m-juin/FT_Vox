@@ -72,6 +72,7 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 						im.EnableInterface("World");
 						im.DisableInterface("Main");
 					});
+			
 		}
 	}
 

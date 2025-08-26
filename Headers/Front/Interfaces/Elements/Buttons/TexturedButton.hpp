@@ -5,31 +5,32 @@
 
 namespace Vox::Front::Interfaces::Elements::Buttons
 {
-    class TexturedButton : public AButton
-    {
-        public:
-            struct Vox_TexturedButton_Constructor : public Vox_Button_Constructor
-            {
-                std::string atlas; 
-                std::string atlasKey;
+	class TexturedButton : public AButton
+	{
+		public:
+			struct Vox_TexturedButton_Constructor : public Vox_Button_Constructor
+			{
+					std::string atlas;
+					std::string atlasKey;
 
-                std::string onHoverAtlas;
-                std::string onHoverAtlasKey;
+					std::string onHoverAtlas;
+					std::string onHoverAtlasKey;
 
-                
-                
-                Vox_TexturedButton_Constructor() : Vox_Button_Constructor(), atlas(""), atlasKey("") {};
-            };
-            
-            TexturedButton() = delete;
-            TexturedButton(const Vox_TexturedButton_Constructor &st);
-            ~TexturedButton();
-    
-        private:
-            /* private */
-    
-    };
+					std::string onDisabledAtlas;
+					std::string onDisabledAtlasKey;
+
+					Vox_TexturedButton_Constructor()
+						: Vox_Button_Constructor(), atlas(""), atlasKey(""), onHoverAtlas(""), onHoverAtlasKey(""),
+						  onDisabledAtlas(""), onDisabledAtlasKey("") {};
+			};
+
+			TexturedButton() = delete;
+			TexturedButton(const Vox_TexturedButton_Constructor &st);
+			~TexturedButton();
+
+		private:
+			/* private */
+	};
 } // namespace Vox::Front::Interfaces::Elements::Buttons
-
 
 #endif // __TEXTUREDBUTTON_HPP__
