@@ -3,6 +3,8 @@
 
 #include <vulkan/vulkan.h>
 
+#include "MathGraphicalLib/Vectors/Vector2.hpp"
+
 namespace Vox::Front::Rendering::Images
 {
 	class VulkanImage
@@ -20,6 +22,8 @@ namespace Vox::Front::Rendering::Images
 			{
 				return this->_sampler;
 			};
+			
+			MGL::Vectors::Vector2<uint16_t> GetSize() {return MGL::Vectors::Vector2<uint16_t>(this->_width, this->_height);};
 
 			VulkanImage(const VulkanImage &) = delete;
 			VulkanImage &operator=(const VulkanImage &) = delete;

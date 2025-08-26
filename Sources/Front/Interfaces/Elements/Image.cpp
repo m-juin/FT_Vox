@@ -1,6 +1,8 @@
 #include "Front/Interfaces/Elements/Image.hpp"
 
 #include "Front/Rendering/CommandsPool.hpp"
+#include "Front/Rendering/Pipelines/PipelinesManager.hpp"
+#include "Front/Rendering/Pipelines/StaticGUIPipeline.hpp"
 #include "Front/Rendering/SwapChain.hpp"
 #include "Front/Rendering/SyncObjects.hpp"
 
@@ -13,20 +15,18 @@
 namespace Vox::Front::Interfaces::Elements
 {
 
-	Image::Image(std::string atlas, std::string key, Vector2 pos, Vector2 size, Color colorMod)
-		: Bases::AElement(pos, size), _atlas(atlas), _atlasKey(key), _colorMod(colorMod)
+	Image::Image(std::string atlas, std::string key, Vector2 pos, Vector2 size, Color colorMod, Vector2 textureRepeat)
+		: Bases::AElement(pos, size), _atlas(atlas), _atlasKey(key), _colorMod(colorMod), _textureRepeat(textureRepeat)
 	{
 		this->ResetVertex();
 
-		std::cout << "image buffer" << std::endl;
 		B_Vertices =
 			new dbuffer(1, 4 * sizeof(Vertex), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT);
 		B_Indices =
 			new dbuffer(1, 6 * sizeof(uint16_t), VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT);
 
-		std::cout <<"creation" << std::endl;
 		B_Vertices->Create(&this->_vertex);
-		// std::cout <<"creation2" << std::endl; 
+		// std::cout <<"creation2" << std::endl;
 		uint16_t *indices = new uint16_t[6]{0, 1, 2, 2, 3, 0};
 
 		B_Indices->Create(indices);
@@ -60,32 +60,44 @@ namespace Vox::Front::Interfaces::Elements
 
 		if (this->_atlas != "" && this->_atlasKey != "")
 		{
-			auto uvData = Game::GameManager::GetInstance().GetSceneManager().GetCurrentScene().GetTextureManager()->operator[](_atlas)->GetTextureInfo(this->_atlasKey);
-			this->_vertex[0] =
-				Vertex(PointPixelToVulkan(this->_pos, screenSize), {uvData.uOffset, uvData.vOffset}, this->_colorMod);
-			this->_vertex[1] =
-				Vertex(PointPixelToVulkan({this->_pos[0] + this->_size[0], this->_pos[1]}, screenSize),
-					 {uvData.uOffset + uvData.uSize, uvData.vOffset}, this->_colorMod);
-			this->_vertex[2] = Vertex(PointPixelToVulkan(
-									   {this->_pos[0] + this->_size[0], this->_pos[1] + this->_size[1]}, screenSize),
-								   {uvData.uOffset + uvData.uSize, uvData.vOffset + uvData.vSize}, this->_colorMod);
-			this->_vertex[3] =
-				Vertex(PointPixelToVulkan({this->_pos[0], this->_pos[1] + this->_size[1]}, screenSize),
-					 {uvData.uOffset, uvData.vOffset + uvData.vSize}, this->_colorMod);
+			auto atlas =
+				Game::GameManager::GetInstance().GetSceneManager().GetCurrentScene().GetTextureManager()->operator[](
+					_atlas);
+			auto uvData = atlas->GetTextureInfo(this->_atlasKey);
+
+			this->_uvMappingData.uvMin[0] = uvData.uOffset;
+			this->_uvMappingData.uvMin[1] = uvData.vOffset;
+			this->_uvMappingData.uvMax[0] = uvData.vOffset + uvData.uSize;
+			this->_uvMappingData.uvMax[1] = uvData.vOffset + uvData.vSize;
+			this->_uvMappingData.atlasSize = atlas->GetSize();
+
+			std::cout << this->_uvMappingData.atlasSize << std::endl;
+
+			this->_vertex[0] = Vertex(PointPixelToVulkan(this->_pos, screenSize), {0.0f, 0.0f}, this->_colorMod);
+			this->_vertex[1] = Vertex(PointPixelToVulkan({this->_pos[0] + this->_size[0], this->_pos[1]}, screenSize),
+									  {1.0f * _textureRepeat[0], 0.0f}, this->_colorMod);
+			this->_vertex[2] =
+				Vertex(PointPixelToVulkan({this->_pos[0] + this->_size[0], this->_pos[1] + this->_size[1]}, screenSize),
+					   {1.0f * _textureRepeat[0], 1.0f * _textureRepeat[1]}, this->_colorMod);
+			this->_vertex[3] = Vertex(PointPixelToVulkan({this->_pos[0], this->_pos[1] + this->_size[1]}, screenSize),
+									  {0.0f, 1.0f * _textureRepeat[1]}, this->_colorMod);
 		}
 		else
 		{
+			this->_uvMappingData.uvMin[0] = 0.0f;
+			this->_uvMappingData.uvMin[1] = 0.0f;
+			this->_uvMappingData.uvMax[0] = 1.0f;
+			this->_uvMappingData.uvMax[1] = 1.0f;
+
 			this->_vertex[0] =
 				Vertex(PointPixelToVulkan(this->_pos, screenSize), {0.0f, 0.0f}, this->_colorMod, E_ImageType::Color);
-			this->_vertex[1] =
-				Vertex(PointPixelToVulkan({this->_pos[0] + this->_size[0], this->_pos[1]}, screenSize),
-					 {1.0f, 0.0f}, this->_colorMod, E_ImageType::Color);
-			this->_vertex[2] = Vertex(PointPixelToVulkan(
-									   {this->_pos[0] + this->_size[0], this->_pos[1] + this->_size[1]}, screenSize),
-								   {1.0f, 1.0f}, this->_colorMod, E_ImageType::Color);
-			this->_vertex[3] =
-				Vertex(PointPixelToVulkan({this->_pos[0], this->_pos[1] + this->_size[1]}, screenSize),
-					 {0.0f, 1.0f}, this->_colorMod, E_ImageType::Color);
+			this->_vertex[1] = Vertex(PointPixelToVulkan({this->_pos[0] + this->_size[0], this->_pos[1]}, screenSize),
+									  {1.0f, 0.0f}, this->_colorMod, E_ImageType::Color);
+			this->_vertex[2] =
+				Vertex(PointPixelToVulkan({this->_pos[0] + this->_size[0], this->_pos[1] + this->_size[1]}, screenSize),
+					   {1.0f, 1.0f}, this->_colorMod, E_ImageType::Color);
+			this->_vertex[3] = Vertex(PointPixelToVulkan({this->_pos[0], this->_pos[1] + this->_size[1]}, screenSize),
+									  {0.0f, 1.0f}, this->_colorMod, E_ImageType::Color);
 		}
 	}
 
@@ -94,6 +106,12 @@ namespace Vox::Front::Interfaces::Elements
 		auto cmdBuffer =
 			Rendering::CommandsPool::GetInstance().GetBuffer(Rendering::SyncObjects::GetInstance().GetCurrentFrame());
 		VkDeviceSize offsets[] = {0};
+
+		vkCmdPushConstants(cmdBuffer,
+						   Front::Rendering::Pipelines::PipelinesManager::GetInstance()
+							   .operator[]<Front::Rendering::Pipelines::StaticGUIPipeline>("StaticGUI")
+							   ->GetLayout(),
+						   VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(this->_uvMappingData), &this->_uvMappingData);
 		vkCmdBindVertexBuffers(cmdBuffer, 0, 1, &this->B_Vertices->GetBuffer(0), offsets);
 		vkCmdBindIndexBuffer(cmdBuffer, this->B_Indices->GetBuffer(0), 0, VK_INDEX_TYPE_UINT16);
 		vkCmdDrawIndexed(cmdBuffer, 6, 1, 0, 0, 0);
@@ -115,29 +133,41 @@ namespace Vox::Front::Interfaces::Elements
 		CleanBuffers(0);
 		this->ResetVertex();
 	}
-	
+
 	void Image::SetColor(const Color &newColor)
 	{
-		if (this->B_Vertices == VK_NULL_HANDLE || this->_vertex[0].texColor == newColor) return; 
+		if (this->B_Vertices == VK_NULL_HANDLE || this->_vertex[0].texColor == newColor)
+			return;
 		for (auto &vert : this->_vertex)
 			vert.texColor = newColor;
 		this->B_Vertices->Update(&this->_vertex, 4 * sizeof(Vertex));
 		// this->CleanBuffers(0);
 		// this->B_Vertices->Create(&this->_vertex);
 	}
-	
+
 	void Image::SetTexture(const std::string &newAtlas, const std::string &newKey)
 	{
-		if (newAtlas == this->_atlas && newKey == this->_atlasKey) return ;
+		if (newAtlas == this->_atlas && newKey == this->_atlasKey)
+			return;
 		this->_atlas = newAtlas;
 		this->_atlasKey = newKey;
 
-		auto uvData = Game::GameManager::GetInstance().GetSceneManager().GetCurrentScene().GetTextureManager()->operator[](_atlas)->GetTextureInfo(this->_atlasKey);
-		this->_vertex[0].texCoord = {uvData.uOffset, uvData.vOffset};
-		this->_vertex[1].texCoord = {uvData.uOffset + uvData.uSize, uvData.vOffset};
-		this->_vertex[2].texCoord = {uvData.uOffset + uvData.uSize, uvData.vOffset + uvData.vSize};
-		this->_vertex[3].texCoord = {uvData.uOffset, uvData.vOffset + uvData.vSize};
-	
+		auto atlas =
+			Game::GameManager::GetInstance().GetSceneManager().GetCurrentScene().GetTextureManager()->operator[](
+				_atlas);
+		auto uvData = atlas->GetTextureInfo(this->_atlasKey);
+
+		this->_uvMappingData.uvMin[0] = uvData.uOffset;
+		this->_uvMappingData.uvMin[1] = uvData.vOffset;
+		this->_uvMappingData.uvMax[0] = uvData.vOffset + uvData.uSize;
+		this->_uvMappingData.uvMax[1] = uvData.vOffset + uvData.vSize;
+		this->_uvMappingData.atlasSize = atlas->GetSize();
+
+		// this->_vertex[0].texCoord = {uvData.uOffset, uvData.vOffset};
+		// this->_vertex[1].texCoord = {uvData.uOffset + uvData.uSize, uvData.vOffset};
+		// this->_vertex[2].texCoord = {uvData.uOffset + uvData.uSize, uvData.vOffset + uvData.vSize};
+		// this->_vertex[3].texCoord = {uvData.uOffset, uvData.vOffset + uvData.vSize};
+
 		this->B_Vertices->Update(&this->_vertex, 4 * sizeof(Vertex));
 	}
 } // namespace Vox::Front::Interfaces::Elements

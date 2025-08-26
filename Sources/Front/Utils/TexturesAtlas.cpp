@@ -89,14 +89,15 @@ namespace Vox::Front::Utils
 	{
 		this->_textureInfos.reserve(textures.size());
 
-		// Calculer la taille de l'atlas basée sur les dimensions individuelles
-		size_t atlasSize = (_textureWidth * _textureHeight * _textureChannels) * nextPowerOfTwo(textures.size());
-		std::unique_ptr<unsigned char[]> atlasData(new unsigned char[atlasSize]);
-		std::fill(atlasData.get(), atlasData.get() + atlasSize, 255);
+		// Taille de l'atlas avec padding 1 pixel autour de chaque tile
+		const size_t paddedWidth = _textureWidth + 2;
+		const size_t paddedHeight = _textureHeight + 2;
+		this->_width = paddedWidth * _atlasWidth;
+		this->_height = paddedHeight * _atlasHeight;
 
-		// Calculer les dimensions de l'atlas
-		this->_width = _textureWidth * this->_atlasWidth;
-		this->_height = _textureHeight * this->_atlasHeight;
+		size_t atlasSize = _width * _height * _textureChannels;
+		std::unique_ptr<unsigned char[]> atlasData(new unsigned char[atlasSize]);
+		std::fill(atlasData.get(), atlasData.get() + atlasSize, 255); // blanc par défaut
 
 		for (size_t y = 0; y < this->_atlasHeight; y++)
 		{
@@ -111,23 +112,12 @@ namespace Vox::Front::Utils
 								 { return textKey == info.key; }) != this->_textureInfos.end())
 					continue;
 
-				size_t atlasPosY = y * this->_textureHeight;
-				size_t atlasPosX = x * this->_textureWidth;
-
-				// Calculer les coordonnées UV basées sur les dimensions réelles
-				TextureInfo info{
-					textures[index].first,
-					static_cast<float>(x * _textureWidth) / _width,
-					static_cast<float>(y * _textureHeight) / _height,
-					static_cast<float>(_textureWidth) / _width,
-					static_cast<float>(_textureHeight) / _height,
-				};
-				this->_textureInfos.push_back(info);
+				size_t atlasPosX = x * paddedWidth + 1;	 // +1 pour padding gauche
+				size_t atlasPosY = y * paddedHeight + 1; // +1 pour padding bas
 
 				int imgWidth, imgHeight, imgChannels;
-				unsigned char *imgData = stbi_load(textures[index].second.c_str(), &imgWidth, &imgHeight, &imgChannels,
-												   this->_textureChannels);
-
+				unsigned char *imgData =
+					stbi_load(textures[index].second.c_str(), &imgWidth, &imgHeight, &imgChannels, _textureChannels);
 				if (!imgData)
 				{
 					std::cout << "[WARNING] Failed to load image \"" << textures[index].second
@@ -135,8 +125,7 @@ namespace Vox::Front::Utils
 					continue;
 				}
 
-				// Vérifier que les dimensions correspondent
-				if ((size_t)imgWidth != this->_textureWidth || (size_t)imgHeight != this->_textureHeight)
+				if ((size_t)imgWidth != _textureWidth || (size_t)imgHeight != _textureHeight)
 				{
 					std::cout << "[WARNING] Invalid image format \"" << textures[index].second
 							  << "\". Wrong size or channels, skipping." << std::endl;
@@ -144,21 +133,59 @@ namespace Vox::Front::Utils
 					continue;
 				}
 
-				// Copier les données de la texture dans l'atlas
-				for (size_t yTex = 0; yTex < this->_textureHeight; yTex++)
+				// Copier la texture dans l'atlas
+				for (size_t yTex = 0; yTex < _textureHeight; yTex++)
 				{
-					size_t srcPos = (yTex * this->_textureWidth * this->_textureChannels);
-					size_t dstPos =
-						((atlasPosY + yTex) * (_atlasWidth * this->_textureWidth * this->_textureChannels)) +
-						(atlasPosX * _textureChannels);
-					std::copy(imgData + srcPos, imgData + srcPos + (this->_textureChannels * _textureWidth),
+					size_t srcPos = yTex * _textureWidth * _textureChannels;
+					size_t dstPos = ((atlasPosY + yTex) * _width + atlasPosX) * _textureChannels;
+					std::copy(imgData + srcPos, imgData + srcPos + (_textureWidth * _textureChannels),
 							  atlasData.get() + dstPos);
 				}
+
+				// Copier les bords pour le padding
+				// Top / Bottom
+				for (size_t xTex = 0; xTex < _textureWidth; xTex++)
+				{
+					for (size_t c = 0; c < _textureChannels; c++)
+					{
+						atlasData[((atlasPosY - 1) * _width + (atlasPosX + xTex)) * _textureChannels + c] =
+							atlasData[(atlasPosY * _width + (atlasPosX + xTex)) * _textureChannels + c]; // top
+						atlasData[((atlasPosY + _textureHeight) * _width + (atlasPosX + xTex)) * _textureChannels + c] =
+							atlasData[((atlasPosY + _textureHeight - 1) * _width + (atlasPosX + xTex)) *
+										  _textureChannels +
+									  c]; // bottom
+					}
+				}
+
+				// Left / Right
+				for (size_t yTex = 0; yTex < _textureHeight; yTex++)
+				{
+					for (size_t c = 0; c < _textureChannels; c++)
+					{
+						atlasData[((atlasPosY + yTex) * _width + (atlasPosX - 1)) * _textureChannels + c] =
+							atlasData[((atlasPosY + yTex) * _width + atlasPosX) * _textureChannels + c]; // left
+						atlasData[((atlasPosY + yTex) * _width + (atlasPosX + _textureWidth)) * _textureChannels + c] =
+							atlasData[((atlasPosY + yTex) * _width + (atlasPosX + _textureWidth - 1)) *
+										  _textureChannels +
+									  c]; // right
+					}
+				}
+
 				stbi_image_free(imgData);
+
+				// Calculer les UV en excluant le padding
+				TextureInfo info{
+					textures[index].first,
+					static_cast<float>(atlasPosX) / _width,		 // uvMinX
+					static_cast<float>(atlasPosY) / _height,	 // uvMinY
+					static_cast<float>(_textureWidth) / _width,	 // uvWidth
+					static_cast<float>(_textureHeight) / _height // uvHeight
+				};
+				this->_textureInfos.push_back(info);
 			}
 		}
 
-		// Création du buffer staging
+		// Création du buffer staging et transfert à Vulkan (inchangé)
 		VkBuffer stagingBuffer;
 		VkDeviceMemory stagingBufferMemory;
 		Front::Rendering::Utils::Buffers::Utils::CreateBuffer(
@@ -173,7 +200,6 @@ namespace Vox::Front::Utils
 		memcpy(data, atlasData.get(), static_cast<size_t>(atlasSize));
 		vkUnmapMemory(Front::Rendering::Device::GetInstance().GetLogicalDevice(), stagingBufferMemory);
 
-		// Création et configuration de l'image
 		this->CreateImage(VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL,
 						  VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
 						  VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
@@ -181,11 +207,11 @@ namespace Vox::Front::Utils
 		this->CopyBufferToImage(stagingBuffer);
 		this->TransitionImageLayout(VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
-		// Nettoyage
 		vkDestroyBuffer(Front::Rendering::Device::GetInstance().GetLogicalDevice(), stagingBuffer, nullptr);
 		vkFreeMemory(Front::Rendering::Device::GetInstance().GetLogicalDevice(), stagingBufferMemory, nullptr);
 
 		this->CreateView(VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT);
 		this->CreateSampler();
 	}
+
 } // namespace Vox::Front::Utils

@@ -22,7 +22,6 @@ namespace Vox::Front::Rendering::Pipelines
 			PipelinesManager();
 
 		public:
-
 			void CreatePipelines();
 			~PipelinesManager();
 
@@ -33,9 +32,13 @@ namespace Vox::Front::Rendering::Pipelines
 				return this->_renderPass;
 			};
 
-			template<typename T>
-			T *operator[](std::string name);
+			template <typename T> T *operator[](const std::string &name)
+			{
+				if (this->_pipelines.find(name) == this->_pipelines.end())
+					return nullptr;
+				return static_cast<T *>(this->_pipelines[name]);
+			}
 	};
-	
+
 } // namespace Vox::Front::Rendering::Pipelines
 #endif // __PIPELINESMANAGER_HPP__

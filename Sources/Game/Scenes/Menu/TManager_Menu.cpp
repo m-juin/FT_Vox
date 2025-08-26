@@ -22,9 +22,7 @@ namespace Vox::Game::Scenes::Menu
         const std::string T_Path = Game::GameManager::GetInstance().GetTexturePackPath();
         this->_texturesMap["Menu_Main"] = new Front::Utils::TexturesAtlas(
             {
-                {"BlackStone", T_Path + "GUI/blackstone.png"},
-                {"Stone", T_Path + "GUI/stone.png"},
-                {"CobbleStone", T_Path +"GUI/cobblestone.png"},
+                {"Dirt", T_Path + "GUI/dirt.png"},
                 {"Button", T_Path + "GUI/button.png"},
                 {"Button_Hover", T_Path + "GUI/button_highlighted.png"},
             },

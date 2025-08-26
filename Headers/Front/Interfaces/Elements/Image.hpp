@@ -5,6 +5,8 @@
 
 #include "Front/Rendering/Utils/Vertex/StaticGUIVertex.hpp"
 
+#include "Front/Utils/TexturesAtlas.hpp"
+
 using E_ImageType = Vox::Front::Rendering::Utils::Vertex::E_ImageType;
 
 namespace Vox::Front::Interfaces::Elements
@@ -12,6 +14,7 @@ namespace Vox::Front::Interfaces::Elements
 	class Image : public Bases::AElement
 	{
 		private:
+
 			Vertex _vertex[4];
 			dbuffer *B_Vertices = nullptr;
 			dbuffer *B_Indices = nullptr;
@@ -24,9 +27,12 @@ namespace Vox::Front::Interfaces::Elements
 			std::string _atlasKey;
 
 			Color _colorMod;
+			Vector2 _textureRepeat;
+
+			Front::Utils::TexturesAtlas::TexturesAtlas::uvData _uvMappingData;
 		public:
 			// Image(Vector2 pos = {0, 0}, Vector2 size = {100, 50});
-			Image(std::string atlas = "", std::string key = "", Vector2 pos = {0, 0}, Vector2 size = {100, 50}, Color colorMod = {1.0, 1.0, 1.0, 1.0});
+			Image(std::string atlas = "", std::string key = "", Vector2 pos = {0, 0}, Vector2 size = {100, 50}, Color colorMod = {1.0, 1.0, 1.0, 1.0}, Vector2 textureRepeat = {1, 1});
 			~Image();
 
 			void Draw() override;

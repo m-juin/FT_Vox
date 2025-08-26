@@ -6,6 +6,8 @@
 
 #include "Front/Rendering/Images/VulkanImage.hpp"
 
+#include "MathGraphicalLib/Vectors/Vector2.hpp"
+
 namespace Vox::Front::Utils
 {
 	class TexturesAtlas : public Rendering::Images::VulkanImage
@@ -31,12 +33,19 @@ namespace Vox::Front::Utils
 
 
 		public:
+			struct uvData
+			{
+				MGL::Vectors::Vector2<float> uvMin;
+				MGL::Vectors::Vector2<float> uvMax;
+				MGL::Vectors::Vector2<uint16_t> atlasSize;
+			};
+
 			// TexturesAtlas(std::vector<std::string> atlasTextures, size_t textureSize = 32, size_t textureChannels = 4);
 			TexturesAtlas(std::vector<std::pair<std::string, std::string>> &&atlasTextures,
 						  size_t textureChannels = 4);
 			const TextureInfo &GetTextureInfo(size_t index) const;
 			const TextureInfo &GetTextureInfo(const std::string &key) const;
-
+			// const MGL::Vectors::Vector2<size_t> GetAtlasSize();
 		private:
 			static uint32_t nextPowerOfTwo(uint32_t value);
 			void BuildAtlas(std::vector<std::pair<std::string, std::string>> &&textures);

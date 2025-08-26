@@ -121,13 +121,18 @@ namespace Vox::Front::Rendering::Pipelines
 		dynamicState.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
 		dynamicState.pDynamicStates = dynamicStates.data();
 
+		VkPushConstantRange pushConstRange{};
+		pushConstRange.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+		pushConstRange.offset = 0;
+		pushConstRange.size = sizeof(Front::Utils::TexturesAtlas::TexturesAtlas::uvData);
+
 		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 		pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 		pipelineLayoutInfo.setLayoutCount = 1;
 		pipelineLayoutInfo.pSetLayouts = &this->_slayout;
 
-		pipelineLayoutInfo.pushConstantRangeCount = 0;
-		pipelineLayoutInfo.pPushConstantRanges = nullptr;
+		pipelineLayoutInfo.pushConstantRangeCount = 1;
+		pipelineLayoutInfo.pPushConstantRanges = &pushConstRange;
 
 		auto device = Device::GetInstance().GetLogicalDevice();
 
@@ -195,7 +200,6 @@ namespace Vox::Front::Rendering::Pipelines
 		allocInfo.descriptorPool = descPool;
 		allocInfo.descriptorSetCount = static_cast<uint32_t>(1);
 		allocInfo.pSetLayouts = &this->_slayout;
-
 
 		if (vkAllocateDescriptorSets(Device::GetInstance().GetLogicalDevice(), &allocInfo, &this->_set) != VK_SUCCESS)
 			throw std::runtime_error("Failed to allocate descriptor sets!");

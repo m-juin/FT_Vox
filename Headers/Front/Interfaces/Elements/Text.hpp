@@ -5,7 +5,6 @@
 
 #include "MathGraphicalLib/Vectors/Vector4.hpp"
 
-
 using E_ImageType = Vox::Front::Rendering::Utils::Vertex::E_ImageType;
 
 namespace Vox::Front::Interfaces::Elements
@@ -48,6 +47,7 @@ namespace Vox::Front::Interfaces::Elements
 			static Vector2 GetTextSize(const std::string &content, const float &scale);
 
 		private:
+			// Front::Utils::TexturesAtlas::TexturesAtlas::uvData _uvMappingData;
 			std::vector<Vertex> _vertex;
 			dbuffer *B_Vertex = nullptr;
 			dbuffer *B_Index = nullptr;
