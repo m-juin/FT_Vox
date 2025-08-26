@@ -19,6 +19,8 @@ namespace Vox::Front
 			/* private */
 			Window(uint16_t width = 1920, uint16_t height = 1080);
 		public:
+
+			void RequestEnd();
 			GLFWwindow *GetWindow()
 			{
 				return this->_window;

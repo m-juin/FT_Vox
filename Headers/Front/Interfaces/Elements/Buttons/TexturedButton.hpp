@@ -15,6 +15,8 @@ namespace Vox::Front::Interfaces::Elements::Buttons
 
                 std::string onHoverAtlas;
                 std::string onHoverAtlasKey;
+
+                
                 
                 Vox_TexturedButton_Constructor() : Vox_Button_Constructor(), atlas(""), atlasKey("") {};
             };

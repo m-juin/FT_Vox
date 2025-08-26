@@ -67,7 +67,7 @@ namespace Vox::Front::Interfaces::Elements
 
 			this->_uvMappingData.uvMin[0] = uvData.uOffset;
 			this->_uvMappingData.uvMin[1] = uvData.vOffset;
-			this->_uvMappingData.uvMax[0] = uvData.vOffset + uvData.uSize;
+			this->_uvMappingData.uvMax[0] = uvData.uOffset + uvData.uSize;
 			this->_uvMappingData.uvMax[1] = uvData.vOffset + uvData.vSize;
 			this->_uvMappingData.atlasSize = atlas->GetSize();
 
@@ -159,14 +159,10 @@ namespace Vox::Front::Interfaces::Elements
 
 		this->_uvMappingData.uvMin[0] = uvData.uOffset;
 		this->_uvMappingData.uvMin[1] = uvData.vOffset;
-		this->_uvMappingData.uvMax[0] = uvData.vOffset + uvData.uSize;
+		this->_uvMappingData.uvMax[0] = uvData.uOffset + uvData.uSize;
 		this->_uvMappingData.uvMax[1] = uvData.vOffset + uvData.vSize;
 		this->_uvMappingData.atlasSize = atlas->GetSize();
 
-		// this->_vertex[0].texCoord = {uvData.uOffset, uvData.vOffset};
-		// this->_vertex[1].texCoord = {uvData.uOffset + uvData.uSize, uvData.vOffset};
-		// this->_vertex[2].texCoord = {uvData.uOffset + uvData.uSize, uvData.vOffset + uvData.vSize};
-		// this->_vertex[3].texCoord = {uvData.uOffset, uvData.vOffset + uvData.vSize};
 
 		this->B_Vertices->Update(&this->_vertex, 4 * sizeof(Vertex));
 	}

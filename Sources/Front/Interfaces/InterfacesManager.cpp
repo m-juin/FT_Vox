@@ -9,33 +9,39 @@ namespace Vox::Front::Interfaces
 {
 	void InterfacesManager::ResetInterfacesList()
 	{
-		for (AInterface *interface : this->_content)
-			if (interface)
-				delete interface;
+		for (auto pair : this->_content)
+			if (pair.second)
+				delete pair.second;
 	}
 
-	void InterfacesManager::RegisterInterface(AInterface *inte)
+	void InterfacesManager::RegisterInterface(const std::string &key, AInterface *inte)
     {
-        this->_content.insert(inte);
+        this->_content.insert({key, inte});
     }
 	
-	void InterfacesManager::Render()
-	{
-		Rendering::Pipelines::PipelinesManager::GetInstance().BindPipeline("StaticGUI");
-		for (auto interface : this->_content)
-			interface->Render();
-	}
+    void InterfacesManager::Render()
+    {
+        Rendering::Pipelines::PipelinesManager::GetInstance().BindPipeline("StaticGUI");
+        for (auto& pair : this->_content) // Utilisez auto& pour éviter les copies
+        {
+            if (pair.second->IsEnabled())
+            {
+                pair.second->Render();
+            }
+        }
+    }
 	
 	void InterfacesManager::HandleMouseMove(const size_t &xPos, const size_t &yPos) const
 	{
-		for (auto interface : this->_content)
-			interface->IsHover({xPos, yPos});
+		for (auto pair : this->_content)
+			pair.second->IsHover({xPos, yPos});
 	}
 	
 	void InterfacesManager::HandleMouseClick(const int &button, const int &action) const
 	{
-		for (auto interface : this->_content)
-			interface->OnClick(button, action);
+		for (auto pair : this->_content)
+			if (pair.second->IsEnabled() == true)
+				pair.second->OnClick(button, action);
 	}
 
 	InterfacesManager::InterfacesManager() {}

@@ -28,7 +28,8 @@ void main()
 	{
 		
 		vec2 uvRange = region.uvMax - region.uvMin;
-		vec2 repeatedUV = region.uvMin + fract(texCoord) * uvRange;
+		vec2 repeatedUV;
+		repeatedUV = region.uvMin + fract(texCoord) * uvRange;
 		text = texture(textureAtlas, repeatedUV);
 	}
 	else

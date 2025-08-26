@@ -42,32 +42,19 @@ namespace Vox::Front::Interfaces::Elements::Buttons
 		Text::Vox_Text_Constructor stText{};
 		stText.color = st.textColor;
 		stText.content = st.content;
-		Vector2 textSize = Text::GetTextSize(st.content, 0.5);
-		stText.pos = {this->_pos[0] + (this->_size[0] / 2) - textSize[0] / 2, this->_pos[1] + (this->_size[1] / 2)};
+		Vector2 textSize = Text::GetTextSize(st.content, st.textScale);
+		stText.pos = {this->_pos[0] + (this->_size[0] / 2) - textSize[0] / 2, this->_pos[1] + (size_t)((this->_size[1] / 2) + (8 * st.textScale))};
 		stText.size = this->_size;
+		stText.scale = st.textScale;
 
 		this->AddElement("TXT_Content", std::make_unique<Text>(stText), 1);
-
-		// this->_onHoverCallbacks.AddCallBack([this, st](void)
-        // {
-		// 	std::cout << "newColor:\n\tBG =" << st.hoverBGColor << "\n\tFG =" << st.hoverTXTColor << std::endl;
-        //     this->GetElement<Image>("IMG_BackGround")->SetColor(st.hoverBGColor);
-		// 	this->GetElement<Text>("TXT_Content")->SetColor(st.hoverTXTColor);
-        // });
-
-		// this->_onHoverLeaveCallbacks.AddCallBack([this, st](void)
-        // {
-		// 	std::cout << "newColor:\n\tBG =" << st.bgColor << "\n\tFG =" << st.textColor << std::endl;
-        //     this->GetElement<Image>("IMG_BackGround")->SetColor(st.bgColor);
-		// 	this->GetElement<Text>("TXT_Content")->SetColor(st.textColor);
-        // });
 	}
 
 	AButton::~AButton() {}
 
 	void AButton::OnClick(const int &button, const int &action)
 	{
-		this->_onClickCallbacks.Notify(button, action);
+		this->onClickCallbacks.Notify(button, action);
 
 		// std::cout << "[DEBUG] " << "Button is clicked." << std::endl;
 	}

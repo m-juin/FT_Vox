@@ -8,6 +8,11 @@
 
 namespace Vox::Front
 {
+	void Window::RequestEnd()
+	{
+		glfwSetWindowShouldClose(this->_window, GLFW_TRUE);
+	}
+
 	Window::Window(uint16_t width, uint16_t height)
 	{
 		if (glfwInit() == false)

@@ -23,13 +23,15 @@ namespace Vox::Front::Interfaces::Elements
 
 						std::string content;
 						Color textColor;
+
+						float textScale;
 						// Color bgColor;
 						//
 						// Color hoverBGColor;
 						Color hoverTXTColor;
 
 						Vox_Button_Constructor()
-							: pos({0, 0}), size({100, 50}), content("Button"), textColor({0.0, 0.0, 0.0, 1.0}),
+							: pos({0, 0}), size({100, 50}), content("Button"), textColor({0.0, 0.0, 0.0, 1.0}), textScale(0.5f),
 							  hoverTXTColor(1.0, 1.0, 1.0, 1.0) {};
 				};
 
@@ -49,10 +51,10 @@ namespace Vox::Front::Interfaces::Elements
 
 				void ResetVertex() override;
 
+				Vox::Utils::CallBacksManager<const int &, const int &> onClickCallbacks;
 			protected:
 				Vox::Utils::CallBacksManager<> _onHoverCallbacks;
 				Vox::Utils::CallBacksManager<> _onHoverLeaveCallbacks;
-				Vox::Utils::CallBacksManager<const int &, const int &> _onClickCallbacks;
 				// std::vector<ClickCallBack> _onClickCallbacks;
 
 				/* private */

@@ -1,5 +1,6 @@
 #include "Game/Scenes/Menu/Sc_Menu.hpp"
 #include "Game/Scenes/Menu/I_MenuMain.hpp"
+#include "Game/Scenes/Menu/I_MenuWorld.hpp"
 #include "Game/Scenes/Menu/TManager_Menu.hpp"
 #include <iostream>
 
@@ -37,7 +38,8 @@ namespace Vox::Game::Scenes::Menu
 		auto &iManager = Front::Interfaces::InterfacesManager::GetInstance();
 		auto extent = Front::Rendering::SwapChain::GetInstance().GetExtent();
 		this->_textureManager = new Scenes::Menu::TManager_Menu();
-		iManager.RegisterInterface(new Interfaces::I_MenuMain({0, 0}, {extent.width, extent.height}));
+		iManager.RegisterInterface("Main", new Interfaces::I_MenuMain({0, 0}, {extent.width, extent.height}));
+		iManager.RegisterInterface("World", new Interfaces::I_MenuWorld({0, 0}, {extent.width, extent.height}));
 	}
 
 	
