@@ -7,8 +7,7 @@
 namespace Vox::Front::Interfaces::Elements::Buttons
 {
 
-	AButton::AButton(Vector2 pos_, Vector2 size_, const std::string &content_, Color textColor_)
-		: AContainer(pos_, size_)
+	AButton::AButton(const std::string &content_, Color textColor_)
 	{
 		// this->AddElement("IMG_BackGround", std::make_unique<Image>("", "", this->_pos, this->_size, bgColor_), 0);
 
@@ -19,23 +18,9 @@ namespace Vox::Front::Interfaces::Elements::Buttons
 		stText.size = this->_size;
 
 		this->AddElement("TXT_Content", std::make_unique<Text>(stText), 1);
-
-		// this->_onHoverCallbacks.AddCallBack([this, hoverBGColor_, hoverTXTColor_](void)
-		// {
-		// 	std::cout << "newColor:\n\tBG =" << hoverBGColor_ << "\n\tFG =" << hoverTXTColor_ << std::endl;
-		//     this->GetElement<Image>("IMG_BackGround")->SetColor(hoverBGColor_);
-		//     this->GetElement<Text>("TXT_Content")->SetColor(hoverTXTColor_);
-		// });
-
-		// this->_onHoverLeaveCallbacks.AddCallBack([this, bgColor_, textColor_](void)
-		// {
-		// 	std::cout << "newColor:\n\tBG =" << bgColor_ << "\n\tFG =" << textColor_ << std::endl;
-		//     this->GetElement<Image>("IMG_BackGround")->SetColor(bgColor_);
-		//     this->GetElement<Text>("TXT_Content")->SetColor(textColor_);
-		// });
 	}
 
-	AButton::AButton(const Vox_Button_Constructor &st) : AContainer(st.pos, st.size)
+	AButton::AButton(const Vox_Button_Constructor &st)
 	{
 		// this->AddElement("IMG_BackGround", std::make_unique<Image>("", "", this->_pos, this->_size, st.bgColor), 0);
 
@@ -67,7 +52,7 @@ namespace Vox::Front::Interfaces::Elements::Buttons
 		if (this->_enabled == false)
 			return;
 		this->_onHoverCallbacks.Notify();
-		std::cout << "[DEBUG] " << "Button is Hovered." << std::endl;
+		// std::cout << "[DEBUG] " << "Button is Hovered." << std::endl;
 	}
 
 	void AButton::OnHoverLeave()
@@ -75,7 +60,7 @@ namespace Vox::Front::Interfaces::Elements::Buttons
 		if (this->_enabled == false)
 			return;
 		this->_onHoverLeaveCallbacks.Notify();
-		std::cout << "[DEBUG] " << "Button stopped Hovered." << std::endl;
+		// std::cout << "[DEBUG] " << "Button stopped Hovered." << std::endl;
 	}
 
 	bool AButton::IsHover(const Vector2 &mousePos)

@@ -45,6 +45,8 @@ namespace Vox::Front::Interfaces::Elements
 			void SetColor(const Color &newColor);
 
 			static Vector2 GetTextSize(const std::string &content, const float &scale);
+			Vector2 GetTextSize();
+			const std::string &GetContent() {return this->_textContent;};
 
 		private:
 			// Front::Utils::TexturesAtlas::TexturesAtlas::uvData _uvMappingData;

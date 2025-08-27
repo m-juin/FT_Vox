@@ -64,7 +64,6 @@ namespace Vox::Front::Rendering::Utils::Buffers
 			vkMapMemory(device.GetLogicalDevice(), _memories[i], 0, _size, 0, &_mappedMemories[i]);
 		}
 
-		std::cout << (int)this->_size << std::endl;
 		size_t nextFrame = 0;
 		if (this->_memories.size() != 1)
 			nextFrame = SyncObjects::GetInstance().GetNextFrame();

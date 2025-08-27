@@ -8,7 +8,7 @@
 namespace Vox::Game::Scenes::Menu::Interfaces
 {
     using Vector2 = MGL::Vectors::Vector2<size_t> ;
-    class I_MenuMain : public Front::Interfaces::AInterface
+    class I_MenuMain : public virtual Front::Interfaces::AInterface
     {
         public:
             I_MenuMain(Vector2 pos = {0, 0}, Vector2 size = {0, 0});
@@ -16,6 +16,8 @@ namespace Vox::Game::Scenes::Menu::Interfaces
     
 			void SetPos(const Vector2 newPos) override;
 			void SetSize(const Vector2 newSize) override;
+            void OnHover() override {};
+            void OnHoverLeave() override {};
             void Render() override;
 
         private:

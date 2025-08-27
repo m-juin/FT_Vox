@@ -1,0 +1,62 @@
+#include "Game/Scenes/Menu/InterfacesElements/WorldDataDisplayer.hpp"
+
+#include "Game/Scenes/Menu/SavesData.hpp"
+
+namespace Vox::Game::Scenes::Menu::Interfaces::Elements
+{
+    WorldDataDisplayer::WorldDataDisplayer(const Vox_WorldDataDisplayer_Constructor &st) : Bases::AElement(st.pos, st.size), AClickable(), Bases::AContainer()
+    {
+        this->AddElement("IMG_BG", std::make_unique<Image>("Menu_Main", "Dirt", this->_pos, this->_size,
+												 Color(1.0f, 1.0f, 1.0f, 1.0f), Vector2(2, 2)), 0);
+
+        Vector2 elemPos = {this->_pos[0] + 5, this->_pos[1] + 5};
+        Vector2 elemSize = {this->_size[1] - 10};
+
+        this->AddElement("IMG_Preview", std::make_unique<Image>("", "", elemPos, elemSize,
+												 Color(1.0f, 1.0f, 1.0f, 1.0f), Vector2(1, 1)), 1);
+
+        {
+            Text::Vox_Text_Constructor ElemSt{};
+            ElemSt.content = st.sd.worldName;
+
+            elemPos[0] += elemSize[0] + this->_size[1] - 10 - Text::GetTextSize(ElemSt.content, 0.7f)[0];
+
+            ElemSt.color = {1.0, 1.0, 1.0, 1.0};
+            ElemSt.pos = elemPos;
+            ElemSt.size = (Text::GetTextSize(ElemSt.content, 0.7f)[0], 50);
+            ElemSt.scale = 0.6f;
+            this->AddElement("TXT_WorldName", std::make_unique<Text>(ElemSt), 1);
+        }
+    }
+
+    void WorldDataDisplayer::SetPos(const Vector2 newPos)
+    {
+        if (newPos == this->_pos) return ;
+        this->_pos = newPos;
+
+        this->GetElement<Image>("IMG_BG")->SetPos(this->_pos);
+
+        Vector2 elemPos = {this->_pos[0] + 5, this->_pos[1] + 5};
+        Vector2 elemSize = {this->_size[1] - 10};
+
+        this->GetElement<Image>("IMG_Preview")->SetPos(elemPos);
+
+        auto txt = this->GetElement<Text>("TXT_WorldName");
+
+        elemPos[0] += this->_size[0] - 25 - txt->GetTextSize()[0];
+        elemPos[1] += 30;
+        txt->SetPos(elemPos);
+    }
+    
+    void WorldDataDisplayer::SetSize(const Vector2 newSize)
+    {
+        if (newSize == this->_size) return ;
+        this->_size = newSize;
+
+        this->GetElement<Image>("IMG_BG")->SetSize(this->_size);
+
+        Vector2 elemSize = {this->_size[1] - 10};
+
+        this->GetElement<Image>("IMG_Preview")->SetSize(elemSize);
+    }
+}

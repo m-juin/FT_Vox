@@ -37,7 +37,7 @@ namespace Vox::Front::Interfaces::Elements
 				};
 
 				AButton() = delete;
-				AButton(Vector2 pos_ = {0, 0}, Vector2 size_ = {100, 50}, const std::string &content_ = "Button",
+				AButton(const std::string &content_ = "Button",
 						Color textColor_ = {0.0, 0.0, 0.0, 1.0});
 				AButton(const Vox_Button_Constructor &st);
 				virtual ~AButton();

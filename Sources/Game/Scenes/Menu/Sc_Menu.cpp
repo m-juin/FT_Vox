@@ -8,6 +8,8 @@
 
 #include "Front/Rendering/SwapChain.hpp"
 
+#include <filesystem>
+
 namespace Vox::Game::Scenes::Menu
 {
 	void Sc_Menu::Load()
@@ -38,11 +40,10 @@ namespace Vox::Game::Scenes::Menu
 		auto &iManager = Front::Interfaces::InterfacesManager::GetInstance();
 		auto extent = Front::Rendering::SwapChain::GetInstance().GetExtent();
 		this->_textureManager = new Scenes::Menu::TManager_Menu();
+
 		iManager.RegisterInterface("Main", new Interfaces::I_MenuMain({0, 0}, {extent.width, extent.height}));
 		iManager.RegisterInterface("World", new Interfaces::I_MenuWorld({0, 0}, {extent.width, extent.height}));
 	}
-
-	
 
 } // namespace Vox::Game::Scenes::Menu
 

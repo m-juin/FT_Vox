@@ -44,16 +44,22 @@ namespace Vox::Front::Interfaces::Elements
 
 	void Image::CleanBuffers(size_t mode)
 	{
-		if ((mode == 0 || mode == 2) && this->B_Vertices)
+		if ((mode == 0 || mode == 2) && this->B_Vertices != nullptr)
+		{
 			delete this->B_Vertices;
-		if (mode >= 1 && this->B_Indices)
+			this->B_Vertices = nullptr;
+		}
+		if (mode >= 1 && this->B_Indices != nullptr)
+		{
 			delete this->B_Indices;
+			this->B_Indices = nullptr;
+		}
 	}
 
 	void Image::ResetVertex()
 	{
 
-		this->CleanBuffers(0);
+		// this->CleanBuffers(0);
 
 		const Vector2 screenSize(Rendering::SwapChain::GetInstance().GetExtent().width,
 								 Rendering::SwapChain::GetInstance().GetExtent().height);
@@ -70,8 +76,6 @@ namespace Vox::Front::Interfaces::Elements
 			this->_uvMappingData.uvMax[0] = uvData.uOffset + uvData.uSize;
 			this->_uvMappingData.uvMax[1] = uvData.vOffset + uvData.vSize;
 			this->_uvMappingData.atlasSize = atlas->GetSize();
-
-			std::cout << this->_uvMappingData.atlasSize << std::endl;
 
 			this->_vertex[0] = Vertex(PointPixelToVulkan(this->_pos, screenSize), {0.0f, 0.0f}, this->_colorMod);
 			this->_vertex[1] = Vertex(PointPixelToVulkan({this->_pos[0] + this->_size[0], this->_pos[1]}, screenSize),
@@ -122,7 +126,9 @@ namespace Vox::Front::Interfaces::Elements
 		if (newPos == this->_pos)
 			return;
 		this->_pos = newPos;
+
 		this->ResetVertex();
+		this->B_Vertices->Update(&this->_vertex, 4 * sizeof(Vertex));
 	}
 
 	void Image::SetSize(const Vector2 newSize)
@@ -130,8 +136,8 @@ namespace Vox::Front::Interfaces::Elements
 		if (newSize == this->_size)
 			return;
 		this->_size = newSize;
-		CleanBuffers(0);
 		this->ResetVertex();
+		this->B_Vertices->Update(&this->_vertex, 4 * sizeof(Vertex));
 	}
 
 	void Image::SetColor(const Color &newColor)
@@ -162,7 +168,6 @@ namespace Vox::Front::Interfaces::Elements
 		this->_uvMappingData.uvMax[0] = uvData.uOffset + uvData.uSize;
 		this->_uvMappingData.uvMax[1] = uvData.vOffset + uvData.vSize;
 		this->_uvMappingData.atlasSize = atlas->GetSize();
-
 
 		this->B_Vertices->Update(&this->_vertex, 4 * sizeof(Vertex));
 	}

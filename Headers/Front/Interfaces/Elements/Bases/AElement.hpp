@@ -20,6 +20,9 @@ namespace Vox::Front::Interfaces::Elements::Bases
             virtual void SetPos(const Vector2 newPos) = 0;
             virtual void SetSize(const Vector2 newSize) = 0;
             virtual void ResetVertex() = 0;
+
+            Vector2 GetPos() {return this->_pos;};
+            Vector2 GetSize() {return this->_size;};
         protected:
             Vector2 _pos;
             Vector2 _size;

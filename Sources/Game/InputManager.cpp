@@ -17,7 +17,8 @@ namespace Vox::Game
 
 	void InputManager::LoadInput()
 	{
-		glfwSetCursorPosCallback(Front::Window::GetInstance().GetWindow(),
+		auto win = Front::Window::GetInstance().GetWindow();
+		glfwSetCursorPosCallback(win,
 								 [](GLFWwindow *window, double xPos, double yPos)
 								 {
 									 (void)window;
@@ -25,11 +26,20 @@ namespace Vox::Game
 									 im.HandleMouseMove(xPos, yPos);
 								 });
 
-		glfwSetMouseButtonCallback(Front::Window::GetInstance().GetWindow(), [](GLFWwindow *window, int button, int action, int mods) {
-			(void)window;
-			(void)mods;
-			const auto &im = Front::Interfaces::InterfacesManager::GetInstance();
-			im.HandleMouseClick(button, action);
-	});
+		glfwSetMouseButtonCallback(win,
+								   [](GLFWwindow *window, int button, int action, int mods)
+								   {
+									   (void)window;
+									   (void)mods;
+									   const auto &im = Front::Interfaces::InterfacesManager::GetInstance();
+									   im.HandleMouseClick(button, action);
+								   });
+		glfwSetScrollCallback(win,
+							  [](GLFWwindow *window, double xoffset, double yoffset)
+							  {
+								  (void)window;
+								  const auto &im = Front::Interfaces::InterfacesManager::GetInstance();
+								  im.HandleMouseScroll(xoffset, yoffset);
+							  });
 	}
 } // namespace Vox::Game

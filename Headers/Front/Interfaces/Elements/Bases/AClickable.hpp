@@ -8,16 +8,12 @@
 
 namespace Vox::Front::Interfaces::Elements::Bases
 {
-	namespace Constructors
-	{
-		
-	} // namespace Constructors
 	
-	class AClickable : public AElement
+	class AClickable : public virtual AElement
 	{
 		public:
 
-			AClickable(Vector2 pos = {0, 0}, Vector2 size = {100, 50}) : AElement(pos, size), _enabled(true) {};
+			AClickable() : _enabled(true) {};
 			virtual ~AClickable() {};
 			virtual void OnEnable() = 0;
 			virtual void OnDisable() = 0;
@@ -54,8 +50,6 @@ namespace Vox::Front::Interfaces::Elements::Bases
 					OnDisable();
 			}
 
-			virtual void SetPos(const Vector2 newPos) = 0;
-			virtual void SetSize(const Vector2 newSize) = 0;
 			bool currentlyHovered = false;
 
 			bool IsEnabled() {return this->_enabled;};

@@ -4,6 +4,7 @@
 #include "Front/Interfaces/Elements/Buttons/TexturedButton.hpp"
 #include "Front/Interfaces/Elements/Image.hpp"
 #include "Front/Interfaces/Elements/Text.hpp"
+#include "Front/Interfaces/Elements/ScrollableList.hpp"
 
 #include "Front/Interfaces/InterfacesManager.hpp"
 
@@ -13,9 +14,35 @@
 
 #include "Front/Window.hpp"
 
+#include <vector>
+
+#include "Game/Scenes/Menu/SavesData.hpp"
+
+#include "Game/Scenes/Menu/InterfacesElements/WorldDataDisplayer.hpp"
+
 namespace Vox::Game::Scenes::Menu::Interfaces
 {
 	using namespace Front::Interfaces::Elements;
+
+	std::vector<Saves::WorldData> LoadGamesDatas()
+	{
+		std::vector<Saves::WorldData> lst;
+
+		const std::string path = Saves::WorldsFolder;
+
+		for (const auto &entry : std::filesystem::directory_iterator(path))
+		{
+			if (entry.is_directory() == false) continue;
+
+			std::filesystem::path saveFile(entry.path() / "SaveData.json");
+			if (std::filesystem::is_regular_file(saveFile) == false) continue;
+			auto wd = Saves::LoadWorldData(saveFile);
+
+			if (wd.folderPath == "") continue;
+			lst.push_back(wd);
+		}
+		return lst;
+	}
 
 	I_MenuWorld::I_MenuWorld(Vector2 pos, Vector2 size) : AInterface(pos, size, false)
 	{
@@ -26,7 +53,7 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 						 std::make_unique<Image>("Menu_Main", "Dirt", this->_pos, this->_size,
 												 Color(0.3f, 0.3f, 0.3f, 1.0f), Vector2(16, 16)),
 						 0);
-		{
+		{ // TXT_Choose
 			Text::Vox_Text_Constructor pm{};
 			pm.color = {0.8, 0.8, 0.8, 1.0};
 			pm.scale = 0.8f;
@@ -37,7 +64,7 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 			this->AddElement("TXT_Choose", std::make_unique<Text>(pm), 1);
 		};
 
-		{
+		{ // BTN Join + BTN Create + BTN_Cancel
 			Buttons::TexturedButton::Vox_TexturedButton_Constructor pm{};
 			pm.atlas = "Menu_Main";
 			pm.atlasKey = "Button";
@@ -69,6 +96,33 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 			this->AddElement("BTN_Cancel", std::make_unique<Buttons::TexturedButton>(pm), 1);
 		};
 
+		
+		
+		{ // Worlds List + LST_Worlds
+			auto worldLst = LoadGamesDatas();
+
+			std::vector<std::unique_ptr<AElement>> lst;
+			lst.reserve(worldLst.size());
+
+			for (auto world : worldLst)
+			{
+				Elements::WorldDataDisplayer::Vox_WorldDataDisplayer_Constructor st{
+					{100, 100},
+					{100, 125},
+					world
+				};
+				lst.push_back(std::make_unique<Elements::WorldDataDisplayer>(st));
+			}
+
+			ScrollableList::Vox_ScrollableList_Constructor pm{};
+			pm.pos = {this->_pos[0] +  (this->_size[0] / 3), this->_pos[1] + this->_size[1] / 5};
+			pm.size = {this->_size[0] / 3, this->_size[1] / 2};
+			pm.content = std::move(lst);
+
+
+			this->AddElement("LST_Worlds", std::make_unique<ScrollableList>(pm), 1);
+		}
+		
 		this->GetElement<Buttons::TexturedButton>("BTN_Cancel")
 			->onClickCallbacks.AddCallBack(
 				[](const int &button, const int &action)
@@ -78,10 +132,6 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 					auto &im = Front::Interfaces::InterfacesManager::GetInstance();
 					im.DisableInterface("World");
 					im.EnableInterface("Main");
-					// Front::Interfaces::InterfacesManager::GetInstance()["Main"]->ChangeEnableStatus(true);
-					// Front::Interfaces::InterfacesManager::GetInstance()["World"]->ChangeEnableStatus(false);
-					// std::cout << std::boolalpha
-					// 		  << Front::Interfaces::InterfacesManager::GetInstance()["World"]->IsEnabled() << std::endl;
 				});
 
 		this->GetElement<Buttons::TexturedButton>("BTN_Join")->ChangeEnableState(false);

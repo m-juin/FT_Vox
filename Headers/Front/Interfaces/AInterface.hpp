@@ -2,22 +2,37 @@
 #define __AINTERFACE_HPP__
 
 #include "Front/Interfaces/Elements/Bases/AContainer.hpp"
+#include "Front/Interfaces/Elements/Bases/AScrollable.hpp"
 
 
 namespace Vox::Front::Interfaces
 {
-	class AInterface : public Elements::Bases::AContainer
+	class AInterface : public virtual Elements::Bases::AContainer, public virtual Elements::Bases::AScrollable
 	{
 		public:
-			AInterface(Elements::Vector2 pos = {0, 0}, Elements::Vector2 size = {0, 0}, bool isEnabled = true) : AContainer(pos, size), _isEnabled(isEnabled) {};
+			AInterface(Elements::Vector2 pos = {0, 0}, Elements::Vector2 size = {0, 0}, bool isEnabled = true) : AElement(pos, size), AClickable(), AContainer(), AScrollable(), _isEnabled(isEnabled)
+			{
+				this->onScrollCallBacks.AddCallBack([this](const double &xOff, const double &yOff){
+					for(auto &elem : this->_content)
+					{
+						auto converted = dynamic_cast<AScrollable *>(elem.elem.get());
+						if (converted == nullptr) continue;
+						if (converted->currentlyHovered)
+						{
+							std::cout << "here" << std::endl;
+							converted->OnScroll(xOff, yOff);
+						}
+					}
+				});
+			};
 			virtual ~AInterface() {};
 
 			virtual void Render() = 0;
-			virtual void SetPos(const Elements::Vector2 newPos) override = 0;
-			virtual void SetSize(const Elements::Vector2 newSize) override = 0;
 
 			virtual void OnEnable() override {};
 			virtual void OnDisable() override {};
+
+			// virtual void OnScroll(const double &xOff, const double &yOff) override;
 
 			bool IsEnabled() {return this->_isEnabled;};
 			void ChangeEnableStatus(bool newState)

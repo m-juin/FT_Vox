@@ -32,10 +32,10 @@ namespace Vox::Front::Interfaces::Elements::Bases
 			ContainerElement &operator=(ContainerElement &&) noexcept = default;
 	};
 
-	class AContainer : public AClickable
+	class AContainer : public virtual AClickable
 	{
 		public:
-			AContainer(Vector2 pos = {0, 0}, Vector2 size = {100, 50}) : AClickable(pos, size) {}
+			AContainer() {}
 
 			virtual ~AContainer() {};
 
@@ -51,17 +51,14 @@ namespace Vox::Front::Interfaces::Elements::Bases
 
 			ContainerElement &GetContainerElement(const std::string &key);
 
-			virtual void SetPos(const Vector2 newPos) override = 0;
-			virtual void SetSize(const Vector2 newSize) override = 0;
-
-			void Draw() override;
-
-			void OnHover() override;
+			virtual void Draw() override;
 			void OnClick(const int &button, const int &action) override;
-			void OnHoverLeave() override;
 			bool IsHover(const Vector2 &mousePos) override;
 
 		protected:
+			Vox::Utils::CallBacksManager<AElement&> onElementAdd;
+			Vox::Utils::CallBacksManager<> onElementRemove;
+
 			std::vector<ContainerElement> _content;
 
 			inline std::vector<ContainerElement>::iterator FindElement(const std::string &key)

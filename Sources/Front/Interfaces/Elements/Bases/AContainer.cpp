@@ -14,15 +14,21 @@ namespace Vox::Front::Interfaces::Elements::Bases
 			std::sort(_content.begin(), _content.end(), [](ContainerElement &elem1, ContainerElement &elem2)
 					  { return elem1.renderIndex < elem2.renderIndex; });
 		}
+		this->onElementAdd.Notify(*elem);
 	}
 
 	bool AContainer::RemoveElement(const std::string &key)
 	{
-		auto newEnd = std::remove_if(_content.begin(), _content.end(),
-									 [key](const ContainerElement &elem) { return elem.key == key; });
-		bool found = newEnd != _content.end();
-		_content.erase(newEnd, _content.end());
-		return found;
+		auto it = FindElement(key);
+
+		if (it == _content.end())
+			return false;
+
+		// Suppression de l'élément
+		_content.erase(it);
+
+		onElementRemove.Notify();
+		return true;
 	}
 
 	ContainerElement &AContainer::GetContainerElement(const std::string &key)
@@ -40,11 +46,6 @@ namespace Vox::Front::Interfaces::Elements::Bases
 				cElem.elem->Draw();
 	}
 
-	void AContainer::OnHover()
-	{
-		
-	}
-
 	void AContainer::OnClick(const int &button, const int &action)
 	{
 		for (auto &elem : this->_content)
@@ -55,11 +56,6 @@ namespace Vox::Front::Interfaces::Elements::Bases
 					child->OnClick(button, action);
 			}
 		}
-	}
-
-	void AContainer::OnHoverLeave()
-	{
-		
 	}
 
 	bool AContainer::IsHover(const Vector2 &mousePos)
@@ -74,6 +70,7 @@ namespace Vox::Front::Interfaces::Elements::Bases
 					hovered = true;
 			}
 		}
+		this->currentlyHovered = AClickable::IsHover(mousePos);
 		return hovered;
 	}
 
