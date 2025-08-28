@@ -25,21 +25,13 @@ namespace Vox::Front::Interfaces::Elements
 			{
 				(void)xOff;
 
-				constexpr float scrollStep = -20.f; // ajuste à ton goût
+				constexpr float scrollStep = -20.f;
 				this->_scrollOffset += yOff * scrollStep;
 
-				// calcule la borne max en float (évite le wrapping)
-				// float maxOffset = std::max(0.f, static_cast<float>(this->_fullSize) - this->_size[1]);
+				// la limite basse = taille totale du contenu - taille visible
+				float maxOffset = std::max(0.f, _fullSize - _size[1]);
+				_scrollOffset = std::clamp(_scrollOffset, 0.f, maxOffset);
 
-				// clamp propre
-				if (_scrollOffset < 0)
-					_scrollOffset = 0;
-				else if (_scrollOffset > this->_fullSize - this->_size[1])
-					_scrollOffset = this->_fullSize - this->_size[1];
-				std::cout << _scrollOffset << std::endl;
-				// this->_scrollOffset = std::clamp((size_t)this->_scrollOffset, (size_t)0, (size_t)maxOffset);
-
-				// on rebuild les positions (elles utilisent _scrollOffset)
 				this->RebuildList();
 			});
 	}
@@ -49,7 +41,8 @@ namespace Vox::Front::Interfaces::Elements
 	{
 		for (auto &elem : this->_content)
 		{
-			if (elem.elem->GetPos()[1] < this->_pos[1] || elem.elem->GetPos()[1] + elem.elem->GetSize()[1] > this->_pos[1] + this->_size[1])
+			if (elem.elem->GetPos()[1] < this->_pos[1] ||
+				elem.elem->GetPos()[1] + elem.elem->GetSize()[1] > this->_pos[1] + this->_size[1])
 				continue;
 			elem.elem->Draw();
 		}
@@ -57,23 +50,23 @@ namespace Vox::Front::Interfaces::Elements
 
 	void ScrollableList::RebuildList()
 	{
-		float curOffset = this->_pos[1]; // float pour éviter conversions surprises
+		float curOffset = 0.f; // commence à 0 = haut du contenu
 
 		for (auto &elem : this->_content)
 		{
-			if (elem.elem == nullptr)
+			if (!elem.elem)
 				continue;
 
-			elem.elem->SetSize({this->_size[0] - 10, elem.elem->GetSize()[1]});
+			elem.elem->SetSize({this->_size[0] - 10.f, elem.elem->GetSize()[1]});
 
-			// position réelle = base + curOffset - scrollOffset
-			elem.elem->SetPos({this->_pos[0] + 5, curOffset + this->_scrollOffset});
+			// position = base + offset contenu - scroll
+			elem.elem->SetPos({this->_pos[0] + 5.f, this->_pos[1] + curOffset - this->_scrollOffset});
 
-			curOffset += elem.elem->GetSize()[1] + 5;
+			curOffset += elem.elem->GetSize()[1] + 5.f;
 		}
 
-		// _fullSize = taille totale du contenu (sans tenir compte du scroll)
-		this->_fullSize = static_cast<size_t>(curOffset);
+		// maintenant _fullSize = hauteur totale du contenu
+		this->_fullSize = curOffset;
 	}
 
 	void ScrollableList::SetPos(const Vector2 newPos)

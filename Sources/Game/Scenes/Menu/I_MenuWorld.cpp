@@ -116,7 +116,7 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 
 			ScrollableList::Vox_ScrollableList_Constructor pm{};
 			pm.pos = {this->_pos[0] +  (this->_size[0] / 3), this->_pos[1] + this->_size[1] / 5};
-			pm.size = {this->_size[0] / 3, 500};
+			pm.size = {this->_size[0] / 3, 501};
 			pm.content = std::move(lst);
 
 
