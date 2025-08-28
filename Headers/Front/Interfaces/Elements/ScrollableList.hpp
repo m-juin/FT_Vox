@@ -24,7 +24,7 @@ namespace Vox::Front::Interfaces::Elements
             void OnEnable() override {};
 			void OnDisable() override {};
 			void OnHover() override {};
-			void OnClick(const int &button, const int &action) override {(void)button; (void)action;};
+			// void OnClick(const int &button, const int &action) override ;
 			void OnHoverLeave() override {};
 
 			using AClickable::IsHover;

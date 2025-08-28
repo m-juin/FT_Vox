@@ -1,13 +1,15 @@
 #include "Game/Scenes/Menu/InterfacesElements/WorldDataDisplayer.hpp"
 
-#include "Game/Scenes/Menu/SavesData.hpp"
+
+#include "Front/Interfaces/Elements/Image.hpp"
+#include "Front/Interfaces/Elements/Text.hpp"
 
 namespace Vox::Game::Scenes::Menu::Interfaces::Elements
 {
-    WorldDataDisplayer::WorldDataDisplayer(const Vox_WorldDataDisplayer_Constructor &st) : Bases::AElement(st.pos, st.size), AClickable(), Bases::AContainer()
+    WorldDataDisplayer::WorldDataDisplayer(const Vox_WorldDataDisplayer_Constructor &st) : Bases::AElement(st.pos, st.size), AClickable(), Bases::AContainer(), _linkedWorld(st.sd)
     {
         this->AddElement("IMG_BG", std::make_unique<Image>("Menu_Main", "Dirt", this->_pos, this->_size,
-												 Color(1.0f, 1.0f, 1.0f, 1.0f), Vector2(2, 2)), 0);
+												 Color(0.7f, 0.7f, 0.7f, 1.0f), Vector2(2, 2)), 0);
 
         Vector2 elemPos = {this->_pos[0] + 5, this->_pos[1] + 5};
         Vector2 elemSize = {this->_size[1] - 10};
@@ -59,4 +61,19 @@ namespace Vox::Game::Scenes::Menu::Interfaces::Elements
 
         this->GetElement<Image>("IMG_Preview")->SetSize(elemSize);
     }
+
+	void WorldDataDisplayer::OnClick(const int &button, const int &action)
+	{
+		this->onClickCallbacks.Notify(button, action);
+	}
+
+    void WorldDataDisplayer::Select()
+	{
+		this->GetElement<Image>("IMG_BG")->SetColor({1.0f, 1.0f, 1.0f, 1.0f});
+	}
+	
+	void WorldDataDisplayer::UnSelect()
+	{
+		this->GetElement<Image>("IMG_BG")->SetColor({0.7f, 0.7f, 0.7f, 1.0f});
+	}
 }

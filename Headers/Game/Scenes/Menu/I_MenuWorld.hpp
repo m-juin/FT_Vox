@@ -3,6 +3,11 @@
 
 #include "Front/Interfaces/AInterface.hpp"
 
+namespace Vox::Game::Scenes::Menu::Interfaces::Elements
+{
+	class WorldDataDisplayer;
+}
+
 namespace Vox::Game::Scenes::Menu::Interfaces
 {
 	class I_MenuWorld : public virtual Front::Interfaces::AInterface
@@ -18,7 +23,14 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 			void OnHover() override {};
 			void OnHoverLeave() override {};
 
+			void SetSelectedWorld(Elements::WorldDataDisplayer *elem);
+			Elements::WorldDataDisplayer *GetSelectedWorld() {return this->_selectedWorld;};
+
+			void WorldDeletionCheck();
+			// void SetSelectedWorld();
+
 		private:
+			Elements::WorldDataDisplayer *_selectedWorld = nullptr;
 			/* private */
 	};
 } // namespace Vox::Game::Scenes::Menu::Interfaces

@@ -40,11 +40,11 @@ namespace Vox::Front::Interfaces::Elements::Buttons
 
 	void AButton::OnClick(const int &button, const int &action)
 	{
-		if (this->_enabled == false)
+		if (this->_enabled == false || this->currentlyHovered == false)
 			return;
 		this->onClickCallbacks.Notify(button, action);
 
-		// std::cout << "[DEBUG] " << "Button is clicked." << std::endl;
+		std::cout << "[DEBUG] " << "Button is clicked." << std::endl;
 	}
 
 	void AButton::OnHover()
@@ -63,9 +63,9 @@ namespace Vox::Front::Interfaces::Elements::Buttons
 		// std::cout << "[DEBUG] " << "Button stopped Hovered." << std::endl;
 	}
 
-	bool AButton::IsHover(const Vector2 &mousePos)
+	bool AButton::IsHover(const Vector2 &mousePos, bool override)
 	{
-		return AClickable::IsHover(mousePos);
+		return AClickable::IsHover(mousePos, override);
 	}
 
 	void AButton::OnEnable()

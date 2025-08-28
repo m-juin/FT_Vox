@@ -42,26 +42,26 @@ namespace Vox::Front::Interfaces::Elements::Bases
 		{
 			if (auto child = dynamic_cast<AClickable *>(elem.elem.get()))
 			{
-				if (child->currentlyHovered)
-					child->OnClick(button, action);
+				// if (child->currentlyHovered)
+				child->OnClick(button, action);
 			}
 		}
 	}
 
 	void IContainer::OnHoverLeave() {}
 
-	bool IContainer::IsHover(const Vector2 &mousePos)
+	bool IContainer::IsHover(const Vector2 &mousePos, bool override)
 	{
 		bool hovered = false;
-		for (auto &elem : this->_content)
+		for (auto elem = this->_content.rbegin(); elem != this->_content.rend(); ++elem)
 		{
-			if (auto child = dynamic_cast<AClickable *>(elem.elem.get()))
+			if (auto child = dynamic_cast<AClickable *>(elem->elem.get()))
 			{
-				if (child->IsHover(mousePos))
+				if (child->IsHover(mousePos, override))
 					hovered = true;
 			}
 		}
-		this->currentlyHovered = AClickable::IsHover(mousePos);
+		this->currentlyHovered = AClickable::IsHover(mousePos, override);
 		return hovered;
 	}
 

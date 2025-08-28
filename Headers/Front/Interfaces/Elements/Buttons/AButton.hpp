@@ -45,7 +45,7 @@ namespace Vox::Front::Interfaces::Elements
 				void OnClick(const int &button, const int &action) override;
 				void OnHover() override; 
 				void OnHoverLeave() override;
-				bool IsHover(const Vector2 &mousePos) override;
+				bool IsHover(const Vector2 &mousePos, bool override = false) override;
 
 				void OnEnable() override;
 				void OnDisable() override;

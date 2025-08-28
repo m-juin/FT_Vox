@@ -3,8 +3,8 @@
 #include "Front/Interfaces/Elements/Buttons/ColoredButton.hpp"
 #include "Front/Interfaces/Elements/Buttons/TexturedButton.hpp"
 #include "Front/Interfaces/Elements/Image.hpp"
-#include "Front/Interfaces/Elements/Text.hpp"
 #include "Front/Interfaces/Elements/ScrollableList.hpp"
+#include "Front/Interfaces/Elements/Text.hpp"
 
 #include "Front/Interfaces/InterfacesManager.hpp"
 
@@ -19,6 +19,7 @@
 #include "Game/Scenes/Menu/SavesData.hpp"
 
 #include "Game/Scenes/Menu/InterfacesElements/WorldDataDisplayer.hpp"
+#include "Game/Scenes/Menu/InterfacesElements/WorldDeletionCheck.hpp"
 
 namespace Vox::Game::Scenes::Menu::Interfaces
 {
@@ -32,26 +33,32 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 
 		for (const auto &entry : std::filesystem::directory_iterator(path))
 		{
-			if (entry.is_directory() == false) continue;
+			if (entry.is_directory() == false)
+				continue;
 
 			std::filesystem::path saveFile(entry.path() / "SaveData.json");
-			if (std::filesystem::is_regular_file(saveFile) == false) continue;
+			if (std::filesystem::is_regular_file(saveFile) == false)
+				continue;
 			auto wd = Saves::LoadWorldData(saveFile);
 
-			if (wd.folderPath == "") continue;
+			if (wd.folderPath == "")
+				continue;
 			lst.push_back(wd);
 		}
 		return lst;
 	}
 
-	I_MenuWorld::I_MenuWorld(Vox::Front::Interfaces::Elements::Vector2 pos, Vox::Front::Interfaces::Elements::Vector2 size) : AInterface(pos, size, false)
+	I_MenuWorld::I_MenuWorld(Vox::Front::Interfaces::Elements::Vector2 pos,
+							 Vox::Front::Interfaces::Elements::Vector2 size)
+		: AInterface(pos, size, false)
 	{
 		_size[0] = MGL::Utils::findNextMultiple(size[0], 16.f);
 		_size[1] = MGL::Utils::findNextMultiple(size[1], 16.f);
 		// std::cout << size << "\n" << std::endl;
 		this->AddElement("IMG_BG",
 						 std::make_unique<Image>("Menu_Main", "Dirt", this->_pos, this->_size,
-												 Color(0.3f, 0.3f, 0.3f, 1.0f), Vox::Front::Interfaces::Elements::Vector2(16, 16)),
+												 Color(0.3f, 0.3f, 0.3f, 1.0f),
+												 Vox::Front::Interfaces::Elements::Vector2(16, 16)),
 						 0);
 		{ // TXT_Choose
 			Text::Vox_Text_Constructor pm{};
@@ -90,14 +97,16 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 			this->AddElement("BTN_Create", std::make_unique<Buttons::TexturedButton>(pm), 1);
 
 			pm.content = "Cancel";
-			pm.size[0] /= 2;
-			pm.pos = {this->_pos[0] + this->_size[0] / 2 - pm.size[0] / 2, pm.pos[1] + 100};
+			pm.pos = {this->_pos[0] + this->_size[0] / 2 - pm.size[0] - 100, pm.pos[1] + 100};
 
 			this->AddElement("BTN_Cancel", std::make_unique<Buttons::TexturedButton>(pm), 1);
+
+			pm.content = "Delete";
+			pm.pos[0] = this->_pos[0] + this->_size[0] / 2 + 100;
+
+			this->AddElement("BTN_Delete", std::make_unique<Buttons::TexturedButton>(pm), 1);
 		};
 
-		
-		
 		{ // Worlds List + LST_Worlds
 			auto worldLst = LoadGamesDatas();
 
@@ -106,23 +115,30 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 
 			for (auto world : worldLst)
 			{
-				Elements::WorldDataDisplayer::Vox_WorldDataDisplayer_Constructor st{
-					{100, 100},
-					{100, 125},
-					world
-				};
-				lst.push_back(std::make_unique<Elements::WorldDataDisplayer>(st));
+				Elements::WorldDataDisplayer::Vox_WorldDataDisplayer_Constructor st{{100, 100}, {100, 125}, world};
+				auto elem = std::make_unique<Elements::WorldDataDisplayer>(st);
+
+				Elements::WorldDataDisplayer *elem2 = elem.get();
+				elem->onClickCallbacks.AddCallBack(
+					[this, elem2](const int &button, const int &action)
+					{
+						if (button != GLFW_MOUSE_BUTTON_LEFT || action != GLFW_RELEASE)
+							return;
+
+						this->SetSelectedWorld(elem2);
+					});
+
+				lst.push_back(std::move(elem));
 			}
 
 			ScrollableList::Vox_ScrollableList_Constructor pm{};
-			pm.pos = {this->_pos[0] +  (this->_size[0] / 3), this->_pos[1] + this->_size[1] / 5};
+			pm.pos = {this->_pos[0] + (this->_size[0] / 3), this->_pos[1] + this->_size[1] / 5};
 			pm.size = {this->_size[0] / 3, 501};
 			pm.content = std::move(lst);
 
-
 			this->AddElement("LST_Worlds", std::make_unique<ScrollableList>(pm), 1);
 		}
-		
+
 		this->GetElement<Buttons::TexturedButton>("BTN_Cancel")
 			->onClickCallbacks.AddCallBack(
 				[](const int &button, const int &action)
@@ -135,6 +151,16 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 				});
 
 		this->GetElement<Buttons::TexturedButton>("BTN_Join")->ChangeEnableState(false);
+
+		auto btn = this->GetElement<Buttons::TexturedButton>("BTN_Delete");
+		btn->ChangeEnableState(false);
+		btn->onClickCallbacks.AddCallBack(
+			[this](const int &button, const int &action)
+			{
+				if (button != GLFW_MOUSE_BUTTON_LEFT || action != GLFW_RELEASE)
+					return;
+				this->WorldDeletionCheck();
+			});
 	}
 
 	I_MenuWorld::~I_MenuWorld() {}
@@ -145,9 +171,6 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 			return;
 		this->_pos = newPos;
 		this->FindElement("IMG_BG")->elem->SetPos(this->_pos);
-		// this->FindElement("TXT_Test")->elem->SetPos({100, 100});
-		// this->FindElement("BTN_Test1")->elem->SetPos({400, 200});
-		// this->FindElement("BTN_Test")->elem->SetPos({600, 200});
 	}
 
 	void I_MenuWorld::SetSize(const Vox::Front::Interfaces::Elements::Vector2 newSize)
@@ -157,7 +180,6 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 		_size[0] = MGL::Utils::findNextMultiple(newSize[0], 16.f);
 		_size[1] = MGL::Utils::findNextMultiple(newSize[1], 16.f);
 		this->FindElement("IMG_BG")->elem->SetSize(this->_size);
-		// this->FindElement("TXT_Test")->elem->SetSize({this->_size[0] - 200, this->_size[1] - 200});
 	}
 
 	void I_MenuWorld::Render()
@@ -165,6 +187,43 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 		for (auto &elem : this->_content)
 			if (elem.elem)
 				elem.elem->Draw();
-		// std::cout << "render interface" << std::endl;
+	}
+
+	void I_MenuWorld::SetSelectedWorld(Elements::WorldDataDisplayer *elem)
+	{
+		if (elem == this->_selectedWorld)
+			return;
+		if (this->_selectedWorld != nullptr)
+			this->_selectedWorld->UnSelect();
+		if (elem != nullptr)
+		{
+			elem->Select();
+		}
+		this->_selectedWorld = elem;
+		auto button = this->GetElement<Buttons::AButton>("BTN_Join");
+		button->ChangeEnableState(elem != nullptr);
+		this->GetElement<Buttons::AButton>("BTN_Delete")->ChangeEnableState(elem != nullptr);
+	}
+
+	void I_MenuWorld::WorldDeletionCheck()
+	{
+		if (this->_selectedWorld == nullptr)
+			throw std::runtime_error("This should never happen");
+		Elements::WorldDeletionCheck::Vox_WorldDeletionCheck_Constructor pm{
+			{this->_pos[0] + this->_size[0] / 2 - 400, this->_pos[1] + this->_size[1] / 2 - 250},
+			{800, 500},
+			this->_selectedWorld->GetWorld()
+		};
+
+		auto elem = std::make_unique<Elements::WorldDeletionCheck>(pm);
+		elem->GetElement<Buttons::ColoredButton>("BTN_Cancel")->onClickCallbacks.AddCallBack(
+				[this](const int &button, const int &action)
+				{
+					if (button != GLFW_MOUSE_BUTTON_LEFT || action != GLFW_RELEASE)
+						return;
+					this->RemoveElement("WDC");
+				});
+
+		this->AddElement("WDC", std::move(elem), 2);
 	}
 } // namespace Vox::Game::Scenes::Menu::Interfaces

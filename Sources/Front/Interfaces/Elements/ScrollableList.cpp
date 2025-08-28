@@ -35,6 +35,7 @@ namespace Vox::Front::Interfaces::Elements
 				this->RebuildList();
 			});
 	}
+	
 
 	// Draw() — plus d'ajout de _scrollOffset ici (c'est déjà dans les positions)
 	void ScrollableList::Draw()

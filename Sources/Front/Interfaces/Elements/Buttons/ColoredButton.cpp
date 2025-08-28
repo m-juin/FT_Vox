@@ -5,6 +5,12 @@
 
 namespace Vox::Front::Interfaces::Elements::Buttons
 {
+	void ColoredButton::OnClick(const int &button, const int &action)
+	{
+		std::cout << std::boolalpha << this->currentlyHovered << std::endl;
+		AButton::OnClick(button, action);
+	}
+
 	ColoredButton::ColoredButton(const Vox_ColorButton_Constructor &st) : AElement(st.pos, st.size),  AButton(st)
 	{
 		this->AddElement("IMG_BackGround", std::make_unique<Image>("", "", this->_pos, this->_size, st.bgColor), 0);

@@ -20,9 +20,10 @@ namespace Vox::Front::Interfaces::Elements::Bases
 			virtual void OnHover() = 0;
 			virtual void OnClick(const int &button, const int &action) = 0;
 			virtual void OnHoverLeave() = 0;
-			virtual bool IsHover(const Vector2 &mousePos)
+			virtual bool IsHover(const Vector2 &mousePos, bool override = false)
 			{
-				if ((mousePos[0] >= this->_pos[0] && mousePos[0] <= this->_pos[0] + this->_size[0]) &&
+				if (this->_enabled == false) return false;
+				if (override == false && (mousePos[0] >= this->_pos[0] && mousePos[0] <= this->_pos[0] + this->_size[0]) &&
 					(mousePos[1] >= this->_pos[1] && mousePos[1] <= this->_pos[1] + this->_size[1]))
 				{
 					if (currentlyHovered == true)
