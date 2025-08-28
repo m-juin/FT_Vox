@@ -11,7 +11,7 @@
 
 namespace Vox::Front::Interfaces::Elements::Utils::Defines
 {
-    using Vector2 = MGL::Vectors::Vector2<size_t>;
+    using Vector2 = MGL::Vectors::Vector2<float>;
     using Vertex = Front::Rendering::Utils::Vertex::StaticGUIVertex;
 
     using Color = MGL::Vectors::Vector4<float>;

@@ -5,7 +5,7 @@
 
 namespace Vox::Front::Interfaces::Utils::Maths
 {
-    inline MGL::Vectors::Vector2<float> PointPixelToVulkan(const MGL::Vectors::Vector2<size_t> point, const MGL::Vectors::Vector2<size_t> screenSize)
+    inline MGL::Vectors::Vector2<float> PointPixelToVulkan(const MGL::Vectors::Vector2<float> point, const MGL::Vectors::Vector2<float> screenSize)
     {
         MGL::Vectors::Vector2<float> ret;
         ret[0] = (((float)point[0] / screenSize[0]) * 2.0) - 1.0f;

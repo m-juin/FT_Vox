@@ -44,14 +44,14 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 		return lst;
 	}
 
-	I_MenuWorld::I_MenuWorld(Vector2 pos, Vector2 size) : AInterface(pos, size, false)
+	I_MenuWorld::I_MenuWorld(Vox::Front::Interfaces::Elements::Vector2 pos, Vox::Front::Interfaces::Elements::Vector2 size) : AInterface(pos, size, false)
 	{
-		_size[0] = MGL::Utils::findNextMultiple(size[0], (size_t)16);
-		_size[1] = MGL::Utils::findNextMultiple(size[1], (size_t)16);
+		_size[0] = MGL::Utils::findNextMultiple(size[0], 16.f);
+		_size[1] = MGL::Utils::findNextMultiple(size[1], 16.f);
 		// std::cout << size << "\n" << std::endl;
 		this->AddElement("IMG_BG",
 						 std::make_unique<Image>("Menu_Main", "Dirt", this->_pos, this->_size,
-												 Color(0.3f, 0.3f, 0.3f, 1.0f), Vector2(16, 16)),
+												 Color(0.3f, 0.3f, 0.3f, 1.0f), Vox::Front::Interfaces::Elements::Vector2(16, 16)),
 						 0);
 		{ // TXT_Choose
 			Text::Vox_Text_Constructor pm{};
@@ -116,7 +116,7 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 
 			ScrollableList::Vox_ScrollableList_Constructor pm{};
 			pm.pos = {this->_pos[0] +  (this->_size[0] / 3), this->_pos[1] + this->_size[1] / 5};
-			pm.size = {this->_size[0] / 3, this->_size[1] / 2};
+			pm.size = {this->_size[0] / 3, 500};
 			pm.content = std::move(lst);
 
 
@@ -139,7 +139,7 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 
 	I_MenuWorld::~I_MenuWorld() {}
 
-	void I_MenuWorld::SetPos(const Vector2 newPos)
+	void I_MenuWorld::SetPos(const Vox::Front::Interfaces::Elements::Vector2 newPos)
 	{
 		if (newPos == this->_pos)
 			return;
@@ -150,12 +150,12 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 		// this->FindElement("BTN_Test")->elem->SetPos({600, 200});
 	}
 
-	void I_MenuWorld::SetSize(const Vector2 newSize)
+	void I_MenuWorld::SetSize(const Vox::Front::Interfaces::Elements::Vector2 newSize)
 	{
 		if (newSize == this->_size)
 			return;
-		_size[0] = MGL::Utils::findNextMultiple(newSize[0], (size_t)16);
-		_size[1] = MGL::Utils::findNextMultiple(newSize[1], (size_t)16);
+		_size[0] = MGL::Utils::findNextMultiple(newSize[0], 16.f);
+		_size[1] = MGL::Utils::findNextMultiple(newSize[1], 16.f);
 		this->FindElement("IMG_BG")->elem->SetSize(this->_size);
 		// this->FindElement("TXT_Test")->elem->SetSize({this->_size[0] - 200, this->_size[1] - 200});
 	}

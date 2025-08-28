@@ -64,11 +64,11 @@ namespace Vox::Front::Interfaces::Elements
 		{
 			auto chr = font[letter];
 
-			size_t x0 = x + (chr.bearingX * _scale);
-			size_t x1 = x0 + (chr.width * _scale);
+			float x0 = x + (chr.bearingX * _scale);
+			float x1 = x0 + (chr.width * _scale);
 
-			size_t y1 = baseline - (chr.bearingY * _scale);
-			size_t y0 = y1 + (chr.height * _scale);
+			float y1 = baseline - (chr.bearingY * _scale);
+			float y0 = y1 + (chr.height * _scale);
 
 			auto letterBound = font.GetCharBounds(letter);
 
@@ -138,9 +138,6 @@ namespace Vox::Front::Interfaces::Elements
 			return;
 		this->_pos = newPos;
 		this->ResetVertex();
-		std::cout << "Pos" << std::endl; 
-		for (auto vertex : this->_vertex)
-			std::cout << vertex.position << std::endl; 
 	}
 
 	void Text::SetSize(const Vector2 newSize)
@@ -149,9 +146,6 @@ namespace Vox::Front::Interfaces::Elements
 			return;
 		this->_size = newSize;
 		this->ResetVertex();
-		std::cout << "size" << std::endl; 
-		for (auto vertex : this->_vertex)
-			std::cout << vertex.position << std::endl; 
 	}
 	
 	void Text::SetColor(const Color &newColor)

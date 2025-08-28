@@ -30,7 +30,7 @@ namespace Vox::Front::Interfaces
         }
     }
 	
-	void InterfacesManager::HandleMouseMove(const size_t &xPos, const size_t &yPos) const
+	void InterfacesManager::HandleMouseMove(const float &xPos, const float &yPos) const
 	{
 		for (auto pair : this->_content)
 			pair.second->IsHover({xPos, yPos});

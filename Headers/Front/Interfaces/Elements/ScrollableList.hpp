@@ -37,7 +37,8 @@ namespace Vox::Front::Interfaces::Elements
 			~ScrollableList() {};
 		private:
 
-            size_t scrollOffset = 0;
+            float _scrollOffset = 0;
+			int _fullSize = 0;
             void RebuildList();
             // bool _enableDeletion;
 			/* private */

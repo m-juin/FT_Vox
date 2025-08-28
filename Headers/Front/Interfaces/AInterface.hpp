@@ -19,7 +19,6 @@ namespace Vox::Front::Interfaces
 						if (converted == nullptr) continue;
 						if (converted->currentlyHovered)
 						{
-							std::cout << "here" << std::endl;
 							converted->OnScroll(xOff, yOff);
 						}
 					}

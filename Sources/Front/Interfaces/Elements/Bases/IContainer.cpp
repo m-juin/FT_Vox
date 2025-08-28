@@ -52,7 +52,6 @@ namespace Vox::Front::Interfaces::Elements::Bases
 
 	bool IContainer::IsHover(const Vector2 &mousePos)
 	{
-		// std::cout << "IContainer::IsHover\n";
 		bool hovered = false;
 		for (auto &elem : this->_content)
 		{

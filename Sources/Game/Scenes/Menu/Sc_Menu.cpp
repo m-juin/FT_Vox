@@ -41,8 +41,8 @@ namespace Vox::Game::Scenes::Menu
 		auto extent = Front::Rendering::SwapChain::GetInstance().GetExtent();
 		this->_textureManager = new Scenes::Menu::TManager_Menu();
 
-		iManager.RegisterInterface("Main", new Interfaces::I_MenuMain({0, 0}, {extent.width, extent.height}));
-		iManager.RegisterInterface("World", new Interfaces::I_MenuWorld({0, 0}, {extent.width, extent.height}));
+		iManager.RegisterInterface("Main", new Interfaces::I_MenuMain({0, 0}, {(float)extent.width, (float)extent.height}));
+		iManager.RegisterInterface("World", new Interfaces::I_MenuWorld({0, 0}, {(float)extent.width, (float)extent.height}));
 	}
 
 } // namespace Vox::Game::Scenes::Menu
