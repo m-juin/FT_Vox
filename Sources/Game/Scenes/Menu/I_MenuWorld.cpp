@@ -200,6 +200,7 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 			elem->Select();
 		}
 		this->_selectedWorld = elem;
+		std::cout << "Here2" << std::endl;
 		auto button = this->GetElement<Buttons::AButton>("BTN_Join");
 		button->ChangeEnableState(elem != nullptr);
 		this->GetElement<Buttons::AButton>("BTN_Delete")->ChangeEnableState(elem != nullptr);
@@ -222,6 +223,10 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 					if (button != GLFW_MOUSE_BUTTON_LEFT || action != GLFW_RELEASE)
 						return;
 					this->RemoveElement("WDC");
+					// if (this->_selectedWorld != nullptr)
+					// {
+					// 	this->_selectedWorld->Select();
+					// }
 				});
 
 		this->AddElement("WDC", std::move(elem), 2);

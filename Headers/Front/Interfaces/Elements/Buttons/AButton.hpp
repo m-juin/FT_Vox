@@ -42,16 +42,16 @@ namespace Vox::Front::Interfaces::Elements
 				AButton(const Vox_Button_Constructor &st);
 				virtual ~AButton();
 
-				void OnClick(const int &button, const int &action) override;
-				void OnHover() override; 
-				void OnHoverLeave() override;
-				bool IsHover(const Vector2 &mousePos, bool override = false) override;
+				virtual void OnClick(const int &button, const int &action) override;
+				virtual void OnHover() override; 
+				virtual void OnHoverLeave() override;
+				virtual bool IsHover(const Vector2 &mousePos, bool override = false) override;
 
-				void OnEnable() override;
-				void OnDisable() override;
+				virtual void OnEnable() override;
+				virtual void OnDisable() override;
 
-				void SetPos(Vector2 newPos) override;
-				void SetSize(Vector2 newSize) override;
+				virtual void SetPos(Vector2 newPos) override;
+				virtual void SetSize(Vector2 newSize) override;
 
 				void ResetVertex() override;
 

@@ -3,6 +3,7 @@
 
 #include "Front/Rendering/Device.hpp"
 #include "Front/Rendering/SyncObjects.hpp"
+#include "Front/Rendering/SwapChain.hpp"
 
 #include <cstring>
 
@@ -17,6 +18,7 @@ namespace Vox::Front::Rendering::Utils::Buffers
 
 	DynamicBuffer::~DynamicBuffer()
 	{
+		vkQueueWaitIdle(SwapChain::GetInstance().GetGraphicQueue());
 		VkDevice &device = Device::GetInstance().GetLogicalDevice();
 		for (size_t i = 0; i < _buffers.size(); i++)
 		{

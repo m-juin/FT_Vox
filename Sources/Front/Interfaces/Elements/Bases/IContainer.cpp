@@ -42,8 +42,8 @@ namespace Vox::Front::Interfaces::Elements::Bases
 		{
 			if (auto child = dynamic_cast<AClickable *>(elem.elem.get()))
 			{
-				// if (child->currentlyHovered)
-				child->OnClick(button, action);
+				if (child->currentlyHovered)
+					child->OnClick(button, action);
 			}
 		}
 	}
@@ -57,12 +57,14 @@ namespace Vox::Front::Interfaces::Elements::Bases
 		{
 			if (auto child = dynamic_cast<AClickable *>(elem->elem.get()))
 			{
-				if (child->IsHover(mousePos, override))
+				if (child->IsHover(mousePos, override ? override : hovered))
+				{
 					hovered = true;
+				}
 			}
 		}
-		this->currentlyHovered = AClickable::IsHover(mousePos, override);
-		return hovered;
+		this->currentlyHovered = AClickable::IsHover(mousePos, override ? override : hovered);
+		return hovered ;
 	}
 
 } // namespace Vox::Front::Interfaces::Elements::Bases

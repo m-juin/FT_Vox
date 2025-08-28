@@ -53,7 +53,8 @@ namespace Vox::Front::Interfaces::Elements::Bases
 			if (auto child = dynamic_cast<AClickable *>(elem.elem.get()))
 			{
 				// std::cout << "child = " << elem.key << " | " << std::boolalpha << child->currentlyHovered << std::endl;
-				child->OnClick(button, action);
+				if (child->currentlyHovered)
+					child->OnClick(button, action);
 
 			}
 		}
