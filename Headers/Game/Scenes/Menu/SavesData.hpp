@@ -98,7 +98,8 @@ namespace Vox::Game::Scenes::Menu::Saves
 	{
 		const std::filesystem::path path = Saves::WorldsFolder;
 		std::filesystem::path saveFile(path / dt.folderPath);
-		std::filesystem::remove_all(saveFile);
+		if (std::filesystem::exists(saveFile / "SaveData.json"))
+			std::filesystem::remove_all(saveFile);
 	}
 } // namespace Vox::Game::Scenes::Menu::Saves
 
