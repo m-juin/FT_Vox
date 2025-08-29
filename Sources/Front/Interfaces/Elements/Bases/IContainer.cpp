@@ -34,37 +34,29 @@ namespace Vox::Front::Interfaces::Elements::Bases
 				cElem.elem->Draw();
 	}
 
-	void IContainer::OnHover() {}
-
 	void IContainer::OnClick(const int &button, const int &action)
 	{
+		if (this->_enabled == false) return ;
 		for (auto &elem : this->_content)
 		{
 			if (auto child = dynamic_cast<AClickable *>(elem.elem.get()))
 			{
-				if (child->currentlyHovered)
-					child->OnClick(button, action);
+				child->OnClick(button, action);
 			}
 		}
 	}
 
-	void IContainer::OnHoverLeave() {}
-
-	bool IContainer::IsHover(const Vector2 &mousePos, bool override)
+	bool IContainer::IsHover(const Vector2 &mousePos)
 	{
-		bool hovered = false;
+		if (this->_enabled == false) return false;
 		for (auto elem = this->_content.rbegin(); elem != this->_content.rend(); ++elem)
 		{
 			if (auto child = dynamic_cast<AClickable *>(elem->elem.get()))
 			{
-				if (child->IsHover(mousePos, override ? override : hovered))
-				{
-					hovered = true;
-				}
+				child->IsHover(mousePos);
 			}
 		}
-		this->currentlyHovered = AClickable::IsHover(mousePos, override ? override : hovered);
-		return hovered ;
+		return false;
 	}
 
 } // namespace Vox::Front::Interfaces::Elements::Bases

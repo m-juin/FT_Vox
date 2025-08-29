@@ -18,8 +18,6 @@ namespace Vox::Front::Interfaces::Elements::Buttons
 						: AButton::Vox_Button_Constructor(), bgColor({0.8, 0.8, 0.8, 1.0}),
 						  hoverBGColor({0.5, 0.5, 0.5, 1.0}), disabledBGColor({0.2, 0.2, 0.2, 1.0}) {};
 			};
-
-			void OnClick(const int &button, const int &action);
 			ColoredButton() = delete;
 			ColoredButton(const Vox_ColorButton_Constructor &st);
 			~ColoredButton() {};

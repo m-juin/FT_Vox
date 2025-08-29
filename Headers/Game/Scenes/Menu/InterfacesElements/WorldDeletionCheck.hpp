@@ -21,11 +21,6 @@ namespace Vox::Game::Scenes::Menu::Interfaces::Elements
             WorldDeletionCheck() = delete;
             WorldDeletionCheck(const Vox_WorldDeletionCheck_Constructor &st);
 
-            void OnEnable() override {};
-			void OnDisable() override {};
-			void OnHover() override {};
-			void OnHoverLeave() override {};
-
 			void SetPos(const Vector2 newPos) override;
 			void SetSize(const Vector2 newSize) override;
 

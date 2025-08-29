@@ -200,7 +200,6 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 			elem->Select();
 		}
 		this->_selectedWorld = elem;
-		std::cout << "Here2" << std::endl;
 		auto button = this->GetElement<Buttons::AButton>("BTN_Join");
 		button->ChangeEnableState(elem != nullptr);
 		this->GetElement<Buttons::AButton>("BTN_Delete")->ChangeEnableState(elem != nullptr);

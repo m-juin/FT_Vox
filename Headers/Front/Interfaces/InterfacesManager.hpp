@@ -33,13 +33,13 @@ namespace Vox::Front::Interfaces
 			void EnableInterface(const std::string &key)
 			{
 				auto &interface = _content[key];
-				interface->ChangeEnableStatus(true);
+				interface->ChangeEnableState(true);
 			}
 
 			void DisableInterface(const std::string &key)
 			{
 				auto &interface = _content[key];
-				interface->ChangeEnableStatus(false);
+				interface->ChangeEnableState(false);
 			}
 
 			bool IsInterfaceEnabled(const std::string &key)

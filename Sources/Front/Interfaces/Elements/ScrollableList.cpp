@@ -36,6 +36,30 @@ namespace Vox::Front::Interfaces::Elements
 			});
 	}
 	
+	void ScrollableList::OnClick(const int &button, const int &action)
+	{
+		IContainer::OnClick(button, action);
+	}
+	
+	bool ScrollableList::IsHover(const Vector2& mousePos)
+	{
+		if (this->_enabled == false)
+			return false;
+
+		if ((mousePos[0] >= this->_pos[0] && mousePos[0] <= this->_pos[0] + this->_size[0]) &&
+			(mousePos[1] >= this->_pos[1] && mousePos[1] <= this->_pos[1] + this->_size[1]))
+		{
+			currentlyHovered = true;
+			// std::cout << "hover\n";
+			this->OnHover();
+		}
+		else
+		{
+			currentlyHovered = false;
+			this->OnHoverLeave();
+		}
+		return IContainer::IsHover(mousePos);
+	}
 
 	// Draw() — plus d'ajout de _scrollOffset ici (c'est déjà dans les positions)
 	void ScrollableList::Draw()

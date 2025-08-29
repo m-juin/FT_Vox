@@ -5,11 +5,6 @@
 
 namespace Vox::Front::Interfaces::Elements::Buttons
 {
-	void ColoredButton::OnClick(const int &button, const int &action)
-	{
-		std::cout << std::boolalpha << this->currentlyHovered << std::endl;
-		AButton::OnClick(button, action);
-	}
 
 	ColoredButton::ColoredButton(const Vox_ColorButton_Constructor &st) : AElement(st.pos, st.size),  AButton(st)
 	{

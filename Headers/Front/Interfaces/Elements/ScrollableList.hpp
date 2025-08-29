@@ -6,7 +6,7 @@
 
 namespace Vox::Front::Interfaces::Elements
 {
-	class ScrollableList : public Bases::IContainer, Bases::AScrollable
+	class ScrollableList : public virtual Bases::IContainer, public virtual Bases::AScrollable
 	{
 		public:
 			struct Vox_ScrollableList_Constructor
@@ -20,15 +20,9 @@ namespace Vox::Front::Interfaces::Elements
 
 			ScrollableList() = delete;
 			ScrollableList(Vox_ScrollableList_Constructor &st) ;
-
-            void OnEnable() override {};
-			void OnDisable() override {};
-			void OnHover() override {};
-			// void OnClick(const int &button, const int &action) override ;
-			void OnHoverLeave() override {};
-
-			using AClickable::IsHover;
 			
+			virtual void OnClick(const int &button, const int &action) override;
+			virtual bool IsHover(const Vector2& mousePos) override;
 
 			void SetPos(const Vector2 newPos) override;
 			void SetSize(const Vector2 newSize) override;
@@ -40,8 +34,6 @@ namespace Vox::Front::Interfaces::Elements
             float _scrollOffset = 0;
 			int _fullSize = 0;
             void RebuildList();
-            // bool _enableDeletion;
-			/* private */
 	};
 } // namespace Vox::Front::Interfaces::Elements
 

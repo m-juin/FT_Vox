@@ -12,7 +12,7 @@ namespace Vox::Front::Interfaces::Elements::Bases
 		public:
 			AScrollable() {}
 
-            void OnScroll(const double &xOff, const double &yOff) {this->onScrollCallBacks.Notify(xOff, yOff);};
+            virtual void OnScroll(const double &xOff, const double &yOff) { if (this->currentlyHovered) this->onScrollCallBacks.Notify(xOff, yOff);};
 
 			virtual ~AScrollable() {};
 

@@ -18,23 +18,18 @@ namespace Vox::Game::Scenes::Menu::Interfaces::Elements
 					Vector2 size;
 					Saves::WorldData sd;
 			};
-			void OnEnable() override {};
-			void OnDisable() override {};
-			void OnHover() override {};
-			void OnClick(const int &button, const int &action) override;
-			void OnHoverLeave() override {};
 
 			void SetPos(const Vector2 newPos) override;
 			void SetSize(const Vector2 newSize) override;
 
 			WorldDataDisplayer() = delete;
 			WorldDataDisplayer(const Vox_WorldDataDisplayer_Constructor &st);
-
-			Vox::Utils::CallBacksManager<const int &, const int &> onClickCallbacks;
 			~WorldDataDisplayer() {};
 
 			void Select();
 			void UnSelect();
+			virtual bool IsHover(const Vector2 &mousePos) override;
+			virtual void OnClick(const int &button, const int &action) override;
 
 			Saves::WorldData GetWorld() {return this->_linkedWorld;};
 
@@ -42,7 +37,6 @@ namespace Vox::Game::Scenes::Menu::Interfaces::Elements
 			Saves::WorldData _linkedWorld;
 			/* private */
 	};
-	
 	
 
 } // namespace Vox::Game::Scenes::Menu::Interfaces::Elements

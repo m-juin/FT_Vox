@@ -19,9 +19,10 @@ namespace Vox::Game::Scenes::Menu::Interfaces::Elements
 		BTNpm.size = {(float)extent.width, (float)extent.height};
 		BTNpm.bgColor = {0., 0., 0., 0.2f};
 		BTNpm.disabledBGColor = {0., 0., 0., 0.2f};
+		BTNpm.hoverBGColor = {0., 0., 0., 0.2f};
 
 		auto button = std::make_unique<Buttons::ColoredButton>(BTNpm);
-		button->ChangeEnableState(false);
+		// button->ChangeEnableState(false);
 		this->AddElement("IMG_BG_Block", std::move(button), 0);
 
 		this->AddElement("IMG_BG",
@@ -29,7 +30,7 @@ namespace Vox::Game::Scenes::Menu::Interfaces::Elements
 												 Color(0.6f, 0.6f, 0.6f, 1.0f), Vector2(4, 4)),
 						 1);
 
-		std::cout << st.sd << std::endl;
+		// std::cout << st.sd << std::endl;
 
 		{ // TXT_Confirm + TXT_WN
 			Text::Vox_Text_Constructor ElemSt{};

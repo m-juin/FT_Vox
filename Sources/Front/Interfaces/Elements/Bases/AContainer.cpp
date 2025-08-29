@@ -48,34 +48,28 @@ namespace Vox::Front::Interfaces::Elements::Bases
 
 	void AContainer::OnClick(const int &button, const int &action)
 	{
+		if (this->_enabled == false) return ;
 		for (auto &elem : this->_content)
 		{
 			if (auto child = dynamic_cast<AClickable *>(elem.elem.get()))
 			{
-				// std::cout << "child = " << elem.key << " | " << std::boolalpha << child->currentlyHovered << std::endl;
-				if (child->currentlyHovered)
-					child->OnClick(button, action);
-
+				child->OnClick(button, action);
 			}
 		}
 	}
 
-	bool AContainer::IsHover(const Vector2 &mousePos, bool override)
+	bool AContainer::IsHover(const Vector2 &mousePos)
 	{
-		// std::cout << "AContainer::IsHover\n";
-		bool hovered = false;
+		if (this->_enabled == false) return false;
 		for (auto elem = this->_content.rbegin(); elem != this->_content.rend(); ++elem)
 		{
 			if (auto child = dynamic_cast<AClickable *>(elem->elem.get()))
 			{
-				if (child->IsHover(mousePos, override ? override : hovered))
-				{
-					hovered = true;
-				}
+				// std::cout << "[DEBUG] " << elem->key << " is Hover ?" << std::endl;
+				child->IsHover(mousePos);
 			}
 		}
-		this->currentlyHovered = AClickable::IsHover(mousePos, override ? override : hovered);
-		return hovered ;
+		return false;
 	}
 
 } // namespace Vox::Front::Interfaces::Elements::Bases

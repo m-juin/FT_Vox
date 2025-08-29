@@ -10,8 +10,9 @@ namespace Vox::Front::Interfaces
 	class AInterface : public virtual Elements::Bases::AContainer, public virtual Elements::Bases::AScrollable
 	{
 		public:
-			AInterface(Elements::Vector2 pos = {0, 0}, Elements::Vector2 size = {0, 0}, bool isEnabled = true) : AElement(pos, size), AClickable(), AContainer(), AScrollable(), _isEnabled(isEnabled)
+			AInterface(Elements::Vector2 pos = {0, 0}, Elements::Vector2 size = {0, 0}, bool isEnabled = true) : AElement(pos, size), AClickable(), AContainer(), AScrollable()
 			{
+				_enabled = isEnabled;
 				this->onScrollCallBacks.AddCallBack([this](const double &xOff, const double &yOff){
 					for(auto &elem : this->_content)
 					{
@@ -26,21 +27,11 @@ namespace Vox::Front::Interfaces
 			};
 			virtual ~AInterface() {};
 
+			virtual void OnScroll(const double &xOff, const double &yOff) override {this->onScrollCallBacks.Notify(xOff, yOff);};
+
 			virtual void Render() = 0;
-
-			virtual void OnEnable() override {};
-			virtual void OnDisable() override {};
-
-			// virtual void OnScroll(const double &xOff, const double &yOff) override;
-
-			bool IsEnabled() {return this->_isEnabled;};
-			void ChangeEnableStatus(bool newState)
-			{
-				this->_isEnabled = newState;
-			};
 		
 			private:
-				bool _isEnabled;
 			/* private */
 	};
 } // namespace Vox::Front::Interfaces

@@ -54,10 +54,8 @@ namespace Vox::Front::Interfaces::Elements::Bases
         }
         
         virtual void Draw() override;
-        virtual void OnHover() override;
         virtual void OnClick(const int& button, const int& action) override;
-        virtual void OnHoverLeave() override;
-        virtual bool IsHover(const Vector2& mousePos, bool override = false) override;
+        virtual bool IsHover(const Vector2& mousePos) override;
         
     protected:
         Vox::Utils::CallBacksManager<AElement&> onElementAdd;

@@ -64,7 +64,12 @@ namespace Vox::Game::Scenes::Menu::Interfaces::Elements
 
 	void WorldDataDisplayer::OnClick(const int &button, const int &action)
 	{
-		this->onClickCallbacks.Notify(button, action);
+		AClickable::OnClick(button, action);
+	}
+
+	bool WorldDataDisplayer::IsHover(const Vector2 &mousePos)
+	{
+		return AClickable::IsHover(mousePos);
 	}
 
     void WorldDataDisplayer::Select()
