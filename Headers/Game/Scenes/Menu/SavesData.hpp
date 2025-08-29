@@ -93,6 +93,13 @@ namespace Vox::Game::Scenes::Menu::Saves
 
 		return WorldData(map["FolderPath"], map["SaveName"], map["seed"]);
 	}
+
+	inline void DeleteWorld(WorldData dt)
+	{
+		const std::filesystem::path path = Saves::WorldsFolder;
+		std::filesystem::path saveFile(path / dt.folderPath);
+		std::filesystem::remove_all(saveFile);
+	}
 } // namespace Vox::Game::Scenes::Menu::Saves
 
 #endif // __SAVESDATA_HPP__

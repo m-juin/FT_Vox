@@ -193,12 +193,10 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 	{
 		if (elem == this->_selectedWorld)
 			return;
-		if (this->_selectedWorld != nullptr)
+		if (this->_selectedWorld != nullptr && elem != nullptr)
 			this->_selectedWorld->UnSelect();
 		if (elem != nullptr)
-		{
 			elem->Select();
-		}
 		this->_selectedWorld = elem;
 		auto button = this->GetElement<Buttons::AButton>("BTN_Join");
 		button->ChangeEnableState(elem != nullptr);
@@ -212,22 +210,31 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 		Elements::WorldDeletionCheck::Vox_WorldDeletionCheck_Constructor pm{
 			{this->_pos[0] + this->_size[0] / 2 - 400, this->_pos[1] + this->_size[1] / 2 - 250},
 			{800, 500},
-			this->_selectedWorld->GetWorld()
-		};
+			this->_selectedWorld->GetWorld()};
 
 		auto elem = std::make_unique<Elements::WorldDeletionCheck>(pm);
-		elem->GetElement<Buttons::ColoredButton>("BTN_Cancel")->onClickCallbacks.AddCallBack(
+		elem->GetElement<Buttons::ColoredButton>("BTN_Cancel")
+			->onClickCallbacks.AddCallBack(
 				[this](const int &button, const int &action)
 				{
 					if (button != GLFW_MOUSE_BUTTON_LEFT || action != GLFW_RELEASE)
 						return;
 					this->RemoveElement("WDC");
-					// if (this->_selectedWorld != nullptr)
-					// {
-					// 	this->_selectedWorld->Select();
-					// }
 				});
-
+		elem->GetElement<Buttons::ColoredButton>("BTN_Confirm")
+			->onClickCallbacks.AddCallBack(
+				[this](const int &button, const int &action)
+				{
+					if (button != GLFW_MOUSE_BUTTON_LEFT || action != GLFW_RELEASE)
+						return;
+					this->RemoveElement("WDC");
+					if (this->_selectedWorld == nullptr)
+						throw std::runtime_error("This should never happen!");
+					auto lst = this->GetElement<ScrollableList>("LST_Worlds");
+					lst->RemoveElement(lst->GetElementIndex(this->_selectedWorld));
+					Saves::DeleteWorld(this->_selectedWorld->GetWorld());
+					this->SetSelectedWorld(nullptr);
+				});
 		this->AddElement("WDC", std::move(elem), 2);
 	}
 } // namespace Vox::Game::Scenes::Menu::Interfaces
