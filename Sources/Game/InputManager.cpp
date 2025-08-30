@@ -41,5 +41,22 @@ namespace Vox::Game
 								  const auto &im = Front::Interfaces::InterfacesManager::GetInstance();
 								  im.HandleMouseScroll(xoffset, yoffset);
 							  });
+
+		glfwSetCharCallback(win,
+							[](GLFWwindow *window, unsigned int codepoint)
+							{
+								(void)window;
+								const auto &im = Front::Interfaces::InterfacesManager::GetInstance();
+								im.HandleCharInput(codepoint);
+							});
+		glfwSetKeyCallback(win,
+							[](GLFWwindow *window, int key, int scancode, int action, int mods)
+							{
+								(void)window;
+								(void)mods;
+								(void)scancode;
+								const auto &im = Front::Interfaces::InterfacesManager::GetInstance();
+								im.HandleKeyInput(key, action);
+							});
 	}
 } // namespace Vox::Game

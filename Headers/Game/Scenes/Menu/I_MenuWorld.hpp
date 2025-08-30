@@ -20,8 +20,6 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 			void SetSize(const Vox::Front::Interfaces::Elements::Vector2 newSize) override;
 			void Render() override;
 
-			void OnHover() override {};
-			void OnHoverLeave() override {};
 
 			void SetSelectedWorld(Elements::WorldDataDisplayer *elem);
 			Elements::WorldDataDisplayer *GetSelectedWorld() {return this->_selectedWorld;};

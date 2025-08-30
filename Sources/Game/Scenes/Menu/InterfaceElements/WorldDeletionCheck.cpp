@@ -51,19 +51,19 @@ namespace Vox::Game::Scenes::Menu::Interfaces::Elements
 			this->AddElement("TXT_WN", std::make_unique<Text>(ElemSt), 2);
 		}
 		{ // BTN_Confirm + BTN_Cancel
-			Buttons::ColoredButton::Vox_ColorButton_Constructor pm{};
+			Buttons::TexturedButton::Vox_TexturedButton_Constructor pm{};
 
-			// pm.atlas = "Menu_Main";
-			// pm.atlasKey = "Button";
+			pm.atlas = "Menu_Main";
+			pm.atlasKey = "Button";
 			pm.hoverTXTColor = {1.0, 1.0, 1.0, 1.0};
-			pm.disabledBGColor = {1.0, 0.0, 0.0, 1.0};
-			pm.bgColor = {0.0, 1.0, 0.0, 1.0};
-			pm.hoverBGColor = {0.0, 0.0, 1.0, 1.0};
-			// pm.onHoverAtlas = "Menu_Main";
-			// pm.onHoverAtlasKey = "Button_Hover";
+			// pm.disabledBGColor = {1.0, 0.0, 0.0, 1.0};
+			// pm.bgColor = {0.0, 1.0, 0.0, 1.0};
+			// pm.hoverBGColor = {0.0, 0.0, 1.0, 1.0};
+			pm.onHoverAtlas = "Menu_Main";
+			pm.onHoverAtlasKey = "Button_Hover";
 			pm.disabledTXTColor = {0.5, 0.5, 0.5, 1.0};
-			// pm.onDisabledAtlas = "Menu_Main";
-			// pm.onDisabledAtlasKey = "Button_Disabled";
+			pm.onDisabledAtlas = "Menu_Main";
+			pm.onDisabledAtlasKey = "Button_Disabled";
 			pm.size = {(this->_size[0] / 2 - 45), 50};
 			pm.textColor = {0.7, 0.7, 0.7, 1.0};
 			pm.textScale = 0.8f;
@@ -71,14 +71,14 @@ namespace Vox::Game::Scenes::Menu::Interfaces::Elements
 			pm.pos = {this->_pos[0] + 10, this->_pos[1] + this->_size[1] - 75};
 			pm.content = "Confirm";
 
-			auto btn = std::make_unique<Buttons::ColoredButton>(pm);
+			auto btn = std::make_unique<Buttons::TexturedButton>(pm);
 
 			this->AddElement("BTN_Confirm", std::move(btn), 2);
 
 			pm.pos = {(this->_pos[0] + this->_size[0] / 2 + 35), this->_pos[1] + this->_size[1] - 75};
 			pm.content = "Cancel";
 
-			btn = std::make_unique<Buttons::ColoredButton>(pm);
+			btn = std::make_unique<Buttons::TexturedButton>(pm);
 
 			this->AddElement("BTN_Cancel", std::move(btn), 2);
 		}

@@ -21,6 +21,8 @@ namespace Vox::Front::Interfaces
 			void HandleMouseMove(const float &xPos, const float &yPos) const;
 			void HandleMouseClick(const int &button, const int &action) const;
 			void HandleMouseScroll(const double &xOff, const double &yOff) const;
+			void HandleCharInput(const unsigned int &codePoint) const;
+			void HandleKeyInput(const unsigned int &codePoint, const int &action) const;
 			InterfacesManager();
 			~InterfacesManager();
 

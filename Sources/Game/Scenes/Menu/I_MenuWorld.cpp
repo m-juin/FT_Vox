@@ -150,6 +150,17 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 					im.EnableInterface("Main");
 				});
 
+		this->GetElement<Buttons::TexturedButton>("BTN_Create")
+			->onClickCallbacks.AddCallBack(
+				[](const int &button, const int &action)
+				{
+					if (button != GLFW_MOUSE_BUTTON_LEFT || action != GLFW_RELEASE)
+						return;
+					auto &im = Front::Interfaces::InterfacesManager::GetInstance();
+					im.DisableInterface("World");
+					im.EnableInterface("Create");
+				});
+
 		this->GetElement<Buttons::TexturedButton>("BTN_Join")->ChangeEnableState(false);
 
 		auto btn = this->GetElement<Buttons::TexturedButton>("BTN_Delete");
@@ -213,7 +224,7 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 			this->_selectedWorld->GetWorld()};
 
 		auto elem = std::make_unique<Elements::WorldDeletionCheck>(pm);
-		elem->GetElement<Buttons::ColoredButton>("BTN_Cancel")
+		elem->GetElement<Buttons::TexturedButton>("BTN_Cancel")
 			->onClickCallbacks.AddCallBack(
 				[this](const int &button, const int &action)
 				{
@@ -221,7 +232,7 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 						return;
 					this->RemoveElement("WDC");
 				});
-		elem->GetElement<Buttons::ColoredButton>("BTN_Confirm")
+		elem->GetElement<Buttons::TexturedButton>("BTN_Confirm")
 			->onClickCallbacks.AddCallBack(
 				[this](const int &button, const int &action)
 				{

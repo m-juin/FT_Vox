@@ -20,6 +20,7 @@ namespace Vox::Front::Interfaces::Elements
 					Color color;
 					std::string content;
 					float scale;
+					float letterSpace;
 
 					Vox_Text_Constructor()
 						: pos({0, 0}), size({100, 50}), color({
@@ -28,7 +29,7 @@ namespace Vox::Front::Interfaces::Elements
 															1.0,
 															1.0,
 														}),
-						  content(""), scale(0.5) {};
+						  content(""), scale(0.5), letterSpace(0) {};
 			};
 
 			Text() = delete;
@@ -44,11 +45,14 @@ namespace Vox::Front::Interfaces::Elements
 
 			void SetColor(const Color &newColor);
 
-			static Vector2 GetTextSize(const std::string &content, const float &scale);
+			void SetContent(const std::string &newContent);
+
+			static Vector2 GetTextSize(const std::string &content, const float &scale, const float letterSpace = 0.0f);
 			Vector2 GetTextSize();
 			const std::string &GetContent() {return this->_textContent;};
 
 		private:
+			size_t _indexCount = 0;
 			// Front::Utils::TexturesAtlas::TexturesAtlas::uvData _uvMappingData;
 			std::vector<Vertex> _vertex;
 			dbuffer *B_Vertex = nullptr;
@@ -57,6 +61,7 @@ namespace Vox::Front::Interfaces::Elements
 			Color _textColor;
 			std::string _textContent;
 			float _scale;
+			float _letterSpacing;
 
 			void CleanBuffer(size_t mode);
 			/* private */

@@ -2,8 +2,8 @@
 #include "Front/Rendering/Utils/Buffers/Utils.hpp"
 
 #include "Front/Rendering/Device.hpp"
-#include "Front/Rendering/SyncObjects.hpp"
 #include "Front/Rendering/SwapChain.hpp"
+#include "Front/Rendering/SyncObjects.hpp"
 
 #include <cstring>
 
@@ -76,11 +76,56 @@ namespace Vox::Front::Rendering::Utils::Buffers
 
 	void DynamicBuffer::Update(void *newData, VkDeviceSize newDataSize)
 	{
-		this->_size = newDataSize;
 		size_t nextFrame = 0;
-		if (this->_memories.size() != 1)
+		if (_memories.size() != 1)
 			nextFrame = SyncObjects::GetInstance().GetNextFrame();
+
+		if (newDataSize > _size)
+		{
+			VkDevice device = Device::GetInstance().GetLogicalDevice();
+			vkDeviceWaitIdle(Device::GetInstance().GetLogicalDevice());
+			for (size_t i = 0; i < _buffers.size(); i++)
+			{
+				vkDestroyBuffer(device, _buffers[i], nullptr);
+				vkFreeMemory(device, _memories[i], nullptr);
+			}
+
+			_size = newDataSize;
+
+			VkBufferCreateInfo bufferInfo = {};
+			bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+			bufferInfo.size = _size;
+			bufferInfo.usage = _usage;
+			bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+			for (auto &buffer : _buffers)
+			{
+				if (vkCreateBuffer(device, &bufferInfo, nullptr, &buffer) != VK_SUCCESS)
+				{
+					throw std::runtime_error("Échec de la recréation du tampon dynamique");
+				}
+			}
+
+			VkMemoryRequirements memRequirements;
+			vkGetBufferMemoryRequirements(device, _buffers[0], &memRequirements);
+
+			VkMemoryAllocateInfo allocInfo = {};
+			allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+			allocInfo.allocationSize = memRequirements.size;
+			allocInfo.memoryTypeIndex =
+				Utils::FindMemoryType(memRequirements.memoryTypeBits,
+									  VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+									  Device::GetInstance().GetPhysicalDevice());
+
+			for (size_t i = 0; i < _buffers.size(); i++)
+			{
+				vkAllocateMemory(device, &allocInfo, nullptr, &_memories[i]);
+				vkBindBufferMemory(device, _buffers[i], _memories[i], 0);
+				vkMapMemory(device, _memories[i], 0, _size, 0, &_mappedMemories[i]);
+			}
+		}
 
 		std::memcpy(_mappedMemories[nextFrame], newData, newDataSize);
 	}
+
 } // namespace Vox::Front::Rendering::Utils::Buffers

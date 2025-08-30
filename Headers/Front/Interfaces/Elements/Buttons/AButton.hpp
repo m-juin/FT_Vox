@@ -43,7 +43,7 @@ namespace Vox::Front::Interfaces::Elements
 				virtual ~AButton();
 				inline virtual bool IsHover(const Vector2 &mousePos) override
 				{
-					return AClickable::IsHover(mousePos); // <- appel direct
+					return AClickable::IsHover(mousePos);
 				}
 
 				inline virtual void OnClick(const int &button, const int &action) override

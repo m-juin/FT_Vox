@@ -15,6 +15,7 @@ namespace Vox::Front::Interfaces::Elements
 		this->_textColor = st.color;
 		this->_textContent = st.content;
 		this->_scale = st.scale;
+		this->_letterSpacing = st.letterSpace;
 
 		ResetVertex();
 	}
@@ -97,14 +98,15 @@ namespace Vox::Front::Interfaces::Elements
 			index.push_back(curIndex + 1);
 
 			curIndex += 4;
-			x += (chr.advance * _scale);
+			x += ((chr.advance + _letterSpacing) * _scale);
 		}
 
+		_indexCount = index.size();
 		if (B_Vertex == nullptr)
 		{
 			B_Vertex = new dbuffer(1, this->_vertex.size() * sizeof(Vertex),
 								  VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT);
-			B_Index = new dbuffer(1, index.size() * sizeof(uint32_t),
+			B_Index = new dbuffer(1, _indexCount * sizeof(uint32_t),
 								 VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT);
 
 			B_Vertex->Create(this->_vertex.data());
@@ -114,13 +116,13 @@ namespace Vox::Front::Interfaces::Elements
 		else
 		{
 			B_Vertex->Update(this->_vertex.data(), this->_vertex.size() * sizeof(Vertex));
-			B_Index->Update(index.data(), index.size() * sizeof(uint32_t));
+			B_Index->Update(index.data(), _indexCount * sizeof(uint32_t));
 		}
 	}
 
 	void Text::Draw()
 	{
-		if (this->B_Vertex == nullptr)
+		if (this->_textContent.size() == 0)
 			return;
 		auto cmdBuffer =
 			Rendering::CommandsPool::GetInstance().GetBuffer(Rendering::SyncObjects::GetInstance().GetCurrentFrame());
@@ -129,7 +131,7 @@ namespace Vox::Front::Interfaces::Elements
 						//    sizeof(this->_uvMappingData), &this->_uvMappingData);
 		vkCmdBindVertexBuffers(cmdBuffer, 0, 1, &this->B_Vertex->GetBuffer(0), offsets);
 		vkCmdBindIndexBuffer(cmdBuffer, this->B_Index->GetBuffer(0), 0, VK_INDEX_TYPE_UINT32);
-		vkCmdDrawIndexed(cmdBuffer, this->_textContent.size() * 6, 1, 0, 0, 0);
+		vkCmdDrawIndexed(cmdBuffer, static_cast<uint32_t>(_indexCount), 1, 0, 0, 0);
 	}
 
 	void Text::SetPos(const Vector2 newPos)
@@ -157,8 +159,15 @@ namespace Vox::Front::Interfaces::Elements
 			vert.texColor = this->_textColor;
 		this->B_Vertex->Update(this->_vertex.data(), this->_vertex.size() * sizeof(Vertex));
 	}
+	
+	void Text::SetContent(const std::string &newContent)
+	{
+		if (newContent == this->_textContent) return ;
+		this->_textContent = newContent;
+		this->ResetVertex();
+	}
 
-	Vector2 Text::GetTextSize(const std::string &content, const float &scale)
+	Vector2 Text::GetTextSize(const std::string &content, const float &scale, const float letterSpace)
 	{
 		Vector2 size;
 		auto &font =
@@ -170,7 +179,7 @@ namespace Vox::Front::Interfaces::Elements
 		for (auto letter : content)
 		{
 			auto chr = font[letter];
-			size[0] += (chr.advance * scale);
+			size[0] += ((chr.advance + letterSpace) * scale);
 		}
 
 		return size;
@@ -188,7 +197,7 @@ namespace Vox::Front::Interfaces::Elements
 		for (auto letter : this->_textContent)
 		{
 			auto chr = font[letter];
-			size[0] += (chr.advance * this->_scale);
+			size[0] += ((chr.advance + _letterSpacing) * this->_scale);
 		}
 
 		return size;
