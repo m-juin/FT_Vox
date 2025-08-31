@@ -42,6 +42,8 @@ namespace Vox::Front::Interfaces::Elements
 				return AClickable::IsHover(mousePos);
 			};
 
+			const std::string &GetValue();
+
 			void OnClick(const int &button, const int &action) override;
 
 			void HandleCharInput(const unsigned int &code);
@@ -49,11 +51,14 @@ namespace Vox::Front::Interfaces::Elements
 
 			void UpdateIndicatorPos();
 
+			Vox::Utils::CallBacksManager<const std::string &> onTextChange;
+
 		private:
 			uint8_t drawCount;
 			size_t curPos;
 			E_InputMode _inputMode;
 			void ResetVertex() override {};
+
 			/* private */
 	};
 } // namespace Vox::Front::Interfaces::Elements

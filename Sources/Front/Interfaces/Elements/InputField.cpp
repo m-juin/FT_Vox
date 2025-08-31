@@ -38,6 +38,11 @@ namespace Vox::Front::Interfaces::Elements
 		this->GetElement<Image>("IMG_BG")->SetPos(this->_pos);
 	}
 
+	const std::string &InputField::GetValue()
+	{
+		return this->GetElement<Text>("TXT_Input")->GetContent();
+	}
+
 	void InputField::SetSize(const Vector2 newSize)
 	{
 		if (newSize == this->_size)
@@ -100,6 +105,7 @@ namespace Vox::Front::Interfaces::Elements
 			elem->SetContent(tc);
 			curPos += 1;
 			UpdateIndicatorPos();
+			this->onTextChange.Notify(this->GetValue());
 		}
 	}
 
@@ -137,6 +143,7 @@ namespace Vox::Front::Interfaces::Elements
 			elem->SetContent(tmp);
 			curPos -= 1;
 			UpdateIndicatorPos();
+			this->onTextChange.Notify(this->GetValue());
 		}
 		else if (code == GLFW_KEY_DELETE && action != GLFW_RELEASE)
 		{
@@ -150,6 +157,7 @@ namespace Vox::Front::Interfaces::Elements
 						  this->_pos[1] + this->_size[1] / 2});
 			elem->SetContent(tmp);
 			UpdateIndicatorPos();
+			this->onTextChange.Notify(this->GetValue());
 			// curPos reste inchangé (le curseur est toujours à la même place)
 		}
 		else if (code == GLFW_KEY_LEFT && action != GLFW_RELEASE)

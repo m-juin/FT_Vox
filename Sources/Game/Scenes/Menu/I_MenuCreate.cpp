@@ -6,7 +6,9 @@
 #include "Front/Interfaces/Elements/Image.hpp"
 #include "Front/Interfaces/Elements/InputField.hpp"
 #include "Front/Interfaces/Elements/Text.hpp"
+#include "Front/Interfaces/InterfacesManager.hpp"
 
+#include <GLFW/glfw3.h>
 namespace Vox::Game::Scenes::Menu::Interfaces
 {
 	using namespace Front::Interfaces::Elements;
@@ -29,7 +31,7 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 			st.content = "Create New World";
 			st.scale = 1.5f;
 			st.pos = {this->_pos[0] + this->_size[0] / 2 - Text::GetTextSize(st.content, st.scale)[0] / 2,
-					   this->_pos[1] + 100 + 25};
+					  this->_pos[1] + 100 + 25};
 			st.size = {Text::GetTextSize(st.content, st.scale)[0], 50};
 
 			this->AddElement("TXT_PageName", std::make_unique<Text>(st), 1);
@@ -43,7 +45,17 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 			st.pos = {this->_pos[0] + this->_size[0] / 2 + 50, this->_pos[1] + 250};
 			st.size = {400, 50};
 
-			this->AddElement("IF_Name", std::make_unique<InputField>(st), 1);
+			auto inputF = std::make_unique<InputField>(st);
+
+			inputF->onTextChange.AddCallBack([this](const std::string &newText) {
+				auto btn = this->GetElement<Buttons::TexturedButton>("BTN_Create");
+				if (newText.size() == 0 && btn->IsEnabled() == true)
+					btn->ChangeEnableState(false);
+				else if (newText.size() != 0 && btn->IsEnabled() == false)
+					btn->ChangeEnableState(true);
+			});
+
+			this->AddElement("IF_Name", std::move(inputF), 1);
 
 			Text::Vox_Text_Constructor st2{};
 			st2.content = "World Name:";
@@ -65,6 +77,47 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 			st2.size = {Text::GetTextSize(st2.content, st2.scale)[0], 50};
 
 			this->AddElement("TXT_Seed", std::make_unique<Text>(st2), 1);
+		}
+
+		{
+			Buttons::TexturedButton::Vox_TexturedButton_Constructor pm{};
+			pm.atlas = "Menu_Main";
+			pm.atlasKey = "Button";
+			pm.hoverTXTColor = {1.0, 1.0, 1.0, 1.0};
+			pm.onHoverAtlas = "Menu_Main";
+			pm.onHoverAtlasKey = "Button_Hover";
+			pm.disabledTXTColor = {0.5, 0.5, 0.5, 1.0};
+			pm.onDisabledAtlas = "Menu_Main";
+			pm.onDisabledAtlasKey = "Button_Disabled";
+			pm.size = {(this->_size[0] - this->_size[0] / 4) / 2 - 50, 75};
+			pm.textColor = {0.7, 0.7, 0.7, 1.0};
+			pm.textScale = 0.8f;
+
+			pm.content = "Cancel";
+			pm.pos = {this->_pos[0] + this->_size[0] / 2 - pm.size[0] - 100,
+					  this->_pos[1] + this->_size[1] - this->_size[1] / 4};
+
+			auto btn = std::make_unique<Buttons::TexturedButton>(pm);
+
+			btn->onClickCallbacks.AddCallBack([](const int &button, const int &action)
+											  {
+					if (button != GLFW_MOUSE_BUTTON_LEFT || action != GLFW_RELEASE)
+						return;
+					auto &im = Front::Interfaces::InterfacesManager::GetInstance();
+					im.DisableInterface("Create");
+					im.EnableInterface("World"); });
+
+			this->AddElement("BTN_Cancel", std::move(btn), 1);
+
+			pm.content = "Validate";
+			pm.pos[0] = this->_pos[0] + this->_size[0] / 2 + 100;
+
+			btn = std::make_unique<Buttons::TexturedButton>(pm);
+
+			// btn->onClickCallbacks.AddCallBack();
+			btn->ChangeEnableState(false);
+
+			this->AddElement("BTN_Create", std::move(btn), 1);
 		}
 	}
 
