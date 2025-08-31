@@ -4,6 +4,7 @@
 #include <functional>
 #include <memory>
 #include <vector>
+#include <algorithm>
 
 namespace Vox::Utils
 {

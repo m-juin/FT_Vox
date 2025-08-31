@@ -97,6 +97,7 @@ namespace Vox::Game::Scenes::Menu::Saves
 	inline void DeleteWorld(WorldData dt)
 	{
 		const std::filesystem::path path = Saves::WorldsFolder;
+		if (std::filesystem::exists(path) == false) return ;
 		std::filesystem::path saveFile(path / dt.folderPath);
 		if (std::filesystem::exists(saveFile / "SaveData.json"))
 			std::filesystem::remove_all(saveFile);

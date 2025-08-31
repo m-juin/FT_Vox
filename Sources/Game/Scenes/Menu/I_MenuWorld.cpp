@@ -30,6 +30,7 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 		std::vector<Saves::WorldData> lst;
 
 		const std::string path = Saves::WorldsFolder;
+		if (std::filesystem::exists(path) == false) return {};
 
 		for (const auto &entry : std::filesystem::directory_iterator(path))
 		{
@@ -39,7 +40,7 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 			std::filesystem::path saveFile(entry.path() / "SaveData.json");
 			if (std::filesystem::is_regular_file(saveFile) == false)
 				continue;
-			auto wd = Saves::LoadWorldData(saveFile);
+			auto wd = Saves::LoadWorldData(saveFile.string());
 
 			if (wd.folderPath == "")
 				continue;

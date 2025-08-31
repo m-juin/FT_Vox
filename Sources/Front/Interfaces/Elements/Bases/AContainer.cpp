@@ -7,6 +7,7 @@ namespace Vox::Front::Interfaces::Elements::Bases
 		if (this->FindElement(key) != this->_content.end())
 			throw std::runtime_error("Trying to add an already existing element.");
 
+		auto& newElem = *elem;
 		_content.emplace_back(key, std::move(elem), renderIndex);
 
 		if (_content.size() > 1 && _content.back().renderIndex < _content[_content.size() - 2].renderIndex)
@@ -14,7 +15,7 @@ namespace Vox::Front::Interfaces::Elements::Bases
 			std::sort(_content.begin(), _content.end(), [](ContainerElement &elem1, ContainerElement &elem2)
 					  { return elem1.renderIndex < elem2.renderIndex; });
 		}
-		this->onElementAdd.Notify(*elem);
+		this->onElementAdd.Notify(newElem);
 	}
 
 	bool AContainer::RemoveElement(const std::string &key)
