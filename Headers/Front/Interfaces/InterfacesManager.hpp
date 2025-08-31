@@ -32,17 +32,9 @@ namespace Vox::Front::Interfaces
 				return _content[key];
 			}
 			// Ajoutez ces fonctions pour une meilleure gestion des états
-			void EnableInterface(const std::string &key)
-			{
-				auto &interface = _content[key];
-				interface->ChangeEnableState(true);
-			}
+			void EnableInterface(const std::string &key);
 
-			void DisableInterface(const std::string &key)
-			{
-				auto &interface = _content[key];
-				interface->ChangeEnableState(false);
-			}
+			void DisableInterface(const std::string &key);
 
 			bool IsInterfaceEnabled(const std::string &key)
 			{

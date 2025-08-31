@@ -51,6 +51,8 @@ namespace Vox::Front::Interfaces::Elements
 
 			void UpdateIndicatorPos();
 
+			void SetValue(const std::string &newVal);
+
 			Vox::Utils::CallBacksManager<const std::string &> onTextChange;
 
 		private:

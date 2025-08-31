@@ -68,7 +68,7 @@ namespace Vox::Front::Interfaces
 			if (pair.second->IsEnabled() == true)
 				pair.second->OnClick(button, action);
 		if (button != GLFW_MOUSE_BUTTON_LEFT || action != GLFW_RELEASE)
-			return ;
+			return;
 		if (Front::Interfaces::Elements::Bases::AFocusable::_focusConsummed == false)
 			Front::Interfaces::Elements::Bases::AFocusable::SetFocusElement(nullptr);
 	}
@@ -85,6 +85,20 @@ namespace Vox::Front::Interfaces
 		auto focused = Front::Interfaces::Elements::Bases::AFocusable::GetFocused();
 		if (auto elem = dynamic_cast<Elements::InputField *>(focused))
 			elem->HandleKeyInput(codePoint, action);
+	}
+
+	void InterfacesManager::EnableInterface(const std::string &key)
+	{
+		auto &interface = _content[key];
+		interface->ChangeEnableState(true);
+		Front::Interfaces::Elements::Bases::AFocusable::SetFocusElement(nullptr);
+	}
+
+	void InterfacesManager::DisableInterface(const std::string &key)
+	{
+		auto &interface = _content[key];
+		interface->ChangeEnableState(false);
+		Front::Interfaces::Elements::Bases::AFocusable::SetFocusElement(nullptr);
 	}
 
 	InterfacesManager::InterfacesManager() {}

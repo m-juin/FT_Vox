@@ -99,10 +99,12 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 
 			auto btn = std::make_unique<Buttons::TexturedButton>(pm);
 
-			btn->onClickCallbacks.AddCallBack([](const int &button, const int &action)
+			btn->onClickCallbacks.AddCallBack([this](const int &button, const int &action)
 											  {
 					if (button != GLFW_MOUSE_BUTTON_LEFT || action != GLFW_RELEASE)
 						return;
+					this->GetElement<InputField>("IF_Name")->SetValue("");
+					this->GetElement<InputField>("IF_Seed")->SetValue("");
 					auto &im = Front::Interfaces::InterfacesManager::GetInstance();
 					im.DisableInterface("Create");
 					im.EnableInterface("World"); });

@@ -51,6 +51,14 @@ namespace Vox::Front::Interfaces::Elements
 		this->GetElement<Image>("IMG_BG")->SetSize(this->_size);
 	}
 
+	void InputField::SetValue(const std::string &newVal)
+	{
+		auto txt = this->GetElement<Text>("TXT_Input");
+		if (newVal == txt->GetContent())
+			return ;
+		txt->SetContent(newVal);
+	}
+
 	void InputField::Draw()
 	{
 		for (auto &cElem : this->_content)
