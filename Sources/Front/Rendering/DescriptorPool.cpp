@@ -11,16 +11,21 @@ namespace Vox::Front::Rendering
 {
 	DescriptorPool::DescriptorPool()
 	{
-		std::array<VkDescriptorPoolSize, 1> poolSizes;
+		std::array<VkDescriptorPoolSize, 3> poolSizes;
 		poolSizes[0].descriptorCount = 2;
-		poolSizes[0].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+		poolSizes[0].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER; // Interface, texture atlas + font atlas;
 
+		poolSizes[1].descriptorCount = 2;
+		poolSizes[1].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER; // PlayerCamera
 		
+		poolSizes[2].descriptorCount = 2;
+		poolSizes[2].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC; // VoxelObjects
+
 		VkDescriptorPoolCreateInfo poolInfo{};
 		poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
 		poolInfo.poolSizeCount = poolSizes.size();
 		poolInfo.pPoolSizes = poolSizes.data();
-		poolInfo.maxSets = 1;
+		poolInfo.maxSets = poolSizes.size();
 
 		if (vkCreateDescriptorPool(Device::GetInstance().GetLogicalDevice(), &poolInfo, nullptr, &this->_pool) != VK_SUCCESS)
 			throw std::runtime_error("Failed to create descriptor pool!");

@@ -21,9 +21,11 @@ namespace Vox::Front::Interfaces
 {
 	void InterfacesManager::ResetInterfacesList()
 	{
-		for (auto pair : this->_content)
-			if (pair.second)
-				delete pair.second;
+		for (auto &pair : this->_content)
+		{
+			delete pair.second;
+		}
+		this->_content.clear(); // <-- essentiel
 	}
 
 	void InterfacesManager::RegisterInterface(const std::string &key, AInterface *inte)

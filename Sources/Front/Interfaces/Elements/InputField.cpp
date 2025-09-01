@@ -87,6 +87,7 @@ namespace Vox::Front::Interfaces::Elements
 		AClickable::OnClick(button, action);
 		AFocusable::SetFocusElement(this);
 		this->curPos = this->GetElement<Text>("TXT_Input")->GetContent().size();
+		this->UpdateIndicatorPos();
 		this->drawCount = 0;
 	}
 

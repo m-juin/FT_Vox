@@ -69,7 +69,9 @@ int main()
 
 	Interfaces::InterfacesManager::Init();
 	Vox::Game::GameManager::Init();
-	Vox::Game::GameManager::GetInstance().InitGame();
+
+	auto &gm = Vox::Game::GameManager::GetInstance();
+	gm.InitGame();
 	Rendering::Pipelines::PipelinesManager::GetInstance().CreatePipelines();
 
 	while (!glfwWindowShouldClose(Window::GetInstance().GetWindow()))
@@ -95,7 +97,7 @@ int main()
 
 		pool.ResetBuffer(currentFrame);
 		pool.BeginRecord(imageIndex, currentFrame);
-		Vox::Game::GameManager::GetInstance().Render();
+		gm.Render();
 		pool.EndRecord(currentFrame);
 
 		VkSubmitInfo submitInfo{};
@@ -141,6 +143,7 @@ int main()
 
 		sync.GoToNextFrame();
 		glfwPollEvents();
+		gm.GetSceneManager().ProcessSceneChange();
 	}
 	vkDeviceWaitIdle(device.GetLogicalDevice());
 

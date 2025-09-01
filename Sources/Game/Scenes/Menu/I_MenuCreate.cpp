@@ -2,6 +2,8 @@
 
 #include "MathGraphicalLib/Utils.hpp"
 
+#include "Game/Scenes/Menu/SavesData.hpp"
+
 #include "Front/Interfaces/Elements/Buttons/TexturedButton.hpp"
 #include "Front/Interfaces/Elements/Image.hpp"
 #include "Front/Interfaces/Elements/InputField.hpp"
@@ -9,6 +11,9 @@
 #include "Front/Interfaces/InterfacesManager.hpp"
 
 #include <GLFW/glfw3.h>
+
+#include "Game/GameManager.hpp"
+
 namespace Vox::Game::Scenes::Menu::Interfaces
 {
 	using namespace Front::Interfaces::Elements;
@@ -47,13 +52,15 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 
 			auto inputF = std::make_unique<InputField>(st);
 
-			inputF->onTextChange.AddCallBack([this](const std::string &newText) {
-				auto btn = this->GetElement<Buttons::TexturedButton>("BTN_Create");
-				if (newText.size() == 0 && btn->IsEnabled() == true)
-					btn->ChangeEnableState(false);
-				else if (newText.size() != 0 && btn->IsEnabled() == false)
-					btn->ChangeEnableState(true);
-			});
+			inputF->onTextChange.AddCallBack(
+				[this](const std::string &newText)
+				{
+					auto btn = this->GetElement<Buttons::TexturedButton>("BTN_Create");
+					if (newText.size() == 0 && btn->IsEnabled() == true)
+						btn->ChangeEnableState(false);
+					else if (newText.size() != 0 && btn->IsEnabled() == false)
+						btn->ChangeEnableState(true);
+				});
 
 			this->AddElement("IF_Name", std::move(inputF), 1);
 
@@ -99,15 +106,17 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 
 			auto btn = std::make_unique<Buttons::TexturedButton>(pm);
 
-			btn->onClickCallbacks.AddCallBack([this](const int &button, const int &action)
-											  {
+			btn->onClickCallbacks.AddCallBack(
+				[this](const int &button, const int &action)
+				{
 					if (button != GLFW_MOUSE_BUTTON_LEFT || action != GLFW_RELEASE)
 						return;
 					this->GetElement<InputField>("IF_Name")->SetValue("");
 					this->GetElement<InputField>("IF_Seed")->SetValue("");
 					auto &im = Front::Interfaces::InterfacesManager::GetInstance();
 					im.DisableInterface("Create");
-					im.EnableInterface("World"); });
+					im.EnableInterface("World");
+				});
 
 			this->AddElement("BTN_Cancel", std::move(btn), 1);
 
@@ -116,7 +125,21 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 
 			btn = std::make_unique<Buttons::TexturedButton>(pm);
 
-			// btn->onClickCallbacks.AddCallBack();
+			btn->onClickCallbacks.AddCallBack(
+				[this](const int &button, const int &action)
+				{
+					if (button != GLFW_MOUSE_BUTTON_LEFT || action != GLFW_RELEASE)
+						return;
+					std::string worldName = this->GetElement<InputField>("IF_Name")->GetValue();
+					std::string worldSeed = this->GetElement<InputField>("IF_Seed")->GetValue();
+
+					Saves::WorldData wd = Saves::CreateSaveData(worldName, worldSeed);
+					if (wd.worldName == "")
+						return;
+					if (Saves::SaveWorldData(wd) == false)
+						return ;
+					Game::GameManager::GetInstance().GetSceneManager().LoadScene("World");
+				});
 			btn->ChangeEnableState(false);
 
 			this->AddElement("BTN_Create", std::move(btn), 1);

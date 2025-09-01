@@ -33,9 +33,12 @@ namespace Vox::Front::Scenes
 			};
 			ScenesManager();
 			~ScenesManager();
-			bool LoadScene(const std::string &sceneName);
+			void LoadScene(const std::string &sceneName);
+
+			bool ProcessSceneChange();
 
 		private:
+			std::string _pendingScene;
 			std::unique_ptr<AScene> _currentScene;
 	};
 } // namespace Vox::Front::Scenes

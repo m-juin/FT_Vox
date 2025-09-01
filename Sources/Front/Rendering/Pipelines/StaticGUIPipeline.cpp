@@ -201,7 +201,9 @@ namespace Vox::Front::Rendering::Pipelines
 		allocInfo.descriptorSetCount = static_cast<uint32_t>(1);
 		allocInfo.pSetLayouts = &this->_slayout;
 
-		if (vkAllocateDescriptorSets(Device::GetInstance().GetLogicalDevice(), &allocInfo, &this->_set) != VK_SUCCESS)
+		this->_set.reserve(allocInfo.descriptorSetCount);
+
+		if (vkAllocateDescriptorSets(Device::GetInstance().GetLogicalDevice(), &allocInfo, this->_set.data()) != VK_SUCCESS)
 			throw std::runtime_error("Failed to allocate descriptor sets!");
 
 		auto texturesManager = Game::GameManager::GetInstance().GetSceneManager().GetCurrentScene().GetTextureManager();
@@ -221,7 +223,7 @@ namespace Vox::Front::Rendering::Pipelines
 
 		std::array<VkWriteDescriptorSet, 2> descriptorWrites{};
 		descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-		descriptorWrites[0].dstSet = this->_set;
+		descriptorWrites[0].dstSet = this->_set[0];
 		descriptorWrites[0].dstBinding = 0;
 		descriptorWrites[0].dstArrayElement = 0;
 		descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
@@ -229,7 +231,7 @@ namespace Vox::Front::Rendering::Pipelines
 		descriptorWrites[0].pImageInfo = &textureInfo;
 
 		descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-		descriptorWrites[1].dstSet = this->_set;
+		descriptorWrites[1].dstSet = this->_set[0];
 		descriptorWrites[1].dstBinding = 1;
 		descriptorWrites[1].dstArrayElement = 0;
 		descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;

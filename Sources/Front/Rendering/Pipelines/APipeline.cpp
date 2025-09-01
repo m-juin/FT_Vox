@@ -29,7 +29,8 @@ namespace Vox::Front::Rendering::Pipelines
 
 	APipeline::APipeline()
 	{
-		this->_set = VK_NULL_HANDLE;
+		for (auto &set : this->_set)
+			set = VK_NULL_HANDLE;
 		this->_slayout = VK_NULL_HANDLE;
 	}
 } // namespace Vox::Front::Rendering::Pipelines

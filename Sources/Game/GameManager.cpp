@@ -17,6 +17,7 @@ namespace Vox::Game
     void GameManager::InitGame()
     {
         this->_scManager.LoadScene("Menu");
+        this->_scManager.ProcessSceneChange();
     }
 
     GameManager::~GameManager()

@@ -1,6 +1,7 @@
 #include "Front/Rendering/Pipelines/PipelinesManager.hpp"
 
 #include "Front/Rendering/Pipelines/StaticGUIPipeline.hpp"
+#include "Front/Rendering/Pipelines/VoxelPipeline.hpp"
 
 #include "Front/Rendering/Device.hpp"
 #include "Front/Rendering/SyncObjects.hpp"
@@ -15,6 +16,7 @@ namespace Vox::Front::Rendering::Pipelines
 	void PipelinesManager::CreatePipelines()
 	{
 		this->_pipelines["StaticGUI"] = new StaticGUIPipeline();
+		this->_pipelines["Voxel"] = new VoxelPipeline();
 	}
 
 	// template<typename T>

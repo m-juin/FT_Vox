@@ -23,14 +23,14 @@ namespace Vox::Front::Rendering::Pipelines
 			{
 				return this->_slayout;
 			}
-			VkDescriptorSet &GetSet()
+			VkDescriptorSet &GetSet(const size_t &frame = 0)
 			{
-				return this->_set;
+				return this->_set[frame];
 			}
 
 		protected:
 			VkDescriptorSetLayout _slayout;
-			VkDescriptorSet _set;
+			std::vector<VkDescriptorSet> _set;
 
 			VkPipelineLayout _layout;
 			VkPipeline _instance;
