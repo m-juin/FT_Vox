@@ -128,4 +128,14 @@ namespace Vox::Front::Rendering::Utils::Buffers
 		std::memcpy(_mappedMemories[nextFrame], newData, newDataSize);
 	}
 
+	void DynamicBuffer::UpdateAtOffset(size_t frameIndex, size_t offset, void *newData, VkDeviceSize dataSize)
+	{
+		if (offset + dataSize > _size)
+		{
+			throw std::runtime_error("UpdateAtOffset dépasse la taille du buffer !");
+		}
+
+		std::memcpy(reinterpret_cast<char *>(_mappedMemories[frameIndex]) + offset, newData, dataSize);
+	}
+
 } // namespace Vox::Front::Rendering::Utils::Buffers

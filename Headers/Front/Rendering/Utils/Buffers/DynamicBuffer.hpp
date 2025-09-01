@@ -13,6 +13,7 @@ namespace Vox::Front::Rendering::Utils::Buffers
     
             void Create(void *initialData) override;
             void Update(void *newData, VkDeviceSize newDataSize) override;
+            void UpdateAtOffset(size_t frameIndex, size_t offset, void *newData, VkDeviceSize dataSize);
 
         private:
             std::vector<void *> _mappedMemories;       

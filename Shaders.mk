@@ -1,4 +1,5 @@
-SHADERS :=	GUIStaticV1
+SHADERS :=	GUIStaticV1 \
+			Voxel
 
 GLSLANG_VALIDATOR := glslc
 
