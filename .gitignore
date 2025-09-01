@@ -8,3 +8,5 @@ Shaders/*
 Ext/stb/*
 Ext/freeType/**
 WorldsData/**
+.idea/*
+CMakeLists*
