@@ -21,6 +21,8 @@
 #include "Game/Scenes/Menu/InterfacesElements/WorldDataDisplayer.hpp"
 #include "Game/Scenes/Menu/InterfacesElements/WorldDeletionCheck.hpp"
 
+#include "Game/GameManager.hpp"
+
 namespace Vox::Game::Scenes::Menu::Interfaces
 {
 	using namespace Front::Interfaces::Elements;
@@ -30,7 +32,8 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 		std::vector<Saves::WorldData> lst;
 
 		const std::string path = Saves::WorldsFolder;
-		if (std::filesystem::exists(path) == false) return {};
+		if (std::filesystem::exists(path) == false)
+			return {};
 
 		for (const auto &entry : std::filesystem::directory_iterator(path))
 		{
@@ -43,7 +46,10 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 			auto wd = Saves::LoadWorldData(saveFile.string());
 
 			if (wd.folderPath == "")
+			{
+				std::cout << saveFile << std::endl;
 				continue;
+			}
 			lst.push_back(wd);
 		}
 		return lst;
@@ -90,7 +96,17 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 			pm.pos = {this->_pos[0] + this->_size[0] / 2 - pm.size[0] - 100,
 					  this->_pos[1] + this->_size[1] - this->_size[1] / 4};
 
-			this->AddElement("BTN_Join", std::make_unique<Buttons::TexturedButton>(pm), 1);
+			auto btn = std::make_unique<Buttons::TexturedButton>(pm);
+
+			btn->onClickCallbacks.AddCallBack(
+				[](const int &button, const int &action)
+				{
+					if (button != GLFW_MOUSE_BUTTON_LEFT || action != GLFW_RELEASE)
+						return;
+					Game::GameManager::GetInstance().GetSceneManager().LoadScene("World");
+				});
+
+			this->AddElement("BTN_Join", std::move(btn), 1);
 
 			pm.content = "Create new World";
 			pm.pos[0] = this->_pos[0] + this->_size[0] / 2 + 100;
