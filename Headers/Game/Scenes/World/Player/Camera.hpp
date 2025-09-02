@@ -34,15 +34,17 @@ namespace Vox::Game::Scenes::World::Player
 			void HandleMouseMovement(const double &xOffSet, const double &yOffSet);
 
 		private:
+			void Rotate(const double &xOff, const double &yOff);
+
 			CameraInfo _info;
 			void RebuildInfo();
 			bool _isDirty;
 			Vector3 _position;
 			Vector3 _rotation;
 
-			float _yaw = 90.0;
-			float _pitch = 180.0;
-			// float _sensitivity = 0.05f;
+			float _yaw = -90.0;
+			float _pitch = 0.0;
+			float _sensitivity = 0.05f;
 
 			Vector3 _front;
 			Vector3 _up = Vector3(0.0f, 1.0f, 0.0f);

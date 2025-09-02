@@ -40,8 +40,8 @@ namespace Vox::Game
 										 double centerY = extent.height / 2;
 										 if (std::abs(xPos - centerX) < 0.001 && std::abs(yPos - centerY) < 0.001)
 											 return;
-										 double dx = std::clamp(xPos - centerX, -1.0, 1.0);
-										 double dy = std::clamp(centerY - yPos, -1.0, 1.0); 
+										 double dx = centerX - xPos;
+										 double dy = yPos - centerY; 
 										 auto &camera = Game::World::WorldManager::GetCamera();
 										 camera.HandleMouseMovement(dx, dy);
 										 glfwSetCursorPos(window, centerX, centerY);

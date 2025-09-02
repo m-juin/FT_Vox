@@ -39,6 +39,24 @@ namespace Vox::Game::Scenes::World::Player
 		this->_isDirty = false;
 	}
 
+	void Camera::Rotate(const double &xOff, const double &yOff)
+	{
+		this->_yaw += xOff * this->_sensitivity; // signe inversé pour X
+		this->_pitch += yOff * this->_sensitivity;
+
+		if (this->_pitch > 89.0f)
+			this->_pitch = 89.0f;
+		if (this->_pitch < -89.0f)
+			this->_pitch = -89.0f;
+
+		if (this->_yaw >= 360.0f)
+			this->_yaw -= 360.0f;
+		if (this->_yaw < 0.0f)
+			this->_yaw += 360.0f;
+
+		UpdateVectors();
+	}
+
 	void Camera::UpdateVectors()
 	{
 		using namespace MGL::Vectors::Operations;
@@ -53,12 +71,13 @@ namespace Vox::Game::Scenes::World::Player
 
 		this->_rightDir = Normalize(Cross(this->_front, this->_worldUp));
 		this->_up = Normalize(Cross(this->_rightDir, this->_front));
-        this->_isDirty = true;
+		this->_isDirty = true;
 	}
 
 	void Camera::HandleMouseMovement(const double &xOffSet, const double &yOffSet)
 	{
-		std::cout << "[DEBUG] " << "Mouse xOff = " << xOffSet << " | yOff = " << yOffSet << std::endl; 	
+		std::cout << "[DEBUG] " << "Mouse xOff = " << xOffSet << " | yOff = " << yOffSet << std::endl;
+		this->Rotate(xOffSet, yOffSet);
 	}
 
 } // namespace Vox::Game::Scenes::World::Player
