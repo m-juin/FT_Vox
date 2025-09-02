@@ -201,7 +201,7 @@ namespace Vox::Front::Rendering::Pipelines
 		allocInfo.descriptorSetCount = static_cast<uint32_t>(1);
 		allocInfo.pSetLayouts = &this->_slayout;
 
-		this->_set.reserve(allocInfo.descriptorSetCount);
+		this->_set.resize(allocInfo.descriptorSetCount);
 
 		if (vkAllocateDescriptorSets(Device::GetInstance().GetLogicalDevice(), &allocInfo, this->_set.data()) != VK_SUCCESS)
 			throw std::runtime_error("Failed to allocate descriptor sets!");
