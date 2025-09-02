@@ -7,7 +7,7 @@
 namespace Vox::Game::World
 {
 	WorldManager::WorldManager(const Scenes::Menu::Saves::WorldData &wd)
-		: camera({0.0, 1.0, 0.0}, {0.0, 0.0, 0.0}), _chunckBuffer(2, Utils::Vulkan::GetAlignedChunckSize() * Utils::Defines::CHUNCK_AMOUNT,
+		: camera({0.0, 0.0, -100.0}, {0.0, 0.0, 0.0}), _chunckBuffer(2, Utils::Vulkan::GetAlignedChunckSize() * Utils::Defines::CHUNCK_AMOUNT,
 						VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT)
 	{
 		(void)wd;
