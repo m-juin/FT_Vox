@@ -14,7 +14,7 @@ namespace Vox::Game
             InputManager();
             ~InputManager();
         
-            void SetInputTarget(E_InputTarget newTarget) { this->_target = newTarget; };
+            void SetInputTarget(E_InputTarget newTarget);
             E_InputTarget GetInputTarget() { return this->_target; };
         
         private:
@@ -22,6 +22,7 @@ namespace Vox::Game
             void LoadInput();
             /* private */
     };
+    
 } // namespace Vox::Game
 
 #endif // __INPUTMANAGER_HPP__

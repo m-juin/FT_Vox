@@ -7,7 +7,7 @@
 namespace Vox::Game::World
 {
 	WorldManager::WorldManager(const Scenes::Menu::Saves::WorldData &wd)
-		: camera({0.0, 0.0, -100.0}, {0.0, 0.0, 0.0}), _chunckBuffer(2, Utils::Vulkan::GetAlignedChunckSize() * Utils::Defines::CHUNCK_AMOUNT,
+		: _camera({0.0, 0.0, -100.0}, {0.0, 0.0, 0.0}), _chunckBuffer(2, Utils::Vulkan::GetAlignedChunckSize() * Utils::Defines::CHUNCK_AMOUNT,
 						VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT)
 	{
 		(void)wd;
@@ -31,6 +31,11 @@ namespace Vox::Game::World
 		throw std::runtime_error("Try to get WorldManager when not avalaible!");
 	}
 
+    Scenes::World::Player::Camera& WorldManager::GetCamera()
+    {
+        return WorldManager::GetInstance()._camera;
+    }
+
 	void WorldManager::UpdateBuffer(const size_t &index, const Chuncks::VoxelChunck::ChunckUniform &uniform)
 	{
 		auto frame = Front::Rendering::SyncObjects().GetInstance().GetNextFrame();
@@ -41,7 +46,7 @@ namespace Vox::Game::World
 	void WorldManager::Render()
 	{
 		this->_firstChunck->Update();
-		this->camera.Update();
+		this->_camera.Update();
 		Front::Rendering::Pipelines::PipelinesManager::GetInstance().BindPipeline("Voxel");
 		this->_firstChunck->Render();
 	}

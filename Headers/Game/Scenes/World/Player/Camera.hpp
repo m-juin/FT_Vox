@@ -31,6 +31,8 @@ namespace Vox::Game::Scenes::World::Player
 			Camera(Vector3 defaultPos = {0.0, 0.0, 0.0}, Vector3 defaultRot = {0.0f, 0.0f, 0.0f});
 			~Camera() {};
 
+			void HandleMouseMovement(const double &xOffSet, const double &yOffSet);
+
 		private:
 			CameraInfo _info;
 			void RebuildInfo();
@@ -51,6 +53,7 @@ namespace Vox::Game::Scenes::World::Player
 			void UpdateVectors();
 			/* private */
 	};
+	
 
 } // namespace Vox::Game::Scenes::World::Player
 

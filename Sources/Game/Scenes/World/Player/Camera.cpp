@@ -56,4 +56,9 @@ namespace Vox::Game::Scenes::World::Player
         this->_isDirty = true;
 	}
 
+	void Camera::HandleMouseMovement(const double &xOffSet, const double &yOffSet)
+	{
+		std::cout << "[DEBUG] " << "Mouse xOff = " << xOffSet << " | yOff = " << yOffSet << std::endl; 	
+	}
+
 } // namespace Vox::Game::Scenes::World::Player

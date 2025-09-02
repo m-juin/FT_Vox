@@ -31,6 +31,7 @@ namespace Vox::Game::World
             ~WorldManager();
 
         static WorldManager &GetInstance();
+        static Scenes::World::Player::Camera& GetCamera();
 
         void UpdateBuffer(const size_t &index, const Chuncks::VoxelChunck::ChunckUniform &uniform);
 
@@ -38,12 +39,13 @@ namespace Vox::Game::World
 
         private:
             Chuncks::VoxelChunck *_firstChunck;
-            Scenes::World::Player::Camera camera;
+            Scenes::World::Player::Camera _camera;
             Utils::Defines::dbuffer _chunckBuffer;
 
             /* private */
     
     };
+    
 } // namespace Vox::Game::World
 
 

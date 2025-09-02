@@ -5,6 +5,11 @@
 #include "Front/Window.hpp"
 
 #include "Front/Interfaces/InterfacesManager.hpp"
+#include "Game/Scenes/World/WorldManager.hpp"
+
+#include "Front/Rendering/SwapChain.hpp"
+
+#include <cmath>
 
 namespace Vox::Game
 {
@@ -30,6 +35,16 @@ namespace Vox::Game
 									 }
 									 else
 									 {
+										 auto extent = Front::Rendering::SwapChain::GetInstance().GetExtent();
+										 double centerX = extent.width / 2;
+										 double centerY = extent.height / 2;
+										 if (std::abs(xPos - centerX) < 0.001 && std::abs(yPos - centerY) < 0.001)
+											 return;
+										 double dx = std::clamp(xPos - centerX, -1.0, 1.0);
+										 double dy = std::clamp(centerY - yPos, -1.0, 1.0); 
+										 auto &camera = Game::World::WorldManager::GetCamera();
+										 camera.HandleMouseMovement(dx, dy);
+										 glfwSetCursorPos(window, centerX, centerY);
 									 }
 								 });
 
@@ -74,5 +89,21 @@ namespace Vox::Game
 								   im.HandleKeyInput(key, action);
 							   }
 						   });
+	}
+
+	void InputManager::SetInputTarget(E_InputTarget newTarget)
+	{
+		if (newTarget == this->_target)
+			return;
+		this->_target = newTarget;
+		auto win = Front::Window::GetInstance().GetWindow();
+		if (this->_target == E_InputTarget::UI)
+			glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		else if (this->_target == E_InputTarget::Camera)
+		{
+			glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+			auto extent = Front::Rendering::SwapChain::GetInstance().GetExtent();
+			glfwSetCursorPos(win, extent.width / 2, extent.height / 2);
+		}
 	}
 } // namespace Vox::Game
