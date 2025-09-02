@@ -23,6 +23,7 @@ namespace Vox::Game
 
             Front::Scenes::ScenesManager &GetSceneManager() {return this->_scManager;};
             const Front::Scenes::ScenesManager &GetSceneManager() const {return this->_scManager;};
+            InputManager &GetInputManager() {return this->_iManager;};
 
             const std::string GetTexturePackPath() {return Game::Utils::Textures::TPacks_Path + this->_TPack + "/";}
         private:

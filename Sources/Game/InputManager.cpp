@@ -18,28 +18,41 @@ namespace Vox::Game
 	void InputManager::LoadInput()
 	{
 		auto win = Front::Window::GetInstance().GetWindow();
+		glfwSetWindowUserPointer(win, this);
 		glfwSetCursorPosCallback(win,
 								 [](GLFWwindow *window, double xPos, double yPos)
 								 {
-									 (void)window;
-									 const auto &im = Front::Interfaces::InterfacesManager::GetInstance();
-									 im.HandleMouseMove(xPos, yPos);
+									 auto *inputMgr = static_cast<InputManager *>(glfwGetWindowUserPointer(window));
+									 if (inputMgr->_target == E_InputTarget::UI)
+									 {
+										 const auto &im = Front::Interfaces::InterfacesManager::GetInstance();
+										 im.HandleMouseMove(xPos, yPos);
+									 }
+									 else
+									 {
+									 }
 								 });
 
 		glfwSetMouseButtonCallback(win,
 								   [](GLFWwindow *window, int button, int action, int mods)
 								   {
-									   (void)window;
 									   (void)mods;
-									   const auto &im = Front::Interfaces::InterfacesManager::GetInstance();
-									   im.HandleMouseClick(button, action);
+									   auto *inputMgr = static_cast<InputManager *>(glfwGetWindowUserPointer(window));
+									   if (inputMgr->_target == E_InputTarget::UI)
+									   {
+										   const auto &im = Front::Interfaces::InterfacesManager::GetInstance();
+										   im.HandleMouseClick(button, action);
+									   }
 								   });
 		glfwSetScrollCallback(win,
 							  [](GLFWwindow *window, double xoffset, double yoffset)
 							  {
-								  (void)window;
-								  const auto &im = Front::Interfaces::InterfacesManager::GetInstance();
-								  im.HandleMouseScroll(xoffset, yoffset);
+								  auto *inputMgr = static_cast<InputManager *>(glfwGetWindowUserPointer(window));
+								  if (inputMgr->_target == E_InputTarget::UI)
+								  {
+									  const auto &im = Front::Interfaces::InterfacesManager::GetInstance();
+									  im.HandleMouseScroll(xoffset, yoffset);
+								  }
 							  });
 
 		glfwSetCharCallback(win,
@@ -50,13 +63,16 @@ namespace Vox::Game
 								im.HandleCharInput(codepoint);
 							});
 		glfwSetKeyCallback(win,
-							[](GLFWwindow *window, int key, int scancode, int action, int mods)
-							{
-								(void)window;
-								(void)mods;
-								(void)scancode;
-								const auto &im = Front::Interfaces::InterfacesManager::GetInstance();
-								im.HandleKeyInput(key, action);
-							});
+						   [](GLFWwindow *window, int key, int scancode, int action, int mods)
+						   {
+							   (void)mods;
+							   (void)scancode;
+							   auto *inputMgr = static_cast<InputManager *>(glfwGetWindowUserPointer(window));
+							   if (inputMgr->_target == E_InputTarget::UI)
+							   {
+								   const auto &im = Front::Interfaces::InterfacesManager::GetInstance();
+								   im.HandleKeyInput(key, action);
+							   }
+						   });
 	}
 } // namespace Vox::Game

@@ -32,6 +32,7 @@ namespace Vox::Game::Scenes::World
     {
 		auto &iManager = Front::Interfaces::InterfacesManager::GetInstance();
         (void)iManager;
+		GameManager::GetInstance().GetInputManager().SetInputTarget(E_InputTarget::Camera);
 		this->_textureManager = new Scenes::World::TManager_World();
 		this->_wM = std::make_unique<Game::World::WorldManager>(Menu::Saves::WorldData("", "", ""));
     }
