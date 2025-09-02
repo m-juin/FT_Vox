@@ -67,7 +67,7 @@ namespace Vox::Front::Rendering::Utils::Vertex
 
 				attributeDescriptions[3].binding = 0;
 				attributeDescriptions[3].location = 3;
-				attributeDescriptions[3].format = VK_FORMAT_R8_UINT;
+				attributeDescriptions[3].format = VK_FORMAT_R32_SINT;
 				attributeDescriptions[3].offset = offsetof(StaticGUIVertex, imageType);
 
 				return attributeDescriptions;

@@ -1,5 +1,5 @@
-#ifndef __DEFINES_HPP__
-#define __DEFINES_HPP__
+#ifndef __IELEMENTS_DEFINES_HPP__
+#define __IELEMENTS_DEFINES_HPP__
 
 #include "MathGraphicalLib/Vectors/Vector2.hpp"
 #include "MathGraphicalLib/Vectors/Vector4.hpp"

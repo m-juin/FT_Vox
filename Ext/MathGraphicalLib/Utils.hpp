@@ -1,5 +1,5 @@
-#ifndef __UTILS_HPP__
-#define __UTILS_HPP__
+#ifndef __MGL_UTILS_HPP__
+#define __MGL_UTILS_HPP__
 
 namespace MGL::Utils
 {
@@ -16,6 +16,14 @@ namespace MGL::Utils
 		// Retourne le prochain multiple
 		return quotient * multiple_of;
 	}
+
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+	inline float Radians(const float &degree)
+	{
+		return degree * (M_PI / 180);
+	}
 } // namespace MGL::Utils
 
-#endif // __UTILS_HPP__
+#endif // __MGL_UTILS_HPP__

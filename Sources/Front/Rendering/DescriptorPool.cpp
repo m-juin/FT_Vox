@@ -22,7 +22,12 @@ namespace Vox::Front::Rendering
 		poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
 		poolInfo.poolSizeCount = poolSizes.size();
 		poolInfo.pPoolSizes = poolSizes.data();
-		poolInfo.maxSets = poolSizes.size();
+
+		size_t total = 3;
+		// for (auto info : poolSizes)
+		// 	total += info.descriptorCount;
+
+		poolInfo.maxSets = total;
 
 		if (vkCreateDescriptorPool(Device::GetInstance().GetLogicalDevice(), &poolInfo, nullptr, &this->_pool) != VK_SUCCESS)
 			throw std::runtime_error("Failed to create descriptor pool!");

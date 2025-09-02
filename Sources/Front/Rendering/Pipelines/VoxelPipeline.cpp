@@ -119,7 +119,7 @@ namespace Vox::Front::Rendering::Pipelines
 		pipelineLayoutInfo.pSetLayouts = &this->_slayout;
 
 		VkPushConstantRange pushConstantRange{};
-		pushConstantRange.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+		pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 		pushConstantRange.offset = 0;
 		pushConstantRange.size = sizeof(Game::Scenes::World::Player::CameraInfo);
 
@@ -157,39 +157,56 @@ namespace Vox::Front::Rendering::Pipelines
 		vkDestroyShaderModule(device, vertShaderModule, nullptr);
 	}
 
+	void VoxelPipeline::InitSet(std::vector<VkBuffer> buffers, VkDeviceSize size)
+	{
+		for (size_t i = 0; i < 2; i++)
+		{
+			VkDescriptorBufferInfo objectBufferInfo{};
+			objectBufferInfo.buffer = buffers[i];
+			objectBufferInfo.offset = 0;
+			objectBufferInfo.range = size;
+
+			std::array<VkWriteDescriptorSet, 1> descriptorWrites{};
+
+			descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			descriptorWrites[0].dstSet = this->_set[i];
+			descriptorWrites[0].dstBinding = 0;
+			descriptorWrites[0].dstArrayElement = 0;
+			descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
+			descriptorWrites[0].descriptorCount = 1;
+			descriptorWrites[0].pBufferInfo = &objectBufferInfo;
+
+			vkUpdateDescriptorSets(Device::GetInstance().GetLogicalDevice(),
+								   static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
+		}
+	}
+
 	void VoxelPipeline::CreateSet(VkDescriptorPool &descPool)
 	{
 		this->CreateSetLayout();
 		this->_set.resize(2);
 
+		std::vector<VkDescriptorSetLayout> layouts(this->_set.size(), this->_slayout);
+
 		VkDescriptorSetAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
 		allocInfo.descriptorPool = descPool;
-		allocInfo.descriptorSetCount = static_cast<uint32_t>(1);
-		allocInfo.pSetLayouts = &this->_slayout;
+		allocInfo.descriptorSetCount = static_cast<uint32_t>(layouts.size());
+		allocInfo.pSetLayouts = layouts.data();
 
 		if (vkAllocateDescriptorSets(Device::GetInstance().GetLogicalDevice(), &allocInfo, this->_set.data()) !=
 			VK_SUCCESS)
 			throw std::runtime_error("Failed to allocate descriptor sets!");
-
-
-		// for (size_t i = 0; i < 2; i++)
-		// {
-			// VkDescriptorBufferInfo objectBufferInfo{};
-			// objectBufferInfo.buffer = objectBuffer[i];
-			// objectBufferInfo.offset = 0;
-			// objectBufferInfo.range = sizeof(ModelUniformBuffer);
-		// }
 	}
 
 	void VoxelPipeline::CreateSetLayout()
 	{
 		std::array<VkDescriptorSetLayoutBinding, 1> samplerLayoutBindings{};
 
-		samplerLayoutBindings[1].binding = 0;
-		samplerLayoutBindings[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
-		samplerLayoutBindings[1].descriptorCount = 1;
-		samplerLayoutBindings[1].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+		samplerLayoutBindings[0].binding = 0;
+		samplerLayoutBindings[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
+		samplerLayoutBindings[0].descriptorCount = 1;
+		samplerLayoutBindings[0].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 
 		VkDescriptorSetLayoutCreateInfo layoutInfo{};
 		layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;

@@ -36,7 +36,7 @@ namespace Vox::Front::Rendering::Pipelines
 			{
 				if (this->_pipelines.find(name) == this->_pipelines.end())
 					return nullptr;
-				return static_cast<T *>(this->_pipelines[name]);
+				return dynamic_cast<T *>(this->_pipelines[name]);
 			}
 	};
 

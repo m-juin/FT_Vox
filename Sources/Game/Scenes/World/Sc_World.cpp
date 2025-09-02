@@ -4,6 +4,7 @@
 
 #include "Front/Interfaces/InterfacesManager.hpp"
 
+#include "Game/Scenes/Menu/SavesData.hpp"
 // #include "Front/Rendering/SwapChain.hpp"
 
 namespace Vox::Game::Scenes::World
@@ -21,13 +22,18 @@ namespace Vox::Game::Scenes::World
 		delete this->_textureManager;
     }
 
-	void Sc_World::Render() {}
+	void Sc_World::Render()
+	{
+		if (this->_wM)
+			this->_wM->Render();
+	}
 
 	void Sc_World::InitSceneData()
     {
 		auto &iManager = Front::Interfaces::InterfacesManager::GetInstance();
         (void)iManager;
 		this->_textureManager = new Scenes::World::TManager_World();
+		this->_wM = std::make_unique<Game::World::WorldManager>(Menu::Saves::WorldData("", "", ""));
     }
 } // namespace Vox::Game::Scenes::World
 

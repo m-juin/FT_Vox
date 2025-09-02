@@ -9,7 +9,7 @@
 
 namespace Vox::Game::Utils::Vulkan
 {
-	size_t GetAlignedChunckSize()
+	inline size_t GetAlignedChunckSize()
 	{
         VkPhysicalDevice device = Front::Rendering::Device::GetInstance().GetPhysicalDevice();
 

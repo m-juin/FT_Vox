@@ -13,7 +13,7 @@ namespace Vox::Front::Rendering::Utils::Buffers
 	StaticBuffer::StaticBuffer(uint32_t frameCount, VkDeviceSize size, VkBufferUsageFlags usage) : ABuffer(frameCount)
 	{
 		_size = size;
-		_usage = usage;
+		_usage = usage | VK_BUFFER_USAGE_TRANSFER_DST_BIT;
 	}
 
 	StaticBuffer::~StaticBuffer()

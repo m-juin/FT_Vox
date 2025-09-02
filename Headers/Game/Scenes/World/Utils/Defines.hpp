@@ -1,11 +1,12 @@
-#ifndef __DEFINES_HPP__
-#define __DEFINES_HPP__
+#ifndef __GAME_DEFINES_HPP__
+#define __GAME_DEFINES_HPP__
 
 #include "Front/Rendering/Utils/Buffers/DynamicBuffer.hpp"
 #include "Front/Rendering/Utils/Buffers/StaticBuffer.hpp"
 
 #include "Front/Rendering/Utils/Vertex/VoxelVertex.hpp"
 #include "MathGraphicalLib/Vectors/Vector3.hpp"
+#include "MathGraphicalLib/Matrix/Matrix4.hpp"
 
 namespace Vox::Game::Utils::Defines
 {
@@ -13,6 +14,7 @@ namespace Vox::Game::Utils::Defines
     using sbuffer = Vox::Front::Rendering::Utils::Buffers::StaticBuffer;
     using Vertex = Vox::Front::Rendering::Utils::Vertex::VoxelVertex;
     using Vector3 = MGL::Vectors::Vector3<float>;
+    using Matrix = MGL::Matrix::Matrix4;
 
     
     constexpr size_t RENDER_DISTANCE = 12;

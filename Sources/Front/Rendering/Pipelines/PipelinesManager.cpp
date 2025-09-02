@@ -96,7 +96,7 @@ namespace Vox::Front::Rendering::Pipelines
 	{
 		auto buffer = Rendering::CommandsPool::GetInstance().GetBuffer(SyncObjects::GetInstance().GetCurrentFrame());
 		vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, this->_pipelines[key]->GetPipeline());
-		vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, this->_pipelines[key]->GetLayout(), 0, 1, &this->_pipelines[key]->GetSet(), 0, nullptr);
+		// vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, this->_pipelines[key]->GetLayout(), 0, 1, &this->_pipelines[key]->GetSet(), 0, nullptr);
 	}
 
 	PipelinesManager::~PipelinesManager()

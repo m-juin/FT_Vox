@@ -11,16 +11,34 @@
 
 #include "Game/Scenes/Menu/SavesData.hpp"
 
+#include "Game/GameManager.hpp"
+#include "Game/Scenes/World/Sc_World.hpp"
+#include "Game/Scenes/World/Player/Camera.hpp"
+#include "Front/Scenes/ScenesManager.hpp"
+
+namespace Vox::Game::Scenes::World
+{
+    class Sc_World;
+}
+
 namespace Vox::Game::World
 {
     class WorldManager
     {
         public:
+            WorldManager() = delete;
             WorldManager(const Scenes::Menu::Saves::WorldData &wd);
             ~WorldManager();
 
+        static WorldManager &GetInstance();
+
+        void UpdateBuffer(const size_t &index, const Chuncks::VoxelChunck::ChunckUniform &uniform);
+
+        void Render();
+
         private:
             Chuncks::VoxelChunck *_firstChunck;
+            Scenes::World::Player::Camera camera;
             Utils::Defines::dbuffer _chunckBuffer;
 
             /* private */

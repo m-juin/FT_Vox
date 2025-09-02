@@ -4,6 +4,14 @@
 #include "Front/Scenes/AScene.hpp"
 #include "Front/Scenes/ScenesManager.hpp"
 
+#include "Game/Scenes/World/WorldManager.hpp"
+
+namespace Vox::Game::World
+{
+	class WorldManager;
+} // namespace Vox::Game::World
+
+
 namespace Vox::Game::Scenes::World
 {
 	class Sc_World : public Front::Scenes::AScene
@@ -28,7 +36,10 @@ namespace Vox::Game::Scenes::World
 				return name;
 			}
 
+			Vox::Game::World::WorldManager &GetWorldManager() const { return *this->_wM;} ;
+
 		private:
+			std::unique_ptr<Game::World::WorldManager> _wM;
 			/* private */
 	};
 } // namespace Vox::Game::Scenes::World

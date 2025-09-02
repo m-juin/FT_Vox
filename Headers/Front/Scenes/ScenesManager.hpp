@@ -23,7 +23,7 @@ namespace Vox::Front::Scenes
 	{
 		public:
 			void RenderCurrentScene();
-			const AScene &GetCurrentScene() const
+			AScene &GetCurrentScene() const
 			{
 				if (!_currentScene)
 				{

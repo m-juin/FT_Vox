@@ -13,6 +13,7 @@ namespace Vox::Front::Rendering::Pipelines
 			~VoxelPipeline();
 
 			void CreatePipeline() override;
+			void InitSet(std::vector<VkBuffer> buffers, VkDeviceSize size);
 			void CreateSet(VkDescriptorPool &descPool) override;
 
 		private:

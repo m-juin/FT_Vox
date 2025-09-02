@@ -8,6 +8,7 @@ namespace Vox::Front::Rendering::Utils::Buffers
     class DynamicBuffer : public ABuffer
     {
         public:
+            DynamicBuffer() = delete;
             DynamicBuffer(uint32_t frameCount, VkDeviceSize size, VkBufferUsageFlags usage);
             ~DynamicBuffer();
     
