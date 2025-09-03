@@ -6,7 +6,10 @@
 #include "Game/Scenes/World/Utils/Defines.hpp"
 
 #include "./E_FaceDir.hpp"
+#include "./E_GenerationState.hpp"
 #include "Game/Models/DynamicObject.hpp"
+
+#include <unordered_map>
 
 namespace Vox::Game::World::Chuncks
 {
@@ -55,7 +58,9 @@ namespace Vox::Game::World::Chuncks
 
 			void Render();
 
+
 		private:
+			Generation::E_GenerationState _currentState;
             size_t indexCount;
 
             void AddFace(const Faces &face, const LocalVector &facePos, std::vector<Vertex> &vertex, std::vector<uint16_t> &index);
