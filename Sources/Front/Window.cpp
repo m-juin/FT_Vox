@@ -21,6 +21,7 @@ namespace Vox::Front
 			exit(1);
 		}
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+
 		this->_window = glfwCreateWindow(width, height, "FT_Vox", nullptr, nullptr);
 		if (this->_window == nullptr)
 		{

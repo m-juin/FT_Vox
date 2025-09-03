@@ -36,7 +36,9 @@ namespace Vox::Game
 									 if (inputMgr->_target == E_InputTarget::UI)
 									 {
 										 const auto &im = Front::Interfaces::InterfacesManager::GetInstance();
-										 im.HandleMouseMove(xPos, yPos);
+									 	float xscale, yscale;
+										 glfwGetWindowContentScale(window, &xscale, &yscale);
+										 im.HandleMouseMove(xPos * xscale, yPos * yscale);
 									 }
 									 else
 									 {

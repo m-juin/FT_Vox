@@ -9,4 +9,5 @@ Ext/stb/*
 Ext/freeType/**
 WorldsData/**
 .idea/*
-CMakeLists*
+CMakeLists.txt
+cmake*

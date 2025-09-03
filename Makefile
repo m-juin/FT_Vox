@@ -8,7 +8,7 @@ OBJS_ROOT := .Objects
 
 CPPFLAGS := -Werror -Wextra -Wall -std=c++17 -g -IHeaders/ -IExt/ -IExt/freeType/include/freetype2
 
-Libs = -ILibs/ -lfreetype
+Libs =
 
 rwildcard=$(foreach d,$(wildcard $(1:=/*)),$(call rwildcard,$d,$2) $(filter $(subst *,%,$2),$d))
 
@@ -24,7 +24,7 @@ ERASE_LINE = \033[2K\r
 UNAME := $(shell uname)
 
 ifeq ($(UNAME), Linux)
-    Libs += -lglfw -lvulkan
+    Libs += -lglfw -lvulkan -LExt/freeType/lib -lfreetype
 else
     Libs += -lglfw3 -lvulkan-1
 endif
