@@ -6,9 +6,10 @@
 #include <vector>
 #include "Utils/Singleton.hpp"
 
+constexpr uint16_t MAX_FRAMES_IN_FLIGHT = 2;
+
 namespace Vox::Front::Rendering
 {
-	constexpr uint16_t MAX_FRAMES_IN_FLIGHT = 2;
 
 	class SyncObjects : public Vox::Utils::Singleton<SyncObjects>
 	{

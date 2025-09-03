@@ -2,10 +2,10 @@
 
 #include <array>
 
-#include "Front/Rendering/SyncObjects.hpp"
 #include "Front/Rendering/CommandsPool.hpp"
 #include "Front/Rendering/Pipelines/PipelinesManager.hpp"
 #include "Front/Rendering/Pipelines/VoxelPipeline.hpp"
+#include "Front/Rendering/SyncObjects.hpp"
 
 #include "Front/Rendering/Utils/Vertex/VoxelVertex.hpp"
 
@@ -15,11 +15,13 @@
 
 namespace Vox::Game::World::Chuncks
 {
-	VoxelChunck::VoxelChunck(size_t bufferIndex, Vector3 defaultPos) : DynamicObject(defaultPos), _bufferIndex(bufferIndex)
+	VoxelChunck::VoxelChunck(size_t bufferIndex, Vector3 defaultPos)
+		: DynamicObject(defaultPos), _bufferIndex(bufferIndex)
 	{
 		this->B_Index = nullptr;
 		this->B_Vertex = nullptr;
 
+		indexCount = 0;
 		BuildVoxelObject();
 	}
 
@@ -31,34 +33,63 @@ namespace Vox::Game::World::Chuncks
 
 	void VoxelChunck::BuildVoxelObject()
 	{
-		std::array<Vertex, 8> vertex = {
-			Vertex({0.5, -0.5, -0.5}, {1.0, 1.0, 1.0}), Vertex({0.5, -0.5, 0.5}, {1.0, 1.0, 1.0}),
-			Vertex({-0.5, -0.5, 0.5}, {1.0, 1.0, 1.0}), Vertex({-0.5, -0.5, -0.5}, {1.0, 1.0, 1.0}),
-			Vertex({0.5, 0.5, -0.5}, {1.0, 1.0, 1.0}),	Vertex({0.5, 0.5, 0.5}, {1.0, 1.0, 1.0}),
-			Vertex({-0.5, 0.5, 0.5}, {1.0, 1.0, 1.0}),	Vertex({-0.5, 0.5, -0.5}, {1.0, 1.0, 1.0}),
-		};
-		std::array<uint16_t, 36> index = {0, 1, 2, 2, 3, 0,
-										  // haut
-										  4, 5, 6, 6, 7, 4,
-										  // devant
-										  1, 5, 6, 6, 2, 1,
-										  // derrière
-										  0, 4, 7, 7, 3, 0,
-										  // droite
-										  0, 1, 5, 5, 4, 0,
-										  // gauche
-										  3, 2, 6, 6, 7, 3};
+		std::vector<Vertex> vertex;
+		std::vector<uint16_t> index;
 
+		for (size_t x = 0; x < Utils::Defines::CHUNCK_SIZE; x++)
+		{
+			for (size_t z = 0; z < Utils::Defines::CHUNCK_SIZE; z++)
+			{
+				for (size_t y = 0; y < Utils::Defines::CHUNCK_SIZE; y++)
+				{
+					if (y == Utils::Defines::CHUNCK_SIZE - 1)
+					{
+						this->AddFace(Faces::TOP, LocalVector(x, y, z), vertex, index);
+					}
+					// std::array<Vertex, 8> vertex = {
+					// 	Vertex({0.5, -0.5, -0.5}, {1.0, 1.0, 1.0}), Vertex({0.5, -0.5, 0.5}, {1.0, 1.0, 1.0}),
+					// 	Vertex({-0.5, -0.5, 0.5}, {1.0, 1.0, 1.0}), Vertex({-0.5, -0.5, -0.5}, {1.0, 1.0, 1.0}),
+					// 	Vertex({0.5, 0.5, -0.5}, {1.0, 1.0, 1.0}),	Vertex({0.5, 0.5, 0.5}, {1.0, 1.0, 1.0}),
+					// 	Vertex({-0.5, 0.5, 0.5}, {1.0, 1.0, 1.0}),	Vertex({-0.5, 0.5, -0.5}, {1.0, 1.0, 1.0}),
+					// };
+					// std::array<uint16_t, 36> index = {0, 1, 2, 2, 3, 0,
+					// haut
+					//   4, 5, 6, 6, 7, 4,
+					//   // devant
+					//   1, 5, 6, 6, 2, 1,
+					//   // derrière
+					//   0, 4, 7, 7, 3, 0,
+					//   // droite
+					//   0, 1, 5, 5, 4, 0,
+					//   // gauche
+					//   3, 2, 6, 6, 7, 3};
+				}
+			}
+		}
 		if (this->B_Index != nullptr)
 		{
 			delete this->B_Vertex;
 			delete this->B_Index;
 		}
-		this->B_Index = new sbuffer(2, sizeof(index), VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
-		this->B_Vertex = new sbuffer(2, sizeof(vertex), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
+		this->B_Index = new sbuffer(2, index.size() * sizeof(uint16_t), VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
+		this->B_Vertex = new sbuffer(2, vertex.size() * sizeof(Vertex), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
+		this->indexCount = index.size();
 		this->B_Index->Create(index.data());
 
 		this->B_Vertex->Create(vertex.data());
+	}
+
+	size_t VoxelChunck::GetLocalIndex(const LocalVector &vec)
+	{
+		return vec[0] + (vec[1] * Utils::Defines::CHUNCK_SIZE) +
+			   (vec[2] * (Utils::Defines::CHUNCK_SIZE * Utils::Defines::CHUNCK_SIZE));
+	}
+
+	VoxelChunck::LocalVector VoxelChunck::GetLocalVector(const size_t &index)
+	{
+		return LocalVector(
+			index % Utils::Defines::CHUNCK_SIZE, (index / Utils::Defines::CHUNCK_SIZE) % Utils::Defines::CHUNCK_SIZE,
+			((index / Utils::Defines::CHUNCK_SIZE) / Utils::Defines::CHUNCK_SIZE) % Utils::Defines::CHUNCK_SIZE);
 	}
 
 	void VoxelChunck::Render()
@@ -70,13 +101,34 @@ namespace Vox::Game::World::Chuncks
 		auto buffer = CommandsPool::GetInstance().GetBuffer(frame);
 		auto pipeline = Pipelines::PipelinesManager::GetInstance().operator[]<Pipelines::VoxelPipeline>("Voxel");
 		if (pipeline == nullptr)
-			return ;
+			return;
 		VkDeviceSize offset = {0};
 		vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->GetLayout(), 0, 1,
 								&pipeline->GetSet(frame), 1, &dynamicOffset);
 		vkCmdBindVertexBuffers(buffer, 0, 1, &this->B_Vertex->GetBuffer(frame), &offset);
 		vkCmdBindIndexBuffer(buffer, this->B_Index->GetBuffer(frame), 0, VK_INDEX_TYPE_UINT16);
-		vkCmdDrawIndexed(buffer, 36, 1, 0, 0, 0);
+		vkCmdDrawIndexed(buffer, indexCount, 1, 0, 0, 0);
+	}
+
+	void VoxelChunck::AddFace(const Faces &face, const LocalVector &facePos, std::vector<Vertex> &vertex,
+							  std::vector<uint16_t> &index)
+	{
+		std::array<Vertex, 4> toAdd = defaultFacesPos.at(face);
+		for (auto &ref : toAdd)
+		{
+			for (uint8_t i = 0; i < 3; i++)
+				ref.vertPos[i] += facePos[i];
+		}
+		auto beg = vertex.end();
+
+		vertex.insert(beg, toAdd.begin(), toAdd.end());
+		uint32_t size = index.size() == 0 ? 0 : index[index.size() - 1] + 1;
+		index.push_back(size);
+		index.push_back(size + 1);
+		index.push_back(size + 2);
+		index.push_back(size);
+		index.push_back(size + 2);
+		index.push_back(size + 3);
 	}
 
 	VoxelChunck::~VoxelChunck()

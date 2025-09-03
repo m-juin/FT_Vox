@@ -17,6 +17,7 @@ namespace Vox::Game::World
 							.operator[]<Front::Rendering::Pipelines::VoxelPipeline>("Voxel");
 		pipeline->InitSet({this->_chunckBuffer.GetBuffer(0), this->_chunckBuffer.GetBuffer(1)},
 						  sizeof(Chuncks::VoxelChunck::ChunckUniform));
+		this->InitWorld();
 	}
 
 	WorldManager::~WorldManager()
@@ -24,6 +25,21 @@ namespace Vox::Game::World
 		for (auto chunck : this->_chuncks)
 			if (chunck)
 				delete chunck;
+	}
+
+	void WorldManager::InitWorld()
+	{
+		this->_chuncks.reserve(Utils::Defines::CHUNCK_AMOUNT);
+		int halfRender = (Utils::Defines::RENDER_DISTANCE / 2);
+		size_t count = 0;
+		for (int x = -halfRender; x < halfRender; x++)
+		{
+			for (int y = -halfRender; y < halfRender; y++)
+			{
+				this->_chuncks.emplace_back(new Chuncks::VoxelChunck(count, {(float)x * Utils::Defines::CHUNCK_SIZE, 0.0, (float)y * Utils::Defines::CHUNCK_SIZE}));
+				count++;
+			}
+		}
 	}
 
 	WorldManager &WorldManager::GetInstance()
@@ -46,7 +62,7 @@ namespace Vox::Game::World
 		this->_chunckBuffer.UpdateAtOffset(frame, index * Utils::Vulkan::GetAlignedChunckSize(), (void *)&uniform,
 										   sizeof(Chuncks::VoxelChunck::ChunckUniform));
 	}
-
+	
 	void WorldManager::Render()
 	{
 		for (auto &chunck : this->_chuncks)

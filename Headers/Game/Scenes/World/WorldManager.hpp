@@ -30,6 +30,8 @@ namespace Vox::Game::World
             WorldManager(const Scenes::Menu::Saves::WorldData &wd);
             ~WorldManager();
 
+            void InitWorld();
+
         static WorldManager &GetInstance();
         static Scenes::World::Player::Camera& GetCamera();
 

@@ -5,6 +5,10 @@
 
 #include "Utils/AUpdatable.hpp"
 
+#include <array>
+
+#include "Front/Rendering/SyncObjects.hpp"
+
 namespace Vox::Game::Models
 {
     using namespace Game::Utils::Defines;
@@ -26,7 +30,7 @@ namespace Vox::Game::Models
 
 
         protected:
-            bool _isDirty;
+            std::array<bool, MAX_FRAMES_IN_FLIGHT> _isDirty;
 
             Vector3 _position;
             Vector3 _rotation;
