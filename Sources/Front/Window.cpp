@@ -8,23 +8,19 @@
 
 namespace Vox::Front
 {
-	void Window::RequestEnd()
-	{
+	void Window::RequestEnd() const {
 		glfwSetWindowShouldClose(this->_window, GLFW_TRUE);
 	}
 
-	Window::Window(uint16_t width, uint16_t height)
-	{
-		if (glfwInit() == false)
-		{
+	Window::Window(const uint16_t width, const uint16_t height) : _surface(nullptr) {
+		if (glfwInit() == false) {
 			glfwTerminate();
 			exit(1);
 		}
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
 		this->_window = glfwCreateWindow(width, height, "FT_Vox", nullptr, nullptr);
-		if (this->_window == nullptr)
-		{
+		if (this->_window == nullptr) {
 			glfwTerminate();
 			exit(EXIT_FAILURE);
 		}

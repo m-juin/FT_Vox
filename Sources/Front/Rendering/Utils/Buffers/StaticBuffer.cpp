@@ -18,6 +18,7 @@ namespace Vox::Front::Rendering::Utils::Buffers
 
 	StaticBuffer::~StaticBuffer()
 	{
+		vkQueueWaitIdle(SwapChain::GetInstance().GetGraphicQueue());
 		VkDevice &device = Device::GetInstance().GetLogicalDevice();
 		for (size_t i = 0; i < _buffers.size(); i++)
 		{

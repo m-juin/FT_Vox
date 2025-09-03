@@ -15,12 +15,12 @@ namespace Vox::Front
 		friend class Vox::Utils::Singleton<Window>;
 		private:
 			GLFWwindow *_window;
-			VkSurfaceKHR _surface;
+			VkSurfaceKHR _surface{};
 			/* private */
 			Window(uint16_t width = 1920, uint16_t height = 1080);
 		public:
 
-			void RequestEnd();
+			void RequestEnd() const;
 			GLFWwindow *GetWindow()
 			{
 				return this->_window;

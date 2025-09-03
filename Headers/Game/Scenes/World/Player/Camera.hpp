@@ -34,6 +34,8 @@ namespace Vox::Game::Scenes::World::Player
 			void HandleMouseMovement(const double &xOffSet, const double &yOffSet);
 			void Move(const Vector3 &axis);
 
+			Vector3 GetPosition() const;
+
 		private:
 			void Rotate(const double &xOff, const double &yOff);
 

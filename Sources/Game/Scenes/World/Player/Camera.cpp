@@ -94,4 +94,8 @@ namespace Vox::Game::Scenes::World::Player
 		this->UpdateVectors();
 	}
 
+	Vector3 Camera::GetPosition() const
+	{
+		return this->_position;
+	}
 } // namespace Vox::Game::Scenes::World::Player

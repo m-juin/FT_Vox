@@ -53,21 +53,22 @@ namespace Vox::Game::World::Chuncks
 
             using LocalVector = MGL::Vectors::Vector3<uint8_t>;
 			VoxelChunck() = delete;
-			VoxelChunck(size_t bufferIndex, Vector3 defaultPos = {0.0, 0.0, 0.0});
+			VoxelChunck(size_t bufferIndex, const Vector3& defaultPos = {0.0, 0.0, 0.0});
 			~VoxelChunck();
 
 			void Render();
+    	uint16_t  GetBuffer() const;
 
 
 		private:
 			Generation::E_GenerationState _currentState;
-            size_t indexCount;
+            uint16_t indexCount;
 
             void AddFace(const Faces &face, const LocalVector &facePos, std::vector<Vertex> &vertex, std::vector<uint16_t> &index);
             void AssignModel() override;
             void BuildVoxelObject();
-            size_t GetLocalIndex(const LocalVector &vec);
-            LocalVector GetLocalVector(const size_t &index);
+            static size_t GetLocalIndex(const LocalVector &vec);
+            static LocalVector GetLocalVector(const size_t &index);
 
 			size_t _bufferIndex;
 			sbuffer *B_Vertex;

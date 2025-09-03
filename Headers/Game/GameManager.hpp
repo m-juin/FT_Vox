@@ -28,8 +28,8 @@ namespace Vox::Game
             InputManager &GetInputManager() {return this->_iManager;};
 
             const std::string GetTexturePackPath() {return Game::Utils::Textures::TPacks_Path + this->_TPack + "/";}
-            void InitThreads();
-            void CleanThreads();
+            void InitThreads() const;
+            void CleanThreads() const;
 
         private:
 

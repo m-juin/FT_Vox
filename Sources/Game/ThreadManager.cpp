@@ -14,7 +14,7 @@ namespace Vox::Game
 	void ThreadManager::EnQueue(std::function<void()> newTask)
 	{
 		{
-			std::unique_lock<std::mutex> lock(this->_queueMutex);
+			std::unique_lock lock(this->_queueMutex);
 			this->_tasks.emplace(std::move(newTask));
 		}
 		_cv.notify_one();
@@ -54,7 +54,7 @@ namespace Vox::Game
 	void ThreadManager::CleanPool()
 	{
 		{
-			std::unique_lock<std::mutex> lock(this->_queueMutex);
+			std::unique_lock lock(this->_queueMutex);
 			_stop = true;
 		}
 		_cv.notify_all();

@@ -73,6 +73,18 @@ namespace MGL::Vectors
 		os << "Vector3(" << dt[0] << ", " << dt[1] << ", " << dt[2] << ")";
 		return os;
 	}
+
+
+	template <typename T>
+	struct Vector3Hash {
+		std::size_t operator()(const Vector3<T>& v) const noexcept {
+			std::size_t seed = 0;
+			seed ^= std::hash<T>{}(v[0]) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+			seed ^= std::hash<T>{}(v[1]) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+			seed ^= std::hash<T>{}(v[2]) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+			return seed;
+		}
+	};
 } // namespace MGL::Vectors
 
 #endif // __VECTOR3_HPP__
