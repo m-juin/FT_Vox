@@ -20,7 +20,7 @@ namespace Vox::Game::World::Chuncks
 
             VoxelChunck() = delete;
             void AssignModel() override;
-            VoxelChunck(size_t bufferIndex);
+            VoxelChunck(size_t bufferIndex, Vector3 defaultPos = {0.0, 0.0, 0.0});
             void BuildVoxelObject();
             ~VoxelChunck();
     

@@ -5,9 +5,11 @@
 namespace Vox::Game::Models
 {
 	DynamicObject::DynamicObject(Vector3 defaultPos, Vector3 defaultRot, uint32_t updateDelay) : AUpdatable(updateDelay)
-	{
+	{ 
 		this->_position = defaultPos;
 		this->_rotation = defaultRot;
+
+		std::cout << "[DEBUG] " << "ChunckPos = " << this->_position << std::endl;
 		this->_isDirty = true;
 
 		this->onUpdate.AddCallBack([this]() { this->AssignModel(); });
@@ -39,7 +41,7 @@ namespace Vox::Game::Models
         
         { // position
             pos.SetIdentity();
-            MGL::Matrix::Operations::Translate(pos, this->_position);
+            pos = MGL::Matrix::Operations::Translate(pos, this->_position);
         }
 
 		return Matrix(pos * rot);
@@ -49,6 +51,7 @@ namespace Vox::Game::Models
 	{
 		if (newPos == this->_position)
 			return;
+		this->_position = newPos;
 		this->_isDirty = true;
 	}
 

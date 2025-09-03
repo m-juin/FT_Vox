@@ -17,6 +17,13 @@ namespace MGL::Matrix
 				for (size_t i = 0; i < 16; i++)
 					m[i] = m_[i];
 			};
+			Matrix4(const Matrix4 &m1)
+			{
+				if (&m1 == this)
+					return ;
+				for (size_t i = 0; i < 16; i++)
+					m[i] = m1.m[i];
+			}
 			~Matrix4() {};
 
 			inline float &operator()(size_t row, size_t col)

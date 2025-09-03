@@ -82,7 +82,7 @@ namespace Vox::Game::Scenes::World::Player
 
 	void Camera::Move(const Vector3 &axis)
 	{
-		std::cout << "[DEBUG] " << "Camera shall move on axis = " << axis << std::endl;
+		// std::cout << "[DEBUG] " << "Camera shall move on axis = " << axis << std::endl;	
 		if (axis[0] != 0)
 			this->_position += this->_rightDir * _cameraSpeed * axis[0];
 		else if (axis[1] != 0)

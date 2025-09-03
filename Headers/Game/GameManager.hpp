@@ -11,6 +11,7 @@
 
 namespace Vox::Game
 {
+    class ThreadManager;
     class GameManager : public Vox::Utils::Singleton<GameManager>, public Vox::Utils::AUpdatable
     {
         friend class Vox::Utils::Singleton<GameManager>;
@@ -27,10 +28,16 @@ namespace Vox::Game
             InputManager &GetInputManager() {return this->_iManager;};
 
             const std::string GetTexturePackPath() {return Game::Utils::Textures::TPacks_Path + this->_TPack + "/";}
+            void InitThreads();
+            void CleanThreads();
+
         private:
+
+
             std::string _TPack = "1";
             Front::Scenes::ScenesManager _scManager;
             InputManager _iManager;
+            std::unique_ptr<ThreadManager> _tManager;
             /* private */
     
     };

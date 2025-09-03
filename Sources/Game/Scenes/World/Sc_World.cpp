@@ -20,6 +20,7 @@ namespace Vox::Game::Scenes::World
 		std::cout << "Déchargement du monde..." << std::endl;
 		Front::Interfaces::InterfacesManager::GetInstance().ResetInterfacesList();
 		delete this->_textureManager;
+		GameManager::GetInstance().CleanThreads();
     }
 
 	void Sc_World::Render()
@@ -33,6 +34,7 @@ namespace Vox::Game::Scenes::World
 		auto &iManager = Front::Interfaces::InterfacesManager::GetInstance();
         (void)iManager;
 		GameManager::GetInstance().GetInputManager().SetInputTarget(E_InputTarget::Camera);
+		GameManager::GetInstance().InitThreads();
 		this->_textureManager = new Scenes::World::TManager_World();
 		this->_wM = std::make_unique<Game::World::WorldManager>(Menu::Saves::WorldData("", "", ""));
     }

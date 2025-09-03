@@ -38,7 +38,7 @@ namespace Vox::Game::World
         void Render();
 
         private:
-            Chuncks::VoxelChunck *_firstChunck;
+            std::vector<Chuncks::VoxelChunck *> _chuncks;
             Scenes::World::Player::Camera _camera;
             Utils::Defines::dbuffer _chunckBuffer;
 
@@ -47,6 +47,4 @@ namespace Vox::Game::World
     };
     
 } // namespace Vox::Game::World
-
-
 #endif // __WORLDMANAGER_HPP__

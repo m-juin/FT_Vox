@@ -15,7 +15,7 @@
 
 namespace Vox::Game::World::Chuncks
 {
-	VoxelChunck::VoxelChunck(size_t bufferIndex) : DynamicObject(), _bufferIndex(bufferIndex)
+	VoxelChunck::VoxelChunck(size_t bufferIndex, Vector3 defaultPos) : DynamicObject(defaultPos), _bufferIndex(bufferIndex)
 	{
 		this->B_Index = nullptr;
 		this->B_Vertex = nullptr;
