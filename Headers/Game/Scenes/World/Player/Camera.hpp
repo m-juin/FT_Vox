@@ -32,6 +32,7 @@ namespace Vox::Game::Scenes::World::Player
 			~Camera() {};
 
 			void HandleMouseMovement(const double &xOffSet, const double &yOffSet);
+			void Move(const Vector3 &axis);
 
 		private:
 			void Rotate(const double &xOff, const double &yOff);
@@ -41,6 +42,8 @@ namespace Vox::Game::Scenes::World::Player
 			bool _isDirty;
 			Vector3 _position;
 			Vector3 _rotation;
+
+			float _cameraSpeed = 0.5f;
 
 			float _yaw = -90.0;
 			float _pitch = 0.0;

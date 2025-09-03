@@ -94,7 +94,7 @@ int main()
 			throw std::runtime_error("Failed to acquire swap chain image!");
 
 		vkResetFences(device.GetLogicalDevice(), 1, &fence);
-
+		gm.Update();
 		pool.ResetBuffer(currentFrame);
 		pool.BeginRecord(imageIndex, currentFrame);
 		gm.Render();

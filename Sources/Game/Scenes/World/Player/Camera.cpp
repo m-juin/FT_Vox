@@ -30,7 +30,7 @@ namespace Vox::Game::Scenes::World::Player
 
 	void Camera::RebuildInfo()
 	{
-		float aspect = 1920.0f / 1080.0f; // ✅ ratio en float
+		float aspect = 1920.0f / 1080.0f;
 		this->_info.projection =
 			MGL::Matrix::Operations::Perspective(MGL::Utils::Radians(45.0f), aspect, 0.001f, 1000.0f);
 
@@ -41,7 +41,7 @@ namespace Vox::Game::Scenes::World::Player
 
 	void Camera::Rotate(const double &xOff, const double &yOff)
 	{
-		this->_yaw += xOff * this->_sensitivity; // signe inversé pour X
+		this->_yaw += xOff * this->_sensitivity;
 		this->_pitch += yOff * this->_sensitivity;
 
 		if (this->_pitch > 89.0f)
@@ -62,7 +62,7 @@ namespace Vox::Game::Scenes::World::Player
 		using namespace MGL::Vectors::Operations;
 
 		Vector3 front;
-		// ✅ Mapping clair : [0] = x, [1] = y, [2] = z
+
 		front[0] = cos(MGL::Utils::Radians(this->_yaw)) * cos(MGL::Utils::Radians(this->_pitch)); // X
 		front[1] = sin(MGL::Utils::Radians(this->_pitch));										  // Y
 		front[2] = sin(MGL::Utils::Radians(this->_yaw)) * cos(MGL::Utils::Radians(this->_pitch)); // Z
@@ -76,8 +76,22 @@ namespace Vox::Game::Scenes::World::Player
 
 	void Camera::HandleMouseMovement(const double &xOffSet, const double &yOffSet)
 	{
-		std::cout << "[DEBUG] " << "Mouse xOff = " << xOffSet << " | yOff = " << yOffSet << std::endl;
+		// std::cout << "[DEBUG] " << "Mouse xOff = " << xOffSet << " | yOff = " << yOffSet << std::endl;
 		this->Rotate(xOffSet, yOffSet);
+	}
+
+	void Camera::Move(const Vector3 &axis)
+	{
+		std::cout << "[DEBUG] " << "Camera shall move on axis = " << axis << std::endl;
+		if (axis[0] != 0)
+			this->_position += this->_rightDir * _cameraSpeed * axis[0];
+		else if (axis[1] != 0)
+			this->_position += this->_worldUp * _cameraSpeed * axis[1];
+		else if (axis[2] != 0)
+			this->_position += this->_front * _cameraSpeed * axis[2];
+		else
+			return ;
+		this->UpdateVectors();
 	}
 
 } // namespace Vox::Game::Scenes::World::Player

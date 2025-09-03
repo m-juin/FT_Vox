@@ -13,14 +13,19 @@
 
 namespace Vox::Game
 {
-	InputManager::InputManager()
+	InputManager::InputManager() : Vox::Utils::AUpdatable(1)
 	{
 		LoadInput();
+		SetupCallBack();
+		onUpdate.AddCallBack([this]()
+	{
+		this->HandlePerFrameInput();
+	});
 	}
 
 	InputManager::~InputManager() {}
 
-	void InputManager::LoadInput()
+	void InputManager::SetupCallBack()
 	{
 		auto win = Front::Window::GetInstance().GetWindow();
 		glfwSetWindowUserPointer(win, this);
@@ -41,7 +46,7 @@ namespace Vox::Game
 										 if (std::abs(xPos - centerX) < 0.001 && std::abs(yPos - centerY) < 0.001)
 											 return;
 										 double dx = centerX - xPos;
-										 double dy = yPos - centerY; 
+										 double dy = yPos - centerY;
 										 auto &camera = Game::World::WorldManager::GetCamera();
 										 camera.HandleMouseMovement(dx, dy);
 										 glfwSetCursorPos(window, centerX, centerY);
@@ -91,6 +96,18 @@ namespace Vox::Game
 						   });
 	}
 
+	void InputManager::LoadInput()
+	{
+		this->_inputMap[E_InputAction::MOVE_FRONT] = GLFW_KEY_W;
+		this->_inputMap[E_InputAction::MOVE_BACK] = GLFW_KEY_S;
+
+		this->_inputMap[E_InputAction::MOVE_UP] = GLFW_KEY_SPACE;
+		this->_inputMap[E_InputAction::MOVE_DOWN] = GLFW_KEY_LEFT_SHIFT;
+
+		this->_inputMap[E_InputAction::MOVE_LEFT] = GLFW_KEY_A;
+		this->_inputMap[E_InputAction::MOVE_RIGHT] = GLFW_KEY_D;
+	}
+
 	void InputManager::SetInputTarget(E_InputTarget newTarget)
 	{
 		if (newTarget == this->_target)
@@ -106,4 +123,28 @@ namespace Vox::Game
 			glfwSetCursorPos(win, extent.width / 2, extent.height / 2);
 		}
 	}
+	
+	void InputManager::HandlePerFrameInput()
+	{
+		if (this->_target == E_InputTarget::UI)
+			return ;
+
+		auto win = Front::Window::GetInstance().GetWindow();
+		auto &camera = Game::World::WorldManager::GetCamera();
+		if(glfwGetKey(win, this->_inputMap[E_InputAction::MOVE_UP]) == GLFW_PRESS)
+			camera.Move({0, 1, 0});
+		if(glfwGetKey(win, this->_inputMap[E_InputAction::MOVE_DOWN]) == GLFW_PRESS)
+			camera.Move({0, -1, 0});
+		if(glfwGetKey(win, this->_inputMap[E_InputAction::MOVE_RIGHT]) == GLFW_PRESS)
+			camera.Move({1, 0, 0});
+		if(glfwGetKey(win, this->_inputMap[E_InputAction::MOVE_LEFT]) == GLFW_PRESS)
+			camera.Move({-1, 0, 0});
+		if(glfwGetKey(win, this->_inputMap[E_InputAction::MOVE_FRONT]) == GLFW_PRESS)
+			camera.Move({0, 0, -1});
+		if(glfwGetKey(win, this->_inputMap[E_InputAction::MOVE_BACK]) == GLFW_PRESS)
+			camera.Move({0, 0, 1});
+
+	}
+
+
 } // namespace Vox::Game

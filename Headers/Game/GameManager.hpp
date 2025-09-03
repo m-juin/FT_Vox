@@ -2,6 +2,7 @@
 #define __GAMEMANAGER_HPP__
 
 #include "Utils/Singleton.hpp"
+#include "Utils/AUpdatable.hpp"
 
 #include "Front/Scenes/ScenesManager.hpp"
 #include "Game/InputManager.hpp"
@@ -10,7 +11,7 @@
 
 namespace Vox::Game
 {
-    class GameManager : public Vox::Utils::Singleton<GameManager>
+    class GameManager : public Vox::Utils::Singleton<GameManager>, public Vox::Utils::AUpdatable
     {
         friend class Vox::Utils::Singleton<GameManager>;
 
