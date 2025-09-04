@@ -34,7 +34,6 @@ namespace Vox::Game::Generation
 					std::cerr << "[WARNING] " << "Buffer at index " << index << " already released.";
 					return;
 				}
-				std::cout << "[DEBUG] " << "Releasing Buffer " << index << std::endl;
                 _avalaibleBuffers._Unchecked_set(index, true);
 			}
 
