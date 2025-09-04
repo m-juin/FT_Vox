@@ -18,13 +18,15 @@ namespace Vox::Game::Generation
 			inline uint32_t ReserveBuffer()
 			{
 				uint32_t index = _avalaibleBuffers._Find_first();
-				_avalaibleBuffers.set(index, false);
+				if (index != _avalaibleBuffers.size())
+					_avalaibleBuffers.set(index, false);
 				return index;
 			}
 
 			inline void ReleaseBuffer(const uint32_t &index)
 			{
-				if (index >= Vox::Game::Utils::Defines::CHUNCK_AMOUNT)
+				std::cout << "[DEBUG] " << "Releasing buffer " << index << std::endl;
+				if (index >= Vox::Game::Utils::Defines::CHUNCK_BUFFER_AMOUNT)
 				{
 					std::cerr << "[WARNING] " << "Buffer index " << index << " too large.";
 					return;
@@ -38,7 +40,7 @@ namespace Vox::Game::Generation
 			}
 
 		private:
-			std::bitset<Vox::Game::Utils::Defines::CHUNCK_AMOUNT> _avalaibleBuffers;
+			std::bitset<Vox::Game::Utils::Defines::CHUNCK_BUFFER_AMOUNT> _avalaibleBuffers;
 			/* private */
 	};
 } // namespace Vox::Game::Generation

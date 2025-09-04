@@ -27,7 +27,8 @@ namespace Vox::Game::Utils::Defines
     constexpr size_t WORLD_HEIGHT = 256;
 
     constexpr size_t CHUNCK_AMOUNT = (RENDER_DISTANCE * RENDER_DISTANCE) * (WORLD_HEIGHT / CHUNCK_SIZE);
+    constexpr size_t CHUNCK_BUFFER_AMOUNT = ((RENDER_DISTANCE) * (RENDER_DISTANCE));
 } // namespace Vox::Game::Utils::Defines
 
 
-#endif // __DEFINES_HPP__
+#endif // __GAME_DEFINES_HPP__

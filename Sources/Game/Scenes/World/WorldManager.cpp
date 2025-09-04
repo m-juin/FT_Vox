@@ -39,19 +39,17 @@ namespace Vox::Game::World
 
 	void WorldManager::InitWorld()
 	{
-		this->_chuncks.reserve(Utils::Defines::CHUNCK_AMOUNT);
+		this->_chuncks.reserve(Utils::Defines::CHUNCK_BUFFER_AMOUNT);
 		_playerPreviousChunck = {0, 0};
 		for (int x = -Utils::Defines::HALF_RENDER_DISTANCE; x < Utils::Defines::HALF_RENDER_DISTANCE; x++)
 		{
 			for (int y = -Utils::Defines::HALF_RENDER_DISTANCE; y < Utils::Defines::HALF_RENDER_DISTANCE; y++)
 			{
 				uint32_t buffer = this->_bManager->ReserveBuffer();
-				if (buffer >= Utils::Defines::CHUNCK_AMOUNT)
+				if (buffer >= Utils::Defines::CHUNCK_BUFFER_AMOUNT)
 					return;
-				auto ch = new Chuncks::VoxelChunck(buffer, {x, 0, y});
-				// this->_chuncks[{x, y}] = ch;
+				auto ch = new Chuncks::ChunckCluster({x, y}, buffer);
 				this->_gManager->RequestChuncksGeneration(ch);
-				// tManager.EnQueue([ch]() { ch->BuildVoxelObject(); });
 			}
 		}
 	}
@@ -71,8 +69,7 @@ namespace Vox::Game::World
 
 	void WorldManager::UpdateBuffer(const size_t &index, const Chuncks::VoxelChunck::ChunckUniform &uniform)
 	{
-		auto frame = Front::Rendering::SyncObjects().GetInstance().GetNextFrame();
-		// std::cout << "[DEBUG] " << "uniform of index " << index << " = " << uniform.model << std::endl;
+		auto frame = Vox::Front::Rendering::SyncObjects::GetInstance().GetNextFrame();
 		this->_chunckBuffer.UpdateAtOffset(frame, index * Utils::Vulkan::GetAlignedChunckSize(), (void *)&uniform,
 										   sizeof(Chuncks::VoxelChunck::ChunckUniform));
 	}
@@ -126,25 +123,22 @@ namespace Vox::Game::World
 				if (this->_chuncks.find(effectiveCoord) == this->_chuncks.end())
 				{
 					uint16_t buffer = this->_bManager->ReserveBuffer();
-					if (buffer > Utils::Defines::CHUNCK_AMOUNT)
+					if (buffer >= Utils::Defines::CHUNCK_BUFFER_AMOUNT)
 						return;
 
-					auto ch = new Chuncks::VoxelChunck(buffer, {effectiveCoord[0], 0, effectiveCoord[1]});
+					auto ch = new Chuncks::ChunckCluster(effectiveCoord, buffer);
 					this->_gManager->RequestChuncksGeneration(ch);
-					// this->_chuncks[effectiveCoord] = ch;
-					// tManager.EnQueue([ch]() { ch->BuildVoxelObject(); });
 				}
 			}
 		}
 	}
 
-	void WorldManager::AddEndedChunck(std::list<Chuncks::VoxelChunck *> chuncks)
+	void WorldManager::AddEndedChunck(std::list<Chuncks::ChunckCluster *> chuncks)
 	{
 		for (auto ch : chuncks)
 		{
-			auto chPos = ch->GetChunckPosition();
-			// std::cout << "Adding Chunck " << chPos << std::endl;
-			this->_chuncks[{chPos[0], chPos[2]}] = ch;
+			auto chPos = ch->GetPosition();
+			this->_chuncks[chPos] = ch;
 		}
 	}
 } // namespace Vox::Game::World

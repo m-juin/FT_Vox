@@ -21,7 +21,7 @@ namespace Vox::Game::World::Chuncks
 	using namespace Game::Utils::Defines;
 	
     
-    class VoxelChunck : public Models::DynamicObject, public Generation::Threads::ThreadObject
+    class VoxelChunck : public Models::DynamicObject
 	{
 		public:
 			struct ChunckUniform

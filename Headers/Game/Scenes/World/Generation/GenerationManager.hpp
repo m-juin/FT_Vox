@@ -7,7 +7,7 @@
 
 namespace Vox::Game::World::Chuncks
 {
-	class VoxelChunck;
+	class ChunckCluster;
 } // namespace Vox::Game::World::Chuncks
 
 namespace Vox::Game::Generation
@@ -18,12 +18,12 @@ namespace Vox::Game::Generation
 			GenerationManager();
 			~GenerationManager() {};
 
-            void RequestChuncksGeneration(World::Chuncks::VoxelChunck *);
-            void CancelChuncksGeneration(World::Chuncks::VoxelChunck *);
+            void RequestChuncksGeneration(World::Chuncks::ChunckCluster *);
+            void CancelChuncksGeneration(World::Chuncks::ChunckCluster *);
 
 		private:
             void UpdateGeneration();
-			std::list<World::Chuncks::VoxelChunck *> _waitingChuncks;
+			std::list<World::Chuncks::ChunckCluster *> _waitingChuncks;
 			/* private */
 	};
 } // namespace Vox::Game::Generation

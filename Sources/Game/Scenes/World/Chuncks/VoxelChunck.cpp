@@ -22,8 +22,6 @@ namespace Vox::Game::World::Chuncks
 		this->B_Vertex = nullptr;
 
 		indexCount = 0;
-		this->_currentState = Generation::E_GenerationState::WaitingThread;
-		// BuildVoxelObject();
 	}
 
 	void VoxelChunck::AssignModel()
@@ -35,7 +33,6 @@ namespace Vox::Game::World::Chuncks
 	void VoxelChunck::BuildVoxelObject(const std::unordered_map<std::string, const Spline::Spline> &spl)
 	{
 		(void)spl;
-		this->ChangeGenerationState(Generation::E_GenerationState::Mesh);
 
 		for (size_t x = 0; x < Utils::Defines::CHUNCK_SIZE; x++)
 		{
@@ -50,15 +47,9 @@ namespace Vox::Game::World::Chuncks
 				}
 			}
 		}
-		this->_currentState = Generation::E_GenerationState::WaitingBuffer;
 	}
 	void VoxelChunck::BuildBufferObject()
 	{
-		if (this->GetGenerationState() != Generation::E_GenerationState::WaitingBuffer)
-		{
-			std::cerr << "[ERROR] " << "Found on buffer object creation for Chunck " << this << std::endl;
-			return ;
-		}
 		if (this->B_Index != nullptr)
 		{
 			delete this->B_Vertex;
@@ -68,7 +59,6 @@ namespace Vox::Game::World::Chuncks
 		}
 		if (this->vertex.size() == 0)
 		{
-			this->_currentState = Generation::E_GenerationState::End;
 			return ;
 		}
 		this->B_Index = new sbuffer(2, index.size() * sizeof(uint16_t), VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
@@ -78,7 +68,6 @@ namespace Vox::Game::World::Chuncks
 		this->B_Vertex->Create(vertex.data());
 		this->index.clear();
 		this->vertex.clear();
-		this->ChangeGenerationState(Generation::E_GenerationState::End);
 	}
 
 	size_t VoxelChunck::GetLocalIndex(const LocalVector &vec)
@@ -95,8 +84,8 @@ namespace Vox::Game::World::Chuncks
 
 	void VoxelChunck::Render()
 	{
-		if (this->GetGenerationState() != Generation::E_GenerationState::End)
-			return ;
+		if (this->indexCount == 0)
+				return ;
 		using namespace Front::Rendering;
 		auto frame = SyncObjects::GetInstance().GetCurrentFrame();
 		uint32_t dynamicOffset = this->_bufferIndex * Utils::Vulkan::GetAlignedChunckSize();

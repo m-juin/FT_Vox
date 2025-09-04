@@ -8,7 +8,7 @@
 #include <list>
 #include <vulkan/vulkan.h>
 
-#include "Game/Scenes/World/Chuncks/VoxelChunck.hpp"
+#include "Game/Scenes/World/Chuncks/ChunckCluster.hpp"
 
 #include "Game/Scenes/Menu/SavesData.hpp"
 
@@ -48,7 +48,7 @@ namespace Vox::Game::World
 			void UpdateBuffer(const size_t &index, const Chuncks::VoxelChunck::ChunckUniform &uniform);
 
 			void Render();
-			void AddEndedChunck(std::list<Chuncks::VoxelChunck *> chuncks);
+			void AddEndedChunck(std::list<Chuncks::ChunckCluster *> chuncks);
 
 		private:
 			void UpdateGeneration();
@@ -58,7 +58,7 @@ namespace Vox::Game::World
 
 			Utils::Defines::ChunckCoord _playerPreviousChunck;
 
-			std::unordered_map<const Utils::Defines::ChunckCoord, Chuncks::VoxelChunck *,
+			std::unordered_map<const Utils::Defines::ChunckCoord, Chuncks::ChunckCluster *,
 							   MGL::Vectors::Vector2Hash<int>>
 				_chuncks;
 			Scenes::World::Player::Camera _camera;
