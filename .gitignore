@@ -11,3 +11,4 @@ WorldsData/**
 .idea/*
 CMakeLists.txt
 cmake*
+/.clang-format
