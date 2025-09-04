@@ -68,6 +68,7 @@ namespace Vox::Game::World::Chuncks
 		this->B_Vertex->Create(vertex.data());
 		this->index.clear();
 		this->vertex.clear();
+		AssignModel();
 	}
 
 	size_t VoxelChunck::GetLocalIndex(const LocalVector &vec)

@@ -27,8 +27,9 @@ namespace Vox::Game::Generation
 		{
 			try
 			{
+				auto path = std::filesystem::path(splineFolder / pair.second);
 				this->_splines[pair.first] =
-					Spline::LoadSpline(std::filesystem::path(splineFolder / pair.second).c_str());
+					Spline::LoadSpline(path.string().c_str());
 			}
 			catch (std::exception &e)
 			{

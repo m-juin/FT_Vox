@@ -26,7 +26,7 @@ UNAME := $(shell uname)
 ifeq ($(UNAME), Linux)
     Libs += -lglfw -lvulkan -LExt/freeType/lib -lfreetype
 else
-    Libs += -lglfw3 -lvulkan-1
+    Libs += -lglfw3 -lvulkan-1 -LExt/freeType/lib -lfreetype
 endif
 
 include stb.mk

@@ -14,7 +14,7 @@ namespace Vox::Game::World::Chuncks
 	void ChunckCluster::Render()
 	{
 		if (this->GetGenerationState() != Generation::E_GenerationState::End)
-			return ;
+			return;
 		for (auto ch : this->_clusterContent)
 			if (ch)
 				ch->Render();
@@ -23,10 +23,16 @@ namespace Vox::Game::World::Chuncks
 	void ChunckCluster::BuildClusterContent(const std::unordered_map<std::string, const Spline::Spline> &spl)
 	{
 		this->ChangeGenerationState(Generation::E_GenerationState::Mesh);
-		for (int y = WORLD_HEIGHT / CHUNCK_SIZE - 1; y >= 0; y--)
+		int chunksPerCluster = WORLD_HEIGHT / CHUNCK_SIZE;
+
+		for (int y = chunksPerCluster - 1; y >= 0; y--)
 		{
-			this->_clusterContent[y] = new VoxelChunck((_bufferIndex * WORLD_HEIGHT / CHUNCK_SIZE) + WORLD_HEIGHT / CHUNCK_SIZE - 1 - y,
-			                                           Vector3Int(this->_clusterPos[0], y, this->_clusterPos[1]));
+			int localIndex = chunksPerCluster - 1 - y;
+			int globalIndex = _bufferIndex * chunksPerCluster + localIndex;
+
+			this->_clusterContent[y] =
+				new VoxelChunck(globalIndex, Vector3Int(this->_clusterPos[0], y, this->_clusterPos[1]));
+
 			this->_clusterContent[y]->BuildVoxelObject(spl);
 		}
 		this->ChangeGenerationState(Generation::E_GenerationState::WaitingBuffer);
@@ -39,7 +45,7 @@ namespace Vox::Game::World::Chuncks
 
 	void ChunckCluster::BuildBuffers()
 	{
-		for (auto ch: this->_clusterContent)
+		for (auto ch : this->_clusterContent)
 		{
 			if (ch)
 				ch->BuildBufferObject();
@@ -51,21 +57,22 @@ namespace Vox::Game::World::Chuncks
 	{
 		_clusterPos = coord;
 		_bufferIndex = buffer;
-		this->onUpdate.AddCallBack([this]()
-		{
-			for (auto ch: this->_clusterContent)
-				if (ch)
-					ch->Update();
-		});
+		this->onUpdate.AddCallBack(
+			[this]()
+			{
+				for (auto ch : this->_clusterContent)
+					if (ch)
+						ch->Update();
+			});
 		this->_currentState = Generation::E_GenerationState::WaitingThread;
 	}
 
 	ChunckCluster::~ChunckCluster()
 	{
-		for (auto ch: this->_clusterContent)
+		for (auto ch : this->_clusterContent)
 		{
 			if (ch)
 				delete ch;
 		}
 	}
-} // Chuncks
+} // namespace Vox::Game::World::Chuncks

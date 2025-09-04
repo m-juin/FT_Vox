@@ -24,7 +24,7 @@ namespace Vox::Game::Utils::Defines
     constexpr size_t SQUARE_RENDER_DISTANCE = RENDER_DISTANCE * RENDER_DISTANCE;
     constexpr int HALF_RENDER_DISTANCE = (RENDER_DISTANCE / 2);
     constexpr size_t CHUNCK_SIZE = 16;
-    constexpr size_t WORLD_HEIGHT = 256;
+    constexpr size_t WORLD_HEIGHT = 16;
 
     constexpr size_t CHUNCK_AMOUNT = (RENDER_DISTANCE * RENDER_DISTANCE) * (WORLD_HEIGHT / CHUNCK_SIZE);
     constexpr size_t CHUNCK_BUFFER_AMOUNT = ((RENDER_DISTANCE) * (RENDER_DISTANCE));
