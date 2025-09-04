@@ -8,7 +8,9 @@ namespace Vox::Game::Generation
         WaitingThread = 0,
         Mesh = 1,
         WaitingBuffer = 2,
-        End = 3
+        End = 3,
+
+        Cancelled = 10
     };
 } // namespace Vox::Game::Generation
 

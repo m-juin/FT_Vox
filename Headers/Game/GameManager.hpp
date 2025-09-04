@@ -30,6 +30,7 @@ namespace Vox::Game
             const std::string GetTexturePackPath() {return Game::Utils::Textures::TPacks_Path + this->_TPack + "/";}
             void InitThreads() const;
             void CleanThreads() const;
+            ThreadManager &GetThreadManager() {return *_tManager;};
 
         private:
 

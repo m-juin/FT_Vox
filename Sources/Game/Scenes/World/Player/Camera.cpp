@@ -3,7 +3,7 @@
 
 namespace Vox::Game::Scenes::World::Player
 {
-	Camera::Camera(Vector3 defaultPos, Vector3 defaultRot) : Vox::Utils::AUpdatable(1)
+	Camera::Camera(Vector3Float defaultPos, Vector3Float defaultRot) : Vox::Utils::AUpdatable(1)
 	{
 		this->_position = defaultPos;
 		this->_rotation = defaultRot;
@@ -61,7 +61,7 @@ namespace Vox::Game::Scenes::World::Player
 	{
 		using namespace MGL::Vectors::Operations;
 
-		Vector3 front;
+		Vector3Float front;
 
 		front[0] = cos(MGL::Utils::Radians(this->_yaw)) * cos(MGL::Utils::Radians(this->_pitch)); // X
 		front[1] = sin(MGL::Utils::Radians(this->_pitch));										  // Y
@@ -80,7 +80,7 @@ namespace Vox::Game::Scenes::World::Player
 		this->Rotate(xOffSet, yOffSet);
 	}
 
-	void Camera::Move(const Vector3 &axis)
+	void Camera::Move(const Vector3Float &axis)
 	{
 		// std::cout << "[DEBUG] " << "Camera shall move on axis = " << axis << std::endl;
 		if (axis[0] != 0)
@@ -94,7 +94,7 @@ namespace Vox::Game::Scenes::World::Player
 		this->UpdateVectors();
 	}
 
-	Vector3 Camera::GetPosition() const
+	Vector3Float Camera::GetPosition() const
 	{
 		return this->_position;
 	}

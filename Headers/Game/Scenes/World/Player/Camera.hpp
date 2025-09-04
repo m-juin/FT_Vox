@@ -28,13 +28,13 @@ namespace Vox::Game::Scenes::World::Player
 	{
 		public:
 			Camera() = delete;
-			Camera(Vector3 defaultPos = {0.0, 0.0, 0.0}, Vector3 defaultRot = {0.0f, 0.0f, 0.0f});
+			Camera(Vector3Float defaultPos = {0.0, 0.0, 0.0}, Vector3Float defaultRot = {0.0f, 0.0f, 0.0f});
 			~Camera() {};
 
 			void HandleMouseMovement(const double &xOffSet, const double &yOffSet);
-			void Move(const Vector3 &axis);
+			void Move(const Vector3Float &axis);
 
-			Vector3 GetPosition() const;
+			Vector3Float GetPosition() const;
 
 		private:
 			void Rotate(const double &xOff, const double &yOff);
@@ -42,8 +42,8 @@ namespace Vox::Game::Scenes::World::Player
 			CameraInfo _info;
 			void RebuildInfo();
 			bool _isDirty;
-			Vector3 _position;
-			Vector3 _rotation;
+			Vector3Float _position;
+			Vector3Float _rotation;
 
 			float _cameraSpeed = 0.5f;
 
@@ -51,11 +51,11 @@ namespace Vox::Game::Scenes::World::Player
 			float _pitch = 0.0;
 			float _sensitivity = 0.05f;
 
-			Vector3 _front;
-			Vector3 _up = Vector3(0.0f, 1.0f, 0.0f);
-			Vector3 _rightDir;
-			Vector3 _worldUp = Vector3(0.0f, 1.0, 0.0f);
-			Vector3 _target = Vector3(0.0f, 0.0f, -1.0f);
+			Vector3Float _front;
+			Vector3Float _up = Vector3Float(0.0f, 1.0f, 0.0f);
+			Vector3Float _rightDir;
+			Vector3Float _worldUp = Vector3Float(0.0f, 1.0, 0.0f);
+			Vector3Float _target = Vector3Float(0.0f, 0.0f, -1.0f);
 
 			void UpdateVectors();
 			/* private */

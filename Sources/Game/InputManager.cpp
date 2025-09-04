@@ -103,7 +103,7 @@ namespace Vox::Game
 		this->_inputMap[E_InputAction::MOVE_BACK] = GLFW_KEY_S;
 
 		this->_inputMap[E_InputAction::MOVE_UP] = GLFW_KEY_SPACE;
-		this->_inputMap[E_InputAction::MOVE_DOWN] = GLFW_KEY_LEFT_SHIFT;
+		this->_inputMap[E_InputAction::MOVE_DOWN] = GLFW_KEY_LEFT_ALT;
 
 		this->_inputMap[E_InputAction::MOVE_LEFT] = GLFW_KEY_A;
 		this->_inputMap[E_InputAction::MOVE_RIGHT] = GLFW_KEY_D;

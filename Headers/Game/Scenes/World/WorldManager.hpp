@@ -5,19 +5,22 @@
 #include "Game/Scenes/World/Utils/Vulkan.hpp"
 
 #include <unordered_map>
-#include <pstl/parallel_backend_utils.h>
+#include <list>
 #include <vulkan/vulkan.h>
 
 #include "Game/Scenes/World/Chuncks/VoxelChunck.hpp"
 
 #include "Game/Scenes/Menu/SavesData.hpp"
 
-#include "Game/GameManager.hpp"
-#include "Game/Scenes/World/Sc_World.hpp"
-#include "Game/Scenes/World/Player/Camera.hpp"
 #include "Front/Scenes/ScenesManager.hpp"
+#include "Game/GameManager.hpp"
+#include "Game/Scenes/World/Player/Camera.hpp"
+#include "Game/Scenes/World/Sc_World.hpp"
 
 #include "Utils/AUpdatable.hpp"
+
+#include "./Generation/BufferManager.hpp"
+#include "./Generation/GenerationManager.hpp"
 
 namespace Vox::Game::Scenes::World
 {
@@ -28,36 +31,39 @@ namespace Vox::Game::World
 {
 	class WorldManager : public virtual Vox::Utils::AUpdatable
 	{
-	public:
-		WorldManager() = delete;
+		public:
+			WorldManager() = delete;
 
-		WorldManager(const Scenes::Menu::Saves::WorldData &wd);
+			WorldManager(const Scenes::Menu::Saves::WorldData &wd);
 
-		~WorldManager();
+			~WorldManager();
 
-		void InitWorld();
+			void InitWorld();
 
+			static WorldManager &GetInstance();
 
-		static WorldManager &GetInstance();
+			static Scenes::World::Player::Camera &GetCamera();
 
-		static Scenes::World::Player::Camera &GetCamera();
+			void UpdateBuffer(const size_t &index, const Chuncks::VoxelChunck::ChunckUniform &uniform);
 
-		void UpdateBuffer(const size_t &index, const Chuncks::VoxelChunck::ChunckUniform &uniform);
+			void Render();
+			void AddEndedChunck(std::list<Chuncks::VoxelChunck *> chuncks);
 
-		void Render();
+		private:
+			void UpdateGeneration();
 
-	private:
-		std::bitset<Utils::Defines::CHUNCK_AMOUNT> _avalaibleBuffers;
+			std::unique_ptr<Generation::BufferManager> _bManager;
+			std::unique_ptr<Generation::GenerationManager> _gManager;
 
-		void UpdateGeneration();
+			Utils::Defines::ChunckCoord _playerPreviousChunck;
 
-		Utils::Defines::ChunckCoord _playerPreviousChunck;
+			std::unordered_map<const Utils::Defines::ChunckCoord, Chuncks::VoxelChunck *,
+							   MGL::Vectors::Vector2Hash<int>>
+				_chuncks;
+			Scenes::World::Player::Camera _camera;
+			Utils::Defines::dbuffer _chunckBuffer;
 
-		std::unordered_map<const Utils::Defines::ChunckCoord, Chuncks::VoxelChunck *, MGL::Vectors::Vector2Hash<int> > _chuncks;
-		Scenes::World::Player::Camera _camera;
-		Utils::Defines::dbuffer _chunckBuffer;
-
-		/* private */
+			/* private */
 	};
 } // namespace Vox::Game::World
 #endif // __WORLDMANAGER_HPP__

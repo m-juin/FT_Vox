@@ -8,14 +8,14 @@
 
 namespace Vox::Front::Rendering::Utils::Vertex
 {
-	using Vector3 = MGL::Vectors::Vector3<float>;
+	using Vector3Float = MGL::Vectors::Vector3<float>;
 	struct VoxelVertex
 	{
-			Vector3 vertPos;
-			Vector3 vertColor;
+			Vector3Float vertPos;
+			Vector3Float vertColor;
 
-			VoxelVertex(Vector3 vertPos_, Vector3 vertColor_) : vertPos(vertPos_), vertColor(vertColor_) {};
-			// VoxelVertex() : vertPos(Vector3(0.0f)), vertColor(Vector3(1.0f)) {};
+			VoxelVertex(Vector3Float vertPos_, Vector3Float vertColor_) : vertPos(vertPos_), vertColor(vertColor_) {};
+			// VoxelVertex() : vertPos(Vector3Float(0.0f)), vertColor(Vector3Float(1.0f)) {};
 
 			bool operator==(const VoxelVertex &v1)
 			{

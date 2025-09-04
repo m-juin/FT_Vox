@@ -11,7 +11,7 @@
 
 #include "Utils/Strings.hpp"
 
-#include "Game/Generation/Utils.hpp"
+#include "Game/Scenes/World/Generation/Utils.hpp"
 
 namespace Vox::Game::Scenes::Menu::Saves
 {
