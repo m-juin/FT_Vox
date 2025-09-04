@@ -37,6 +37,5 @@ namespace Vox::Game::Scenes::Menu
         //     },
         //     4
         // );
-        this->_fontImage = std::make_unique<Front::Rendering::Images::FontImage>(T_Path + "GUI/Fonts/Minecraft.ttf");
     }
 }

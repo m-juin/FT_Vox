@@ -13,6 +13,7 @@ namespace Vox::Game::Scenes::World::Interfaces
 	{
 		{
 			Text::Vox_Text_Constructor pm{};
+			pm.color = {0.5, 0.5, 0.5, 1.0};
 			pm.content = "Player pos: ";
 			pm.pos = {this->_pos[0] + 100, this->_pos[1] + 100};
 			pm.size = {100, 50};

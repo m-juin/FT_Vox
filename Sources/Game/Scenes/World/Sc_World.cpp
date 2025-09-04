@@ -36,7 +36,6 @@ namespace Vox::Game::Scenes::World
     {
 		auto &iManager = Front::Interfaces::InterfacesManager::GetInstance();
 		GameManager::GetInstance().GetInputManager().SetInputTarget(E_InputTarget::Camera);
-		this->_textureManager = new Scenes::World::TManager_World();
 
 		auto extent = Front::Rendering::SwapChain::GetInstance().GetExtent();
 		iManager.RegisterInterface("Main", new Interfaces::I_F3({0, 0}, {(float)extent.width, (float)extent.height}));

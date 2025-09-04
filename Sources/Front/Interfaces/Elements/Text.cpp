@@ -42,7 +42,7 @@ namespace Vox::Front::Interfaces::Elements
 		float y = this->_pos[1];
 
 		auto &font =
-			Game::GameManager::GetInstance().GetSceneManager().GetCurrentScene().GetTextureManager()->GetFont();
+			Game::GameManager::GetInstance().GetFont();
 
 		const Vector2 screenSize(Rendering::SwapChain::GetInstance().GetExtent().width,
 								 Rendering::SwapChain::GetInstance().GetExtent().height);
@@ -171,7 +171,7 @@ namespace Vox::Front::Interfaces::Elements
 	{
 		Vector2 size;
 		auto &font =
-			Game::GameManager::GetInstance().GetSceneManager().GetCurrentScene().GetTextureManager()->GetFont();
+			Game::GameManager::GetInstance().GetFont();
 
 		size[0] = 0;
 		size[1] = (font.GetAscent() - font.GetDescent()) * scale;
@@ -189,7 +189,7 @@ namespace Vox::Front::Interfaces::Elements
 	{
 		Vector2 size;
 		auto &font =
-			Game::GameManager::GetInstance().GetSceneManager().GetCurrentScene().GetTextureManager()->GetFont();
+			Game::GameManager::GetInstance().GetFont();
 
 		size[0] = 0;
 		size[1] = (font.GetAscent() - font.GetDescent()) * this->_scale;

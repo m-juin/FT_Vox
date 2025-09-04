@@ -38,8 +38,10 @@ namespace Vox::Game
             void CleanThreads() const;
             ThreadManager &GetThreadManager() {return *_tManager;};
 
-        private:
+        Front::Rendering::Images::FontImage &GetFont() {return *this->_fontImage;};
 
+        private:
+            std::unique_ptr<Front::Rendering::Images::FontImage>_fontImage;
             std::unique_ptr<Generation::SplinesManager> _sManager;
             std::string _TPack = "1";
             Front::Scenes::ScenesManager _scManager;

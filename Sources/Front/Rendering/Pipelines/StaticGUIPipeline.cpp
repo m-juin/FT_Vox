@@ -209,7 +209,7 @@ namespace Vox::Front::Rendering::Pipelines
 		auto texturesManager = Game::GameManager::GetInstance().GetSceneManager().GetCurrentScene().GetTextureManager();
 
 		auto textureAtlas = texturesManager->operator[]("Menu_Main");
-		auto &fontAtlas = texturesManager->GetFont();
+		auto &fontAtlas =  Game::GameManager::GetInstance().GetFont();
 
 		VkDescriptorImageInfo textureInfo{};
 		textureInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
