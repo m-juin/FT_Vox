@@ -5,7 +5,8 @@
 #include "Front/Interfaces/InterfacesManager.hpp"
 
 #include "Game/Scenes/Menu/SavesData.hpp"
-// #include "Front/Rendering/SwapChain.hpp"
+#include "Game/Scenes/World/Interfaces/I_F3.hpp"
+#include "Front/Rendering/SwapChain.hpp"
 
 namespace Vox::Game::Scenes::World
 {
@@ -27,14 +28,18 @@ namespace Vox::Game::Scenes::World
 	{
 		if (this->_wM)
 			this->_wM->Render();
+		auto &iManager = Front::Interfaces::InterfacesManager::GetInstance();
+		iManager.Render();
 	}
 
 	void Sc_World::InitSceneData()
     {
 		auto &iManager = Front::Interfaces::InterfacesManager::GetInstance();
-        (void)iManager;
 		GameManager::GetInstance().GetInputManager().SetInputTarget(E_InputTarget::Camera);
 		this->_textureManager = new Scenes::World::TManager_World();
+
+		auto extent = Front::Rendering::SwapChain::GetInstance().GetExtent();
+		iManager.RegisterInterface("Main", new Interfaces::I_F3({0, 0}, {(float)extent.width, (float)extent.height}));
 		GameManager::GetInstance().InitThreads();
 		this->_wM = std::make_unique<Game::World::WorldManager>(Menu::Saves::WorldData("", "", ""));
     }
