@@ -2,7 +2,7 @@
 
 #include "Game/ThreadManager.hpp"
 #include "Game/Scenes/World/WorldManager.hpp"
-
+#include "Game/Scenes/World/Generation/SplinesManager.hpp"
 namespace Vox::Game
 {
 	void GameManager::Render()
@@ -14,6 +14,7 @@ namespace Vox::Game
 	GameManager::GameManager()
 	{
 		this->_tManager = std::make_unique<ThreadManager>(std::thread::hardware_concurrency() - 2);
+		this->_sManager = std::make_unique<Generation::SplinesManager>(this->GetTexturePackPath());
 		// std::cout << this->_scManager.GetCurrentScene().get() << std::endl;
 		onUpdate.AddCallBack([this]()
 		{
@@ -36,7 +37,7 @@ namespace Vox::Game
 		if (!this->_tManager)
 			return;
 		std::cout << "init threads\n";
-		this->_tManager->BuildPool();
+		this->_tManager->BuildPool(*this->_sManager);
 	}
 
 	void GameManager::CleanThreads() const

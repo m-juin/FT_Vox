@@ -8,9 +8,15 @@
 #include "Game/InputManager.hpp"
 
 #include "Game/Utils/TexturesData.hpp"
+#include "Game/Scenes/World/Generation/SplinesManager.hpp"
 
 namespace Vox::Game
 {
+    namespace Generation
+    {
+        class SplinesManager;
+    } // namespace Generation
+    
     class ThreadManager;
     class GameManager : public Vox::Utils::Singleton<GameManager>, public Vox::Utils::AUpdatable
     {
@@ -34,7 +40,7 @@ namespace Vox::Game
 
         private:
 
-
+            std::unique_ptr<Generation::SplinesManager> _sManager;
             std::string _TPack = "1";
             Front::Scenes::ScenesManager _scManager;
             InputManager _iManager;

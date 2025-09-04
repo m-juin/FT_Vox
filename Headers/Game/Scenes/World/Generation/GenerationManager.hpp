@@ -2,6 +2,7 @@
 #define __GENERATIONMANAGER_HPP__
 
 #include "Utils/AUpdatable.hpp"
+#include <memory>
 #include <list>
 
 namespace Vox::Game::World::Chuncks
@@ -22,7 +23,6 @@ namespace Vox::Game::Generation
 
 		private:
             void UpdateGeneration();
-
 			std::list<World::Chuncks::VoxelChunck *> _waitingChuncks;
 			/* private */
 	};

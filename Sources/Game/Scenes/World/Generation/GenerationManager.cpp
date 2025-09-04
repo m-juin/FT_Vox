@@ -3,6 +3,7 @@
 #include "Game/Scenes/World/Chuncks/VoxelChunck.hpp"
 
 #include "Game/Scenes/World/WorldManager.hpp"
+#include "Game/Scenes/World/Generation/SplinesManager.hpp"
 #include "Game/GameManager.hpp"
 #include "Game/ThreadManager.hpp"
 
@@ -20,8 +21,8 @@ namespace Vox::Game::Generation
 				{ return (cluster->GetChunckPosition() == ch->GetChunckPosition()); }) != this->_waitingChuncks.end())
 			return;
 		this->_waitingChuncks.push_back(ch);
-		Game::GameManager::GetInstance().GetThreadManager().EnQueue([ch](){
-			ch->BuildVoxelObject();
+		Game::GameManager::GetInstance().GetThreadManager().EnQueue([ch](std::unordered_map<std::string, const Spline::Spline> spl){
+			ch->BuildVoxelObject(spl);
 		});
 	}
 

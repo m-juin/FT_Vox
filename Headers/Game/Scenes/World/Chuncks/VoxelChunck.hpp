@@ -5,7 +5,6 @@
 
 #include "Game/Scenes/World/Utils/Defines.hpp"
 
-#include "./E_FaceDir.hpp"
 #include "./E_GenerationState.hpp"
 #include "Game/Models/DynamicObject.hpp"
 
@@ -13,36 +12,13 @@
 
 #include "Game/Scenes/World/Generation/ThreadObject.hpp"
 
+#include "./FacesData.hpp"
+
+#include "Spline/Spline.hpp"
+
 namespace Vox::Game::World::Chuncks
 {
 	using namespace Game::Utils::Defines;
-
-	const std::unordered_map<Faces, std::array<Vertex, 4>> defaultFacesPos = {
-		{Faces::TOP, std::array<Vertex, 4>{Vertex{Vector3Float(0.5f, 0.5f, 0.5f), Vector3Float(1.0, 1.0, 1.0)},
-										   Vertex{Vector3Float(-0.5f, 0.5f, 0.5f), Vector3Float(1.0, 1.0, 1.0)},
-										   Vertex{Vector3Float(-0.5f, 0.5f, -0.5f), Vector3Float(1.0, 1.0, 1.0)},
-										   Vertex{Vector3Float(0.5f, 0.5f, -0.5f), Vector3Float(1.0, 1.0, 1.0)}}},
-		{Faces::BOT, std::array<Vertex, 4>{Vertex{Vector3Float(0.5f, -0.5f, 0.5f), Vector3Float(1.0, 1.0, 1.0)},
-										   Vertex{Vector3Float(-0.5f, -0.5f, 0.5f), Vector3Float(1.0, 1.0, 1.0)},
-										   Vertex{Vector3Float(-0.5f, -0.5f, -0.5f), Vector3Float(1.0, 1.0, 1.0)},
-										   Vertex{Vector3Float(0.5f, -0.5f, -0.5f), Vector3Float(1.0, 1.0, 1.0)}}},
-		{Faces::LEFT, std::array<Vertex, 4>{Vertex{Vector3Float(-0.5f, -0.5f, 0.5f), Vector3Float(1.0, 1.0, 1.0)},
-											Vertex{Vector3Float(-0.5f, -0.5f, -0.5f), Vector3Float(1.0, 1.0, 1.0)},
-											Vertex{Vector3Float(-0.5f, 0.5f, -0.5f), Vector3Float(1.0, 1.0, 1.0)},
-											Vertex{Vector3Float(-0.5f, 0.5f, 0.5f), Vector3Float(1.0, 1.0, 1.0)}}},
-		{Faces::RIGHT, std::array<Vertex, 4>{Vertex{Vector3Float(0.5f, -0.5f, 0.5f), Vector3Float(1.0, 1.0, 1.0)},
-											 Vertex{Vector3Float(0.5f, -0.5f, -0.5f), Vector3Float(1.0, 1.0, 1.0)},
-											 Vertex{Vector3Float(0.5f, 0.5f, -0.5f), Vector3Float(1.0, 1.0, 1.0)},
-											 Vertex{Vector3Float(0.5f, 0.5f, 0.5f), Vector3Float(1.0, 1.0, 1.0)}}},
-		{Faces::FRONT, std::array<Vertex, 4>{Vertex{Vector3Float(0.5f, -0.5f, 0.5f), Vector3Float(1.0, 1.0, 1.0)},
-											 Vertex{Vector3Float(-0.5f, -0.5f, 0.5f), Vector3Float(1.0, 1.0, 1.0)},
-											 Vertex{Vector3Float(-0.5f, 0.5f, 0.5f), Vector3Float(1.0, 1.0, 1.0)},
-											 Vertex{Vector3Float(0.5f, 0.5f, 0.5f), Vector3Float(1.0, 1.0, 1.0)}}},
-		{Faces::BACK, std::array<Vertex, 4>{Vertex{Vector3Float(0.5f, -0.5f, -0.5f), Vector3Float(1.0, 1.0, 1.0)},
-											Vertex{Vector3Float(-0.5f, -0.5f, -0.5f), Vector3Float(1.0, 1.0, 1.0)},
-											Vertex{Vector3Float(-0.5f, 0.5f, -0.5f), Vector3Float(1.0, 1.0, 1.0)},
-											Vertex{Vector3Float(0.5f, 0.5f, -0.5f), Vector3Float(1.0, 1.0, 1.0)}}},
-	};
 	
     
     class VoxelChunck : public Models::DynamicObject, public Generation::Threads::ThreadObject
@@ -59,7 +35,7 @@ namespace Vox::Game::World::Chuncks
 			~VoxelChunck();
 
 			void Render();
-			void BuildVoxelObject();
+			void BuildVoxelObject(const std::unordered_map<std::string, const Spline::Spline> &spl);
 			void BuildBufferObject();
 
 			Vector3Int GetChunckPosition() {return this->_chunckPos;};

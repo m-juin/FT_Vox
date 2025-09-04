@@ -10,8 +10,14 @@
 
 #include <iostream>
 
+namespace Spline
+{
+	class Spline;
+} // namespace Spline
+
 namespace Vox::Game
 {
+	namespace Generation {class SplinesManager;};
 	class GameManager;
 	class ThreadManager
 	{
@@ -35,10 +41,10 @@ namespace Vox::Game
 			ThreadManager(size_t maxThread);
 			~ThreadManager();
 
-			void EnQueue(std::function<void()> newTask);
+			void EnQueue(std::function<void(std::unordered_map<std::string, const Spline::Spline>)> newTask);
 
 		private:
-			void BuildPool();
+			void BuildPool(Game::Generation::SplinesManager &sManager);
 			void CleanPool();
 
 			const uint8_t _maxThread;
@@ -47,7 +53,7 @@ namespace Vox::Game
 			bool _stop = false;
 
 			std::vector<std::thread> _pool;
-			std::queue<std::function<void()>> _tasks;
+			std::queue<std::function<void(std::unordered_map<std::string, const Spline::Spline>)>> _tasks;
 			/* private */
 	};
 } // namespace Vox::Game

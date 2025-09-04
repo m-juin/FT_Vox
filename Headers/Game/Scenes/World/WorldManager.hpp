@@ -43,6 +43,7 @@ namespace Vox::Game::World
 			static WorldManager &GetInstance();
 
 			static Scenes::World::Player::Camera &GetCamera();
+			
 
 			void UpdateBuffer(const size_t &index, const Chuncks::VoxelChunck::ChunckUniform &uniform);
 

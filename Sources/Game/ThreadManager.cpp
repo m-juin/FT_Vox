@@ -1,5 +1,7 @@
 #include "Game/ThreadManager.hpp"
 
+#include "Game/Scenes/World/Generation/SplinesManager.hpp"
+
 namespace Vox::Game
 {
 	ThreadManager::ThreadManager(size_t maxThread) : _maxThread(maxThread)
@@ -11,7 +13,7 @@ namespace Vox::Game
 		CleanPool();
 	}
 
-	void ThreadManager::EnQueue(std::function<void()> newTask)
+	void ThreadManager::EnQueue(std::function<void(std::unordered_map<std::string, const Spline::Spline>)> newTask)
 	{
 		{
 			std::unique_lock lock(this->_queueMutex);
@@ -20,7 +22,7 @@ namespace Vox::Game
 		_cv.notify_one();
 	}
 
-	void ThreadManager::BuildPool()
+	void ThreadManager::BuildPool(Game::Generation::SplinesManager &sManager)
 	{
 		if (this->_pool.empty() == false)
 		{
@@ -28,13 +30,14 @@ namespace Vox::Game
 		}
 		for (size_t i = 0; i < this->_maxThread; i++)
 		{
+			std::unordered_map<std::string, const Spline::Spline> copy = sManager.GetSplinesCopy();
 			this->_pool.emplace_back(
-				[this]
+				[this, copy]
 				{
                     this->print("[DEBUG] Thread ", std::this_thread::get_id(), " launched.");
 					while (1)
 					{
-						std::function<void()> task;
+						std::function<void(std::unordered_map<std::string, const Spline::Spline>)> task;
 						{
 							std::unique_lock<std::mutex> lock(this->_queueMutex);
 
@@ -45,7 +48,7 @@ namespace Vox::Game
 							_tasks.pop();
 							lock.unlock();
 						}
-						task();
+						task(copy);
 					}
 				});
 		}
