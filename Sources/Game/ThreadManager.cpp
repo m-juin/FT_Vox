@@ -22,6 +22,7 @@ namespace Vox::Game
 		_cv.notify_one();
 	}
 
+
 	void ThreadManager::BuildPool(Game::Generation::SplinesManager &sManager)
 	{
 		if (this->_pool.empty() == false)

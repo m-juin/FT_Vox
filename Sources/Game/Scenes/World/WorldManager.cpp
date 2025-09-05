@@ -27,7 +27,9 @@ namespace Vox::Game::World
 			{
 				this->UpdateGeneration();
 				this->_gManager->Update();
-				
+				for (auto &_pair : this->_chuncks)
+					if (_pair.second)
+						_pair.second->Update();
 			});
 	}
 
@@ -77,9 +79,6 @@ namespace Vox::Game::World
 
 	void WorldManager::Render()
 	{
-		for (auto &_pair : this->_chuncks)
-			if (_pair.second)
-				_pair.second->Update();
 		this->_camera.Update();
 		Front::Rendering::Pipelines::PipelinesManager::GetInstance().BindPipeline("Voxel");
 		for (auto &_pair : this->_chuncks)
@@ -139,6 +138,8 @@ namespace Vox::Game::World
 		for (auto ch : chuncks)
 		{
 			auto chPos = ch->GetPosition();
+			if (this->_chuncks.find(chPos) != this->_chuncks.end())
+				std::cout << "chPos " << chPos << "already present in chuncks.";
 			this->_chuncks[chPos] = ch;
 		}
 	}

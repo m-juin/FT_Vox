@@ -24,14 +24,28 @@ namespace Vox::Game::Scenes::World::Interfaces
 			pm.size = {100, 50};
 
 			this->AddElement("TXT_PlayerCoord", std::make_unique<Text>(pm));
-
-			this->onUpdate.AddCallBack([this](){
-				auto pPos = Game::World::WorldManager::GetInstance().GetCamera().GetPosition();
-				std::stringstream ss;
-				ss << "Player pos: x: " << pPos[0] << ", y: " << pPos[1] << ", z: " << pPos[2];
-				this->GetElement<Text>("TXT_PlayerCoord")->SetContent(ss.str());
-			});
 		}
+		{
+			Text::Vox_Text_Constructor pm{};
+			pm.color = {0.5, 0.5, 0.5, 1.0};
+			pm.content = "LoadedChunck: ";
+			pm.scale = 0.3f;
+			pm.pos = {this->_pos[0] + 50, this->_pos[1] + 100};
+			pm.size = {100, 50};
+
+			this->AddElement("TXT_C_Loaded", std::make_unique<Text>(pm));
+
+			pm.content = "ChunckWaiting: ";
+			pm.pos = {this->_pos[0] + 50, this->_pos[1] + 150};
+			this->AddElement("TXT_C_Waiting", std::make_unique<Text>(pm));
+		}
+
+		this->onUpdate.AddCallBack(
+			[this]()
+			{
+				this->UpdatePlayerPos();
+				this->UpdateGenerationCount();
+			});
 	}
 
 	I_F3::~I_F3() {}
@@ -57,5 +71,27 @@ namespace Vox::Game::Scenes::World::Interfaces
 		for (auto &elem : this->_content)
 			if (elem.elem)
 				elem.elem->Draw();
+	}
+
+	void I_F3::UpdatePlayerPos()
+	{
+		auto pPos = Game::World::WorldManager::GetInstance().GetCamera().GetPosition();
+		std::stringstream ss;
+		ss << "Player pos: x: " << pPos[0] << ", y: " << pPos[1] << ", z: " << pPos[2];
+		this->GetElement<Text>("TXT_PlayerCoord")->SetContent(ss.str());
+	}
+
+	void I_F3::UpdateGenerationCount()
+	{
+		auto &wm = Game::World::WorldManager::GetInstance();
+		size_t waiting = wm.GetGenerationManager().GetWaitingData();
+		size_t loaded = wm.GetLoadedChunckData();
+
+		std::stringstream ss; 
+		ss << "Loaded Chunck: " << loaded;
+		this->GetElement<Text>("TXT_C_Loaded")->SetContent(ss.str());
+		ss.str("");
+		ss << "Waiting Chunck: " << waiting;
+		this->GetElement<Text>("TXT_C_Waiting")->SetContent(ss.str());
 	}
 } // namespace Vox::Game::Scenes::World::Interfaces

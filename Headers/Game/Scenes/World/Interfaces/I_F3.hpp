@@ -23,6 +23,9 @@ namespace Vox::Game::Scenes::World::Interfaces
             void OnHover() override {};
             void OnHoverLeave() override {};
             void Render() override;
+
+            void UpdatePlayerPos();
+            void UpdateGenerationCount();
             /* private */
     
     };

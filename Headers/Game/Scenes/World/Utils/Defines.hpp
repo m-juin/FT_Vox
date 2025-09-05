@@ -20,7 +20,7 @@ namespace Vox::Game::Utils::Defines
     using Matrix = MGL::Matrix::Matrix4;
 
     
-    constexpr size_t RENDER_DISTANCE = 12;
+    constexpr size_t RENDER_DISTANCE = 13;
     constexpr size_t SQUARE_RENDER_DISTANCE = RENDER_DISTANCE * RENDER_DISTANCE;
     constexpr int HALF_RENDER_DISTANCE = (RENDER_DISTANCE / 2);
     constexpr size_t CHUNCK_SIZE = 16;

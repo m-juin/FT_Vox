@@ -35,6 +35,11 @@ namespace Vox::Game::Generation
 				this->_waitingChuncks.erase(it);
 		}
 	}
+	
+	size_t GenerationManager::GetWaitingData() const
+	{
+		return this->_waitingChuncks.size();
+	}
 
 	void GenerationManager::UpdateGeneration()
 	{

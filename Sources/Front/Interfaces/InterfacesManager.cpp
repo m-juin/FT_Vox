@@ -40,7 +40,6 @@ namespace Vox::Front::Interfaces
 	{
 		using namespace Front::Rendering;
 		auto frame = SyncObjects::GetInstance().GetCurrentFrame();
-		// uint32_t dynamicOffset = 0;
 
 		auto buffer = CommandsPool::GetInstance().GetBuffer(frame);
 		auto pipeline = Pipelines::PipelinesManager::GetInstance().operator[]<Pipelines::StaticGUIPipeline>("StaticGUI");
@@ -48,7 +47,7 @@ namespace Vox::Front::Interfaces
 			return ;
 		Rendering::Pipelines::PipelinesManager::GetInstance().BindPipeline("StaticGUI");
 		vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->GetLayout(), 0, 1, &pipeline->GetSet(), 0, nullptr);
-		for (auto &pair : this->_content) // Utilisez auto& pour éviter les copies
+		for (auto &pair : this->_content)
 		{
 			if (pair.second->IsEnabled())
 			{

@@ -50,7 +50,10 @@ namespace Vox::Game::World
 			void Render();
 			void AddEndedChunck(std::list<Chuncks::ChunckCluster *> chuncks);
 
+			size_t GetLoadedChunckData() {return this->_chuncks.size();};
+			const Generation::GenerationManager GetGenerationManager() {return *this->_gManager;};
 		private:
+			
 			void UpdateGeneration();
 
 			std::unique_ptr<Generation::BufferManager> _bManager;

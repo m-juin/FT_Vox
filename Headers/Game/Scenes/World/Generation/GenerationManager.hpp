@@ -21,6 +21,8 @@ namespace Vox::Game::Generation
             void RequestChuncksGeneration(World::Chuncks::ChunckCluster *);
             void CancelChuncksGeneration(World::Chuncks::ChunckCluster *);
 
+			size_t GetWaitingData() const;
+
 		private:
             void UpdateGeneration();
 			std::list<World::Chuncks::ChunckCluster *> _waitingChuncks;
