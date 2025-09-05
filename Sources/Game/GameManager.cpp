@@ -15,8 +15,8 @@ namespace Vox::Game
 	{
 		this->_tManager = std::make_unique<ThreadManager>(std::thread::hardware_concurrency() - 2);
 		this->_sManager = std::make_unique<Generation::SplinesManager>(this->GetTexturePackPath());
-		this->_fontImage = std::make_unique<Front::Rendering::Images::FontImage>(this->GetTexturePackPath() + "GUI/Fonts/Minecraft.ttf");
-		// std::cout << this->_scManager.GetCurrentScene().get() << std::endl;
+		this->_texturesManager = std::make_unique<Front::Scenes::TexturesManager>(this->GetTexturePackPath());
+
 		onUpdate.AddCallBack([this]()
 		{
 			this->_iManager.HandlePerFrameInput();

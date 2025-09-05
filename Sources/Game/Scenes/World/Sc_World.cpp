@@ -1,7 +1,5 @@
 #include "Game/Scenes/World/Sc_World.hpp"
 
-#include "Game/Scenes/World/TManager_World.hpp"
-
 #include "Front/Interfaces/InterfacesManager.hpp"
 
 #include "Game/Scenes/Menu/SavesData.hpp"
@@ -20,7 +18,6 @@ namespace Vox::Game::Scenes::World
     {
 		std::cout << "Déchargement du monde..." << std::endl;
 		Front::Interfaces::InterfacesManager::GetInstance().ResetInterfacesList();
-		delete this->_textureManager;
 		GameManager::GetInstance().CleanThreads();
     }
 

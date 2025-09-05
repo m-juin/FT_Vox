@@ -2,7 +2,6 @@
 #include "Game/Scenes/Menu/I_MenuMain.hpp"
 #include "Game/Scenes/Menu/I_MenuWorld.hpp"
 #include "Game/Scenes/Menu/I_MenuCreate.hpp"
-#include "Game/Scenes/Menu/TManager_Menu.hpp"
 
 #include "Game/GameManager.hpp"
 #include <iostream>
@@ -26,7 +25,6 @@ namespace Vox::Game::Scenes::Menu
 	{
 		std::cout << "Déchargement du menu..." << std::endl;
 		Front::Interfaces::InterfacesManager::GetInstance().ResetInterfacesList();
-		delete this->_textureManager;
 		// Implémentation du déchargement du menu
 	}
 
@@ -43,7 +41,6 @@ namespace Vox::Game::Scenes::Menu
 		auto &iManager = Front::Interfaces::InterfacesManager::GetInstance();
 		auto extent = Front::Rendering::SwapChain::GetInstance().GetExtent();
 		GameManager::GetInstance().GetInputManager().SetInputTarget(E_InputTarget::UI);
-		this->_textureManager = new Scenes::Menu::TManager_Menu();
 
 		iManager.RegisterInterface("Main", new Interfaces::I_MenuMain({0, 0}, {(float)extent.width, (float)extent.height}));
 		iManager.RegisterInterface("World", new Interfaces::I_MenuWorld({0, 0}, {(float)extent.width, (float)extent.height}));

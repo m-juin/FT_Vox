@@ -9,6 +9,8 @@
 
 #include "Game/Utils/TexturesData.hpp"
 #include "Game/Scenes/World/Generation/SplinesManager.hpp"
+#include "Front/Scenes/TexturesManager.hpp"
+
 
 namespace Vox::Game
 {
@@ -37,12 +39,13 @@ namespace Vox::Game
             void InitThreads() const;
             void CleanThreads() const;
             ThreadManager &GetThreadManager() {return *_tManager;};
+            Vox::Front::Scenes::TexturesManager &GetTexturesManager() {return *_texturesManager;};
 
-        Front::Rendering::Images::FontImage &GetFont() {return *this->_fontImage;};
+        // Front::Rendering::Images::FontImage &GetFont() {return *this->_fontImage;};
 
         private:
-            std::unique_ptr<Front::Rendering::Images::FontImage>_fontImage;
             std::unique_ptr<Generation::SplinesManager> _sManager;
+            std::unique_ptr<Vox::Front::Scenes::TexturesManager> _texturesManager;
             std::string _TPack = "1";
             Front::Scenes::ScenesManager _scManager;
             InputManager _iManager;

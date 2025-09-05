@@ -7,6 +7,8 @@
 #include <string>
 #include <unordered_map>
 
+#include <stdexcept>
+
 namespace Vox::Front::Scenes
 {
 	using SceneCreator = std::function<std::unique_ptr<AScene>()>;

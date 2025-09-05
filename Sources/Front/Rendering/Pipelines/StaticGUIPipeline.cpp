@@ -206,10 +206,10 @@ namespace Vox::Front::Rendering::Pipelines
 		if (vkAllocateDescriptorSets(Device::GetInstance().GetLogicalDevice(), &allocInfo, this->_set.data()) != VK_SUCCESS)
 			throw std::runtime_error("Failed to allocate descriptor sets!");
 
-		auto texturesManager = Game::GameManager::GetInstance().GetSceneManager().GetCurrentScene().GetTextureManager();
+		// auto texturesManager = Game::GameManager::GetInstance().GetTexturesManager();
 
-		auto textureAtlas = texturesManager->operator[]("Menu_Main");
-		auto &fontAtlas =  Game::GameManager::GetInstance().GetFont();
+		auto textureAtlas = Game::GameManager::GetInstance().GetTexturesManager().operator[]("Menu_Main");
+		auto &fontAtlas =  Game::GameManager::GetInstance().GetTexturesManager().GetFont();
 
 		VkDescriptorImageInfo textureInfo{};
 		textureInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;

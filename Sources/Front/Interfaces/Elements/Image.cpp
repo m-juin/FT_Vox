@@ -10,7 +10,6 @@
 
 #include "Game/GameManager.hpp"
 #include "Game/Scenes/Menu/Sc_Menu.hpp"
-#include "Game/Scenes/Menu/TManager_Menu.hpp"
 
 namespace Vox::Front::Interfaces::Elements
 {
@@ -66,9 +65,7 @@ namespace Vox::Front::Interfaces::Elements
 
 		if (this->_atlas != "" && this->_atlasKey != "")
 		{
-			auto atlas =
-				Game::GameManager::GetInstance().GetSceneManager().GetCurrentScene().GetTextureManager()->operator[](
-					_atlas);
+			auto atlas = Game::GameManager::GetInstance().GetTexturesManager()[_atlas];
 			auto uvData = atlas->GetTextureInfo(this->_atlasKey);
 
 			this->_uvMappingData.uvMin[0] = uvData.uOffset;
@@ -147,8 +144,6 @@ namespace Vox::Front::Interfaces::Elements
 		for (auto &vert : this->_vertex)
 			vert.texColor = newColor;
 		this->B_Vertices->Update(&this->_vertex, 4 * sizeof(Vertex));
-		// this->CleanBuffers(0);
-		// this->B_Vertices->Create(&this->_vertex);
 	}
 
 	void Image::SetTexture(const std::string &newAtlas, const std::string &newKey)
@@ -158,9 +153,7 @@ namespace Vox::Front::Interfaces::Elements
 		this->_atlas = newAtlas;
 		this->_atlasKey = newKey;
 
-		auto atlas =
-			Game::GameManager::GetInstance().GetSceneManager().GetCurrentScene().GetTextureManager()->operator[](
-				_atlas);
+		auto atlas = Game::GameManager::GetInstance().GetTexturesManager()[_atlas];
 		auto uvData = atlas->GetTextureInfo(this->_atlasKey);
 
 		this->_uvMappingData.uvMin[0] = uvData.uOffset;

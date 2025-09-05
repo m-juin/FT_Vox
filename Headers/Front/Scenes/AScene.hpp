@@ -4,11 +4,10 @@
 #include <memory>
 #include <string>
 
-#include "Front/Scenes/ATexturesManager.hpp"
+// #include "Front/Scenes/TexturesManager.hpp"
 
 namespace Vox::Front::Scenes
 {
-	class ATextureManager;
 	class AScene
 	{
 		public:
@@ -19,10 +18,10 @@ namespace Vox::Front::Scenes
 			virtual void Render() = 0;
 			virtual const std::string &GetName() const = 0;
 
-			ATexturesManager *GetTextureManager() {return this->_textureManager;};
-			ATexturesManager *GetTextureManager() const {return this->_textureManager;};
+			// TexturesManager *GetTextureManager() {return this->_textureManager;};
+			// TexturesManager *GetTextureManager() const {return this->_textureManager;};
         protected:
-			ATexturesManager *_textureManager;
+			// TexturesManager *_textureManager;
 
 	};
 } // namespace Vox::Front::Scenes
