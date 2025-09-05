@@ -20,15 +20,15 @@ namespace Vox::Game::Utils::Defines
     using Matrix = MGL::Matrix::Matrix4;
 
         
-    constexpr size_t RENDER_DISTANCE = 13;
-    constexpr size_t SQUARE_RENDER_DISTANCE = (RENDER_DISTANCE * RENDER_DISTANCE) / 2;
+    constexpr int RENDER_DISTANCE = 11;
+    constexpr int SQUARE_RENDER_DISTANCE = (RENDER_DISTANCE * RENDER_DISTANCE);
     constexpr int HALF_RENDER_DISTANCE = (RENDER_DISTANCE / 2);
     constexpr int HALF_RENDER_DISTANCE_SQUARE = HALF_RENDER_DISTANCE * HALF_RENDER_DISTANCE ;
     constexpr size_t CHUNCK_SIZE = 16;
-    constexpr size_t WORLD_HEIGHT = 16;
+    constexpr size_t WORLD_HEIGHT = 256;
 
-    constexpr size_t CHUNCK_AMOUNT = ((RENDER_DISTANCE + 1) * (RENDER_DISTANCE + 1)) * (WORLD_HEIGHT / CHUNCK_SIZE);
-    constexpr size_t CHUNCK_BUFFER_AMOUNT = ((RENDER_DISTANCE + 1) * (RENDER_DISTANCE + 1));
+    constexpr size_t CHUNCK_AMOUNT = ((RENDER_DISTANCE * 2) * (RENDER_DISTANCE * 2)) * (WORLD_HEIGHT / CHUNCK_SIZE);
+    constexpr size_t CHUNCK_BUFFER_AMOUNT = ((RENDER_DISTANCE * 2) * (RENDER_DISTANCE * 2));
 } // namespace Vox::Game::Utils::Defines
 
 

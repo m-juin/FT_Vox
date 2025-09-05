@@ -38,27 +38,23 @@ namespace Vox::Game::World
 
 	WorldManager::~WorldManager()
 	{
-		for (auto pair : this->_chuncks)
-			if (pair.second)
-				delete pair.second;
+
 	}
 
 	void WorldManager::InitWorld()
 	{
 		this->_chuncks.reserve(Utils::Defines::CHUNCK_BUFFER_AMOUNT);
 		_playerChunck = {0, 0};
-		for (int x = -Utils::Defines::HALF_RENDER_DISTANCE; x < Utils::Defines::HALF_RENDER_DISTANCE; x++)
+		for (int x = -Utils::Defines::RENDER_DISTANCE; x < Utils::Defines::RENDER_DISTANCE; x++)
 		{
-			for (int y = -Utils::Defines::HALF_RENDER_DISTANCE; y < Utils::Defines::HALF_RENDER_DISTANCE; y++)
+			for (int y = -Utils::Defines::RENDER_DISTANCE; y < Utils::Defines::RENDER_DISTANCE; y++)
 			{
 				Utils::Defines::ChunckCoord coord = {x, y};
 				if (this->_gManager->IsChunckPresent(coord) == true || _chuncks.find(coord) != _chuncks.end())
 				{
-					std::cout << coord << " | " << this->_gManager->IsChunckPresent(coord) << std::endl;
 					continue;
 				}
-				auto ch = new Chuncks::ChunckCluster(coord);
-				this->_gManager->RequestChuncksGeneration(ch);
+				this->_gManager->RequestChuncksGeneration(coord);
 			}
 		}
 	}
@@ -95,21 +91,20 @@ namespace Vox::Game::World
 	void WorldManager::CheckCreation()
 	{
 		Utils::Defines::ChunckCoord effectiveCoord;
-		for (int x = -Utils::Defines::HALF_RENDER_DISTANCE; x < Utils::Defines::HALF_RENDER_DISTANCE; x++)
+		for (int x = -Utils::Defines::RENDER_DISTANCE; x < Utils::Defines::RENDER_DISTANCE; x++)
 		{
 			effectiveCoord[0] = _playerChunck[0] + x;
-			for (int y = -Utils::Defines::HALF_RENDER_DISTANCE; y < Utils::Defines::HALF_RENDER_DISTANCE; y++)
+			for (int y = -Utils::Defines::RENDER_DISTANCE; y < Utils::Defines::RENDER_DISTANCE; y++)
 			{
 				effectiveCoord[1] = _playerChunck[1] + y;
 
-				if (MGL::Vectors::Dist(effectiveCoord, _playerChunck) > Utils::Defines::HALF_RENDER_DISTANCE_SQUARE)
+				if (MGL::Vectors::Dist(effectiveCoord, _playerChunck) >= Utils::Defines::SQUARE_RENDER_DISTANCE)
 					continue;
 
 				if (_chuncks.find(effectiveCoord) != _chuncks.end() || _gManager->IsChunckPresent(effectiveCoord))
 					continue;
 
-				auto ch = new Chuncks::ChunckCluster(effectiveCoord);
-				_gManager->RequestChuncksGeneration(ch);
+				_gManager->RequestChuncksGeneration(effectiveCoord);
 			}
 		}
 	}
@@ -120,7 +115,7 @@ namespace Vox::Game::World
 		for (auto _pair : this->_chuncks)
 		{
 			// std::cout << _pair.first << std::endl;
-			if (MGL::Vectors::Dist(_pair.first, _playerChunck) >= Utils::Defines::HALF_RENDER_DISTANCE_SQUARE)
+			if (MGL::Vectors::Dist(_pair.first, _playerChunck) >= Utils::Defines::SQUARE_RENDER_DISTANCE)
 				toDelete.push_back(_pair.first);
 		}
 		// std::cout << std::endl;
@@ -130,7 +125,6 @@ namespace Vox::Game::World
 			const uint16_t index = it->second->GetBuffer();
 			this->_chuncks.erase(it);
 			this->_bManager->ReleaseBuffer(index);
-			delete it->second;
 		}
 	}
 
@@ -145,9 +139,9 @@ namespace Vox::Game::World
 		_playerChunck = playerCoord;
 	}
 
-	void WorldManager::AddEndedChunck(Chuncks::ChunckCluster *chunck)
+	void WorldManager::AddEndedChunck(std::shared_ptr<Chuncks::ChunckCluster> chunck)
 	{
-		;
+		if (chunck)
 		this->_chuncks[chunck->GetPosition()] = chunck;
 	}
 

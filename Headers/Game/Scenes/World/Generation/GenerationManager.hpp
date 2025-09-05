@@ -21,8 +21,7 @@ namespace Vox::Game::Generation
 			~GenerationManager() {};
 			bool IsChunckPresent(const Vox::Game::Utils::Defines::ChunckCoord &coord);
 
-            void RequestChuncksGeneration(World::Chuncks::ChunckCluster *);
-            void CancelChuncksGeneration(World::Chuncks::ChunckCluster *);
+            void RequestChuncksGeneration(Game::Utils::Defines::ChunckCoord coord);
 			void SetPlayerPos(Vox::Game::Utils::Defines::ChunckCoord coord) {this->_playerPos = coord;};
 
 			size_t GetWaitingData() const;
@@ -30,7 +29,7 @@ namespace Vox::Game::Generation
 		private:
 			Vox::Game::Utils::Defines::ChunckCoord _playerPos;
             void UpdateGeneration();
-			std::list<World::Chuncks::ChunckCluster *> _waitingChuncks;
+			std::list<std::shared_ptr<World::Chuncks::ChunckCluster>> _waitingChuncks;
 			/* private */
 	};
 } // namespace Vox::Game::Generation

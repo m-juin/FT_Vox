@@ -27,6 +27,8 @@ namespace Vox::Game::World::Chuncks
 		int chunksPerCluster = WORLD_HEIGHT / CHUNCK_SIZE;
 		for (int y = chunksPerCluster - 1; y >= 0; y--)
 		{
+			if (this->IsGenerationCancelled())
+					return ;
 			this->_clusterContent[y] =
 				new VoxelChunck(Vector3Int(this->_clusterPos[0], y, this->_clusterPos[1]));
 
