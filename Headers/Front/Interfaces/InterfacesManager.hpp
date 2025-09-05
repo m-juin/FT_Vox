@@ -2,6 +2,7 @@
 #define __INTERFACESMANAGER_HPP__
 
 #include "Utils/Singleton.hpp"
+#include "Utils/AUpdatable.hpp"
 
 #include <unordered_map>
 
@@ -9,7 +10,7 @@
 
 namespace Vox::Front::Interfaces
 {
-	class InterfacesManager : public Vox::Utils::Singleton<InterfacesManager>
+	class InterfacesManager : public Vox::Utils::Singleton<InterfacesManager> , public Vox::Utils::AUpdatable
 	{
 			friend class Vox::Utils::Singleton<InterfacesManager>;
 

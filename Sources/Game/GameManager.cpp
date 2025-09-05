@@ -3,6 +3,8 @@
 #include "Game/ThreadManager.hpp"
 #include "Game/Scenes/World/WorldManager.hpp"
 #include "Game/Scenes/World/Generation/SplinesManager.hpp"
+#include "Front/Interfaces/InterfacesManager.hpp"
+
 namespace Vox::Game
 {
 	void GameManager::Render()
@@ -22,6 +24,7 @@ namespace Vox::Game
 			this->_iManager.HandlePerFrameInput();
 			if (this->_scManager.GetCurrentScene().GetName() == "World")
 				World::WorldManager::GetInstance().Update();
+			Vox::Front::Interfaces::InterfacesManager::GetInstance().Update();
 		});
 	}
 

@@ -5,20 +5,32 @@
 
 #include "MathGraphicalLib/Utils.hpp"
 
+#include "Game/Scenes/World/WorldManager.hpp"
+
+#include <sstream>
+
 namespace Vox::Game::Scenes::World::Interfaces
 {
 	using namespace Front::Interfaces::Elements;
 	I_F3::I_F3(Vox::Front::Interfaces::Elements::Vector2 pos, Vox::Front::Interfaces::Elements::Vector2 size)
-		: AInterface(pos, size)
+		: AInterface(pos, size), AUpdatable(2)
 	{
 		{
 			Text::Vox_Text_Constructor pm{};
 			pm.color = {0.5, 0.5, 0.5, 1.0};
 			pm.content = "Player pos: ";
-			pm.pos = {this->_pos[0] + 100, this->_pos[1] + 100};
+			pm.scale = 0.3f;
+			pm.pos = {this->_pos[0] + 50, this->_pos[1] + 50};
 			pm.size = {100, 50};
 
 			this->AddElement("TXT_PlayerCoord", std::make_unique<Text>(pm));
+
+			this->onUpdate.AddCallBack([this](){
+				auto pPos = Game::World::WorldManager::GetInstance().GetCamera().GetPosition();
+				std::stringstream ss;
+				ss << "Player pos: x: " << pPos[0] << ", y: " << pPos[1] << ", z: " << pPos[2];
+				this->GetElement<Text>("TXT_PlayerCoord")->SetContent(ss.str());
+			});
 		}
 	}
 

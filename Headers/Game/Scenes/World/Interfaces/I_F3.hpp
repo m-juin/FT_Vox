@@ -3,11 +3,13 @@
 
 #include "Front/Interfaces/AInterface.hpp"
 
+#include "Utils/AUpdatable.hpp"
+
 using namespace Vox::Front::Interfaces;
 
 namespace Vox::Game::Scenes::World::Interfaces
 {
-    class I_F3 : public virtual AInterface
+    class I_F3 : public virtual AInterface, public virtual Vox::Utils::AUpdatable
     {
         public:
             I_F3(Vox::Front::Interfaces::Elements::Vector2 pos, Vox::Front::Interfaces::Elements::Vector2 size);

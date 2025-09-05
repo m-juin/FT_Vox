@@ -115,7 +115,14 @@ namespace Vox::Front::Interfaces
 		Front::Interfaces::Elements::Bases::AFocusable::SetFocusElement(nullptr);
 	}
 
-	InterfacesManager::InterfacesManager() {}
+	InterfacesManager::InterfacesManager()
+	{
+		this->onUpdate.AddCallBack([this](){
+			for (auto i : this->_content)
+				if (auto converted = dynamic_cast<Vox::Utils::AUpdatable*>(i.second))
+					converted->Update();
+		});
+	}
 
 	InterfacesManager::~InterfacesManager()
 	{

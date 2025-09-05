@@ -27,6 +27,7 @@ namespace Vox::Game::World
 			{
 				this->UpdateGeneration();
 				this->_gManager->Update();
+				
 			});
 	}
 
