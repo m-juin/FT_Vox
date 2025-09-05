@@ -15,6 +15,7 @@ namespace Vox::Game
 {
 	InputManager::InputManager() : Vox::Utils::AUpdatable(1)
 	{
+		this->_target = E_InputTarget::Camera;
 		LoadInput();
 		SetupCallBack();
 		onUpdate.AddCallBack([this]()

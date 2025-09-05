@@ -15,8 +15,8 @@
 
 namespace Vox::Game::World::Chuncks
 {
-	VoxelChunck::VoxelChunck(size_t bufferIndex, const Vector3Int &defaultPos)
-		: DynamicObject(Vector3Float(defaultPos[0] * static_cast<int>(Utils::Defines::CHUNCK_SIZE), defaultPos[1] * static_cast<int>(Utils::Defines::CHUNCK_SIZE), defaultPos[2] * static_cast<int>(Utils::Defines::CHUNCK_SIZE))), _chunckPos(defaultPos), _bufferIndex(bufferIndex)
+	VoxelChunck::VoxelChunck(const Vector3Int &defaultPos)
+		: DynamicObject(Vector3Float(defaultPos[0] * static_cast<int>(Utils::Defines::CHUNCK_SIZE), defaultPos[1] * static_cast<int>(Utils::Defines::CHUNCK_SIZE), defaultPos[2] * static_cast<int>(Utils::Defines::CHUNCK_SIZE))), _chunckPos(defaultPos)
 	{
 		this->B_Index = nullptr;
 		this->B_Vertex = nullptr;
@@ -48,8 +48,9 @@ namespace Vox::Game::World::Chuncks
 			}
 		}
 	}
-	void VoxelChunck::BuildBufferObject()
+	void VoxelChunck::BuildBufferObject(const uint16_t &buffer)
 	{
+		this->_bufferIndex = buffer;
 		if (this->B_Index != nullptr)
 		{
 			delete this->B_Vertex;
@@ -68,7 +69,6 @@ namespace Vox::Game::World::Chuncks
 		this->B_Vertex->Create(vertex.data());
 		this->index.clear();
 		this->vertex.clear();
-		AssignModel();
 	}
 
 	size_t VoxelChunck::GetLocalIndex(const LocalVector &vec)

@@ -24,8 +24,8 @@ namespace Vox::Game::World::Chuncks
 			void BuildClusterContent(const std::unordered_map<std::string, const Spline::Spline> &spl);
 			ChunckCoord GetPosition();
 
-			void BuildBuffers();
-			ChunckCluster(const ChunckCoord &coord, uint16_t buffer);
+			void BuildBuffers(const uint16_t &buffer);
+			ChunckCluster(const ChunckCoord &coord);
 			~ChunckCluster();
 	};
 }

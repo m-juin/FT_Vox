@@ -48,18 +48,24 @@ namespace Vox::Game::World
 			void UpdateBuffer(const size_t &index, const Chuncks::VoxelChunck::ChunckUniform &uniform);
 
 			void Render();
-			void AddEndedChunck(std::list<Chuncks::ChunckCluster *> chuncks);
+			void AddEndedChunck(Chuncks::ChunckCluster *chunck);
 
 			size_t GetLoadedChunckData() {return this->_chuncks.size();};
 			const Generation::GenerationManager GetGenerationManager() {return *this->_gManager;};
-		private:
+			Generation::BufferManager &GetBufferManager() {return *this->_bManager;};
+		
 			
-			void UpdateGeneration();
+
+			private:
+
+			void CheckCreation();
+			void CheckDeletion();
+			void UpdatePlayerPos();
 
 			std::unique_ptr<Generation::BufferManager> _bManager;
 			std::unique_ptr<Generation::GenerationManager> _gManager;
 
-			Utils::Defines::ChunckCoord _playerPreviousChunck;
+			Utils::Defines::ChunckCoord _playerChunck;
 
 			std::unordered_map<const Utils::Defines::ChunckCoord, Chuncks::ChunckCluster *,
 							   MGL::Vectors::Vector2Hash<int>>

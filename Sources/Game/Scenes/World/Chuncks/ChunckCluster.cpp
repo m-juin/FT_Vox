@@ -23,15 +23,12 @@ namespace Vox::Game::World::Chuncks
 	void ChunckCluster::BuildClusterContent(const std::unordered_map<std::string, const Spline::Spline> &spl)
 	{
 		this->ChangeGenerationState(Generation::E_GenerationState::Mesh);
-		int chunksPerCluster = WORLD_HEIGHT / CHUNCK_SIZE;
 
+		int chunksPerCluster = WORLD_HEIGHT / CHUNCK_SIZE;
 		for (int y = chunksPerCluster - 1; y >= 0; y--)
 		{
-			int localIndex = chunksPerCluster - 1 - y;
-			int globalIndex = _bufferIndex * chunksPerCluster + localIndex;
-
 			this->_clusterContent[y] =
-				new VoxelChunck(globalIndex, Vector3Int(this->_clusterPos[0], y, this->_clusterPos[1]));
+				new VoxelChunck(Vector3Int(this->_clusterPos[0], y, this->_clusterPos[1]));
 
 			this->_clusterContent[y]->BuildVoxelObject(spl);
 		}
@@ -43,20 +40,24 @@ namespace Vox::Game::World::Chuncks
 		return this->_clusterPos;
 	}
 
-	void ChunckCluster::BuildBuffers()
+	void ChunckCluster::BuildBuffers(const uint16_t &buffer)
 	{
-		for (auto ch : this->_clusterContent)
+		this->_bufferIndex = buffer;
+		int chunksPerCluster = WORLD_HEIGHT / CHUNCK_SIZE;
+		for (int y = chunksPerCluster - 1; y >= 0; y--)
 		{
+			int localIndex = chunksPerCluster - 1 - y;
+			int globalIndex = _bufferIndex * chunksPerCluster + localIndex;
+			auto ch = this->_clusterContent[y]; 
 			if (ch)
-				ch->BuildBufferObject();
+				ch->BuildBufferObject(globalIndex);
 		}
 		this->_currentState = Generation::E_GenerationState::End;
 	}
 
-	ChunckCluster::ChunckCluster(const ChunckCoord &coord, uint16_t buffer)
+	ChunckCluster::ChunckCluster(const ChunckCoord &coord) : _clusterContent{}
 	{
 		_clusterPos = coord;
-		_bufferIndex = buffer;
 		this->onUpdate.AddCallBack(
 			[this]()
 			{

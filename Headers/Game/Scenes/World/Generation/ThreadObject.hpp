@@ -10,7 +10,8 @@ namespace Vox::Game::Generation::Threads
 	class ThreadObject
 	{
 		public:
-			ThreadObject() {};
+			ThreadObject(
+			) : _currentState(E_GenerationState::WaitingThread) {};
 			virtual ~ThreadObject() {};
 
 			inline void ChangeGenerationState(const Game::Generation::E_GenerationState &newState)

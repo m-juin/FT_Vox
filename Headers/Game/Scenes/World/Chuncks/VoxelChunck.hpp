@@ -31,12 +31,12 @@ namespace Vox::Game::World::Chuncks
 
             using LocalVector = MGL::Vectors::Vector3<uint8_t>;
 			VoxelChunck() = delete;
-			VoxelChunck(size_t bufferIndex, const Vector3Int& defaultPos = {0, 0, 0});
+			VoxelChunck(const Vector3Int& defaultPos = {0, 0, 0});
 			~VoxelChunck();
 
 			void Render();
 			void BuildVoxelObject(const std::unordered_map<std::string, const Spline::Spline> &spl);
-			void BuildBufferObject();
+			void BuildBufferObject(const uint16_t &buffer);
 
 			Vector3Int GetChunckPosition() {return this->_chunckPos;};
 
