@@ -57,6 +57,18 @@ namespace Vox::Game::World::Chuncks
 		this->_currentState = Generation::E_GenerationState::End;
 	}
 
+	const uint8_t * ChunckCluster::
+	GenerateHeightMap(const std::unordered_map<std::string, const Spline::Spline> &spl)
+	{
+		for (size_t x = 0; x < CHUNCK_SIZE; x++)
+		{
+			for (size_t z = 0; z < CHUNCK_SIZE; z++)
+			{
+
+			}
+		}
+	}
+
 	ChunckCluster::ChunckCluster(const ChunckCoord &coord) : _clusterContent{}
 	{
 		_clusterPos = coord;
