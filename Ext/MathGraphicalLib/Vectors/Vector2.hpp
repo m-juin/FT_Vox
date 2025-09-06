@@ -10,10 +10,10 @@ namespace MGL::Vectors
 	struct Vector2
 	{
 	public:
-		Vector2(T x, T y) : m{x, y} {}
-		Vector2(T val) : m{val, val} {}
-		Vector2() : m{T(), T()} {}
-		Vector2(const Vector2 &v1) : m{v1.m[0], v1.m[1]} {}
+		constexpr Vector2(T x, T y) : m{x, y} {}
+		constexpr Vector2(T val) : m{val, val} {}
+		constexpr Vector2() : m{T(), T()} {}
+		constexpr Vector2(const Vector2 &v1) : m{v1.m[0], v1.m[1]} {}
 
 		bool operator==(const Vector2<T> &m1) const
 		{
