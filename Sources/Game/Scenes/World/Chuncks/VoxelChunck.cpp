@@ -13,10 +13,17 @@
 
 #include "Game/Scenes/World/WorldManager.hpp"
 
+#include <bitset>
+
+#include "Game/Scenes/World/Generation/Perlin.hpp"
+
 namespace Vox::Game::World::Chuncks
 {
 	VoxelChunck::VoxelChunck(const Vector3Int &defaultPos)
-		: DynamicObject(Vector3Float(defaultPos[0] * static_cast<int>(Utils::Defines::CHUNCK_SIZE), defaultPos[1] * static_cast<int>(Utils::Defines::CHUNCK_SIZE), defaultPos[2] * static_cast<int>(Utils::Defines::CHUNCK_SIZE))), _chunckPos(defaultPos)
+		: DynamicObject(Vector3Float(defaultPos[0] * static_cast<int>(Utils::Defines::CHUNCK_SIZE),
+									 defaultPos[1] * static_cast<int>(Utils::Defines::CHUNCK_SIZE),
+									 defaultPos[2] * static_cast<int>(Utils::Defines::CHUNCK_SIZE))),
+		  _chunckPos(defaultPos)
 	{
 		this->B_Index = nullptr;
 		this->B_Vertex = nullptr;
@@ -30,24 +37,103 @@ namespace Vox::Game::World::Chuncks
 		wm.UpdateBuffer(this->_bufferIndex, {this->GetModel()});
 	}
 
-	void VoxelChunck::BuildVoxelObject(const std::unordered_map<std::string, const Spline::Spline> &spl)
+	void VoxelChunck::BuildVoxelObject(const std::unordered_map<std::string, const Spline::Spline> &spl,
+									   const uint8_t hMap[CHUNCK_SIZE * CHUNCK_SIZE], const uint32_t &seed)
 	{
 		(void)spl;
+		std::bitset<CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE> clusterContent = this->BuildContent(hMap);
 
-		for (size_t x = 0; x < Utils::Defines::CHUNCK_SIZE; x++)
+		LocalVector it(0);
+
+		auto checkFace = [this, &clusterContent, &seed, &spl, &hMap](const LocalVector &it, int offsetX, int offsetY,
+																	 int offsetZ, Faces face)
 		{
-			for (size_t z = 0; z < Utils::Defines::CHUNCK_SIZE; z++)
+			LocalVector neighbor = it;
+			neighbor[0] += offsetX;
+			neighbor[1] += offsetY;
+			neighbor[2] += offsetZ;
+
+			// voisin à l'intérieur du chunk => on regarde le bitset local
+			if (neighbor[0] >= 0 && neighbor[0] < CHUNCK_SIZE && neighbor[1] >= 0 && neighbor[1] < CHUNCK_SIZE &&
+				neighbor[2] >= 0 && neighbor[2] < CHUNCK_SIZE)
 			{
-				for (size_t y = 0; y < Utils::Defines::CHUNCK_SIZE; y++)
+				uint16_t neighborIndex = GetLocalIndex(neighbor);
+				if (!clusterContent[neighborIndex]) // voisin vide
+					this->AddFace(face, it);
+				return;
+			}
+
+			// --- en dehors du chunk ---
+			// Cas vertical (même XZ) : utilise le heightmap local pour rester cohérent
+			if (offsetY != 0 && offsetX == 0 && offsetZ == 0)
+			{
+				// coords monde du voxel voisin
+				int yWorld = static_cast<int>(this->_position[1]) + neighbor[1];
+				int lx = it[0];
+				int lz = it[2];
+				uint8_t h = hMap[lx * CHUNCK_SIZE + lz];
+
+				// même règle que BuildContent : plein si yWorld <= h
+				bool neighborFilled = (yWorld <= static_cast<int>(h));
+				if (!neighborFilled)
+					this->AddFace(face, it);
+				return;
+			}
+			if (!Generation::Perlins::IsBlockAt({static_cast<int>(this->_position[0]) + it[0] + offsetX,
+												 static_cast<int>(this->_position[1]) + it[1] + offsetY,
+												 static_cast<int>(this->_position[2]) + it[2] + offsetZ},
+												seed, spl))
+			{
+				this->AddFace(face, it);
+			}
+		};
+
+		// Parcours du chunk
+		for (it[0] = 0; it[0] < CHUNCK_SIZE; it[0]++)
+		{
+			for (it[2] = 0; it[2] < CHUNCK_SIZE; it[2]++)
+			{
+				for (it[1] = 0; it[1] < CHUNCK_SIZE; it[1]++)
 				{
-					if (y == Utils::Defines::CHUNCK_SIZE - 1)
-					{
-						this->AddFace(Faces::TOP, LocalVector(x, y, z));
-					}
+					uint16_t mapIndex = GetLocalIndex(it);
+					if (!clusterContent[mapIndex])
+						continue;
+
+					// au minimum TOP (les autres sont commentées chez toi pour debug)
+					checkFace(it, 0, 1, 0, Faces::TOP);
+					// une fois ok, réactive les autres directions :
+					// checkFace(it, 0, -1, 0, Faces::BOT);
+					checkFace(it, -1, 0, 0, Faces::LEFT);
+					checkFace(it, 1, 0, 0, Faces::RIGHT);
+					checkFace(it, 0, 0, 1, Faces::FRONT);
+					checkFace(it, 0, 0, -1, Faces::BACK);
 				}
 			}
 		}
 	}
+
+	std::bitset<CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE> VoxelChunck::BuildContent(
+		const uint8_t hMap[CHUNCK_SIZE * CHUNCK_SIZE])
+	{
+		std::bitset<CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE> clusterContent;
+
+		LocalVector it(0);
+		for (it[0] = 0; it[0] < Utils::Defines::CHUNCK_SIZE; it[0]++)
+		{
+			for (it[2] = 0; it[2] < Utils::Defines::CHUNCK_SIZE; it[2]++)
+			{
+				uint8_t target = hMap[it[0] * CHUNCK_SIZE + it[2]];
+				for (it[1] = 0; it[1] < CHUNCK_SIZE; it[1]++)
+				{
+					if (it[1] + this->_position[1] <= target)
+						clusterContent.set(GetLocalIndex(it));
+				}
+			}
+		}
+
+		return clusterContent;
+	}
+
 	void VoxelChunck::BuildBufferObject(const uint16_t &buffer)
 	{
 		this->_bufferIndex = buffer;
@@ -60,7 +146,7 @@ namespace Vox::Game::World::Chuncks
 		}
 		if (this->vertex.size() == 0)
 		{
-			return ;
+			return;
 		}
 		this->B_Index = new sbuffer(2, index.size() * sizeof(uint16_t), VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
 		this->B_Vertex = new sbuffer(2, vertex.size() * sizeof(Vertex), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
@@ -86,7 +172,7 @@ namespace Vox::Game::World::Chuncks
 	void VoxelChunck::Render()
 	{
 		if (this->indexCount == 0)
-				return ;
+			return;
 		using namespace Front::Rendering;
 		auto frame = SyncObjects::GetInstance().GetCurrentFrame();
 		uint32_t dynamicOffset = this->_bufferIndex * Utils::Vulkan::GetAlignedChunckSize();

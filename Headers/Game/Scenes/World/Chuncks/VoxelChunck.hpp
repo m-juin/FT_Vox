@@ -16,6 +16,8 @@
 
 #include "Spline/Spline.hpp"
 
+#include <bitset>
+
 namespace Vox::Game::World::Chuncks
 {
 	using namespace Game::Utils::Defines;
@@ -35,7 +37,7 @@ namespace Vox::Game::World::Chuncks
 			~VoxelChunck();
 
 			void Render();
-			void BuildVoxelObject(const std::unordered_map<std::string, const Spline::Spline> &spl);
+			void BuildVoxelObject(const std::unordered_map<std::string, const Spline::Spline> &spl, const uint8_t hMap[CHUNCK_SIZE * CHUNCK_SIZE], const uint32_t &seed);
 			void BuildBufferObject(const uint16_t &buffer);
 
 			Vector3Int GetChunckPosition() {return this->_chunckPos;};
@@ -53,6 +55,7 @@ namespace Vox::Game::World::Chuncks
             void AssignModel() override;
             static size_t GetLocalIndex(const LocalVector &vec);
             static LocalVector GetLocalVector(const size_t &index);
+			std::bitset<CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE> BuildContent(const uint8_t hMap[CHUNCK_SIZE * CHUNCK_SIZE]);
 
 			size_t _bufferIndex;
 			sbuffer *B_Vertex;

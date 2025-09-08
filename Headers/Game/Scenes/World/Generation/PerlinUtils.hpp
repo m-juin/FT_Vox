@@ -5,7 +5,7 @@
 
 #include "MathGraphicalLib/Vectors/Vector2.hpp"
 
-namespace Vox::World::Generation::Perlins::Utils
+namespace Vox::Game::Generation::Perlins::Utils
 {
     struct PerlinData
     {

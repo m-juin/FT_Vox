@@ -11,7 +11,7 @@
 
 namespace Vox::Game::Generation
 {
-	GenerationManager::GenerationManager()
+	GenerationManager::GenerationManager(const uint32_t seed) : _seed(seed)
 	{
 		this->onUpdate.AddCallBack([this]() { this->UpdateGeneration(); });
 	}
@@ -28,8 +28,9 @@ namespace Vox::Game::Generation
 		std::shared_ptr<World::Chuncks::ChunckCluster> ch = std::make_shared<World::Chuncks::ChunckCluster>(coord);
 		this->_waitingChuncks.push_back(ch);
 
+		auto seed = this->_seed;
 		Game::GameManager::GetInstance().GetThreadManager().EnQueue(
-			[ch](std::unordered_map<std::string, const Spline::Spline> spl) { ch->BuildClusterContent(spl); });
+			[ch, seed](std::unordered_map<std::string, const Spline::Spline> spl) { ch->BuildClusterContent(spl, seed);});
 	}
 
 	size_t GenerationManager::GetWaitingData() const
