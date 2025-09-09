@@ -60,7 +60,7 @@ namespace Vox::Game::Scenes::World
 			}
 			break;
 		case Game::Utils::Datas::E_InputAction::I_Generation:
-			if (iManager.IsInterfaceEnabled("Generation"))
+			if (iManager.IsInterfaceEnabled("Generation") == true)
 			{
 				iManager.DisableInterface("Generation");
 			}

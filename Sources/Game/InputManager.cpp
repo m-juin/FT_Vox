@@ -30,10 +30,9 @@ namespace Vox::Game
 		if (action != GLFW_RELEASE)
 			return true;
 		E_InputAction inputAction =
-			this->_inputMap[E_InputAction::I_F3] ? E_InputAction::I_F3 : E_InputAction::I_Generation;
+			button == this->_inputMap[E_InputAction::I_F3] ? E_InputAction::I_F3 : E_InputAction::I_Generation;
 		if (Game::GameManager::GetInstance().GetSceneManager().GetCurrentScene().HandleInputAction(inputAction))
 		{
-			std::cout << "here\n";
 			this->SetInputTarget(E_InputTarget::UI);
 		}
 		else

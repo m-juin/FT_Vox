@@ -25,15 +25,13 @@ namespace Vox::Game::Scenes::World::Interfaces
 
 			this->AddElement("TXT_Seed", std::make_unique<Text>(pm));
 		}
-		{
-		}
 
 		this->onUpdate.AddCallBack(
 			[this]()
 			{
 				this->UpdateSeed();
 			});
-		this->ChangeEnableState(false);
+		this->_enabled = false;
 	}
 
 	I_Generation::~I_Generation() {}
@@ -42,7 +40,7 @@ namespace Vox::Game::Scenes::World::Interfaces
 	{
 		if (newPos == this->_pos)
 			return;
-		this->FindElement("TXT_Seed")->elem->SetPos({this->_pos[0] + 100, this->_pos[1] + 100});
+		this->FindElement("TXT_Seed")->elem->SetPos({this->_pos[0] + 50, this->_pos[1] + 50});
 	}
 
 	void I_Generation::SetSize(const Vox::Front::Interfaces::Elements::Vector2 newSize)

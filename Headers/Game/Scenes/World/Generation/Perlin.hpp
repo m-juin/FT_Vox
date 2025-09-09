@@ -83,13 +83,11 @@ namespace Vox::Game::Generation::Perlins
 
 		float amp = data.amp;
 		float freq = data.freq;
-		float maxAmp = 0.0f;
 
 		for (int counter = 0; counter < data.octaves; counter++)
 		{
 			val += amp * (perlin((x + data.offset[0]) * freq, (y + data.offset[1]) * freq, seed));
 			freq *= 2;
-			maxAmp += amp;
 			amp /= 2;
 		}
 		// val = val / maxAmp;
