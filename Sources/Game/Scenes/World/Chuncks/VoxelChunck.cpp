@@ -199,7 +199,6 @@ namespace Vox::Game::World::Chuncks
 		std::array<Vertex, 4> toAdd = defaultFacesPos.at(face);
 		
 		Vector3Float rgbVal = {(static_cast<float>(rand()) / (float)(RAND_MAX)), (static_cast<float>(rand()) / (float)(RAND_MAX)), (static_cast<float>(rand()) / (float)(RAND_MAX))};
-		std::cout << rgbVal << std::endl;
 		
 		for (auto &ref : toAdd)
 		{

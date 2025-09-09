@@ -18,9 +18,10 @@ namespace Vox::Game::Generation
 	{
 		std::filesystem::path splineFolder(splinePath);
 		splineFolder /= Vox::Utils::RessourcesPackDefines::SPLINE_ASSETS_PATH;
-		std::cout << splineFolder.string() << std::endl;
 		std::unordered_map<std::string, std::string> SplinesToLoad{
 			{"Continental", "continental.spline"},
+			{"Erosion", "erosion.spline"},
+			{"P&V", "PeaksAndValleys.spline"},
 		};
 
 		for (auto &pair : SplinesToLoad)

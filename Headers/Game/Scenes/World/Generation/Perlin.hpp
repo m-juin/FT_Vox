@@ -101,11 +101,18 @@ namespace Vox::Game::Generation::Perlins
 							   const std::unordered_map<std::string, const Spline::Spline> &spl)
 	{
 		// applique exactement le même perlin et spline que dans GenerateHeightMap
-		float val = spl.at("Continental")
-						.GetValue(GetPerlinValue(x + WORLD_CENTER, z + WORLD_CENTER, seed, Utils::ContinentalnessData,
-												 {-1.2f, 1.0f}));
+		float contVal = spl.at("Continental")
+							.GetValue(GetPerlinValue(x + WORLD_CENTER, z + WORLD_CENTER, seed,
+													 Utils::ContinentalnessData, {-1.2f, 1.0f}));
 
-		return static_cast<uint8_t>(val);
+		float eroVal = spl.at("Erosion").GetValue(
+			GetPerlinValue(x + WORLD_CENTER, z + WORLD_CENTER, seed, Utils::ErosionData, {-1.0f, 1.0f}));
+		float PAVVal = spl.at("P&V").GetValue(
+			GetPerlinValue(x + WORLD_CENTER, z + WORLD_CENTER, seed, Utils::PeaksAndValleyData, {-1.0f, 1.0f}));
+		contVal *= 0.5f;
+		eroVal *= 0.3f;
+		PAVVal *= 0.2f;
+		return static_cast<uint8_t>(contVal + eroVal + PAVVal);
 	}
 	inline bool IsBlockAt(const Game::Utils::Defines::Vector3Int pos, const uint32_t &seed,
 						  const std::unordered_map<std::string, const Spline::Spline> &spl)
