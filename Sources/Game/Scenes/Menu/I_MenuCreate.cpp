@@ -138,6 +138,7 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 						return;
 					if (Saves::SaveWorldData(wd) == false)
 						return ;
+					Game::GameManager::GetInstance().SetSaveData(wd);
 					Game::GameManager::GetInstance().GetSceneManager().LoadScene("World");
 				});
 			btn->ChangeEnableState(false);

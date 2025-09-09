@@ -10,10 +10,9 @@ namespace Vox::Game
 	void GameManager::Render()
 	{
 		this->_scManager.RenderCurrentScene();
-		// std::cout << &this->_scManager << std::endl;
 	}
 
-	GameManager::GameManager()
+	GameManager::GameManager() : _wd({"", "", ""})
 	{
 		this->_tManager = std::make_unique<ThreadManager>(std::thread::hardware_concurrency() - 2);
 		this->_sManager = std::make_unique<Generation::SplinesManager>(this->GetTexturePackPath());

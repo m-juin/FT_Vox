@@ -4,6 +4,7 @@
 
 #include "Game/Scenes/Menu/SavesData.hpp"
 #include "Game/Scenes/World/Interfaces/I_F3.hpp"
+#include "Game/Scenes/World/Interfaces/I_Generation.hpp"
 #include "Front/Rendering/SwapChain.hpp"
 
 namespace Vox::Game::Scenes::World
@@ -35,9 +36,10 @@ namespace Vox::Game::Scenes::World
 		GameManager::GetInstance().GetInputManager().SetInputTarget(E_InputTarget::Camera);
 
 		auto extent = Front::Rendering::SwapChain::GetInstance().GetExtent();
-		iManager.RegisterInterface("Main", new Interfaces::I_F3({0, 0}, {(float)extent.width, (float)extent.height}));
+		iManager.RegisterInterface("F3", new Interfaces::I_F3({0, 0}, {(float)extent.width, (float)extent.height}));
+		iManager.RegisterInterface("Generation", new Interfaces::I_Generation({0, 0}, {(float)extent.width, (float)extent.height}));
 		GameManager::GetInstance().InitThreads();
-		this->_wM = std::make_unique<Game::World::WorldManager>(Menu::Saves::WorldData("", "", ""));
+		this->_wM = std::make_unique<Game::World::WorldManager>(GameManager::GetInstance().GetSaveData());
     }
 } // namespace Vox::Game::Scenes::World
 

@@ -26,8 +26,10 @@ namespace Vox::Game::Generation
 
 			size_t GetWaitingData() const;
 
+			uint32_t GetSeed() const {return this->_seed;} ;
+
 		private:
-			const uint32_t _seed; 
+			uint32_t _seed; 
 			Vox::Game::Utils::Defines::ChunckCoord _playerPos;
             void UpdateGeneration();
 			std::list<std::shared_ptr<World::Chuncks::ChunckCluster>> _waitingChuncks;

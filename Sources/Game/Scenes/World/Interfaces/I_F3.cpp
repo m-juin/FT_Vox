@@ -63,7 +63,6 @@ namespace Vox::Game::Scenes::World::Interfaces
 			return;
 		_size[0] = MGL::Utils::findNextMultiple(newSize[0], 16.f);
 		_size[1] = MGL::Utils::findNextMultiple(newSize[1], 16.f);
-		this->FindElement("IMG_BG")->elem->SetSize(this->_size);
 	}
 
 	void I_F3::Render()

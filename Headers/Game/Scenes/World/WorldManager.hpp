@@ -4,8 +4,8 @@
 #include "Game/Scenes/World/Utils/Defines.hpp"
 #include "Game/Scenes/World/Utils/Vulkan.hpp"
 
-#include <unordered_map>
 #include <list>
+#include <unordered_map>
 #include <vulkan/vulkan.h>
 
 #include "Game/Scenes/World/Chuncks/ChunckCluster.hpp"
@@ -43,21 +43,26 @@ namespace Vox::Game::World
 			static WorldManager &GetInstance();
 
 			static Scenes::World::Player::Camera &GetCamera();
-			
 
 			void UpdateBuffer(const size_t &index, const Chuncks::VoxelChunck::ChunckUniform &uniform);
 
 			void Render();
 			void AddEndedChunck(std::shared_ptr<Chuncks::ChunckCluster> chunck);
 
-			size_t GetLoadedChunckData() {return this->_chuncks.size();};
-			const Generation::GenerationManager GetGenerationManager() {return *this->_gManager;};
-			Generation::BufferManager &GetBufferManager() {return *this->_bManager;};
-		
-			
+			size_t GetLoadedChunckData()
+			{
+				return this->_chuncks.size();
+			};
+			const Generation::GenerationManager GetGenerationManager()
+			{
+				return *this->_gManager;
+			};
+			Generation::BufferManager &GetBufferManager()
+			{
+				return *this->_bManager;
+			};
 
-			private:
-
+		private:
 			void CheckCreation();
 			void CheckDeletion();
 			void UpdatePlayerPos();
@@ -67,7 +72,7 @@ namespace Vox::Game::World
 
 			Utils::Defines::ChunckCoord _playerChunck;
 
-			std::unordered_map<const Utils::Defines::ChunckCoord,std::shared_ptr<Chuncks::ChunckCluster>,
+			std::unordered_map<const Utils::Defines::ChunckCoord, std::shared_ptr<Chuncks::ChunckCluster>,
 							   MGL::Vectors::Vector2Hash<int>>
 				_chuncks;
 			Scenes::World::Player::Camera _camera;

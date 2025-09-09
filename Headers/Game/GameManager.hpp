@@ -11,6 +11,8 @@
 #include "Game/Scenes/World/Generation/SplinesManager.hpp"
 #include "Front/Scenes/TexturesManager.hpp"
 
+#include "Scenes/Menu/SavesData.hpp"
+
 
 namespace Vox::Game
 {
@@ -41,9 +43,12 @@ namespace Vox::Game
             ThreadManager &GetThreadManager() {return *_tManager;};
             Vox::Front::Scenes::TexturesManager &GetTexturesManager() {return *_texturesManager;};
 
+            Scenes::Menu::Saves::WorldData GetSaveData() {return this->_wd;}
+            void SetSaveData(Scenes::Menu::Saves::WorldData wd) {this->_wd = wd;}
         // Front::Rendering::Images::FontImage &GetFont() {return *this->_fontImage;};
 
         private:
+            Scenes::Menu::Saves::WorldData _wd;
             std::unique_ptr<Generation::SplinesManager> _sManager;
             std::unique_ptr<Vox::Front::Scenes::TexturesManager> _texturesManager;
             std::string _TPack = "1";
