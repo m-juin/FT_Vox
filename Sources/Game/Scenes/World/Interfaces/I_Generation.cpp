@@ -20,7 +20,7 @@ namespace Vox::Game::Scenes::World::Interfaces
 			pm.color = {0.5, 0.5, 0.5, 1.0};
 			pm.content = "Seed: ";
 			pm.scale = 0.3f;
-			pm.pos = {this->_pos[0] + 500, this->_pos[1] + 50};
+			pm.pos = {this->_pos[0] + 50, this->_pos[1] + 50};
 			pm.size = {100, 50};
 
 			this->AddElement("TXT_Seed", std::make_unique<Text>(pm));

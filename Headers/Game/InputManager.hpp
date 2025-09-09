@@ -22,6 +22,7 @@ namespace Vox::Game
             ~InputManager();
         
             void SetInputTarget(E_InputTarget newTarget);
+            bool HandleNonTargetInput(const int &button, const int &action);
             E_InputTarget GetInputTarget() { return this->_target; };
         
         private:

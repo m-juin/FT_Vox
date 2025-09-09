@@ -11,6 +11,9 @@ namespace Vox::Game::Utils::Datas
 		MOVE_BACK = 33,
 		MOVE_DOWN = 34,
 		MOVE_LEFT = 35,
+
+		I_F3 = 50,
+		I_Generation = 51
 	};
 } // namespace Vox::Game::Utils::Datas
 

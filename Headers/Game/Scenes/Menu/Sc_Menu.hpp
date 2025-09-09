@@ -25,6 +25,7 @@ namespace Vox::Game::Scenes::Menu
 			void Unload() override;
 			void Render() override;
 			void InitSceneData() override;
+			bool HandleInputAction(const Game::Utils::Datas::E_InputAction &action) override {(void)action; return true;};
 
 			const std::string &GetName() const override
 			{

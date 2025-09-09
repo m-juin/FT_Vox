@@ -32,6 +32,7 @@ namespace Vox::Front::Interfaces
 			virtual void Render() = 0;
 		
 			private:
+				
 			/* private */
 	};
 } // namespace Vox::Front::Interfaces

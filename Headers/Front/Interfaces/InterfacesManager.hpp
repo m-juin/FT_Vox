@@ -32,7 +32,7 @@ namespace Vox::Front::Interfaces
 			{
 				return _content[key];
 			}
-			// Ajoutez ces fonctions pour une meilleure gestion des états
+			
 			void EnableInterface(const std::string &key);
 
 			void DisableInterface(const std::string &key);
@@ -43,7 +43,6 @@ namespace Vox::Front::Interfaces
 			}
 
 		private:
-			;
 			std::unordered_map<std::string, AInterface *> _content;
 			/* private */
 	};

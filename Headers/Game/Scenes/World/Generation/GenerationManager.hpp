@@ -17,7 +17,7 @@ namespace Vox::Game::Generation
 	class GenerationManager : public virtual Vox::Utils::AUpdatable
 	{
 		public:
-			GenerationManager(const uint32_t seed);
+			GenerationManager(const uint64_t seed);
 			~GenerationManager() {};
 			bool IsChunckPresent(const Vox::Game::Utils::Defines::ChunckCoord &coord);
 
@@ -26,10 +26,10 @@ namespace Vox::Game::Generation
 
 			size_t GetWaitingData() const;
 
-			uint32_t GetSeed() const {return this->_seed;} ;
+			uint64_t GetSeed() const {return this->_seed;} ;
 
 		private:
-			uint32_t _seed; 
+			uint64_t _seed; 
 			Vox::Game::Utils::Defines::ChunckCoord _playerPos;
             void UpdateGeneration();
 			std::list<std::shared_ptr<World::Chuncks::ChunckCluster>> _waitingChuncks;

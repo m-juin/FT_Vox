@@ -4,6 +4,8 @@
 #include "Front/Rendering/Pipelines/VoxelPipeline.hpp"
 #include "Front/Rendering/SyncObjects.hpp"
 
+#include <cstring>
+
 namespace Vox::Game::World
 {
 	WorldManager::WorldManager(const Scenes::Menu::Saves::WorldData &wd)
@@ -11,7 +13,7 @@ namespace Vox::Game::World
 		  _chunckBuffer(2, Utils::Vulkan::GetAlignedChunckSize() * Utils::Defines::CHUNCK_AMOUNT,
 						VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT)
 	{
-		this->_gManager = std::make_unique<Generation::GenerationManager>(std::atoi(wd.seed.c_str()));
+		this->_gManager = std::make_unique<Generation::GenerationManager>(std::stoull(wd.seed.c_str()));
 		this->_bManager = std::make_unique<Generation::BufferManager>();
 
 		this->_chunckBuffer.Create(nullptr);

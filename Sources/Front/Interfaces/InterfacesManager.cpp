@@ -1,10 +1,10 @@
 #include "Front/Interfaces/InterfacesManager.hpp"
 
+#include "Front/Rendering/CommandsPool.hpp"
 #include "Front/Rendering/Pipelines/PipelinesManager.hpp"
 #include "Front/Rendering/Pipelines/StaticGUIPipeline.hpp"
 #include "Front/Rendering/SwapChain.hpp"
 #include "Front/Rendering/SyncObjects.hpp"
-#include "Front/Rendering/CommandsPool.hpp"
 
 #include "Front/Interfaces/Elements/Bases/AClickable.hpp"
 #include "Front/Interfaces/Elements/Bases/AFocusable.hpp"
@@ -42,11 +42,13 @@ namespace Vox::Front::Interfaces
 		auto frame = SyncObjects::GetInstance().GetCurrentFrame();
 
 		auto buffer = CommandsPool::GetInstance().GetBuffer(frame);
-		auto pipeline = Pipelines::PipelinesManager::GetInstance().operator[]<Pipelines::StaticGUIPipeline>("StaticGUI");
+		auto pipeline =
+			Pipelines::PipelinesManager::GetInstance().operator[]<Pipelines::StaticGUIPipeline>("StaticGUI");
 		if (pipeline == nullptr)
-			return ;
+			return;
 		Rendering::Pipelines::PipelinesManager::GetInstance().BindPipeline("StaticGUI");
-		vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->GetLayout(), 0, 1, &pipeline->GetSet(), 0, nullptr);
+		vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->GetLayout(), 0, 1,
+								&pipeline->GetSet(), 0, nullptr);
 		for (auto &pair : this->_content)
 		{
 			if (pair.second->IsEnabled())
@@ -116,11 +118,14 @@ namespace Vox::Front::Interfaces
 
 	InterfacesManager::InterfacesManager()
 	{
-		this->onUpdate.AddCallBack([this](){
-			for (auto i : this->_content)
-				if (auto converted = dynamic_cast<Vox::Utils::AUpdatable*>(i.second))
-					converted->Update();
-		});
+		this->onUpdate.AddCallBack(
+			[this]()
+			{
+				for (auto i : this->_content)
+					if (i.second->IsEnabled())
+						if (auto converted = dynamic_cast<Vox::Utils::AUpdatable *>(i.second))
+							converted->Update();
+			});
 	}
 
 	InterfacesManager::~InterfacesManager()

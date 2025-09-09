@@ -4,6 +4,7 @@
 #include <memory>
 #include <string>
 
+#include "Game/Utils/Datas/E_InputAction.hpp"
 // #include "Front/Scenes/TexturesManager.hpp"
 
 namespace Vox::Front::Scenes
@@ -17,11 +18,10 @@ namespace Vox::Front::Scenes
 			virtual void Unload() = 0;
 			virtual void Render() = 0;
 			virtual const std::string &GetName() const = 0;
+			virtual bool HandleInputAction(const Game::Utils::Datas::E_InputAction &action) = 0;
 
-			// TexturesManager *GetTextureManager() {return this->_textureManager;};
-			// TexturesManager *GetTextureManager() const {return this->_textureManager;};
         protected:
-			// TexturesManager *_textureManager;
+
 
 	};
 } // namespace Vox::Front::Scenes

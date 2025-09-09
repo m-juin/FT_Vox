@@ -11,7 +11,7 @@
 
 namespace Vox::Game::Generation
 {
-	GenerationManager::GenerationManager(const uint32_t seed) : _seed(seed)
+	GenerationManager::GenerationManager(const uint64_t seed) : _seed(seed)
 	{
 		this->onUpdate.AddCallBack([this]() { this->UpdateGeneration(); });
 	}
