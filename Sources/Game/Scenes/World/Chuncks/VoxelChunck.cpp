@@ -171,10 +171,10 @@ namespace Vox::Game::World::Chuncks
 
 	void VoxelChunck::Render()
 	{
-		if (this->indexCount == 0)
-			return;
 		using namespace Front::Rendering;
 		auto frame = SyncObjects::GetInstance().GetCurrentFrame();
+		if (this->indexCount == 0 || this->_isDirty[frame] == true)
+			return;
 		uint32_t dynamicOffset = this->_bufferIndex * Utils::Vulkan::GetAlignedChunckSize();
 
 		auto buffer = CommandsPool::GetInstance().GetBuffer(frame);
@@ -197,10 +197,17 @@ namespace Vox::Game::World::Chuncks
 	void VoxelChunck::AddFace(const Faces &face, const LocalVector &facePos)
 	{
 		std::array<Vertex, 4> toAdd = defaultFacesPos.at(face);
+		
+		Vector3Float rgbVal = {(static_cast<float>(rand()) / (float)(RAND_MAX)), (static_cast<float>(rand()) / (float)(RAND_MAX)), (static_cast<float>(rand()) / (float)(RAND_MAX))};
+		std::cout << rgbVal << std::endl;
+		
 		for (auto &ref : toAdd)
 		{
 			for (uint8_t i = 0; i < 3; i++)
+			{
 				ref.vertPos[i] += facePos[i];
+				ref.vertColor = rgbVal;
+			}
 		}
 		auto beg = vertex.end();
 
