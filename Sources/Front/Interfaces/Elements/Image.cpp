@@ -123,8 +123,13 @@ namespace Vox::Front::Interfaces::Elements
 		if (newPos == this->_pos)
 			return;
 		this->_pos = newPos;
-
-		this->ResetVertex();
+		const Vector2 screenSize(Rendering::SwapChain::GetInstance().GetExtent().width,
+								 Rendering::SwapChain::GetInstance().GetExtent().height);
+		// this->ResetVertex();
+		this->_vertex[0].position = PointPixelToVulkan(this->_pos, screenSize);
+		this->_vertex[1].position = PointPixelToVulkan({this->_pos[0] + this->_size[0], this->_pos[1]}, screenSize);
+		this->_vertex[2].position = PointPixelToVulkan({this->_pos[0] + this->_size[0], this->_pos[1] + this->_size[1]}, screenSize);
+		this->_vertex[3].position = PointPixelToVulkan({this->_pos[0], this->_pos[1] + this->_size[1]}, screenSize);
 		this->B_Vertices->Update(&this->_vertex, 4 * sizeof(Vertex));
 	}
 

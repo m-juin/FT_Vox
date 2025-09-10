@@ -1,6 +1,7 @@
 
 #include "Game/Scenes/World/Interfaces/I_Generation.hpp"
 
+#include "Front/Interfaces/Elements/Slider.hpp"
 #include "Front/Interfaces/Elements/Text.hpp"
 
 #include "MathGraphicalLib/Utils.hpp"
@@ -9,10 +10,13 @@
 
 #include <sstream>
 
+#include "Game/GameManager.hpp"
+
 namespace Vox::Game::Scenes::World::Interfaces
 {
 	using namespace Front::Interfaces::Elements;
-	I_Generation::I_Generation(Vox::Front::Interfaces::Elements::Vector2 pos, Vox::Front::Interfaces::Elements::Vector2 size)
+	I_Generation::I_Generation(Vox::Front::Interfaces::Elements::Vector2 pos,
+							   Vox::Front::Interfaces::Elements::Vector2 size)
 		: AInterface(pos, size), AUpdatable(10)
 	{
 		{
@@ -25,12 +29,32 @@ namespace Vox::Game::Scenes::World::Interfaces
 
 			this->AddElement("TXT_Seed", std::make_unique<Text>(pm));
 		}
+		{
+			auto sManager = Game::GameManager::GetInstance().GetSplineManager();
+			auto spl = sManager.GetSplinesCopy();
 
-		this->onUpdate.AddCallBack(
-			[this]()
+			Slider::Constructor pm{};
+			pm.pos = {pos[0] + size[0] - 300, pos[1] + 50};
+			pm.size = {200, 25};
+
+			Text::Vox_Text_Constructor Tpm{};
+			Tpm.color = {0.5, 0.5, 0.5, 1.0};
+			Tpm.scale = 0.4;
+			Tpm.pos = {pos[0] + size[0] - 500, pm.pos[1] + 16};
+
+
+			for (auto pair : spl)
 			{
-				this->UpdateSeed();
-			});
+				Tpm.content = pair.first;
+				pm.defaultValue = pair.second.second;
+				this->AddElement("SL_" + pair.first, std::make_unique<Slider>(pm));
+				this->AddElement("TXT_" + pair.first, std::make_unique<Text>(Tpm));
+				pm.pos[1] += 50;
+				Tpm.pos[1] += 50;
+			}
+		}
+
+		this->onUpdate.AddCallBack([this]() { this->UpdateSeed(); });
 		this->_enabled = false;
 	}
 

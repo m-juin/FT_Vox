@@ -37,7 +37,7 @@ namespace Vox::Game::World::Chuncks
 		wm.UpdateBuffer(this->_bufferIndex, {this->GetModel()});
 	}
 
-	void VoxelChunck::BuildVoxelObject(const std::unordered_map<std::string, const Spline::Spline> &spl,
+	void VoxelChunck::BuildVoxelObject(const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl,
 									   const uint8_t hMap[CHUNCK_SIZE * CHUNCK_SIZE], const uint32_t &seed)
 	{
 		(void)spl;

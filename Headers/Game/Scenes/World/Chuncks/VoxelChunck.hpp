@@ -37,7 +37,7 @@ namespace Vox::Game::World::Chuncks
 			~VoxelChunck();
 
 			void Render();
-			void BuildVoxelObject(const std::unordered_map<std::string, const Spline::Spline> &spl, const uint8_t hMap[CHUNCK_SIZE * CHUNCK_SIZE], const uint32_t &seed);
+			void BuildVoxelObject(const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl, const uint8_t hMap[CHUNCK_SIZE * CHUNCK_SIZE], const uint32_t &seed);
 			void BuildBufferObject(const uint16_t &buffer);
 
 			Vector3Int GetChunckPosition() {return this->_chunckPos;};

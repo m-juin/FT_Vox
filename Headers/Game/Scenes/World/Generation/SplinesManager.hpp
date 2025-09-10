@@ -14,10 +14,11 @@ namespace Vox::Game::Generation
             void LoadSplines(const std::string &splinePath);
             ~SplinesManager() {};
 
-            std::unordered_map<std::string, const Spline::Spline> GetSplinesCopy() const;
+            std::unordered_map<std::string, std::pair<const Spline::Spline, float>> GetSplinesCopy() const;
+            // const std::unordered_map<std::string, const Spline::Spline> &GetSplines() const {return this->_splines;};
     
         private:
-            std::unordered_map<std::string, const Spline::Spline *> _splines;
+            std::unordered_map<std::string, std::pair<const Spline::Spline *, float>> _splines;
             /* private */
     
     };

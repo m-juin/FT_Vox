@@ -24,7 +24,7 @@ namespace Vox::Game::World::Chuncks
 				ch->Render();
 	}
 
-	void ChunckCluster::BuildClusterContent(const std::unordered_map<std::string, const Spline::Spline> &spl,
+	void ChunckCluster::BuildClusterContent(const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl,
 											const uint32_t seed)
 	{
 		this->ChangeGenerationState(Generation::E_GenerationState::Mesh);
@@ -82,7 +82,7 @@ namespace Vox::Game::World::Chuncks
 		this->_currentState = Generation::E_GenerationState::End;
 	}
 
-	void ChunckCluster::GenerateHeightMap(const std::unordered_map<std::string, const Spline::Spline> &spl,
+	void ChunckCluster::GenerateHeightMap(const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl,
 										  const uint32_t seed, uint8_t hMap[CHUNCK_SIZE * CHUNCK_SIZE])
 	{
 		int baseX = static_cast<int>(this->_clusterPos[0] * CHUNCK_SIZE);

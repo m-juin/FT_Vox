@@ -21,11 +21,11 @@ namespace Vox::Game::World::Chuncks
 			uint16_t _bufferIndex;
 			uint16_t GetBuffer() const;
 			void Render();
-			void BuildClusterContent(const std::unordered_map<std::string, const Spline::Spline> &spl, const uint32_t seed);
+			void BuildClusterContent(const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl, const uint32_t seed);
 			ChunckCoord GetPosition();
 
 			void BuildBuffers(const uint16_t &buffer);
-			void GenerateHeightMap(const std::unordered_map<std::string, const Spline::Spline> &spl, const uint32_t seed, uint8_t hMap[CHUNCK_SIZE * CHUNCK_SIZE]);
+			void GenerateHeightMap(const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl, const uint32_t seed, uint8_t hMap[CHUNCK_SIZE * CHUNCK_SIZE]);
 
 			ChunckCluster(const ChunckCoord &coord);
 			~ChunckCluster();

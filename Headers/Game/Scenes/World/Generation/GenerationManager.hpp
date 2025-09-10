@@ -29,6 +29,7 @@ namespace Vox::Game::Generation
 			uint64_t GetSeed() const {return this->_seed;} ;
 
 		private:
+
 			uint64_t _seed; 
 			Vox::Game::Utils::Defines::ChunckCoord _playerPos;
             void UpdateGeneration();

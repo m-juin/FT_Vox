@@ -18,19 +18,19 @@ namespace Vox::Game::Generation
 	{
 		std::filesystem::path splineFolder(splinePath);
 		splineFolder /= Vox::Utils::RessourcesPackDefines::SPLINE_ASSETS_PATH;
-		std::unordered_map<std::string, std::string> SplinesToLoad{
-			{"Continental", "continental.spline"},
-			{"Erosion", "erosion.spline"},
-			{"P&V", "PeaksAndValleys.spline"},
+		std::unordered_map<std::string, std::pair<std::string, float>> SplinesToLoad{
+			{"Continental", {"continental.spline", 0.6}},
+			{"Erosion", {"erosion.spline", 0.25}},
+			{"P&V", {"PeaksAndValleys.spline", 0.15}},
 		};
 
 		for (auto &pair : SplinesToLoad)
 		{
 			try
 			{
-				auto path = std::filesystem::path(splineFolder / pair.second);
-				this->_splines[pair.first] =
-					Spline::LoadSpline(path.string().c_str());
+				auto path = std::filesystem::path(splineFolder / pair.second.first);
+				this->_splines[pair.first] = {
+					Spline::LoadSpline(path.string().c_str()), pair.second.second};
 			}
 			catch (std::exception &e)
 			{
@@ -39,12 +39,12 @@ namespace Vox::Game::Generation
 		}
 	}
 
-	std::unordered_map<std::string, const Spline::Spline> SplinesManager::GetSplinesCopy() const
+	std::unordered_map<std::string, std::pair<const Spline::Spline,float>> SplinesManager::GetSplinesCopy() const
 	{
-		std::unordered_map<std::string, const Spline::Spline> retVal;
+		std::unordered_map<std::string, std::pair<const Spline::Spline,float>> retVal;
 		retVal.reserve(_splines.size());
 		for (const auto &pair : _splines)
-			retVal.emplace(pair.first, *pair.second);
+			retVal.emplace(pair.first, std::pair<const Spline::Spline,float>(*pair.second.first, pair.second.second));
 		return retVal;
 	}
 } // namespace Vox::Game::Generation

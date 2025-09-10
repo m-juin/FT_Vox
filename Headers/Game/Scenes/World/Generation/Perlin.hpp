@@ -96,24 +96,24 @@ namespace Vox::Game::Generation::Perlins
 		return Spline::GetNormalizedRangedValue(val, {-1.0f, 1.0f}, range);
 	}
 	inline uint8_t GetHeightAt(int x, int z, uint32_t seed,
-							   const std::unordered_map<std::string, const Spline::Spline> &spl)
+							   const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl)
 	{
 		// applique exactement le même perlin et spline que dans GenerateHeightMap
-		float contVal = spl.at("Continental")
+		float contVal = spl.at("Continental").first
 							.GetValue(GetPerlinValue(x + WORLD_CENTER, z + WORLD_CENTER, seed,
 													 Utils::ContinentalnessData, {-1.2f, 1.0f}));
 
-		float eroVal = spl.at("Erosion").GetValue(
+		float eroVal = spl.at("Erosion").first.GetValue(
 			GetPerlinValue(x + WORLD_CENTER, z + WORLD_CENTER, seed, Utils::ErosionData, {-1.0f, 1.0f}));
-		float PAVVal = spl.at("P&V").GetValue(
+		float PAVVal = spl.at("P&V").first.GetValue(
 			GetPerlinValue(x + WORLD_CENTER, z + WORLD_CENTER, seed, Utils::PeaksAndValleyData, {-1.0f, 1.0f}));
-		contVal *= 0.5f;
-		eroVal *= 0.3f;
-		PAVVal *= 0.2f;
+		contVal *= spl.at("Continental").second;
+		eroVal *= spl.at("Erosion").second;
+		PAVVal *= spl.at("P&V").second;
 		return static_cast<uint8_t>(contVal + eroVal + PAVVal);
 	}
 	inline bool IsBlockAt(const Game::Utils::Defines::Vector3Int pos, const uint32_t &seed,
-						  const std::unordered_map<std::string, const Spline::Spline> &spl)
+						  const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl)
 	{
 		uint8_t h = GetHeightAt(pos[0], pos[2], seed, spl);
 		return pos[1] <= h;

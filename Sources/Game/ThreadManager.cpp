@@ -13,7 +13,7 @@ namespace Vox::Game
 		CleanPool();
 	}
 
-	void ThreadManager::EnQueue(std::function<void(std::unordered_map<std::string, const Spline::Spline>)> newTask)
+	void ThreadManager::EnQueue(std::function<void(std::unordered_map<std::string, std::pair<const Spline::Spline, float>>)> newTask)
 	{
 		{
 			std::unique_lock lock(this->_queueMutex);
@@ -31,14 +31,14 @@ namespace Vox::Game
 		}
 		for (size_t i = 0; i < this->_maxThread; i++)
 		{
-			std::unordered_map<std::string, const Spline::Spline> copy = sManager.GetSplinesCopy();
+			std::unordered_map<std::string, std::pair<const Spline::Spline, float>> copy = sManager.GetSplinesCopy();
 			this->_pool.emplace_back(
 				[this, copy]
 				{
                     this->print("[DEBUG] Thread ", std::this_thread::get_id(), " launched.");
 					while (1)
 					{
-						std::function<void(std::unordered_map<std::string, const Spline::Spline>)> task;
+						std::function<void(std::unordered_map<std::string, std::pair<const Spline::Spline, float>>)> task;
 						{
 							std::unique_lock<std::mutex> lock(this->_queueMutex);
 

@@ -9,6 +9,7 @@
 #include "Front/Interfaces/Elements/Bases/AClickable.hpp"
 #include "Front/Interfaces/Elements/Bases/AFocusable.hpp"
 #include "Front/Interfaces/Elements/InputField.hpp"
+#include "Front/Interfaces/Elements/Slider.hpp"
 
 #include <GLFW/glfw3.h>
 
@@ -61,6 +62,16 @@ namespace Vox::Front::Interfaces
 	void InterfacesManager::HandleMouseMove(const float &xPos, const float &yPos) const
 	{
 		Front::Interfaces::Elements::Bases::AClickable::ResetHoverState();
+		auto focused = Front::Interfaces::Elements::Bases::AFocusable::GetFocused();
+		if (focused != nullptr)
+		{
+			if (auto sld = dynamic_cast<Elements::Slider *>(focused))
+			{
+				sld->HandleMovement(xPos);
+				return ;
+			}
+		}
+		
 		for (auto pair : this->_content)
 		{
 			pair.second->IsHover({xPos, yPos});
