@@ -39,6 +39,16 @@ namespace Vox::Game::Generation
 		}
 	}
 
+	std::vector<std::string> SplinesManager::GetSplinesNames()
+	{
+		std::vector<std::string> names;
+		names.reserve(this->_splines.size());
+		for (auto pair : this->_splines)
+			names.emplace_back(pair.first);
+		return names;
+
+	}
+
 	std::unordered_map<std::string, std::pair<const Spline::Spline,float>> SplinesManager::GetSplinesCopy() const
 	{
 		std::unordered_map<std::string, std::pair<const Spline::Spline,float>> retVal;

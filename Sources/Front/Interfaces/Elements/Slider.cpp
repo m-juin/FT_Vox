@@ -43,8 +43,16 @@ namespace Vox::Front::Interfaces::Elements
 		if (newVal == this->_value)
 			return;
 		else if (newVal < this->_range.first || newVal > this->_range.second)
+		{
+			// std::cout << newVal << std::endl;
 			throw std::runtime_error("Invalid slider value.");
+		}
 		this->_value = newVal;
+		this->GetElement<Image>("IMG_Handle")->SetPos(Vector2(this->GetHandlePos(), this->_pos[1]));
+		std::stringstream ss;
+		ss << std::setprecision(2) << this->_value;
+		this->GetElement<Text>("TXT_Value")->SetContent(ss.str());
+
 	}
 
 	void Slider::UpdateVals()
@@ -113,6 +121,7 @@ namespace Vox::Front::Interfaces::Elements
 		ss << std::setprecision(2) << this->_value;
 		this->GetElement<Text>("TXT_Value")->SetContent(ss.str());
 		this->GetElement<Image>("IMG_Handle")->SetPos(Vector2(this->GetHandlePos(), this->_pos[1]));
+		this->onValueChange.Notify(this->_value, prevVal);
 	}
 
 	bool Slider::IsHover(const Vector2 &mousePos)

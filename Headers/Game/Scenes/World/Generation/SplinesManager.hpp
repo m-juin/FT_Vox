@@ -13,6 +13,7 @@ namespace Vox::Game::Generation
             SplinesManager(const std::string &splinePath);
             void LoadSplines(const std::string &splinePath);
             ~SplinesManager() {};
+            std::vector<std::string> GetSplinesNames();
 
             std::unordered_map<std::string, std::pair<const Spline::Spline, float>> GetSplinesCopy() const;
             // const std::unordered_map<std::string, const Spline::Spline> &GetSplines() const {return this->_splines;};

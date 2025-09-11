@@ -4,6 +4,8 @@
 #include "./Bases/AContainer.hpp"
 #include "./Bases/AFocusable.hpp"
 
+#include "Utils/CallBacksManager.hpp"
+
 namespace Vox::Front::Interfaces::Elements
 {
 	class Slider : public virtual Bases::AContainer, public virtual Bases::AFocusable
@@ -61,6 +63,8 @@ namespace Vox::Front::Interfaces::Elements
 			bool IsHover(const Vector2 &mousePos) override;
 
 			void HandleMovement(float xPos);
+
+			Vox::Utils::CallBacksManager<const float &, const float &> onValueChange;
 
 		private:
 			void UpdateVals();

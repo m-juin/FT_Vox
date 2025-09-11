@@ -42,12 +42,103 @@ namespace Vox::Game::Scenes::World::Interfaces
 			Tpm.scale = 0.4;
 			Tpm.pos = {pos[0] + size[0] - 500, pm.pos[1] + 16};
 
-
 			for (auto pair : spl)
 			{
 				Tpm.content = pair.first;
 				pm.defaultValue = pair.second.second;
-				this->AddElement("SL_" + pair.first, std::make_unique<Slider>(pm));
+				auto SL = std::make_unique<Slider>(pm);
+				std::string key = "SL_" + pair.first;
+
+				SL->onValueChange.AddCallBack(
+					[this, key](const float &newVal, const float &prevVal)
+					{
+						(void)prevVal;
+						auto sManager = Game::GameManager::GetInstance().GetSplineManager();
+
+						auto names = sManager.GetSplinesNames();
+						int n = (int)names.size();
+						if (n < 2)
+						{
+							return;
+						}
+
+						std::vector<Slider *> sliders;
+						std::vector<double> vals(n);
+						for (int i = 0; i < n; i++)
+						{
+							sliders.push_back(this->GetElement<Slider>("SL_" + names[i]));
+							vals[i] = sliders.back()->GetValue();
+						}
+
+						std::string changedName = key.substr(3);
+						int idxChanged = 0;
+						for (int i = 0; i < n; i++)
+							if (names[i] == changedName)
+								idxChanged = i;
+
+						double requested = std::clamp<double>(newVal, 0.0f, 1.0f);
+						double delta = requested - prevVal;
+
+						if (std::abs(delta) > 1e-9)
+						{
+							if (delta > 0.0)
+							{
+								double totalCap = 0.0;
+								std::vector<double> cap(n);
+								for (int i = 0; i < n; i++)
+									if (i != idxChanged)
+									{
+										cap[i] = vals[i] - 0.0f;
+										totalCap += cap[i];
+									}
+								delta = std::min(delta, totalCap);
+								for (int i = 0; i < n; i++)
+									if (i != idxChanged && cap[i] > 0)
+									{
+										double take = (cap[i] / totalCap) * delta;
+										vals[i] -= take;
+									}
+								vals[idxChanged] = prevVal + delta;
+							}
+							else
+							{
+								double need = -delta;
+								double totalCap = 0.0;
+								std::vector<double> cap(n);
+								for (int i = 0; i < n; i++)
+									if (i != idxChanged)
+									{
+										cap[i] = 1.0f - vals[i];
+										totalCap += cap[i];
+									}
+								need = std::min(need, totalCap);
+								for (int i = 0; i < n; i++)
+									if (i != idxChanged && cap[i] > 0)
+									{
+										double give = (cap[i] / totalCap) * need;
+										vals[i] += give;
+									}
+								vals[idxChanged] = prevVal - need;
+							}
+						}
+
+						std::vector<int> cents(n);
+						int sum = 0;
+						for (int i = 0; i < n; i++)
+						{
+							cents[i] = (int)std::round(vals[i] * 100);
+							sum += cents[i];
+						}
+						int diff = 100 - sum;
+						if (diff != 0)
+						{
+							cents[idxChanged] = std::clamp(cents[idxChanged] + diff, 0, 100);
+						}
+
+						for (int i = 0; i < n; i++)
+							sliders[i]->SetValue(cents[i] / 100.0f);
+					});
+				this->AddElement(key, std::move(SL));
 				this->AddElement("TXT_" + pair.first, std::make_unique<Text>(Tpm));
 				pm.pos[1] += 50;
 				Tpm.pos[1] += 50;
