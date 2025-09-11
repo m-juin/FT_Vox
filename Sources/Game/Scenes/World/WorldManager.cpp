@@ -6,6 +6,8 @@
 
 #include <cstring>
 
+#include "Game/ThreadManager.hpp"
+
 namespace Vox::Game::World
 {
 	WorldManager::WorldManager(const Scenes::Menu::Saves::WorldData &wd)
@@ -144,6 +146,18 @@ namespace Vox::Game::World
 	{
 		if (chunck)
 		this->_chuncks[chunck->GetPosition()] = chunck;
+	}
+	
+	void WorldManager::HandleThreadRefresh()
+	{
+		if (this->_gManager->GetThreadRefreshState() == true || Game::GameManager::GetInstance().GetSplineManager().GetThreadRefreshState() == true)
+		{
+			this->_gManager->ClearQueue();
+			if (this->_gManager->GetThreadRefreshState() == true)
+			{
+				Game::GameManager::GetInstance().GetThreadManager().UpdateData();
+			}
+		}
 	}
 
 } // namespace Vox::Game::World
