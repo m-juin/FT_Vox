@@ -37,8 +37,9 @@ namespace Vox::Game::World::Chuncks
 		wm.UpdateBuffer(this->_bufferIndex, {this->GetModel()});
 	}
 
-	void VoxelChunck::BuildVoxelObject(const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl,
-									   const uint8_t hMap[CHUNCK_SIZE * CHUNCK_SIZE], const uint32_t &seed)
+	void VoxelChunck::BuildVoxelObject(
+		const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl,
+		const uint8_t hMap[CHUNCK_SIZE * CHUNCK_SIZE], const uint32_t &seed)
 	{
 		(void)spl;
 		std::bitset<CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE> clusterContent = this->BuildContent(hMap);
@@ -46,7 +47,7 @@ namespace Vox::Game::World::Chuncks
 		LocalVector it(0);
 
 		auto checkFace = [this, &clusterContent, &seed, &spl, &hMap](const LocalVector &it, int offsetX, int offsetY,
-																	 int offsetZ, Faces face)
+																	 int offsetZ, Faces face, Vector3Float color)
 		{
 			LocalVector neighbor = it;
 			neighbor[0] += offsetX;
@@ -59,7 +60,7 @@ namespace Vox::Game::World::Chuncks
 			{
 				uint16_t neighborIndex = GetLocalIndex(neighbor);
 				if (!clusterContent[neighborIndex]) // voisin vide
-					this->AddFace(face, it);
+					this->AddFace(face, it, color);
 				return;
 			}
 
@@ -76,7 +77,7 @@ namespace Vox::Game::World::Chuncks
 				// même règle que BuildContent : plein si yWorld <= h
 				bool neighborFilled = (yWorld <= static_cast<int>(h));
 				if (!neighborFilled)
-					this->AddFace(face, it);
+					this->AddFace(face, it, color);
 				return;
 			}
 			if (!Generation::Perlins::IsBlockAt({static_cast<int>(this->_position[0]) + it[0] + offsetX,
@@ -84,7 +85,7 @@ namespace Vox::Game::World::Chuncks
 												 static_cast<int>(this->_position[2]) + it[2] + offsetZ},
 												seed, spl))
 			{
-				this->AddFace(face, it);
+				this->AddFace(face, it, color);
 			}
 		};
 
@@ -98,15 +99,15 @@ namespace Vox::Game::World::Chuncks
 					uint16_t mapIndex = GetLocalIndex(it);
 					if (!clusterContent[mapIndex])
 						continue;
-
+					Vector3Float color = {(static_cast<float>(rand()) / (float)(RAND_MAX)), (static_cast<float>(rand()) / (float)(RAND_MAX)), (static_cast<float>(rand()) / (float)(RAND_MAX))};
 					// au minimum TOP (les autres sont commentées chez toi pour debug)
-					checkFace(it, 0, 1, 0, Faces::TOP);
+					checkFace(it, 0, 1, 0, Faces::TOP, color);
 					// une fois ok, réactive les autres directions :
 					// checkFace(it, 0, -1, 0, Faces::BOT);
-					checkFace(it, -1, 0, 0, Faces::LEFT);
-					checkFace(it, 1, 0, 0, Faces::RIGHT);
-					checkFace(it, 0, 0, 1, Faces::FRONT);
-					checkFace(it, 0, 0, -1, Faces::BACK);
+					checkFace(it, -1, 0, 0, Faces::LEFT, color);
+					checkFace(it, 1, 0, 0, Faces::RIGHT, color);
+					checkFace(it, 0, 0, 1, Faces::FRONT, color);
+					checkFace(it, 0, 0, -1, Faces::BACK, color);
 				}
 			}
 		}
@@ -194,18 +195,16 @@ namespace Vox::Game::World::Chuncks
 		return this->_bufferIndex;
 	}
 
-	void VoxelChunck::AddFace(const Faces &face, const LocalVector &facePos)
+	void VoxelChunck::AddFace(const Faces &face, const LocalVector &facePos, const Vector3Float &faceColor)
 	{
 		std::array<Vertex, 4> toAdd = defaultFacesPos.at(face);
-		
-		Vector3Float rgbVal = {(static_cast<float>(rand()) / (float)(RAND_MAX)), (static_cast<float>(rand()) / (float)(RAND_MAX)), (static_cast<float>(rand()) / (float)(RAND_MAX))};
-		
+
 		for (auto &ref : toAdd)
 		{
 			for (uint8_t i = 0; i < 3; i++)
 			{
 				ref.vertPos[i] += facePos[i];
-				ref.vertColor = rgbVal;
+				ref.vertColor = faceColor;
 			}
 		}
 		auto beg = vertex.end();

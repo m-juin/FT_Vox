@@ -36,11 +36,11 @@ namespace Vox::Game::Scenes::World
 		GameManager::GetInstance().GetInputManager().SetInputTarget(E_InputTarget::Camera);
 
 		auto extent = Front::Rendering::SwapChain::GetInstance().GetExtent();
+		this->_wM = std::make_unique<Game::World::WorldManager>(GameManager::GetInstance().GetSaveData());
 		iManager.RegisterInterface("F3", new Interfaces::I_F3({0, 0}, {(float)extent.width, (float)extent.height}));
 		iManager.RegisterInterface("Generation",
 								   new Interfaces::I_Generation({0, 0}, {(float)extent.width, (float)extent.height}));
 		GameManager::GetInstance().InitThreads();
-		this->_wM = std::make_unique<Game::World::WorldManager>(GameManager::GetInstance().GetSaveData());
 	}
 
 	bool Sc_World::HandleInputAction(const Game::Utils::Datas::E_InputAction &action)

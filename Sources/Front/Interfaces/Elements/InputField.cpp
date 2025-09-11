@@ -8,15 +8,19 @@
 namespace Vox::Front::Interfaces::Elements
 {
 
-	InputField::InputField(const Constructor &st) : AElement(st.pos, st.size), AContainer(), _inputMode(st.inputMode)
+	InputField::InputField(const Constructor &st) : AElement(st.pos, st.size), AContainer(), _inputScale(st.inputScale), _inputMode(st.inputMode)
 	{
-		this->AddElement("IMG_BG", std::make_unique<Image>(st.BGAtlas, st.BGAtlasKey, st.pos, st.size), 0);
+		Color BGColor{1.0, 1.0, 1.0, 1.0};
+		if (st.BGAtlas == "")
+			BGColor[3] = 0.2f;
+		this->AddElement("IMG_BG", std::make_unique<Image>(st.BGAtlas, st.BGAtlasKey, st.pos, st.size, BGColor), 0);
 		{ // TXT_Input
 			Text::Vox_Text_Constructor pm{};
 			pm.size = this->_size;
-			pm.pos = {this->_pos[0] + this->_size[0] / 2, this->_pos[1] + this->_size[1] / 2};
-			pm.content = "";
-			pm.scale = 0.5f;
+			pm.pos = {this->_pos[0] + this->_size[0] / 2 - Text::GetTextSize(st.defaultValue, st.inputScale)[0] / 2,
+					  this->_pos[1] + this->_size[1] / 2};
+			pm.content = st.defaultValue;
+			pm.scale = st.inputScale;
 			pm.color = {1., 1., 1., 1.};
 			pm.letterSpace = 5;
 
@@ -55,7 +59,7 @@ namespace Vox::Front::Interfaces::Elements
 	{
 		auto txt = this->GetElement<Text>("TXT_Input");
 		if (newVal == txt->GetContent())
-			return ;
+			return;
 		txt->SetContent(newVal);
 	}
 
@@ -109,7 +113,7 @@ namespace Vox::Front::Interfaces::Elements
 			auto it = tc.begin();
 			std::advance(it, curPos);
 			tc.insert(it, 1, converted);
-			elem->SetPos({this->_pos[0] + this->_size[0] / 2 - Text::GetTextSize(tc, 0.5f)[0] / 2,
+			elem->SetPos({this->_pos[0] + this->_size[0] / 2 - Text::GetTextSize(tc, this->_inputScale)[0] / 2,
 						  this->_pos[1] + this->_size[1] / 2});
 			elem->SetContent(tc);
 			curPos += 1;
@@ -128,7 +132,7 @@ namespace Vox::Front::Interfaces::Elements
 			indicator->SetPos(Vector2(this->_pos[0] + this->_size[0] / 2., this->_pos[1] + this->_size[1] / 4.));
 		else
 		{
-			auto txtSize = Text::GetTextSize(txt->GetContent().substr(0, curPos), 0.5, 5);
+			auto txtSize = Text::GetTextSize(txt->GetContent().substr(0, curPos), this->_inputScale, 5);
 
 			Vector2 newPos = {txt->GetPos()[0] + txtSize[0] - 2, indicator->GetPos()[1]};
 			indicator->SetPos(newPos);
@@ -147,7 +151,7 @@ namespace Vox::Front::Interfaces::Elements
 			if (curPos != 1)
 				tmp += tc.substr(0, curPos - 1);
 			tmp += tc.substr(curPos);
-			elem->SetPos({this->_pos[0] + this->_size[0] / 2 - Text::GetTextSize(tmp, 0.5f)[0] / 2,
+			elem->SetPos({this->_pos[0] + this->_size[0] / 2 - Text::GetTextSize(tmp, this->_inputScale)[0] / 2,
 						  this->_pos[1] + this->_size[1] / 2});
 			elem->SetContent(tmp);
 			curPos -= 1;
@@ -162,7 +166,7 @@ namespace Vox::Front::Interfaces::Elements
 			std::string tmp = tc.substr(0, curPos);
 			tmp += tc.substr(curPos + 1);
 
-			elem->SetPos({this->_pos[0] + this->_size[0] / 2 - Text::GetTextSize(tmp, 0.5f)[0] / 2,
+			elem->SetPos({this->_pos[0] + this->_size[0] / 2 - Text::GetTextSize(tmp, this->_inputScale)[0] / 2,
 						  this->_pos[1] + this->_size[1] / 2});
 			elem->SetContent(tmp);
 			UpdateIndicatorPos();

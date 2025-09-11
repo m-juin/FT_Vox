@@ -1,6 +1,8 @@
 
 #include "Game/Scenes/World/Interfaces/I_Generation.hpp"
 
+#include "Front/Interfaces/Elements/Buttons/ColoredButton.hpp"
+#include "Front/Interfaces/Elements/InputField.hpp"
 #include "Front/Interfaces/Elements/Slider.hpp"
 #include "Front/Interfaces/Elements/Text.hpp"
 
@@ -9,8 +11,11 @@
 #include "Game/Scenes/World/WorldManager.hpp"
 
 #include <sstream>
+#include <cstring>
 
 #include "Game/GameManager.hpp"
+
+#include "GLFW/glfw3.h"
 
 namespace Vox::Game::Scenes::World::Interfaces
 {
@@ -20,15 +25,21 @@ namespace Vox::Game::Scenes::World::Interfaces
 		: AInterface(pos, size), AUpdatable(10)
 	{
 		{
-			Text::Vox_Text_Constructor pm{};
-			pm.color = {0.5, 0.5, 0.5, 1.0};
-			pm.content = "Seed: ";
-			pm.scale = 0.3f;
-			pm.pos = {this->_pos[0] + 50, this->_pos[1] + 50};
-			pm.size = {100, 50};
+			auto seed = Game::World::WorldManager::GetInstance().GetGenerationManager().GetSeed();
+			std::stringstream ss;
+			ss << seed;
+			InputField::Constructor pm{};
+			pm.BGAtlas = "";
+			pm.BGAtlasKey = "";
+			pm.inputMode = InputField::E_InputMode::Numeric;
+			pm.inputScale = 0.35f;
+			pm.pos = {pos[0] + 200, pos[1] + 50};
+			pm.size = {300, 35};
+			pm.defaultValue = ss.str();
 
-			this->AddElement("TXT_Seed", std::make_unique<Text>(pm));
+			this->AddElement("IF_Seed", std::make_unique<InputField>(pm));
 		}
+
 		{
 			auto sManager = Game::GameManager::GetInstance().GetSplineManager();
 			auto spl = sManager.GetSplinesCopy();
@@ -138,6 +149,7 @@ namespace Vox::Game::Scenes::World::Interfaces
 						for (int i = 0; i < n; i++)
 							sliders[i]->SetValue(cents[i] / 100.0f);
 					});
+
 				this->AddElement(key, std::move(SL));
 				this->AddElement("TXT_" + pair.first, std::make_unique<Text>(Tpm));
 				pm.pos[1] += 50;
@@ -145,7 +157,46 @@ namespace Vox::Game::Scenes::World::Interfaces
 			}
 		}
 
-		this->onUpdate.AddCallBack([this]() { this->UpdateSeed(); });
+		{
+			Buttons::ColoredButton::Vox_ColorButton_Constructor pm{};
+			pm.bgColor = {1.0, 1.0, 1.0, 0.5};
+			pm.content = "U";
+			pm.disabledBGColor = {0.5, 0.5, 0.5, 0.1};
+			pm.disabledTXTColor = {0.5, 0.5, 0.5, 1.0};
+			pm.hoverBGColor = {1.0, 1.0, 1.0, 0.7};
+			pm.hoverTXTColor = {0.0, 0.0, 0.0, 1.0};
+			pm.pos = {pos[0] + 50, pos[1] + size[1] - 100};
+			pm.size = {50, 50};
+			pm.textColor = {0.2, 0.2, 0.2, 1.0};
+			pm.textScale = 0.8f;
+
+			auto btn = std::make_unique<Buttons::ColoredButton>(pm);
+
+			btn->onClickCallbacks.AddCallBack(
+				[this](const int &button, const int &action)
+				{
+					if (button != GLFW_MOUSE_BUTTON_LEFT || action != GLFW_RELEASE)
+						return;
+					(void)this;
+
+					std::unordered_map<std::string, float> newVals;
+
+					auto sManager = Game::GameManager::GetInstance().GetSplineManager();
+					auto spl = sManager.GetSplinesCopy();
+					uint64_t seed = std::stoull(this->GetElement<InputField>("IF_Seed")->GetValue());
+					for (auto name : spl)
+					{
+						std::cout << name.first << std::endl;
+						float val = this->GetElement<Slider>("SL_" + name.first)->GetValue();
+						newVals[name.first] = val;
+					}
+
+					sManager.SetNewWeight(newVals);
+					Game::World::WorldManager::GetInstance().UpdateSeed(seed);
+				});
+
+			this->AddElement("BTN_Update", std::move(btn), 1);
+		}
 		this->_enabled = false;
 	}
 
@@ -175,9 +226,9 @@ namespace Vox::Game::Scenes::World::Interfaces
 
 	void I_Generation::UpdateSeed()
 	{
-		auto seed = Game::World::WorldManager::GetInstance().GetGenerationManager().GetSeed();
-		std::stringstream ss;
-		ss << "Seed: " << seed;
-		this->GetElement<Text>("TXT_Seed")->SetContent(ss.str());
+		// auto seed = Game::World::WorldManager::GetInstance().GetGenerationManager().GetSeed();
+		// std::stringstream ss;
+		// ss << "Seed: " << seed;
+		// this->GetElement<Text>("TXT_Seed")->SetContent(ss.str());
 	}
 } // namespace Vox::Game::Scenes::World::Interfaces

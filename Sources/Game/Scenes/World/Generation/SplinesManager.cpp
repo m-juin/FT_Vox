@@ -29,8 +29,7 @@ namespace Vox::Game::Generation
 			try
 			{
 				auto path = std::filesystem::path(splineFolder / pair.second.first);
-				this->_splines[pair.first] = {
-					Spline::LoadSpline(path.string().c_str()), pair.second.second};
+				this->_splines[pair.first] = {Spline::LoadSpline(path.string().c_str()), pair.second.second};
 			}
 			catch (std::exception &e)
 			{
@@ -46,15 +45,35 @@ namespace Vox::Game::Generation
 		for (auto pair : this->_splines)
 			names.emplace_back(pair.first);
 		return names;
-
+	}
+	
+	std::unordered_map<std::string, float> SplinesManager::GetSplinesWeight() const
+	{
+		std::unordered_map<std::string, float> retVal;
+		for (auto pair : this->_splines)
+		{
+			retVal[pair.first] = pair.second.second;
+		}
+		return retVal;
 	}
 
-	std::unordered_map<std::string, std::pair<const Spline::Spline,float>> SplinesManager::GetSplinesCopy() const
+	std::unordered_map<std::string, std::pair<const Spline::Spline, float>> SplinesManager::GetSplinesCopy() const
 	{
-		std::unordered_map<std::string, std::pair<const Spline::Spline,float>> retVal;
+		std::unordered_map<std::string, std::pair<const Spline::Spline, float>> retVal;
 		retVal.reserve(_splines.size());
 		for (const auto &pair : _splines)
-			retVal.emplace(pair.first, std::pair<const Spline::Spline,float>(*pair.second.first, pair.second.second));
+			retVal.emplace(pair.first, std::pair<const Spline::Spline, float>(*pair.second.first, pair.second.second));
 		return retVal;
+	}
+
+	void SplinesManager::SetNewWeight(std::unordered_map<std::string, float> weightMap)
+	{
+		for (auto pair : weightMap)
+		{
+			if (this->_splines[pair.first].second != pair.second)
+			{
+				this->_splines[pair.first].second = pair.second;
+			}
+		}
 	}
 } // namespace Vox::Game::Generation

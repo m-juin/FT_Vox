@@ -62,6 +62,11 @@ namespace Vox::Game::World
 				return *this->_bManager;
 			};
 
+			void UpdateSeed(uint64_t newSeed)
+			{
+				this->_gManager->UpdateSeed(newSeed);
+			};
+
 		private:
 			void CheckCreation();
 			void CheckDeletion();

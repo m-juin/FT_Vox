@@ -28,6 +28,9 @@ namespace Vox::Front::Interfaces::Elements
 					std::string BGAtlasKey;
 
 					E_InputMode inputMode;
+					std::string defaultValue;
+					float inputScale;
+					Constructor() : defaultValue (""), inputScale(0.5f) {};
 			};
 
 			InputField(const Constructor &st);
@@ -56,6 +59,7 @@ namespace Vox::Front::Interfaces::Elements
 			Vox::Utils::CallBacksManager<const std::string &> onTextChange;
 
 		private:
+			float _inputScale;
 			uint8_t drawCount;
 			size_t curPos;
 			E_InputMode _inputMode;

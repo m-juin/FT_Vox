@@ -51,7 +51,7 @@ namespace Vox::Game::World::Chuncks
             uint16_t indexCount;
 			Vector3Int _chunckPos;
 
-            void AddFace(const Faces &face, const LocalVector &facePos);
+            void AddFace(const Faces &face, const LocalVector &facePos, const Vector3Float &faceColor = {1.0, 1.0, 1.0});
             void AssignModel() override;
             static size_t GetLocalIndex(const LocalVector &vec);
             static LocalVector GetLocalVector(const size_t &index);
