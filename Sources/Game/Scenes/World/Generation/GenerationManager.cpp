@@ -38,11 +38,14 @@ namespace Vox::Game::Generation
 		return this->_waitingChuncks.size();
 	}
 	
-	void GenerationManager::UpdateSeed(uint64_t newSeed)
+	bool GenerationManager::UpdateSeed(uint64_t newSeed)
 	{
 		if (newSeed == this->_seed)
-			return ;
+			return false;
 		_seed = newSeed;
+		std::cout << "Seed Updated" << std::endl;
+		this->_waitingChuncks.clear();
+		return true;
 	}
 
 	void GenerationManager::UpdateGeneration()

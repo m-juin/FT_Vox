@@ -27,7 +27,7 @@ namespace Vox::Game::Generation
 			size_t GetWaitingData() const;
 
 			uint64_t GetSeed() const {return this->_seed;} ;
-			void UpdateSeed(uint64_t newSeed);
+			bool UpdateSeed(uint64_t newSeed);
 			bool GetThreadRefreshState() {return this->_needThreadRefresh;};
 			void ClearQueue();
 
