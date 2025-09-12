@@ -43,6 +43,7 @@ namespace Vox::Game
             ThreadManager &GetThreadManager() {return *_tManager;};
             Vox::Front::Scenes::TexturesManager &GetTexturesManager() {return *_texturesManager;};
             const Generation::SplinesManager &GetSplineManager() const {return *this->_sManager;};
+            Generation::SplinesManager &GetOwnedSplineManager() {return *this->_sManager;};
 
             Scenes::Menu::Saves::WorldData GetSaveData() {return this->_wd;}
             void SetSaveData(Scenes::Menu::Saves::WorldData wd) {this->_wd = wd;}

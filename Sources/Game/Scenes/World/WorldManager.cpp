@@ -39,10 +39,7 @@ namespace Vox::Game::World
 			});
 	}
 
-	WorldManager::~WorldManager()
-	{
-
-	}
+	WorldManager::~WorldManager() {}
 
 	void WorldManager::InitWorld()
 	{
@@ -112,6 +109,18 @@ namespace Vox::Game::World
 		}
 	}
 
+	void WorldManager::RequestChunckRefresh()
+	{
+		for (auto cluster : this->_chuncks)
+		{
+			// const auto it = this->_chuncks.find(pos);
+			const uint16_t index = cluster.second->GetBuffer();
+			// this->_chuncks.erase(it);
+			this->_bManager->ReleaseBuffer(index);
+		}
+		this->_chuncks.clear();
+	}
+
 	void WorldManager::CheckDeletion()
 	{
 		std::vector<Utils::Defines::ChunckCoord> toDelete;
@@ -134,8 +143,9 @@ namespace Vox::Game::World
 	void WorldManager::UpdatePlayerPos()
 	{
 		auto playerPos = _camera.GetPosition();
-		const Utils::Defines::ChunckCoord playerCoord = Utils::Defines::ChunckCoord(std::floor(playerPos[0] / Utils::Defines::CHUNCK_SIZE),
-														 std::floor(playerPos[2] / Utils::Defines::CHUNCK_SIZE));
+		const Utils::Defines::ChunckCoord playerCoord =
+			Utils::Defines::ChunckCoord(std::floor(playerPos[0] / Utils::Defines::CHUNCK_SIZE),
+										std::floor(playerPos[2] / Utils::Defines::CHUNCK_SIZE));
 
 		if (playerCoord == _playerChunck)
 			return;
@@ -145,7 +155,7 @@ namespace Vox::Game::World
 	void WorldManager::AddEndedChunck(std::shared_ptr<Chuncks::ChunckCluster> chunck)
 	{
 		if (chunck)
-		this->_chuncks[chunck->GetPosition()] = chunck;
+			this->_chuncks[chunck->GetPosition()] = chunck;
 	}
 
 } // namespace Vox::Game::World

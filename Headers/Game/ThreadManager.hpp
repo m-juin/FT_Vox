@@ -42,9 +42,10 @@ namespace Vox::Game
 			~ThreadManager();
 
 			void EnQueue(std::function<void(std::unordered_map<std::string, std::pair<const Spline::Spline, float>>)> newTask);
+			void RecreatePool();
 
 		private:
-			void BuildPool(Game::Generation::SplinesManager &sManager);
+			void BuildPool(const Game::Generation::SplinesManager &sManager);
 			void CleanPool();
 
 			const uint8_t _maxThread;

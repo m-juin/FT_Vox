@@ -14,6 +14,7 @@ namespace Vox::Game::Generation
 	GenerationManager::GenerationManager(const uint64_t seed) : _seed(seed)
 	{
 		this->onUpdate.AddCallBack([this]() { this->UpdateGeneration(); });
+		this->onUpdate.AddCallBack([this]() { this->CheckForPoolRebuild();});
 	}
 
 	bool GenerationManager::IsChunckPresent(const Vox::Game::Utils::Defines::ChunckCoord &coord)
@@ -25,6 +26,9 @@ namespace Vox::Game::Generation
 
 	void GenerationManager::RequestChuncksGeneration(Game::Utils::Defines::ChunckCoord coord)
 	{
+		if (_needThreadRefresh == true)
+			return ;
+		std::cout << "here\n";
 		std::shared_ptr<World::Chuncks::ChunckCluster> ch = std::make_shared<World::Chuncks::ChunckCluster>(coord);
 		this->_waitingChuncks.push_back(ch);
 
@@ -47,9 +51,27 @@ namespace Vox::Game::Generation
 		this->_waitingChuncks.clear();
 		return true;
 	}
+	
+	void GenerationManager::FlagPool()
+	{
+		this->_needThreadRefresh = true;
+	}
+	
+	void GenerationManager::CheckForPoolRebuild()
+	{
+		if (this->_needThreadRefresh)
+		{
+			Game::GameManager::GetInstance().GetThreadManager().RecreatePool();
+			this->_waitingChuncks.clear();
+			Game::World::WorldManager::GetInstance().RequestChunckRefresh();
+			this->_needThreadRefresh = false;
+		}
+	}
 
 	void GenerationManager::UpdateGeneration()
 	{
+		if (_needThreadRefresh)
+			return ;
 		auto &wm = World::WorldManager::GetInstance();
 		auto &bm = wm.GetBufferManager();
 		std::list<std::shared_ptr<World::Chuncks::ChunckCluster>> toDeleteCluster;

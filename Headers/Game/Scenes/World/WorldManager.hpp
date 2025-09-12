@@ -53,7 +53,11 @@ namespace Vox::Game::World
 			{
 				return this->_chuncks.size();
 			};
-			const Generation::GenerationManager GetGenerationManager()
+			const Generation::GenerationManager &GetGenerationManager() const
+			{
+				return *this->_gManager;
+			};
+			Generation::GenerationManager &GetGenerationManager()
 			{
 				return *this->_gManager;
 			};
@@ -62,20 +66,14 @@ namespace Vox::Game::World
 				return *this->_bManager;
 			};
 
+			void RequestChunckRefresh();
+
 			void UpdateSeed(uint64_t newSeed)
 			{
 				if (this->_gManager->UpdateSeed(newSeed) == false)
 					return;
 
-				std::vector<Utils::Defines::ChunckCoord> toDelete;
-				for (auto cluster : this->_chuncks)
-				{
-					// const auto it = this->_chuncks.find(pos);
-					const uint16_t index = cluster.second->GetBuffer();
-					// this->_chuncks.erase(it);
-					this->_bManager->ReleaseBuffer(index);
-				}
-				this->_chuncks.clear();
+				this->RequestChunckRefresh();
 			};
 
 		private:

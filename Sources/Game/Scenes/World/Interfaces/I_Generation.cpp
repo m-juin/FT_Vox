@@ -181,12 +181,11 @@ namespace Vox::Game::Scenes::World::Interfaces
 
 					std::unordered_map<std::string, float> newVals;
 
-					auto sManager = Game::GameManager::GetInstance().GetSplineManager();
+					auto &sManager = Game::GameManager::GetInstance().GetOwnedSplineManager();
 					auto spl = sManager.GetSplinesCopy();
 					uint64_t seed = std::stoull(this->GetElement<InputField>("IF_Seed")->GetValue());
 					for (auto name : spl)
 					{
-						std::cout << name.first << std::endl;
 						float val = this->GetElement<Slider>("SL_" + name.first)->GetValue();
 						newVals[name.first] = val;
 					}

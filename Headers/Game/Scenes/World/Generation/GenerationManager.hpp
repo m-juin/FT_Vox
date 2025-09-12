@@ -29,9 +29,12 @@ namespace Vox::Game::Generation
 			uint64_t GetSeed() const {return this->_seed;} ;
 			bool UpdateSeed(uint64_t newSeed);
 			bool GetThreadRefreshState() {return this->_needThreadRefresh;};
-			void ClearQueue();
+
+			void FlagPool();
 
 		private:
+
+			void CheckForPoolRebuild();
 			bool _needThreadRefresh = false;
 			uint64_t _seed; 
 			Vox::Game::Utils::Defines::ChunckCoord _playerPos;

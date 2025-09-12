@@ -1,7 +1,7 @@
 #include "Game/Scenes/World/Generation/SplinesManager.hpp"
 #include "Utils/RessourcesPackDefines.hpp"
 
-#include "Game/GameManager.hpp"
+#include "Game/Scenes/World/WorldManager.hpp"
 
 #include <filesystem>
 
@@ -75,5 +75,6 @@ namespace Vox::Game::Generation
 				this->_splines[pair.first].second = pair.second;
 			}
 		}
+		Game::World::WorldManager::GetInstance().GetGenerationManager().FlagPool();
 	}
 } // namespace Vox::Game::Generation
