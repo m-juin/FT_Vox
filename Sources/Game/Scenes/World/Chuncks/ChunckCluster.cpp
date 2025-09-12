@@ -32,11 +32,6 @@ namespace Vox::Game::World::Chuncks
 		uint8_t hMap[CHUNCK_SIZE * CHUNCK_SIZE];
 		GenerateHeightMap(spl, seed, hMap);
 
-		// auto mm = std::minmax_element(std::begin(hMap), std::end(hMap));
-
-		// *mm.first /= CHUNCK_SIZE;
-		// *mm.second /= CHUNCK_SIZE;
-
 		int chunksPerCluster = WORLD_HEIGHT / CHUNCK_SIZE;
 		if (this->_clusterPos == 0 && this->_clusterPos[1] == 0)
 		{
@@ -51,8 +46,6 @@ namespace Vox::Game::World::Chuncks
 		}
 		for (int y = chunksPerCluster - 1; y >= 0; y--)
 		{
-			// if (y < *mm.first || y > *mm.second)
-			// continue;
 			if (this->IsGenerationCancelled())
 				return;
 			this->_clusterContent[y] = new VoxelChunck(Vector3Int(this->_clusterPos[0], y, this->_clusterPos[1]));

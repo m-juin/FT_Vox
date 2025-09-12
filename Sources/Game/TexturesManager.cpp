@@ -19,6 +19,9 @@ namespace Vox::Front::Scenes
 				{"Button_Disabled", T_Path + "GUI/button_disabled.png"},
 			},
 			4);
+		// this->_texturesMap["World_Block"] = new Front::Utils::TexturesAtlas({
+
+		// });
 		this->_fontImage = std::make_unique<Front::Rendering::Images::FontImage>(T_Path + "GUI/Fonts/Minecraft.ttf");
 	}
 } // namespace Vox::Front::Scenes

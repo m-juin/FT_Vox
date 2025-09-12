@@ -54,27 +54,22 @@ namespace Vox::Game::World::Chuncks
 			neighbor[1] += offsetY;
 			neighbor[2] += offsetZ;
 
-			// voisin à l'intérieur du chunk => on regarde le bitset local
 			if (neighbor[0] >= 0 && neighbor[0] < CHUNCK_SIZE && neighbor[1] >= 0 && neighbor[1] < CHUNCK_SIZE &&
 				neighbor[2] >= 0 && neighbor[2] < CHUNCK_SIZE)
 			{
 				uint16_t neighborIndex = GetLocalIndex(neighbor);
-				if (!clusterContent[neighborIndex]) // voisin vide
+				if (!clusterContent[neighborIndex])
 					this->AddFace(face, it, color);
 				return;
 			}
 
-			// --- en dehors du chunk ---
-			// Cas vertical (même XZ) : utilise le heightmap local pour rester cohérent
 			if (offsetY != 0 && offsetX == 0 && offsetZ == 0)
 			{
-				// coords monde du voxel voisin
 				int yWorld = static_cast<int>(this->_position[1]) + neighbor[1];
 				int lx = it[0];
 				int lz = it[2];
 				uint8_t h = hMap[lx * CHUNCK_SIZE + lz];
 
-				// même règle que BuildContent : plein si yWorld <= h
 				bool neighborFilled = (yWorld <= static_cast<int>(h));
 				if (!neighborFilled)
 					this->AddFace(face, it, color);
@@ -89,7 +84,6 @@ namespace Vox::Game::World::Chuncks
 			}
 		};
 
-		// Parcours du chunk
 		for (it[0] = 0; it[0] < CHUNCK_SIZE; it[0]++)
 		{
 			for (it[2] = 0; it[2] < CHUNCK_SIZE; it[2]++)
@@ -100,9 +94,8 @@ namespace Vox::Game::World::Chuncks
 					if (!clusterContent[mapIndex])
 						continue;
 					Vector3Float color = {(static_cast<float>(rand()) / (float)(RAND_MAX)), (static_cast<float>(rand()) / (float)(RAND_MAX)), (static_cast<float>(rand()) / (float)(RAND_MAX))};
-					// au minimum TOP (les autres sont commentées chez toi pour debug)
+
 					checkFace(it, 0, 1, 0, Faces::TOP, color);
-					// une fois ok, réactive les autres directions :
 					// checkFace(it, 0, -1, 0, Faces::BOT);
 					checkFace(it, -1, 0, 0, Faces::LEFT, color);
 					checkFace(it, 1, 0, 0, Faces::RIGHT, color);
