@@ -104,6 +104,5 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 		for (auto &elem : this->_content)
 			if (elem.elem)
 				elem.elem->Draw();
-		// std::cout << "render interface" << std::endl;
 	}
 } // namespace Vox::Game::Scenes::Menu::Interfaces

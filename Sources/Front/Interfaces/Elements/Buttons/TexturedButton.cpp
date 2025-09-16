@@ -13,7 +13,6 @@ namespace Vox::Front::Interfaces::Elements::Buttons
 		this->_onHoverCallbacks.AddCallBack(
 			[this, st](void)
 			{
-				// std::cout << "newColor:\n\tBG =" << st.hoverBGColor << "\n\tFG =" << st.hoverTXTColor << std::endl;
 				this->GetElement<Image>("IMG_BackGround")->SetTexture(st.onHoverAtlas, st.onHoverAtlasKey);
 				this->GetElement<Text>("TXT_Content")->SetColor(st.hoverTXTColor);
 			});
@@ -21,7 +20,6 @@ namespace Vox::Front::Interfaces::Elements::Buttons
 		this->_onHoverLeaveCallbacks.AddCallBack(
 			[this, st](void)
 			{
-				// std::cout << "newColor:\n\tBG =" << st.bgColor << "\n\tFG =" << st.textColor << std::endl;
 				this->GetElement<Image>("IMG_BackGround")->SetTexture(st.atlas, st.atlasKey);
 				this->GetElement<Text>("TXT_Content")->SetColor(st.textColor);
 			});

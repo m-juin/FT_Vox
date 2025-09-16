@@ -16,24 +16,18 @@ namespace Vox::Game::Scenes::Menu
 {
 	void Sc_Menu::Load()
 	{
-		std::cout << "Chargement du menu..." << std::endl;
 		InitSceneData();
-		// Implémentation du chargement du menu
 	}
 
 	void Sc_Menu::Unload()
 	{
-		std::cout << "Déchargement du menu..." << std::endl;
 		Front::Interfaces::InterfacesManager::GetInstance().ResetInterfacesList();
-		// Implémentation du déchargement du menu
 	}
 
 	void Sc_Menu::Render()
 	{
-		// std::cout << "Dessin du menu..." << std::endl;
 		auto &iManager = Front::Interfaces::InterfacesManager::GetInstance();
 		iManager.Render();
-		// Implémentation du dessin du menu
 	}
 	
 	void Sc_Menu::InitSceneData()

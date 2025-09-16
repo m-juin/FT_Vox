@@ -39,7 +39,6 @@ namespace Vox::Game
 	{
 		if (!this->_tManager)
 			return;
-		std::cout << "init threads\n";
 		this->_tManager->BuildPool(*this->_sManager);
 	}
 

@@ -50,7 +50,6 @@ namespace Vox::Front::Interfaces::Elements
 			(mousePos[1] >= this->_pos[1] && mousePos[1] <= this->_pos[1] + this->_size[1]))
 		{
 			currentlyHovered = true;
-			// std::cout << "hover\n";
 			this->OnHover();
 		}
 		else
@@ -61,7 +60,6 @@ namespace Vox::Front::Interfaces::Elements
 		return IContainer::IsHover(mousePos);
 	}
 
-	// Draw() — plus d'ajout de _scrollOffset ici (c'est déjà dans les positions)
 	void ScrollableList::Draw()
 	{
 		for (auto &elem : this->_content)
@@ -75,7 +73,7 @@ namespace Vox::Front::Interfaces::Elements
 
 	void ScrollableList::RebuildList()
 	{
-		float curOffset = 0.f; // commence à 0 = haut du contenu
+		float curOffset = 0.f;
 
 		for (auto &elem : this->_content)
 		{
@@ -84,13 +82,11 @@ namespace Vox::Front::Interfaces::Elements
 
 			elem.elem->SetSize({this->_size[0] - 10.f, elem.elem->GetSize()[1]});
 
-			// position = base + offset contenu - scroll
 			elem.elem->SetPos({this->_pos[0] + 5.f, this->_pos[1] + curOffset - this->_scrollOffset});
 
 			curOffset += elem.elem->GetSize()[1] + 5.f;
 		}
 
-		// maintenant _fullSize = hauteur totale du contenu
 		this->_fullSize = curOffset;
 	}
 

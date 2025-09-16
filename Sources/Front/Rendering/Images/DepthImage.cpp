@@ -19,7 +19,6 @@ namespace Vox::Front::Rendering::Images
 
 	DepthImage::~DepthImage()
 	{
-		std::cout << "Depth image deletion\n" << std::endl;
 	}
 
 } // namespace Vox::Front::Rendering::Images

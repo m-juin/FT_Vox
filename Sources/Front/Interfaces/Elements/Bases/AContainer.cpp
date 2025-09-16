@@ -66,7 +66,6 @@ namespace Vox::Front::Interfaces::Elements::Bases
 		{
 			if (auto child = dynamic_cast<AClickable *>(elem->elem.get()))
 			{
-				// std::cout << "[DEBUG] " << elem->key << " is Hover ?" << std::endl;
 				child->IsHover(mousePos);
 			}
 		}

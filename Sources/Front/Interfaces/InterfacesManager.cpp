@@ -80,7 +80,6 @@ namespace Vox::Front::Interfaces
 
 	void InterfacesManager::HandleMouseScroll(const double &xOff, const double &yOff) const
 	{
-		// std::cout << "here\n" << std::endl;
 		for (auto pair : this->_content)
 			if (pair.second->IsEnabled() == true)
 				pair.second->OnScroll(xOff, yOff);

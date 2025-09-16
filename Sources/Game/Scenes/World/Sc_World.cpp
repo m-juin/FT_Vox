@@ -11,13 +11,11 @@ namespace Vox::Game::Scenes::World
 {
 	void Sc_World::Load()
 	{
-		std::cout << "Chargement du monde..." << std::endl;
 		InitSceneData();
 	}
 
 	void Sc_World::Unload()
 	{
-		std::cout << "Déchargement du monde..." << std::endl;
 		Front::Interfaces::InterfacesManager::GetInstance().ResetInterfacesList();
 		GameManager::GetInstance().CleanThreads();
 	}

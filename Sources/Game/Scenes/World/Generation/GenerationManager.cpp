@@ -28,7 +28,6 @@ namespace Vox::Game::Generation
 	{
 		if (_needThreadRefresh == true)
 			return ;
-		std::cout << "here\n";
 		std::shared_ptr<World::Chuncks::ChunckCluster> ch = std::make_shared<World::Chuncks::ChunckCluster>(coord);
 		this->_waitingChuncks.push_back(ch);
 
@@ -47,7 +46,6 @@ namespace Vox::Game::Generation
 		if (newSeed == this->_seed)
 			return false;
 		_seed = newSeed;
-		std::cout << "Seed Updated" << std::endl;
 		this->_waitingChuncks.clear();
 		return true;
 	}
