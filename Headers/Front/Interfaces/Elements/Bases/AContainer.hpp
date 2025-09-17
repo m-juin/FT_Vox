@@ -15,11 +15,12 @@ namespace Vox::Front::Interfaces::Elements::Bases
 			std::string key;
 			std::unique_ptr<AElement> elem;
 			size_t renderIndex;
+			bool isVisible;
 
 			ContainerElement() = delete;
 
-			ContainerElement(std::string key_, std::unique_ptr<AElement> elem_, size_t renderIndex_ = 0)
-				: key(std::move(key_)), elem(std::move(elem_)), renderIndex(renderIndex_)
+			ContainerElement(std::string key_, std::unique_ptr<AElement> elem_, size_t renderIndex_ = 0, bool isVisible_ = true)
+				: key(std::move(key_)), elem(std::move(elem_)), renderIndex(renderIndex_), isVisible(isVisible_)
 			{
 			}
 
@@ -40,7 +41,7 @@ namespace Vox::Front::Interfaces::Elements::Bases
 			virtual ~AContainer() {};
 
 			void ResetVertex() override {};
-			void AddElement(const std::string &key, std::unique_ptr<AElement> elem, size_t renderIndex = 0);
+			ContainerElement &AddElement(const std::string &key, std::unique_ptr<AElement> elem, size_t renderIndex = 0, bool isVisible = true);
 
 			bool RemoveElement(const std::string &key);
 

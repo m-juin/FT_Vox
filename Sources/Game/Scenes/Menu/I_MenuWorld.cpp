@@ -214,8 +214,12 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 	void I_MenuWorld::Render()
 	{
 		for (auto &elem : this->_content)
-			if (elem.elem)
+		{
+			if (elem.elem && elem.isVisible)
+			{
 				elem.elem->Draw();
+			}
+		}
 	}
 
 	void I_MenuWorld::SetSelectedWorld(Elements::WorldDataDisplayer *elem)

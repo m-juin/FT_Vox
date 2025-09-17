@@ -167,7 +167,11 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 	void I_MenuCreate::Render()
 	{
 		for (auto &elem : this->_content)
-			if (elem.elem)
+		{
+			if (elem.elem && elem.isVisible)
+			{
 				elem.elem->Draw();
+			}
+		}
 	}
 } // namespace Vox::Game::Scenes::Menu::Interfaces

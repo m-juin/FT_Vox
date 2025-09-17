@@ -2,6 +2,7 @@
 #include "Game/Scenes/World/Interfaces/I_Generation.hpp"
 
 #include "Front/Interfaces/Elements/Buttons/ColoredButton.hpp"
+#include "Front/Interfaces/Elements/Image.hpp"
 #include "Front/Interfaces/Elements/InputField.hpp"
 #include "Front/Interfaces/Elements/Slider.hpp"
 #include "Front/Interfaces/Elements/Text.hpp"
@@ -10,8 +11,8 @@
 
 #include "Game/Scenes/World/WorldManager.hpp"
 
-#include <sstream>
 #include <cstring>
+#include <sstream>
 
 #include "Game/GameManager.hpp"
 
@@ -24,7 +25,7 @@ namespace Vox::Game::Scenes::World::Interfaces
 							   Vox::Front::Interfaces::Elements::Vector2 size)
 		: AInterface(pos, size), AUpdatable(10)
 	{
-		{
+		{ // IF_Seed
 			auto seed = Game::World::WorldManager::GetInstance().GetGenerationManager().GetSeed();
 			std::stringstream ss;
 			ss << seed;
@@ -33,14 +34,14 @@ namespace Vox::Game::Scenes::World::Interfaces
 			pm.BGAtlasKey = "";
 			pm.inputMode = InputField::E_InputMode::Numeric;
 			pm.inputScale = 0.35f;
-			pm.pos = {pos[0] + 200, pos[1] + 50};
+			pm.pos = {pos[0] + 50, pos[1] + 50};
 			pm.size = {300, 35};
 			pm.defaultValue = ss.str();
 
 			this->AddElement("IF_Seed", std::make_unique<InputField>(pm));
 		}
 
-		{
+		{ // Splines Sliders
 			auto sManager = Game::GameManager::GetInstance().GetSplineManager();
 			auto spl = sManager.GetSplinesCopy();
 
@@ -157,7 +158,7 @@ namespace Vox::Game::Scenes::World::Interfaces
 			}
 		}
 
-		{
+		{ // BTN_Update
 			Buttons::ColoredButton::Vox_ColorButton_Constructor pm{};
 			pm.bgColor = {1.0, 1.0, 1.0, 0.5};
 			pm.content = "U";
@@ -177,7 +178,6 @@ namespace Vox::Game::Scenes::World::Interfaces
 				{
 					if (button != GLFW_MOUSE_BUTTON_LEFT || action != GLFW_RELEASE)
 						return;
-					(void)this;
 
 					std::unordered_map<std::string, float> newVals;
 
@@ -196,6 +196,39 @@ namespace Vox::Game::Scenes::World::Interfaces
 
 			this->AddElement("BTN_Update", std::move(btn), 1);
 		}
+
+		{ // IMG_Biomes && BTN_DisplayIMG
+			auto img = std::make_unique<Image>(
+				"", "", Vector2(this->_pos[0] + size[0] / 2 - 200, this->_pos[1] + size[1] / 2 - 200),
+				Vector2(400, 400));
+			this->AddElement("IMG_Biome", std::move(img), 2, false);
+
+						Buttons::ColoredButton::Vox_ColorButton_Constructor pm{};
+			pm.bgColor = {1.0, 1.0, 1.0, 0.5};
+			pm.content = "D";
+			pm.disabledBGColor = {0.5, 0.5, 0.5, 0.1};
+			pm.disabledTXTColor = {0.5, 0.5, 0.5, 1.0};
+			pm.hoverBGColor = {1.0, 1.0, 1.0, 0.7};
+			pm.hoverTXTColor = {0.0, 0.0, 0.0, 1.0};
+			pm.pos = {pos[0] + size[0] - 100, pos[1] + size[1] - 100};
+			pm.size = {50, 50};
+			pm.textColor = {0.2, 0.2, 0.2, 1.0};
+			pm.textScale = 0.8f;
+
+			auto btn = std::make_unique<Buttons::ColoredButton>(pm);
+
+			btn->onClickCallbacks.AddCallBack(
+				[this](const int &button, const int &action)
+				{
+					if (button != GLFW_MOUSE_BUTTON_LEFT || action != GLFW_RELEASE)
+						return;
+					auto &imgContainer = this->GetContainerElement("IMG_Biome");
+					imgContainer.isVisible = !imgContainer.isVisible;
+				});
+
+			this->AddElement("BTN_Display_IMG_Biomes", std::move(btn), 1);
+		}
+
 		this->_enabled = false;
 	}
 
@@ -219,15 +252,11 @@ namespace Vox::Game::Scenes::World::Interfaces
 	void I_Generation::Render()
 	{
 		for (auto &elem : this->_content)
-			if (elem.elem)
+		{
+			if (elem.elem && elem.isVisible)
+			{
 				elem.elem->Draw();
-	}
-
-	void I_Generation::UpdateSeed()
-	{
-		// auto seed = Game::World::WorldManager::GetInstance().GetGenerationManager().GetSeed();
-		// std::stringstream ss;
-		// ss << "Seed: " << seed;
-		// this->GetElement<Text>("TXT_Seed")->SetContent(ss.str());
+			}
+		}
 	}
 } // namespace Vox::Game::Scenes::World::Interfaces

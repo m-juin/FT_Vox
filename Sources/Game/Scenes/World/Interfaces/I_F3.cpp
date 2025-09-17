@@ -68,8 +68,12 @@ namespace Vox::Game::Scenes::World::Interfaces
 	void I_F3::Render()
 	{
 		for (auto &elem : this->_content)
-			if (elem.elem)
+		{
+			if (elem.elem && elem.isVisible)
+			{
 				elem.elem->Draw();
+			}
+		}
 	}
 
 	void I_F3::UpdatePlayerPos()
