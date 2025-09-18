@@ -2,6 +2,7 @@
 #include "Game/Scenes/World/Interfaces/I_Generation.hpp"
 
 #include "Front/Interfaces/Elements/Buttons/ColoredButton.hpp"
+#include "Front/Interfaces/Elements/DynamicImage.hpp"
 #include "Front/Interfaces/Elements/Image.hpp"
 #include "Front/Interfaces/Elements/InputField.hpp"
 #include "Front/Interfaces/Elements/Slider.hpp"
@@ -198,12 +199,22 @@ namespace Vox::Game::Scenes::World::Interfaces
 		}
 
 		{ // IMG_Biomes && BTN_DisplayIMG
-			auto img = std::make_unique<Image>(
-				"", "", Vector2(this->_pos[0] + size[0] / 2 - 200, this->_pos[1] + size[1] / 2 - 200),
-				Vector2(400, 400));
+
+			DynamicImage::Constructor imgPM{};
+			imgPM.pos = {this->_pos[0] + size[0] / 2 - 200, this->_pos[1] + size[1] / 2 - 200};
+			imgPM.size = {400, 400};
+			imgPM.defaultData.resize(400 * 400 * 4);
+			for (size_t i = 0; i < 400 * 400; ++i)
+			{
+				imgPM.defaultData[i * 4 + 0] = 255; // R
+				imgPM.defaultData[i * 4 + 1] = 255; // G
+				imgPM.defaultData[i * 4 + 2] = 255; // B
+				imgPM.defaultData[i * 4 + 3] = 255; // A
+			}
+			auto img = std::make_unique<DynamicImage>(imgPM);
 			this->AddElement("IMG_Biome", std::move(img), 2, false);
 
-						Buttons::ColoredButton::Vox_ColorButton_Constructor pm{};
+			Buttons::ColoredButton::Vox_ColorButton_Constructor pm{};
 			pm.bgColor = {1.0, 1.0, 1.0, 0.5};
 			pm.content = "D";
 			pm.disabledBGColor = {0.5, 0.5, 0.5, 0.1};

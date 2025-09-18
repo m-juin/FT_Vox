@@ -14,6 +14,8 @@
 
 #include "Game/GameManager.hpp"
 
+#include "Front/Utils/TexturesData.hpp"
+
 namespace Vox::Front::Rendering::Pipelines
 {
 	StaticGUIPipeline::StaticGUIPipeline() : APipeline()
@@ -166,7 +168,7 @@ namespace Vox::Front::Rendering::Pipelines
 
 	void StaticGUIPipeline::CreateSetLayout()
 	{
-		std::array<VkDescriptorSetLayoutBinding, 2> samplerLayoutBindings{};
+		std::array<VkDescriptorSetLayoutBinding, 3> samplerLayoutBindings{};
 		samplerLayoutBindings[0].binding = 0;
 		samplerLayoutBindings[0].descriptorCount = 1;
 		samplerLayoutBindings[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
@@ -178,6 +180,12 @@ namespace Vox::Front::Rendering::Pipelines
 		samplerLayoutBindings[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 		samplerLayoutBindings[1].pImmutableSamplers = nullptr;
 		samplerLayoutBindings[1].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+
+		samplerLayoutBindings[2].binding = 2;
+		samplerLayoutBindings[2].descriptorCount = Vox::Front::Utils::TexturesData::MAX_DYNAMIC_TEXTURES;
+		samplerLayoutBindings[2].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+		samplerLayoutBindings[2].pImmutableSamplers = nullptr;
+		samplerLayoutBindings[2].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 
 		// std::vector<VkDescriptorSetLayoutBinding> bindings = {samplerLayoutBinding};
 
@@ -206,10 +214,10 @@ namespace Vox::Front::Rendering::Pipelines
 		if (vkAllocateDescriptorSets(Device::GetInstance().GetLogicalDevice(), &allocInfo, this->_set.data()) != VK_SUCCESS)
 			throw std::runtime_error("Failed to allocate descriptor sets!");
 
-		// auto texturesManager = Game::GameManager::GetInstance().GetTexturesManager();
+		auto &texturesManager = Game::GameManager::GetInstance().GetTexturesManager();
 
-		auto textureAtlas = Game::GameManager::GetInstance().GetTexturesManager().operator[]("Menu_Main");
-		auto &fontAtlas =  Game::GameManager::GetInstance().GetTexturesManager().GetFont();
+		auto textureAtlas = texturesManager.operator[]("Menu_Main");
+		auto &fontAtlas =  texturesManager.GetFont();
 
 		VkDescriptorImageInfo textureInfo{};
 		textureInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
@@ -221,24 +229,58 @@ namespace Vox::Front::Rendering::Pipelines
 		fontInfo.imageView = fontAtlas.GetView();
 		fontInfo.sampler = fontAtlas.GetSampler();
 
-		std::array<VkWriteDescriptorSet, 2> descriptorWrites{};
-		descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-		descriptorWrites[0].dstSet = this->_set[0];
-		descriptorWrites[0].dstBinding = 0;
-		descriptorWrites[0].dstArrayElement = 0;
-		descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		descriptorWrites[0].descriptorCount = 1;
-		descriptorWrites[0].pImageInfo = &textureInfo;
+		// std::array<VkWriteDescriptorSet, 3> descriptorWrites{};
+		_descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+		_descriptorWrites[0].dstSet = this->_set[0];
+		_descriptorWrites[0].dstBinding = 0;
+		_descriptorWrites[0].dstArrayElement = 0;
+		_descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+		_descriptorWrites[0].descriptorCount = 1;
+		_descriptorWrites[0].pImageInfo = &textureInfo;
 
-		descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-		descriptorWrites[1].dstSet = this->_set[0];
-		descriptorWrites[1].dstBinding = 1;
-		descriptorWrites[1].dstArrayElement = 0;
-		descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		descriptorWrites[1].descriptorCount = 1;
-		descriptorWrites[1].pImageInfo = &fontInfo;
+		_descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+		_descriptorWrites[1].dstSet = this->_set[0];
+		_descriptorWrites[1].dstBinding = 1;
+		_descriptorWrites[1].dstArrayElement = 0;
+		_descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+		_descriptorWrites[1].descriptorCount = 1;
+		_descriptorWrites[1].pImageInfo = &fontInfo;
 
-		vkUpdateDescriptorSets(Device::GetInstance().GetLogicalDevice(), static_cast<uint32_t>(descriptorWrites.size()),
-							   descriptorWrites.data(), 0, nullptr);
+		const auto &dynamicsTextures = texturesManager.GetDynamics();
+		const auto &sampler = texturesManager.GetDynamicSampler();
+
+		
+		for (size_t index = 0; index < Vox::Front::Utils::TexturesData::MAX_DYNAMIC_TEXTURES; index++)
+		{
+			_dynamicInfos[index].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+			_dynamicInfos[index].imageView = dynamicsTextures[index];
+			_dynamicInfos[index].sampler = sampler;
+		}
+
+		_descriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+		_descriptorWrites[2].dstSet = this->_set[0];
+		_descriptorWrites[2].dstBinding = 2;
+		_descriptorWrites[2].dstArrayElement = 0;
+		_descriptorWrites[2].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+		_descriptorWrites[2].descriptorCount = Vox::Front::Utils::TexturesData::MAX_DYNAMIC_TEXTURES;
+		_descriptorWrites[2].pImageInfo = _dynamicInfos.data();
+
+		vkUpdateDescriptorSets(Device::GetInstance().GetLogicalDevice(), static_cast<uint32_t>(_descriptorWrites.size()),
+							   _descriptorWrites.data(), 0, nullptr);
+	}
+	
+	void StaticGUIPipeline::UpdateSet(const size_t &index)
+	{
+		if (this->_slayout == VK_NULL_HANDLE)
+			return ;
+		std::cout << "Index = " << index << std::endl;
+		_dynamicInfos[index].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+		const auto &dynamicsTextures = Game::GameManager::GetInstance().GetTexturesManager().GetDynamics();
+		_dynamicInfos[index].imageView = dynamicsTextures[index];
+
+		this->_descriptorWrites[2].pImageInfo = _dynamicInfos.data();
+
+		vkUpdateDescriptorSets(Device::GetInstance().GetLogicalDevice(), static_cast<uint32_t>(_descriptorWrites.size()),
+							   _descriptorWrites.data(), 0, nullptr);
 	}
 } // namespace Vox::Front::Rendering::Pipelines

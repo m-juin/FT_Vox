@@ -63,6 +63,7 @@ namespace Vox::Front::Interfaces::Elements
 		const Vector2 screenSize(Rendering::SwapChain::GetInstance().GetExtent().width,
 								 Rendering::SwapChain::GetInstance().GetExtent().height);
 
+		this->_uvMappingData.textureID = 0;
 		if (this->_atlas != "" && this->_atlasKey != "")
 		{
 			auto atlas = Game::GameManager::GetInstance().GetTexturesManager()[_atlas];
@@ -128,7 +129,8 @@ namespace Vox::Front::Interfaces::Elements
 		// this->ResetVertex();
 		this->_vertex[0].position = PointPixelToVulkan(this->_pos, screenSize);
 		this->_vertex[1].position = PointPixelToVulkan({this->_pos[0] + this->_size[0], this->_pos[1]}, screenSize);
-		this->_vertex[2].position = PointPixelToVulkan({this->_pos[0] + this->_size[0], this->_pos[1] + this->_size[1]}, screenSize);
+		this->_vertex[2].position =
+			PointPixelToVulkan({this->_pos[0] + this->_size[0], this->_pos[1] + this->_size[1]}, screenSize);
 		this->_vertex[3].position = PointPixelToVulkan({this->_pos[0], this->_pos[1] + this->_size[1]}, screenSize);
 		this->B_Vertices->Update(&this->_vertex, 4 * sizeof(Vertex));
 	}

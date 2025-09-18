@@ -29,7 +29,7 @@ namespace Vox::Front::Rendering::Pipelines
 			}
 
 		protected:
-			VkDescriptorSetLayout _slayout;
+			VkDescriptorSetLayout _slayout = VK_NULL_HANDLE;
 			std::vector<VkDescriptorSet> _set;
 
 			VkPipelineLayout _layout;

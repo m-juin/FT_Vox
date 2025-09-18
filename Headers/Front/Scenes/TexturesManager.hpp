@@ -10,6 +10,11 @@
 
 #include <memory>
 
+#include "Front/Utils/TexturesData.hpp"
+
+#include <array>
+#include <bitset>
+
 namespace Vox::Front::Scenes
 {
     class TexturesManager
@@ -23,12 +28,33 @@ namespace Vox::Front::Scenes
             Utils::TexturesAtlas *operator[](const std::string &key) {return this->_texturesMap[key];};
 
             Front::Rendering::Images::FontImage &GetFont() {return *this->_fontImage;};
+
+            int AddDynamicImage(VkImageView &view);
+            void RemoveDynamicImage(const size_t &index);
+
+            inline const std::array<VkImageView, Utils::TexturesData::MAX_DYNAMIC_TEXTURES> GetDynamics()
+            {
+                return this->_dynamicImages;
+            }
+
+
+            inline const VkSampler &GetDynamicSampler() {return this->_dynamicSampler;};
+
         protected:
+            void CreateDynamicSampler();
+
+            VkSampler _dynamicSampler = VK_NULL_HANDLE;
+
+            std::array<VkImageView, Utils::TexturesData::MAX_DYNAMIC_TEXTURES> _dynamicImages;
+            std::bitset<Utils::TexturesData::MAX_DYNAMIC_TEXTURES> _avalaibleDynamicImages;
+
             std::unique_ptr<Front::Rendering::Images::FontImage>_fontImage;
             std::unordered_map<std::string, Utils::TexturesAtlas *> _texturesMap;
             /* private */
     
     };
+    
+    
     
 } // namespace Vox::Front::Scenes
 

@@ -38,6 +38,7 @@ namespace Vox::Front::Utils
 				MGL::Vectors::Vector2<float> uvMin;
 				MGL::Vectors::Vector2<float> uvMax;
 				MGL::Vectors::Vector2<uint16_t> atlasSize;
+				int textureID;
 			};
 
 			// TexturesAtlas(std::vector<std::string> atlasTextures, size_t textureSize = 32, size_t textureChannels = 4);

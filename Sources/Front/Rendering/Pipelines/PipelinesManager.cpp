@@ -19,13 +19,6 @@ namespace Vox::Front::Rendering::Pipelines
 		this->_pipelines["Voxel"] = new VoxelPipeline();
 	}
 
-	// template<typename T>
-	// T* PipelinesManager::operator[](const std::string &name)
-	// {
-	// 	if (this->_pipelines.find(name) == this->_pipelines.end()) return nullptr;
-	// 	return static_cast<T *>(this->_pipelines[name]);
-	// }
-
 	void PipelinesManager::CreateRenderPass()
 	{
 		VkAttachmentDescription colorAttachment{};
