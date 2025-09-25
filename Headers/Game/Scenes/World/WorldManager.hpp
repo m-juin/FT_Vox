@@ -76,6 +76,8 @@ namespace Vox::Game::World
 				this->RequestChunckRefresh();
 			};
 
+			const Utils::Defines::ChunckCoord & GetPlayerChunck() {return this->_playerChunck;};
+
 		private:
 			void CheckCreation();
 			void CheckDeletion();
@@ -84,7 +86,7 @@ namespace Vox::Game::World
 			std::unique_ptr<Generation::BufferManager> _bManager;
 			std::unique_ptr<Generation::GenerationManager> _gManager;
 
-			Utils::Defines::ChunckCoord _playerChunck;
+			Utils::Defines::ChunckCoord _playerChunck = {0, 0};
 
 			std::unordered_map<const Utils::Defines::ChunckCoord, std::shared_ptr<Chuncks::ChunckCluster>,
 							   MGL::Vectors::Vector2Hash<int>>

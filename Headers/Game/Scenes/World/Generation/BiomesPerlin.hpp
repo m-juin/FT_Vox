@@ -482,7 +482,6 @@ namespace Vox::Game::Generation::Perlins
 				effectivePos[1] = center[1] + (y * scale);
 				effectivePos[1] += 125000;
 				Biomes biome = GetBiomeAtPoint(effectivePos[0], effectivePos[1], seed);
-				std::cout << biome << std::endl;
 				MGL::Vectors::Vector3<int> color = biomesColors[biome];
 
 				uint64_t index = ((imgSize * (y + halfSize)) + (x + halfSize)) * 4;
@@ -493,6 +492,35 @@ namespace Vox::Game::Generation::Perlins
 			}
 		}
 		return dataArray;
+	}
+
+	inline void GenerateBiomeImage(std::vector<uint8_t> &target, MGL::Vectors::Vector2<int> center, uint32_t seed, uint16_t imgSize,
+												   float scale)
+	{
+		// std::cout << "scale = " << scale << std::endl;
+		uint16_t halfSize = imgSize / 2;
+
+		MGL::Vectors::Vector2<int> effectivePos = center;
+		std::cout << center << std::endl;
+		for (int x = -halfSize; x < halfSize; x++)
+		{
+			effectivePos[0] = center[0] + (x * scale);
+			effectivePos[0] += 125000;
+			for (int y = -halfSize; y < halfSize; y++)
+			{
+				effectivePos[1] = center[1] + (y * scale);
+				effectivePos[1] += 125000;
+				Biomes biome = GetBiomeAtPoint(effectivePos[0], effectivePos[1], seed);
+				MGL::Vectors::Vector3<int> color = biomesColors[biome];
+
+				uint64_t index = ((imgSize * (y + halfSize)) + (x + halfSize)) * 4;
+				target[index] = color[0];
+				target[index + 1] = color[1];
+				target[index + 2] = color[2];
+				target[index + 3] = 255;
+			}
+		}
+		return ;
 	}
 } // namespace Vox::Game::Generation::Perlins
 

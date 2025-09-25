@@ -4,6 +4,7 @@
 #include "Front/Interfaces/AInterface.hpp"
 
 #include "Utils/AUpdatable.hpp"
+#include "./M_Minimap.hpp"
 
 using namespace Vox::Front::Interfaces;
 
@@ -17,7 +18,7 @@ namespace Vox::Game::Scenes::World::Interfaces
             ~I_Generation();
     
         private:
-
+            M_Minimap _mMinimap;
 
             void UpdateMap(MGL::Vectors::Vector2<int> playerPos);
 			void SetPos(const Vox::Front::Interfaces::Elements::Vector2 newPos) override;
