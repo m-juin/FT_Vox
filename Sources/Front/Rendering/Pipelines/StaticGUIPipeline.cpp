@@ -211,13 +211,14 @@ namespace Vox::Front::Rendering::Pipelines
 
 		this->_set.resize(allocInfo.descriptorSetCount);
 
-		if (vkAllocateDescriptorSets(Device::GetInstance().GetLogicalDevice(), &allocInfo, this->_set.data()) != VK_SUCCESS)
+		if (vkAllocateDescriptorSets(Device::GetInstance().GetLogicalDevice(), &allocInfo, this->_set.data()) !=
+			VK_SUCCESS)
 			throw std::runtime_error("Failed to allocate descriptor sets!");
 
 		auto &texturesManager = Game::GameManager::GetInstance().GetTexturesManager();
 
 		auto textureAtlas = texturesManager.operator[]("Menu_Main");
-		auto &fontAtlas =  texturesManager.GetFont();
+		auto &fontAtlas = texturesManager.GetFont();
 
 		VkDescriptorImageInfo textureInfo{};
 		textureInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
@@ -249,14 +250,13 @@ namespace Vox::Front::Rendering::Pipelines
 		const auto &dynamicsTextures = texturesManager.GetDynamics();
 		const auto &sampler = texturesManager.GetDynamicSampler();
 
-		
 		for (size_t index = 0; index < Vox::Front::Utils::TexturesData::MAX_DYNAMIC_TEXTURES; index++)
 		{
 			_dynamicInfos[index].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 			_dynamicInfos[index].imageView = dynamicsTextures[index];
 			_dynamicInfos[index].sampler = sampler;
 		}
-
+		std::cout << "Pipeline is Constructed\n";
 		_descriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 		_descriptorWrites[2].dstSet = this->_set[0];
 		_descriptorWrites[2].dstBinding = 2;
@@ -265,22 +265,40 @@ namespace Vox::Front::Rendering::Pipelines
 		_descriptorWrites[2].descriptorCount = Vox::Front::Utils::TexturesData::MAX_DYNAMIC_TEXTURES;
 		_descriptorWrites[2].pImageInfo = _dynamicInfos.data();
 
-		vkUpdateDescriptorSets(Device::GetInstance().GetLogicalDevice(), static_cast<uint32_t>(_descriptorWrites.size()),
-							   _descriptorWrites.data(), 0, nullptr);
+		vkUpdateDescriptorSets(Device::GetInstance().GetLogicalDevice(),
+							   static_cast<uint32_t>(_descriptorWrites.size()), _descriptorWrites.data(), 0, nullptr);
 	}
-	
+
 	void StaticGUIPipeline::UpdateSet(const size_t &index)
 	{
 		if (this->_slayout == VK_NULL_HANDLE)
-			return ;
-		std::cout << "Index = " << index << std::endl;
-		_dynamicInfos[index].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+			return;
+		if (index >= _dynamicInfos.size())
+		{
+			std::cerr << "UpdateSet index out of range: " << index << std::endl;
+			return;
+		}
+
 		const auto &dynamicsTextures = Game::GameManager::GetInstance().GetTexturesManager().GetDynamics();
+		if (index >= dynamicsTextures.size())
+		{
+			std::cerr << "Dynamics textures too small\n";
+			return;
+		}
+
 		_dynamicInfos[index].imageView = dynamicsTextures[index];
+		_dynamicInfos[index].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 
-		this->_descriptorWrites[2].pImageInfo = _dynamicInfos.data();
+		VkWriteDescriptorSet write = {};
+		write.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+		write.pNext = nullptr;
+		write.dstSet = this->_set[0];
+		write.dstBinding = 2;
+		write.dstArrayElement = static_cast<uint32_t>(index);
+		write.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+		write.descriptorCount = 1;
+		write.pImageInfo = &_dynamicInfos[index];
 
-		vkUpdateDescriptorSets(Device::GetInstance().GetLogicalDevice(), static_cast<uint32_t>(_descriptorWrites.size()),
-							   _descriptorWrites.data(), 0, nullptr);
+		vkUpdateDescriptorSets(Device::GetInstance().GetLogicalDevice(), 1, &write, 0, nullptr);
 	}
 } // namespace Vox::Front::Rendering::Pipelines

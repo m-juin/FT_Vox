@@ -7,6 +7,107 @@
 namespace Vox::Game::Generation::Perlins
 {
 	using namespace Datas::Biomes;
+
+	static float GetErosionValueAt(float x, float y, uint32_t seed)
+	{
+		float val = GetPerlinValue(x, y, seed, Utils::ErosionData, {-1, 1});
+
+		if (val <= -0.78)
+			val = 0.0f;
+		else if (val <= -0.375)
+			val = 1.0f;
+		else if (val <= -0.2225)
+			val = 2.0f;
+		else if (val <= 0.05)
+			val = 3.0f;
+		else if (val <= 0.45)
+			val = 4.0;
+		else if (val <= 0.55)
+			val = 5.0f;
+		else
+			val = 6.0f;
+		return val;
+	}
+
+	static float GetContinentalValueAt(float x, float y, uint32_t seed)
+	{
+		float val = GetPerlinValue(x, y, seed, Utils::ContinentalnessData, {-1.2f, 1.0f});
+		if (val <= -1.05)
+			val = 0.0f;
+		else if (val <= -0.455)
+			val = 1.0f;
+		else if (val <= -0.19)
+			val = 2.0f;
+		else if (val <= -0.11)
+			val = 3.0f;
+		else if (val <= 0.03)
+			val = 4.0f;
+		else if (val <= 0.3)
+			val = 5.0f;
+		else
+			val = 6.0f;
+		return val;
+	}
+
+	static float GetHumidityValueAt(float x, float y, uint32_t seed)
+	{
+		float val = GetPerlinValue(x, y, seed, Utils::HumidityData, {-1, 1});
+
+		if (val <= -0.35f)
+			val = 0.0f;
+		else if (val <= -0.1f)
+			val = 1.0f;
+		else if (val <= 0.1f)
+			val = 2.0f;
+		else if (val <= 0.3f)
+			val = 3.0f;
+		else
+			val = 4.0f;
+		return val;
+	}
+
+	static float GetPeaksAndValleyValueAt(float x, float y, uint32_t seed)
+	{
+		float val = GetPerlinValue(x, y, seed, Utils::PeaksAndValleyData, {-1, 1});
+
+		val = 1 - std::abs(3 * std::abs(val) - 2);
+		if (val <= -0.85)
+			val = 0.0f;
+		else if (val <= -0.6f)
+			val = 1.0f;
+		else if (val <= 0.2f)
+			val = 2.0f;
+		else if (val <= 0.7f)
+			val = 3.0f;
+		else
+			val = 4.0f;
+		return val;
+	}
+
+	static float GetTemperatureValueAt(float x, float y, uint32_t seed)
+	{
+		float val = GetPerlinValue(x, y, seed, Utils::TemperatureData, {-1, 1});
+
+		if (val <= -0.45f)
+			val = 0.0f;
+		else if (val <= -0.15f)
+			val = 1.0f;
+		else if (val <= 0.2f)
+			val = 2.0f;
+		else if (val <= 0.55f)
+			val = 3.0f;
+		else
+			val = 4.0f;
+		return val;
+	}
+
+	static float GetWeirdnessValueAt(float x, float y, uint32_t seed)
+	{
+		float val = GetPerlinValue(x, y, seed, Utils::WeirdnessData, {-1, 1});
+
+		return val;
+	}
+
 	inline Biomes GetMiddleBiome(float xPos, float yPos, float tempVal, uint32_t seed)
 	{
 		if (tempVal == 4.0f)
@@ -124,11 +225,14 @@ namespace Vox::Game::Generation::Perlins
 
 	inline Biomes GetBeachBiome(float xPos, float yPos, float tempVal)
 	{
+		(void)xPos;
+		(void)yPos;
 		return tempVal == 0 ? Biomes::Snowy_Beach : tempVal == 4.0f ? Biomes::Desert : Biomes::Beach;
 	}
 
 	inline Biomes GetBadlandBiome(float xPos, float yPos, float tempVal, uint32_t seed)
 	{
+		(void)tempVal;
 		float HumidityVal = GetHumidityValueAt(xPos, yPos, seed);
 		if (HumidityVal <= 1.0f)
 		{
@@ -359,127 +463,37 @@ namespace Vox::Game::Generation::Perlins
 		}
 	}
 
-	static float GetErosionValueAt(float x, float y, uint32_t seed)
+	inline std::vector<uint8_t> GenerateBiomeImage(MGL::Vectors::Vector2<int> center, uint32_t seed, uint16_t imgSize,
+												   float scale)
 	{
-		float val = GetPerlinValue(x, y, seed, Utils::ErosionData, {-1, 1});
+		// std::cout << "scale = " << scale << std::endl;
+		std::vector<uint8_t> dataArray;
+		dataArray.resize(imgSize * imgSize * 4);
+		uint16_t halfSize = imgSize / 2;
 
-		if (val <= -0.78)
-			val = 0.0f;
-		else if (val <= -0.375)
-			val = 1.0f;
-		else if (val <= -0.2225)
-			val = 2.0f;
-		else if (val <= 0.05)
-			val = 3.0f;
-		else if (val <= 0.45)
-			val = 4.0;
-		else if (val <= 0.55)
-			val = 5.0f;
-		else
-			val = 6.0f;
-		return val;
-	}
-
-	static float GetContinentalValueAt(float x, float y, uint32_t seed)
-	{
-		float val = GetPerlinValue(x, y, seed, Utils::ContinentalnessData, {-1.2f, 1.0f});
-		if (val <= -1.05) val = 0.0f;
-		else if (val <= -0.455) val = 1.0f;
-		else if (val <= -0.19) val = 2.0f;
-		else if (val <= -0.11) val = 3.0f;
-		else if (val <= 0.03) val = 4.0f;
-		else if (val <= 0.3) val = 5.0f;
-		else val = 6.0f;
-		return val;
-	}
-
-	static float GetHumidityValueAt(float x, float y, uint32_t seed)
-	{
-		float val = GetPerlinValue(x, y, seed, Utils::HumidityData, {-1, 1});
-
-		if (val <= -0.35f)
-			val = 0.0f;
-		else if (val <= -0.1f)
-			val = 1.0f;
-		else if (val <= 0.1f)
-			val = 2.0f;
-		else if (val <= 0.3f)
-			val = 3.0f;
-		else
-			val = 4.0f;
-		return val;
-	}
-
-	static float GetPeaksAndValleyValueAt(float x, float y, uint32_t seed)
-	{
-		float val = GetPerlinValue(x, y, seed, Utils::PeaksAndValleyData, {-1, 1});
-
-		val = 1 - std::abs(3 * std::abs(val) - 2);
-		if (val <= -0.85)
-			val = 0.0f;
-		else if (val <= -0.6f)
-			val = 1.0f;
-		else if (val <= 0.2f)
-			val = 2.0f;
-		else if (val <= 0.7f)
-			val = 3.0f;
-		else
-			val = 4.0f;
-		return val;
-	}
-
-	static float GetTemperatureValueAt(float x, float y, uint32_t seed)
-	{
-		float val = GetPerlinValue(x, y, seed, Utils::TemperatureData , {-1, 1});
-
-		if (val <= -0.45f)
-			val = 0.0f;
-		else if (val <= -0.15f)
-			val = 1.0f;
-		else if (val <= 0.2f)
-			val = 2.0f;
-		else if (val <= 0.55f)
-			val = 3.0f;
-		else
-			val = 4.0f;
-		return val;
-	}
-
-	static float GetWeirdnessValueAt(float x, float y, uint32_t seed)
-	{
-		float val = GetPerlinValue(x, y, seed, Utils::WeirdnessData, {-1, 1});
-
-		return val;
-	}
-
-	inline uint8_t *GenerateBiomeImage(MGL::Vectors::Vector2<int> center, uint32_t seed, uint16_t imgSize, float scale)
+		MGL::Vectors::Vector2<int> effectivePos = center;
+		std::cout << center << std::endl;
+		for (int x = -halfSize; x < halfSize; x++)
 		{
-			// std::cout << "scale = " << scale << std::endl;
-			uint8_t *dataArray = new uint8_t[imgSize * imgSize * 4];
-			uint16_t halfSize = imgSize / 2;
-
-			MGL::Vectors::Vector2<int> effectivePos = center;
-			std::cout << center << std::endl;
-			for (int x = -halfSize; x < halfSize; x++)
+			effectivePos[0] = center[0] + (x * scale);
+			effectivePos[0] += 125000;
+			for (int y = -halfSize; y < halfSize; y++)
 			{
-				effectivePos[0] = center[0] + (x * scale);
-				effectivePos[0] += 125000;
-				for (int y = -halfSize; y < halfSize; y++)
-				{
-					effectivePos[1] = center[1] + (y * scale);
-					effectivePos[1] += 125000;
-					Biomes biome = GetBiomeAtPoint(effectivePos[0], effectivePos[1], seed);
-					MGL::Vectors::Vector3<int> color = biomesColors[biome];
+				effectivePos[1] = center[1] + (y * scale);
+				effectivePos[1] += 125000;
+				Biomes biome = GetBiomeAtPoint(effectivePos[0], effectivePos[1], seed);
+				std::cout << biome << std::endl;
+				MGL::Vectors::Vector3<int> color = biomesColors[biome];
 
-					uint64_t index = ((imgSize * (y + halfSize)) + (x + halfSize)) * 4;
-					dataArray[index] = color[0];
-					dataArray[index + 1] = color[1];
-					dataArray[index + 2] = color[2];
-					dataArray[index + 3] = 255;
-				}
+				uint64_t index = ((imgSize * (y + halfSize)) + (x + halfSize)) * 4;
+				dataArray[index] = color[0];
+				dataArray[index + 1] = color[1];
+				dataArray[index + 2] = color[2];
+				dataArray[index + 3] = 255;
 			}
-			return dataArray;
 		}
-} // namespace Vox::game::Generation::Perlins
+		return dataArray;
+	}
+} // namespace Vox::Game::Generation::Perlins
 
 #endif // __BIOMESPERLIN_HPP__

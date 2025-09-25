@@ -18,6 +18,8 @@ namespace Vox::Game::Scenes::World::Interfaces
     
         private:
 
+
+            void UpdateMap(MGL::Vectors::Vector2<int> playerPos);
 			void SetPos(const Vox::Front::Interfaces::Elements::Vector2 newPos) override;
 			void SetSize(const Vox::Front::Interfaces::Elements::Vector2 newSize) override;
             void OnHover() override {};

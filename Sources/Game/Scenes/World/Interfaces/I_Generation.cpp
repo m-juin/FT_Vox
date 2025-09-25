@@ -19,6 +19,8 @@
 
 #include "GLFW/glfw3.h"
 
+#include "Game/Scenes/World/Generation/BiomesPerlin.hpp"
+
 namespace Vox::Game::Scenes::World::Interfaces
 {
 	using namespace Front::Interfaces::Elements;
@@ -214,6 +216,8 @@ namespace Vox::Game::Scenes::World::Interfaces
 			auto img = std::make_unique<DynamicImage>(imgPM);
 			this->AddElement("IMG_Biome", std::move(img), 2, false);
 
+			this->UpdateMap({0, 0});
+
 			Buttons::ColoredButton::Vox_ColorButton_Constructor pm{};
 			pm.bgColor = {1.0, 1.0, 1.0, 0.5};
 			pm.content = "D";
@@ -244,6 +248,13 @@ namespace Vox::Game::Scenes::World::Interfaces
 	}
 
 	I_Generation::~I_Generation() {}
+	
+	void I_Generation::UpdateMap(MGL::Vectors::Vector2<int> playerPos)
+	{
+		auto img = this->GetElement<DynamicImage>("IMG_Biome");
+		auto newData = Game::Generation::Perlins::GenerateBiomeImage(playerPos, Game::World::WorldManager::GetInstance().GetGenerationManager().GetSeed(), 400, 4);
+		img->SetData(newData);
+	}
 
 	void I_Generation::SetPos(const Vox::Front::Interfaces::Elements::Vector2 newPos)
 	{

@@ -50,6 +50,7 @@ namespace Vox::Front::Interfaces::Elements
 	void DynamicImage::SetData(std::vector<uint8_t> newData)
 	{
 		this->_imgData = newData;
+		this->UpdateVulkanImage();
 	}
 
 	void DynamicImage::ResetVertex()

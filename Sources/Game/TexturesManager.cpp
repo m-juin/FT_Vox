@@ -39,14 +39,14 @@ namespace Vox::Front::Scenes
 
 	int TexturesManager::AddDynamicImage(VkImageView &view)
 	{
+		std::cout << "Image is added\n";
 		int index = this->_avalaibleDynamicImages._Find_first();
-		std::cout << "index = " << index << std::endl;
 		if (index == Vox::Front::Utils::TexturesData::MAX_DYNAMIC_TEXTURES)
 			return -1;
 		this->_avalaibleDynamicImages.flip(index);
 		this->_dynamicImages[index] = view;
 		auto &pipelineManager = Rendering::Pipelines::PipelinesManager::GetInstance();
-		auto pipeline = pipelineManager.operator[]<Rendering::Pipelines::StaticGUIPipeline>("tt");
+		auto pipeline = pipelineManager.operator[]<Rendering::Pipelines::StaticGUIPipeline>("StaticGUI");
 
 		if (pipeline == nullptr)
 			return index;
