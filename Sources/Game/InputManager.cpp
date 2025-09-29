@@ -31,13 +31,14 @@ namespace Vox::Game
 			return true;
 		E_InputAction inputAction =
 			button == this->_inputMap[E_InputAction::I_F3] ? E_InputAction::I_F3 : E_InputAction::I_Generation;
-		if (Game::GameManager::GetInstance().GetSceneManager().GetCurrentScene().HandleInputAction(inputAction))
-		{
-			this->SetInputTarget(E_InputTarget::UI);
-		}
-		else
-			this->SetInputTarget(E_InputTarget::Camera);
+		Game::GameManager::GetInstance().GetSceneManager().GetCurrentScene().HandleInputAction(inputAction);
+		// if (Game::GameManager::GetInstance().GetSceneManager().GetCurrentScene().HandleInputAction(inputAction))
 		return true;
+	}
+	
+	InputManager& InputManager::GetInstance()
+	{
+		return Game::GameManager::GetInstance().GetInputManager();
 	}
 
 	void InputManager::SetupCallBack()
@@ -49,7 +50,7 @@ namespace Vox::Game
 								 {
 									 const auto *inputMgr =
 										 static_cast<InputManager *>(glfwGetWindowUserPointer(window));
-									 if (inputMgr->_target == E_InputTarget::UI)
+									 if ((inputMgr->_inputMask & Game::Utils::Datas::InputMask::Mouse) != 00000000)
 									 {
 										 const auto &im = Front::Interfaces::InterfacesManager::GetInstance();
 										 float xScale, yScale;
@@ -77,9 +78,9 @@ namespace Vox::Game
 									   (void)mods;
 									   const auto *inputMgr =
 										   static_cast<InputManager *>(glfwGetWindowUserPointer(window));
-									   if (inputMgr->_target == E_InputTarget::UI)
+									   if ((inputMgr->_inputMask & Game::Utils::Datas::InputMask::Mouse) != 00000000)
 									   {
-										   const auto &im = Front::Interfaces::InterfacesManager::GetInstance();
+										   auto &im = Front::Interfaces::InterfacesManager::GetInstance();
 										   im.HandleMouseClick(button, action);
 									   }
 								   });
@@ -87,7 +88,7 @@ namespace Vox::Game
 							  [](GLFWwindow *window, double xoffset, double yoffset)
 							  {
 								  auto *inputMgr = static_cast<InputManager *>(glfwGetWindowUserPointer(window));
-								  if (inputMgr->_target == E_InputTarget::UI)
+								  if ((inputMgr->_inputMask & Game::Utils::Datas::InputMask::Mouse) != 00000000)
 								  {
 									  const auto &im = Front::Interfaces::InterfacesManager::GetInstance();
 									  im.HandleMouseScroll(xoffset, yoffset);
@@ -109,7 +110,7 @@ namespace Vox::Game
 							   auto *inputMgr = static_cast<InputManager *>(glfwGetWindowUserPointer(window));
 							   if (inputMgr->HandleNonTargetInput(key, action))
 								   return;
-							   if (inputMgr->_target == E_InputTarget::UI)
+							   if ((inputMgr->_inputMask & Game::Utils::Datas::InputMask::KeyBoard) != 00000000)
 							   {
 								   const auto &im = Front::Interfaces::InterfacesManager::GetInstance();
 								   im.HandleKeyInput(key, action);
@@ -148,9 +149,22 @@ namespace Vox::Game
 		}
 	}
 
+	void InputManager::UpdateInputMask(const uint8_t &newMask)
+	{
+		if (newMask == this->_inputMask)
+			return;
+		std::cout << "New Mask = " << +newMask << std::endl; 
+		this->_inputMask = newMask;
+		auto win = Front::Window::GetInstance().GetWindow();
+		if ((newMask & Game::Utils::Datas::InputMask::Mouse) != 00000000)
+			glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		else
+			glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	}
+
 	void InputManager::HandlePerFrameInput()
 	{
-		if (this->_target == E_InputTarget::UI)
+		if (this->_inputMask & Game::Utils::Datas::InputMask::KeyBoard)
 			return;
 
 		auto win = Front::Window::GetInstance().GetWindow();

@@ -11,6 +11,8 @@
 #include "Front/Interfaces/Elements/InputField.hpp"
 #include "Front/Interfaces/Elements/Slider.hpp"
 
+#include "Game/InputManager.hpp"
+
 #include <GLFW/glfw3.h>
 
 namespace Vox::Front::Interfaces::Elements::Bases
@@ -35,6 +37,9 @@ namespace Vox::Front::Interfaces
 	void InterfacesManager::RegisterInterface(const std::string &key, AInterface *inte)
 	{
 		this->_content.insert({key, inte});
+		if (inte->IsEnabled() == false)
+			return ;
+		this->UpdateInputMask();
 	}
 
 	void InterfacesManager::Render()
@@ -61,6 +66,8 @@ namespace Vox::Front::Interfaces
 
 	void InterfacesManager::HandleMouseMove(const float &xPos, const float &yPos) const
 	{
+		if ((this->_inputMask & Game::Utils::Datas::InputMask::Mouse) == 00000000)
+			return;
 		Front::Interfaces::Elements::Bases::AClickable::ResetHoverState();
 		auto focused = Front::Interfaces::Elements::Bases::AFocusable::GetFocused();
 		if (focused != nullptr)
@@ -68,10 +75,10 @@ namespace Vox::Front::Interfaces
 			if (auto sld = dynamic_cast<Elements::Slider *>(focused))
 			{
 				sld->HandleMovement(xPos);
-				return ;
+				return;
 			}
 		}
-		
+
 		for (auto pair : this->_content)
 		{
 			pair.second->IsHover({xPos, yPos});
@@ -80,12 +87,14 @@ namespace Vox::Front::Interfaces
 
 	void InterfacesManager::HandleMouseScroll(const double &xOff, const double &yOff) const
 	{
+		if ((this->_inputMask & Game::Utils::Datas::InputMask::Mouse) == 00000000)
+			return;
 		for (auto pair : this->_content)
 			if (pair.second->IsEnabled() == true)
 				pair.second->OnScroll(xOff, yOff);
 	}
 
-	void InterfacesManager::HandleMouseClick(const int &button, const int &action) const
+	void InterfacesManager::HandleMouseClick(const int &button, const int &action)
 	{
 		Front::Interfaces::Elements::Bases::AClickable::ResetClickState();
 		Front::Interfaces::Elements::Bases::AFocusable::ResetFocusConsumtion();
@@ -95,11 +104,16 @@ namespace Vox::Front::Interfaces
 		if (button != GLFW_MOUSE_BUTTON_LEFT || action != GLFW_RELEASE)
 			return;
 		if (Front::Interfaces::Elements::Bases::AFocusable::_focusConsummed == false)
+		{
 			Front::Interfaces::Elements::Bases::AFocusable::SetFocusElement(nullptr);
+		}
+		this->UpdateInputMask();
 	}
 
 	void InterfacesManager::HandleCharInput(const unsigned int &codePoint) const
 	{
+		if ((this->_inputMask & Game::Utils::Datas::InputMask::KeyBoard) == 00000000)
+			return;
 		auto focused = Front::Interfaces::Elements::Bases::AFocusable::GetFocused();
 		if (auto elem = dynamic_cast<Elements::InputField *>(focused))
 			elem->HandleCharInput(codePoint);
@@ -107,6 +121,8 @@ namespace Vox::Front::Interfaces
 
 	void InterfacesManager::HandleKeyInput(const unsigned int &codePoint, const int &action) const
 	{
+		if ((this->_inputMask & Game::Utils::Datas::InputMask::KeyBoard) == 00000000)
+			return;
 		auto focused = Front::Interfaces::Elements::Bases::AFocusable::GetFocused();
 		if (auto elem = dynamic_cast<Elements::InputField *>(focused))
 			elem->HandleKeyInput(codePoint, action);
@@ -116,7 +132,9 @@ namespace Vox::Front::Interfaces
 	{
 		auto &interface = _content[key];
 		interface->ChangeEnableState(true);
-		Front::Interfaces::Elements::Bases::AFocusable::SetFocusElement(nullptr);
+		if (Front::Interfaces::Elements::Bases::AFocusable::GetFocused() != nullptr)
+			Front::Interfaces::Elements::Bases::AFocusable::SetFocusElement(nullptr);
+		this->UpdateInputMask();
 	}
 
 	void InterfacesManager::DisableInterface(const std::string &key)
@@ -124,8 +142,19 @@ namespace Vox::Front::Interfaces
 		auto &interface = _content[key];
 		interface->ChangeEnableState(false);
 		Front::Interfaces::Elements::Bases::AFocusable::SetFocusElement(nullptr);
+		this->UpdateInputMask();
 	}
 
+	void InterfacesManager::UpdateInputMask()
+	{
+		this->_inputMask = 0;
+		for (auto &i : this->_content)
+			if (i.second->IsEnabled())
+				this->_inputMask = this->_inputMask | i.second->GetInputMask();
+		this->_inputMask = this->_inputMask | Front::Interfaces::Elements::Bases::AFocusable::GetFocusedInputMask();
+		Game::InputManager::GetInstance().UpdateInputMask(this->_inputMask);
+	}
+	
 	InterfacesManager::InterfacesManager()
 	{
 		this->onUpdate.AddCallBack(

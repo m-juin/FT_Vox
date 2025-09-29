@@ -5,10 +5,12 @@
 
 #include <GLFW/glfw3.h>
 
+#include "Game/Utils/Datas/E_InputMask.hpp"
+
 namespace Vox::Front::Interfaces::Elements
 {
 
-	InputField::InputField(const Constructor &st) : AElement(st.pos, st.size), AContainer(), _inputScale(st.inputScale), _inputMode(st.inputMode)
+	InputField::InputField(const Constructor &st) : AElement(st.pos, st.size), AContainer(), AFocusable(Game::Utils::Datas::InputMask::KeyBoard), _inputScale(st.inputScale), _inputMode(st.inputMode)
 	{
 		Color BGColor{1.0, 1.0, 1.0, 1.0};
 		if (st.BGAtlas == "")

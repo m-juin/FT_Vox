@@ -10,6 +10,8 @@
 #include <iomanip>
 #include <sstream>
 
+#include "Game/Utils/Datas/E_InputMask.hpp"
+
 namespace Vox::Front::Interfaces::Elements
 {
 	void Slider::SetMinVal(const float &newMin)
@@ -149,7 +151,7 @@ namespace Vox::Front::Interfaces::Elements
 	}
 
 	Slider::Slider(const Constructor &st)
-		: AElement(st.pos, st.size), _value(st.defaultValue), _step(st.step), _range({st.minVal, st.maxVal}),
+		: AElement(st.pos, st.size), AFocusable(Game::Utils::Datas::InputMask::Mouse), _value(st.defaultValue), _step(st.step), _range({st.minVal, st.maxVal}),
 		  _handleColor(st.HandleColor), _FocusedHandleColor(st.HandleSlidingColor)
 	{
 		this->AddElement("IMG_BG",

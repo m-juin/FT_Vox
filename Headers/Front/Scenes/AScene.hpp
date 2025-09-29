@@ -23,6 +23,7 @@ namespace Vox::Front::Scenes
         protected:
 
 
+
 	};
 } // namespace Vox::Front::Scenes
 

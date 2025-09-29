@@ -8,6 +8,8 @@
 
 #include "AInterface.hpp"
 
+#include "Game/Utils/Datas/E_InputMask.hpp"
+
 namespace Vox::Front::Interfaces
 {
 	class InterfacesManager : public Vox::Utils::Singleton<InterfacesManager> , public Vox::Utils::AUpdatable
@@ -20,14 +22,13 @@ namespace Vox::Front::Interfaces
 			void Render();
 
 			void HandleMouseMove(const float &xPos, const float &yPos) const;
-			void HandleMouseClick(const int &button, const int &action) const;
+			void HandleMouseClick(const int &button, const int &action);
 			void HandleMouseScroll(const double &xOff, const double &yOff) const;
 			void HandleCharInput(const unsigned int &codePoint) const;
 			void HandleKeyInput(const unsigned int &codePoint, const int &action) const;
 			InterfacesManager();
 			~InterfacesManager();
 
-			// Version non-constante pour les modifications
 			AInterface *&operator[](const std::string &key)
 			{
 				return _content[key];
@@ -42,7 +43,10 @@ namespace Vox::Front::Interfaces
 				return _content[key]->IsEnabled();
 			}
 
+			void UpdateInputMask();
+
 		private:
+			uint8_t _inputMask = 00000000;
 			std::unordered_map<std::string, AInterface *> _content;
 			/* private */
 	};

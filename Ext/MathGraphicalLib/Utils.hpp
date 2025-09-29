@@ -10,7 +10,7 @@ namespace MGL::Utils
 			throw std::invalid_argument("Division par zéro impossible");
 		}
 
-		auto quotient = (number + multiple_of - 1) / multi
+		auto quotient = (number + multiple_of - 1) / multiple_of;
 		return quotient * multiple_of;
 	}
 

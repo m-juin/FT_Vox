@@ -162,6 +162,7 @@ namespace Vox::Game::Scenes::World::Interfaces
 		}
 
 		{ // BTN_Update
+			this->_inputMask |= Game::Utils::Datas::InputMask::Mouse;
 			Buttons::ColoredButton::Vox_ColorButton_Constructor pm{};
 			pm.bgColor = {1.0, 1.0, 1.0, 0.5};
 			pm.content = "U";

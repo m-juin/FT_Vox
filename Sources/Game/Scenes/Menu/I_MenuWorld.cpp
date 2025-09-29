@@ -59,6 +59,7 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 							 Vox::Front::Interfaces::Elements::Vector2 size)
 		: AInterface(pos, size, false)
 	{
+		this->_inputMask |= Game::Utils::Datas::InputMask::Mouse | Game::Utils::Datas::InputMask::KeyBoard;
 		_size[0] = MGL::Utils::findNextMultiple(size[0], 16.f);
 		_size[1] = MGL::Utils::findNextMultiple(size[1], 16.f);
 		// std::cout << size << "\n" << std::endl;

@@ -4,6 +4,7 @@
 #include "Front/Interfaces/Elements/Bases/AContainer.hpp"
 #include "Front/Interfaces/Elements/Bases/AScrollable.hpp"
 
+#include "Game/Utils/Datas/E_InputMask.hpp"
 
 namespace Vox::Front::Interfaces
 {
@@ -31,7 +32,10 @@ namespace Vox::Front::Interfaces
 
 			virtual void Render() = 0;
 		
-			private:
+			const uint8_t &GetInputMask() {return this->_inputMask;}
+
+			protected:
+				uint8_t _inputMask = 00000000;
 				
 			/* private */
 	};

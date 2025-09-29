@@ -7,7 +7,7 @@ namespace Vox::Front::Interfaces::Elements::Bases
 	{
 		public:
 			friend class Vox::Front::Interfaces::InterfacesManager;
-			AFocusable() : _isFocused(false) {};
+			AFocusable(uint8_t inputMask = 00000000) : _isFocused(false), _inputMask(inputMask) {};
 			virtual ~AFocusable()
 			{
 				if (GetFocused() == this)
@@ -19,8 +19,16 @@ namespace Vox::Front::Interfaces::Elements::Bases
 				return AFocusable::_focusedElement;
 			}
 
+			static inline uint8_t GetFocusedInputMask()
+			{
+				if (_focusedElement == nullptr)
+					return 0;
+				return _focusedElement->_inputMask; 
+			}
+
 		protected:
 			bool _isFocused;
+			const uint8_t _inputMask;
 
 			static AFocusable *_focusedElement;
 

@@ -5,26 +5,10 @@
 
 namespace Vox::Game::Utils::Datas
 {
-    enum class E_InputMask : uint8_t
+    namespace InputMask
     {
-        None = 0,
-        Mouse = 1 << 7,
-        KeyBoard = 1 << 6
-    };
-
-    inline uint8_t operator&(E_InputMask a, E_InputMask b)
-    {
-        return static_cast<uint8_t>(a) & static_cast<uint8_t>(b);
-    }
-
-    inline uint8_t operator|(E_InputMask a, E_InputMask b)
-    {
-        return static_cast<uint8_t>(a) | static_cast<uint8_t>(b);
-    }
-
-    inline uint8_t operator~(E_InputMask a)
-    {
-        return ~static_cast<uint8_t>(a);
+        constexpr uint8_t Mouse = 1 << 7;
+        constexpr uint8_t KeyBoard = 1 << 6;
     }
 }
 

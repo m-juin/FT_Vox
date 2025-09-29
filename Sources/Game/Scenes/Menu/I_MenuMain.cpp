@@ -21,6 +21,7 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 	{
 		_size[0] = MGL::Utils::findNextMultiple(size[0], 16.f);
 		_size[1] = MGL::Utils::findNextMultiple(size[1], 16.f);
+		this->_inputMask |= Game::Utils::Datas::InputMask::Mouse | Game::Utils::Datas::InputMask::KeyBoard;
 		// std::cout << size << "\n" << std::endl;
 		this->AddElement("IMG_BG",
 						 std::make_unique<Image>("Menu_Main", "Dirt", this->_pos, this->_size,
