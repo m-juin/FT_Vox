@@ -26,6 +26,7 @@ namespace Vox::Front::Scenes
             void CreateMap(const std::string &T_Path);
 
             Utils::TexturesAtlas *operator[](const std::string &key) {return this->_texturesMap[key];};
+            const Utils::TexturesAtlas &operator[](const std::string &key) const {return *this->_texturesMap.at(key);};
 
             Front::Rendering::Images::FontImage &GetFont() {return *this->_fontImage;};
 

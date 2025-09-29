@@ -15,6 +15,12 @@ namespace Spline
 	class Spline;
 } // namespace Spline
 
+namespace Vox::Front::Scenes
+{
+	class TexturesManager;
+} // namespace Vox::Front::Scenes
+
+
 namespace Vox::Game
 {
 	namespace Generation {class SplinesManager;};
@@ -45,7 +51,7 @@ namespace Vox::Game
 			void RecreatePool();
 
 		private:
-			void BuildPool(const Game::Generation::SplinesManager &sManager);
+			void BuildPool(const Game::Generation::SplinesManager &sManager, const Front::Scenes::TexturesManager &tManager);
 			void CleanPool();
 
 			const uint8_t _maxThread;

@@ -17,7 +17,7 @@ namespace Vox::Front::Scenes
 		this->_avalaibleDynamicImages.flip();
 		if (Rendering::Images::DummyImage::IsInit() == false)
 			Rendering::Images::DummyImage::Init();
-		auto &dummy = Rendering::Images::DummyImage::GetInstance(); 
+		auto &dummy = Rendering::Images::DummyImage::GetInstance();
 		for (size_t i = 0; i < Vox::Front::Utils::TexturesData::MAX_DYNAMIC_TEXTURES; i++)
 			this->_dynamicImages[i] = dummy.GetView();
 	}
@@ -32,6 +32,14 @@ namespace Vox::Front::Scenes
 				{"Button", T_Path + "GUI/button.png"},
 				{"Button_Hover", T_Path + "GUI/button_highlighted.png"},
 				{"Button_Disabled", T_Path + "GUI/button_disabled.png"},
+			},
+			4);
+		this->_texturesMap["A_Blocks"] = new Front::Utils::TexturesAtlas(
+			{
+				{"Dirt", T_Path + "Blocks/dirt.png"},
+				{"Stone", T_Path + "Blocks/stone.png"},
+				{"Grass", T_Path + "Blocks/dirt.png"},
+				{"Sand", T_Path + "Blocks/sand.png"},
 			},
 			4);
 		this->_fontImage = std::make_unique<Front::Rendering::Images::FontImage>(T_Path + "GUI/Fonts/Minecraft.ttf");

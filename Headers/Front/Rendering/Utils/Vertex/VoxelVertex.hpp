@@ -13,13 +13,14 @@ namespace Vox::Front::Rendering::Utils::Vertex
 	{
 			Vector3Float vertPos;
 			Vector3Float vertColor;
+			int vertTexture;
 
-			VoxelVertex(Vector3Float vertPos_, Vector3Float vertColor_) : vertPos(vertPos_), vertColor(vertColor_) {};
+			VoxelVertex(Vector3Float vertPos_, Vector3Float vertColor_, int vertTexture_) : vertPos(vertPos_), vertColor(vertColor_), vertTexture(vertTexture_) {};
 			// VoxelVertex() : vertPos(Vector3Float(0.0f)), vertColor(Vector3Float(1.0f)) {};
 
 			bool operator==(const VoxelVertex &v1)
 			{
-				return (this->vertPos == v1.vertPos && this->vertColor == v1.vertColor);
+				return (this->vertPos == v1.vertPos && this->vertColor == v1.vertColor && this->vertTexture == v1.vertTexture);
 			}
 
 			static VkVertexInputBindingDescription GetBindingDescription()
@@ -44,6 +45,11 @@ namespace Vox::Front::Rendering::Utils::Vertex
 				attributeDescriptions[1].location = 1;
 				attributeDescriptions[1].format = VK_FORMAT_R32G32B32_SFLOAT;
 				attributeDescriptions[1].offset = offsetof(VoxelVertex, vertColor);
+
+				attributeDescriptions[2].binding = 0;
+				attributeDescriptions[2].location = 2;
+				attributeDescriptions[2].format = VK_FORMAT_R64_SINT;
+				attributeDescriptions[2].offset = offsetof(VoxelVertex, vertTexture);
 
 				return attributeDescriptions;
 			}

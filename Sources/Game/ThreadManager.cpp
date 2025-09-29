@@ -4,6 +4,9 @@
 
 #include "Game/GameManager.hpp"
 
+#include "Front/Utils/TexturesAtlas.hpp"
+#include "Front/Scenes/TexturesManager.hpp"
+
 namespace Vox::Game
 {
 	ThreadManager::ThreadManager(size_t maxThread) : _maxThread(maxThread) {}
@@ -23,7 +26,7 @@ namespace Vox::Game
 		_cv.notify_one();
 	}
 
-	void ThreadManager::BuildPool(const Game::Generation::SplinesManager &sManager)
+	void ThreadManager::BuildPool(const Game::Generation::SplinesManager &sManager, const Front::Scenes::TexturesManager &tManager)
 	{
 		if (this->_pool.empty() == false)
 		{
@@ -36,8 +39,9 @@ namespace Vox::Game
 		for (size_t i = 0; i < this->_maxThread; i++)
 		{
 			std::unordered_map<std::string, std::pair<const Spline::Spline, float>> copy = sManager.GetSplinesCopy();
+			auto textInfo = tManager.operator[]("A_Blocks").GetTextureInfo();
 			this->_pool.emplace_back(
-				[this, copy]
+				[this, copy, textInfo]
 				{
 					this->print("[DEBUG] Thread ", std::this_thread::get_id(), " launched.");
 					while (1)
@@ -78,6 +82,6 @@ namespace Vox::Game
 	void ThreadManager::RecreatePool()
 	{
 		this->CleanPool();
-		this->BuildPool(Game::GameManager::GetInstance().GetSplineManager());
+		this->BuildPool(Game::GameManager::GetInstance().GetSplineManager(), Game::GameManager::GetInstance().GetTexturesManager());
 	}
 } // namespace Vox::Game

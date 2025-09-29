@@ -85,6 +85,7 @@ namespace Vox::Front::Utils
 		return *it;
 	}
 
+
 	void TexturesAtlas::BuildAtlas(std::vector<std::pair<std::string, std::string>> &&textures)
 	{
 		this->_textureInfos.reserve(textures.size());

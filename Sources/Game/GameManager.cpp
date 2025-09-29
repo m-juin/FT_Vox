@@ -39,7 +39,7 @@ namespace Vox::Game
 	{
 		if (!this->_tManager)
 			return;
-		this->_tManager->BuildPool(*this->_sManager);
+		this->_tManager->BuildPool(*this->_sManager, *this->_texturesManager);
 	}
 
 	void GameManager::CleanThreads() const

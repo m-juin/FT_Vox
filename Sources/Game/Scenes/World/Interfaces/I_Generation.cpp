@@ -26,7 +26,7 @@ namespace Vox::Game::Scenes::World::Interfaces
 	using namespace Front::Interfaces::Elements;
 	I_Generation::I_Generation(Vox::Front::Interfaces::Elements::Vector2 pos,
 							   Vox::Front::Interfaces::Elements::Vector2 size)
-		: AInterface(pos, size), AUpdatable(10), _mMinimap({400, 400})
+		: AInterface(pos, size), AUpdatable(1), _mMinimap({400, 400})
 	{
 		{ // IF_Seed
 			auto seed = Game::World::WorldManager::GetInstance().GetGenerationManager().GetSeed();
@@ -247,7 +247,7 @@ namespace Vox::Game::Scenes::World::Interfaces
 
 		this->_mMinimap.Start();
 		this->onUpdate.AddCallBack([this] () {
-			this->_mMinimap.RequestUpdate(Game::World::WorldManager::GetInstance().GetPlayerChunck(), Game::World::WorldManager::GetInstance().GetGenerationManager().GetSeed());
+			this->_mMinimap.RequestUpdate(Game::World::WorldManager::GetInstance().GetCamera().GetPosition(), Game::World::WorldManager::GetInstance().GetGenerationManager().GetSeed());
 			auto img = this->GetElement<DynamicImage>("IMG_Biome");
 			img->SetData(this->_mMinimap.GetLatestBuffer());
 		});
@@ -260,7 +260,7 @@ namespace Vox::Game::Scenes::World::Interfaces
 	void I_Generation::UpdateMap(MGL::Vectors::Vector2<int> playerPos)
 	{
 		auto img = this->GetElement<DynamicImage>("IMG_Biome");
-		auto newData = Game::Generation::Perlins::GenerateBiomeImage(playerPos, Game::World::WorldManager::GetInstance().GetGenerationManager().GetSeed(), 400, 4);
+		auto newData = Game::Generation::Perlins::GenerateBiomeImage(playerPos, Game::World::WorldManager::GetInstance().GetGenerationManager().GetSeed(), 400, 0.01);
 		img->SetData(newData);
 	}
 

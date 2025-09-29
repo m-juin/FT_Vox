@@ -41,7 +41,7 @@ namespace Vox::Game::Scenes::World::Interfaces
 			this->_process.join();
 	}
 
-	void M_Minimap::RequestUpdate(MGL::Vectors::Vector2<int> newPlayerPos, const uint32_t &newSeed)
+	void M_Minimap::RequestUpdate(MGL::Vectors::Vector3<float> newPlayerPos, const uint32_t &newSeed)
 	{
 		{
 			std::lock_guard<std::mutex> lock(_processMutex);
@@ -70,7 +70,7 @@ namespace Vox::Game::Scenes::World::Interfaces
 			if (_running == false)
 				break;
 
-			MGL::Vectors::Vector2<int> requestPos = this->_requestedPos;
+			MGL::Vectors::Vector2<int> requestPos = {static_cast<int>(this->_requestedPos[0]), static_cast<int>(this->_requestedPos[2])};
 			uint32_t requestSeed = this->_requestedSeed;
 			lock.unlock();
 
@@ -85,6 +85,6 @@ namespace Vox::Game::Scenes::World::Interfaces
 
 	void M_Minimap::Generate(std::vector<uint8_t> &targetBuffer, MGL::Vectors::Vector2<int> playerPos, uint32_t seed)
 	{
-        Game::Generation::Perlins::GenerateBiomeImage(targetBuffer, playerPos, seed, 400, 4);
+        Game::Generation::Perlins::GenerateBiomeImage(targetBuffer, playerPos, seed, 400, 0.5);
 	}
 } // namespace Vox::Game::Scenes::World::Interfaces

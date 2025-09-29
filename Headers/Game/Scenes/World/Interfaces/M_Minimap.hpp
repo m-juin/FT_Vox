@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "MathGraphicalLib/Vectors/Vector2.hpp"
+#include "MathGraphicalLib/Vectors/Vector3.hpp"
 
 #include <atomic>
 #include <condition_variable>
@@ -22,7 +23,7 @@ namespace Vox::Game::Scenes::World::Interfaces
 			void Start();
 			void Stop();
 
-			void RequestUpdate(MGL::Vectors::Vector2<int> newPlayerPos, const uint32_t &newSeed);
+			void RequestUpdate(MGL::Vectors::Vector3<float> newPlayerPos, const uint32_t &newSeed);
 			const std::vector<uint8_t> &GetLatestBuffer();
 
 		private:
@@ -39,7 +40,7 @@ namespace Vox::Game::Scenes::World::Interfaces
 			std::condition_variable _cv;
 			std::mutex _cvMutex;
 			bool _hasRequest = false;
-			MGL::Vectors::Vector2<int> _requestedPos;
+			MGL::Vectors::Vector3<float> _requestedPos;
 			uint32_t _requestedSeed;
 
 			void WorkerLoop();

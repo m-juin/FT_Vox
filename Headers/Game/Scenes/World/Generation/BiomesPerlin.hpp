@@ -501,7 +501,6 @@ namespace Vox::Game::Generation::Perlins
 		uint16_t halfSize = imgSize / 2;
 
 		MGL::Vectors::Vector2<int> effectivePos = center;
-		std::cout << center << std::endl;
 		for (int x = -halfSize; x < halfSize; x++)
 		{
 			effectivePos[0] = center[0] + (x * scale);
