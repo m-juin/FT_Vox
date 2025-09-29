@@ -30,7 +30,6 @@ namespace Vox::Game
 			throw std::runtime_error("Trying to rebuild threadPool while previous one wasn't cleaned.");
 		}
 		{
-			// Assure-toi que le flag stop est remis à false avant de démarrer les threads
 			std::scoped_lock lock(this->_queueMutex);
 			this->_stop = false;
 		}

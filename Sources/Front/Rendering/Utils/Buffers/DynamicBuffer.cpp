@@ -45,7 +45,6 @@ namespace Vox::Front::Rendering::Utils::Buffers
 			}
 		}
 
-		// Allocation de la mémoire pour chaque tampon
 		VkMemoryRequirements memRequirements;
 		vkGetBufferMemoryRequirements(device.GetLogicalDevice(), _buffers[0], &memRequirements);
 

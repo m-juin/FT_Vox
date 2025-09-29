@@ -171,7 +171,6 @@ namespace Vox::Front::Interfaces::Elements
 			elem->SetContent(tmp);
 			UpdateIndicatorPos();
 			this->onTextChange.Notify(this->GetValue());
-			// curPos reste inchangé (le curseur est toujours à la même place)
 		}
 		else if (code == GLFW_KEY_LEFT && action != GLFW_RELEASE)
 		{

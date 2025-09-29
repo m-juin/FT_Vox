@@ -1,7 +1,3 @@
-//
-// Created by mjuin on 9/4/25.
-//
-
 #include "Game/Scenes/World/Chuncks/ChunckCluster.hpp"
 
 #include "Game/Scenes/World/Generation/Perlin.hpp"

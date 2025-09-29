@@ -63,7 +63,6 @@ namespace Vox::Front::Rendering::Utils::Buffers
 		VkBuffer stagingBuffer;
 		VkDeviceMemory stagingBufferMemory;
 
-		// Création du buffer temporaire
 		VkBufferCreateInfo stagingBufferInfo = {};
 		stagingBufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
 		stagingBufferInfo.size = _size;
@@ -73,7 +72,6 @@ namespace Vox::Front::Rendering::Utils::Buffers
 		if (vkCreateBuffer(device.GetLogicalDevice(), &stagingBufferInfo, nullptr, &stagingBuffer) != VK_SUCCESS)
 			throw std::runtime_error("Échec de la création du buffer temporaire.");
 
-		// Allocation de la mémoire pour le buffer temporaire
 		VkMemoryRequirements stagingMemRequirements;
 		vkGetBufferMemoryRequirements(device.GetLogicalDevice(), stagingBuffer, &stagingMemRequirements);
 
@@ -89,13 +87,11 @@ namespace Vox::Front::Rendering::Utils::Buffers
 
 		vkBindBufferMemory(device.GetLogicalDevice(), stagingBuffer, stagingBufferMemory, 0);
 
-		// Copie des données dans le buffer temporaire
 		void *data;
 		vkMapMemory(device.GetLogicalDevice(), stagingBufferMemory, 0, _size, 0, &data);
 		std::memcpy(data, initialData, static_cast<size_t>(_size));
 		vkUnmapMemory(device.GetLogicalDevice(), stagingBufferMemory);
 
-		// Copie des données depuis le buffer temporaire vers les buffers finaux
 		auto pool = Vox::Front::Rendering::CommandsPool::GetInstance().GetPool();
 		VkCommandBuffer copyCmd = Buffers::Utils::BeginSingleTimeCommands(device.GetLogicalDevice(), pool);
 

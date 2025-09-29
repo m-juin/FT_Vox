@@ -10,10 +10,7 @@ namespace MGL::Utils
 			throw std::invalid_argument("Division par zéro impossible");
 		}
 
-		// Calcul du quotient arrondi au prochain multiple
-		auto quotient = (number + multiple_of - 1) / multiple_of;
-
-		// Retourne le prochain multiple
+		auto quotient = (number + multiple_of - 1) / multi
 		return quotient * multiple_of;
 	}
 
