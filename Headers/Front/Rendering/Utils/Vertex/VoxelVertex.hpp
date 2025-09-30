@@ -7,6 +7,8 @@
 #include <vulkan/vulkan.h>
 #include <array>
 
+#include <cstdint>
+
 namespace Vox::Front::Rendering::Utils::Vertex
 {
 	using Vector3Float = MGL::Vectors::Vector3<float>;
@@ -16,8 +18,9 @@ namespace Vox::Front::Rendering::Utils::Vertex
 			Vector3Float vertPos;
 			Vector3Float vertColor;
 			Vector2Float vertCoord;
+			uint8_t isColorAffected;
 
-			VoxelVertex(Vector3Float vertPos_, Vector3Float vertColor_, Vector2Float vertCoord_) : vertPos(vertPos_), vertColor(vertColor_), vertCoord(vertCoord_) {};
+			VoxelVertex(Vector3Float vertPos_, Vector3Float vertColor_, Vector2Float vertCoord_, uint8_t isColorAffected_ = 0) : vertPos(vertPos_), vertColor(vertColor_), vertCoord(vertCoord_), isColorAffected(isColorAffected_) {};
 			// VoxelVertex() : vertPos(Vector3Float(0.0f)), vertColor(Vector3Float(1.0f)) {};
 
 			bool operator==(const VoxelVertex &v1)
@@ -35,9 +38,9 @@ namespace Vox::Front::Rendering::Utils::Vertex
 				return bindingDescription;
 			}
 
-			static std::array<VkVertexInputAttributeDescription, 3> GetAttributeDescriptions()
+			static std::array<VkVertexInputAttributeDescription, 4> GetAttributeDescriptions()
 			{
-				std::array<VkVertexInputAttributeDescription, 3> attributeDescriptions{};
+				std::array<VkVertexInputAttributeDescription, 4> attributeDescriptions{};
 				attributeDescriptions[0].binding = 0;
 				attributeDescriptions[0].location = 0;
 				attributeDescriptions[0].format = VK_FORMAT_R32G32B32_SFLOAT;
@@ -52,6 +55,11 @@ namespace Vox::Front::Rendering::Utils::Vertex
 				attributeDescriptions[2].location = 2;
 				attributeDescriptions[2].format = VK_FORMAT_R32G32_SFLOAT;
 				attributeDescriptions[2].offset = offsetof(VoxelVertex, vertCoord);
+
+				attributeDescriptions[3].binding = 0;
+				attributeDescriptions[3].location = 3;
+				attributeDescriptions[3].format = VK_FORMAT_R8_UINT;
+				attributeDescriptions[3].offset = offsetof(VoxelVertex, isColorAffected);
 
 				return attributeDescriptions;
 			}

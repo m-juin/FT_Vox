@@ -104,7 +104,6 @@ namespace Vox::Front::Rendering::Images
 		samplerInfo.unnormalizedCoordinates = VK_FALSE;
 		samplerInfo.compareEnable = VK_FALSE;
 		samplerInfo.compareOp = VK_COMPARE_OP_ALWAYS;
-		samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_NEAREST;
 
 		if (vkCreateSampler(Device::GetInstance().GetLogicalDevice(), &samplerInfo, nullptr, &this->_sampler) !=
 			VK_SUCCESS)

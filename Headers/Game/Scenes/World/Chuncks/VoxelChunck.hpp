@@ -51,6 +51,8 @@ namespace Vox::Game::World::Chuncks
 			uint16_t GetBuffer() const;
 
 		private:
+
+		
 			std::vector<uint16_t> index;
 			std::vector<Vertex> vertex;
 			uint16_t indexCount;

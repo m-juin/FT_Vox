@@ -16,7 +16,10 @@
 
 #include <bitset>
 
+#include "Game/Scenes/World/Generation/BiomesPerlin.hpp"
 #include "Game/Scenes/World/Generation/Perlin.hpp"
+
+#include "Game/Utils/Datas/Biomes.hpp"
 
 namespace Vox::Game::World::Chuncks
 {
@@ -48,9 +51,9 @@ namespace Vox::Game::World::Chuncks
 
 		LocalVector it(0);
 
-		auto checkFace = [this, &clusterContent, &seed, &spl, &textInfo, &hMap](const LocalVector &it, int offsetX,
-																				int offsetY, int offsetZ, Faces face,
-																				const std::string &blockType)
+		auto checkFace = [this, &clusterContent, &seed, &spl, &textInfo,
+						  &hMap](const LocalVector &it, int offsetX, int offsetY, int offsetZ, Faces face,
+								 const std::string &blockType, const Vector3Float &color)
 		{
 			LocalVector neighbor = it;
 			neighbor[0] += offsetX;
@@ -64,7 +67,7 @@ namespace Vox::Game::World::Chuncks
 			{
 				uint16_t neighborIndex = GetLocalIndex(neighbor);
 				if (!clusterContent[neighborIndex])
-					this->AddFace(textInfo, face, it, blockType, {1.0, 1.0, 1.0});
+					this->AddFace(textInfo, face, it, blockType, color);
 				return;
 			}
 
@@ -77,7 +80,7 @@ namespace Vox::Game::World::Chuncks
 
 				bool neighborFilled = (yWorld <= static_cast<int>(h));
 				if (!neighborFilled)
-					this->AddFace(textInfo, face, it, blockType, {1.0, 1.0, 1.0});
+					this->AddFace(textInfo, face, it, blockType, color);
 				return;
 			}
 			if (!Generation::Perlins::IsBlockAt({static_cast<int>(this->_position[0]) + it[0] + offsetX,
@@ -85,7 +88,7 @@ namespace Vox::Game::World::Chuncks
 												 static_cast<int>(this->_position[2]) + it[2] + offsetZ},
 												seed, spl))
 			{
-				this->AddFace(textInfo, face, it, blockType, {1.0, 1.0, 1.0});
+				this->AddFace(textInfo, face, it, blockType, color);
 			}
 		};
 
@@ -93,6 +96,7 @@ namespace Vox::Game::World::Chuncks
 		{
 			for (it[2] = 0; it[2] < CHUNCK_SIZE; it[2]++)
 			{
+				Game::Generation::Datas::Biomes::Biomes biome = Vox::Game::Generation::Perlins::GetBiomeAtPoint(this->_position[0] + it[0] + 125000, this->_position[2] + it[2] + 125000, seed);
 				for (it[1] = 0; it[1] < CHUNCK_SIZE; it[1]++)
 				{
 					uint16_t mapIndex = GetLocalIndex(it);
@@ -100,20 +104,26 @@ namespace Vox::Game::World::Chuncks
 						continue;
 
 					std::string blockType;
+					Vector3Float color = {1.0, 1.0, 1.0};
 					size_t worldHeight = hMap[it[0] * CHUNCK_SIZE + it[2]];
 					if (this->_position[1] + it[1] == worldHeight)
+					{
 						blockType = "Grass";
+						Vector3Int biomeColor = Game::Generation::Datas::Biomes::biomesColors[biome];
+						color = {static_cast<float>(biomeColor[0]) / 256.0f, static_cast<float>(biomeColor[1]) / 256.0f, static_cast<float>(biomeColor[2]) / 256.0f};
+						// std::cout << color << std::endl;
+					}
 					else if (this->_position[1] + it[1] > worldHeight - 3)
 						blockType = "Dirt";
 					else
 						blockType = "Stone";
 
-					checkFace(it, 0, 1, 0, Faces::TOP, blockType);
+					checkFace(it, 0, 1, 0, Faces::TOP, blockType, color);
 					// checkFace(it, 0, -1, 0, Faces::BOT);
-					checkFace(it, -1, 0, 0, Faces::LEFT, blockType);
-					checkFace(it, 1, 0, 0, Faces::RIGHT, blockType);
-					checkFace(it, 0, 0, 1, Faces::FRONT, blockType);
-					checkFace(it, 0, 0, -1, Faces::BACK, blockType);
+					checkFace(it, -1, 0, 0, Faces::LEFT, blockType, color);
+					checkFace(it, 1, 0, 0, Faces::RIGHT, blockType, color);
+					checkFace(it, 0, 0, 1, Faces::FRONT, blockType, color);
+					checkFace(it, 0, 0, -1, Faces::BACK, blockType, color);
 				}
 			}
 		}
@@ -208,16 +218,17 @@ namespace Vox::Game::World::Chuncks
 
 		auto texture = Game::Generation::Utils::GetFaceTextureInfo(textInfo, blockType, face);
 
-		(void)faceColor;
 		for (auto &ref : toAdd)
 		{
 			for (uint8_t i = 0; i < 3; i++)
 			{
 				ref.vertPos[i] += facePos[i];
-				ref.vertColor = {1.0, 1.0, 1.0};
+				ref.vertColor = faceColor;
 			}
 			ref.vertCoord[0] = texture.uOffset + ref.vertCoord[0] * texture.uSize;
 			ref.vertCoord[1] = texture.vOffset + ref.vertCoord[1] * texture.vSize;
+			if (blockType == "Grass")
+				ref.isColorAffected = 1;
 		}
 		auto beg = vertex.end();
 
