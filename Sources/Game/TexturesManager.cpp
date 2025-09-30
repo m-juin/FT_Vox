@@ -38,7 +38,9 @@ namespace Vox::Front::Scenes
 			{
 				{"Dirt", T_Path + "Blocks/dirt.png"},
 				{"Stone", T_Path + "Blocks/stone.png"},
-				{"Grass", T_Path + "Blocks/dirt.png"},
+				{"Grass", T_Path + "Blocks/grass.png"},
+				{"Grass_Top", T_Path + "Blocks/grass_top.png"},
+				{"Grass_Bot", T_Path + "Blocks/grass_bot.png"},
 				{"Sand", T_Path + "Blocks/sand.png"},
 			},
 			4);

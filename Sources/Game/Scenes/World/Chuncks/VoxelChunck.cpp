@@ -50,21 +50,21 @@ namespace Vox::Game::World::Chuncks
 
 		auto checkFace = [this, &clusterContent, &seed, &spl, &textInfo, &hMap](const LocalVector &it, int offsetX,
 																				int offsetY, int offsetZ, Faces face,
-																				Vector3Float color)
+																				const std::string &blockType)
 		{
 			LocalVector neighbor = it;
 			neighbor[0] += offsetX;
 			neighbor[1] += offsetY;
 			neighbor[2] += offsetZ;
 
-			const std::string blockType = "Dirt";
+			// const std::string blockType = "Grass";
 
 			if (neighbor[0] >= 0 && neighbor[0] < CHUNCK_SIZE && neighbor[1] >= 0 && neighbor[1] < CHUNCK_SIZE &&
 				neighbor[2] >= 0 && neighbor[2] < CHUNCK_SIZE)
 			{
 				uint16_t neighborIndex = GetLocalIndex(neighbor);
 				if (!clusterContent[neighborIndex])
-					this->AddFace(textInfo, face, it, blockType, color);
+					this->AddFace(textInfo, face, it, blockType, {1.0, 1.0, 1.0});
 				return;
 			}
 
@@ -77,7 +77,7 @@ namespace Vox::Game::World::Chuncks
 
 				bool neighborFilled = (yWorld <= static_cast<int>(h));
 				if (!neighborFilled)
-					this->AddFace(textInfo, face, it, blockType, color);
+					this->AddFace(textInfo, face, it, blockType, {1.0, 1.0, 1.0});
 				return;
 			}
 			if (!Generation::Perlins::IsBlockAt({static_cast<int>(this->_position[0]) + it[0] + offsetX,
@@ -85,7 +85,7 @@ namespace Vox::Game::World::Chuncks
 												 static_cast<int>(this->_position[2]) + it[2] + offsetZ},
 												seed, spl))
 			{
-				this->AddFace(textInfo, face, it, blockType, color);
+				this->AddFace(textInfo, face, it, blockType, {1.0, 1.0, 1.0});
 			}
 		};
 
@@ -98,16 +98,22 @@ namespace Vox::Game::World::Chuncks
 					uint16_t mapIndex = GetLocalIndex(it);
 					if (!clusterContent[mapIndex])
 						continue;
-					Vector3Float color = {(static_cast<float>(rand()) / (float)(RAND_MAX)),
-										  (static_cast<float>(rand()) / (float)(RAND_MAX)),
-										  (static_cast<float>(rand()) / (float)(RAND_MAX))};
 
-					checkFace(it, 0, 1, 0, Faces::TOP, color);
+					std::string blockType;
+					size_t worldHeight = hMap[it[0] * CHUNCK_SIZE + it[2]];
+					if (this->_position[1] + it[1] == worldHeight)
+						blockType = "Grass";
+					else if (this->_position[1] + it[1] > worldHeight - 3)
+						blockType = "Dirt";
+					else
+						blockType = "Stone";
+
+					checkFace(it, 0, 1, 0, Faces::TOP, blockType);
 					// checkFace(it, 0, -1, 0, Faces::BOT);
-					checkFace(it, -1, 0, 0, Faces::LEFT, color);
-					checkFace(it, 1, 0, 0, Faces::RIGHT, color);
-					checkFace(it, 0, 0, 1, Faces::FRONT, color);
-					checkFace(it, 0, 0, -1, Faces::BACK, color);
+					checkFace(it, -1, 0, 0, Faces::LEFT, blockType);
+					checkFace(it, 1, 0, 0, Faces::RIGHT, blockType);
+					checkFace(it, 0, 0, 1, Faces::FRONT, blockType);
+					checkFace(it, 0, 0, -1, Faces::BACK, blockType);
 				}
 			}
 		}

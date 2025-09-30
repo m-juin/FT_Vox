@@ -17,7 +17,7 @@ namespace Vox::Game::World::Chuncks
 		BACK,
 		NONE
 	};
-	constexpr std::string_view faceNames[] = {"top", "bot", "left", "right", "front", "back", ""};
+	constexpr std::string_view faceNames[] = {"Top", "Bot", "Left", "Right", "Front", "Back", ""};
 	constexpr std::string_view ToString(Faces face)
 	{
 		auto idx = static_cast<int>(face);
@@ -37,26 +37,26 @@ namespace Vox::Game::World::Chuncks
 							   Vertex{Vector3Float(-0.5f, -0.5f, -0.5f), Vector3Float(1.0, 1.0, 1.0), {0.0f, 1.0f}},
 							   Vertex{Vector3Float(0.5f, -0.5f, -0.5f), Vector3Float(1.0, 1.0, 1.0), {1.0f, 1.0f}}}},
 		{Faces::LEFT,
-		 std::array<Vertex, 4>{Vertex{Vector3Float(-0.5f, -0.5f, 0.5f), Vector3Float(1.0, 1.0, 1.0), {1.0f, 0.0f}},
-							   Vertex{Vector3Float(-0.5f, -0.5f, -0.5f), Vector3Float(1.0, 1.0, 1.0), {0.0f, 0.0f}},
-							   Vertex{Vector3Float(-0.5f, 0.5f, -0.5f), Vector3Float(1.0, 1.0, 1.0), {0.0f, 1.0f}},
-							   Vertex{Vector3Float(-0.5f, 0.5f, 0.5f), Vector3Float(1.0, 1.0, 1.0), {1.0f, 1.0f}}}},
+		 std::array<Vertex, 4>{Vertex{Vector3Float(-0.5f, -0.5f, 0.5f), Vector3Float(1.0, 1.0, 1.0), {1.0f, 1.0f}},
+							   Vertex{Vector3Float(-0.5f, -0.5f, -0.5f), Vector3Float(1.0, 1.0, 1.0), {0.0f, 1.0f}},
+							   Vertex{Vector3Float(-0.5f, 0.5f, -0.5f), Vector3Float(1.0, 1.0, 1.0), {0.0f, 0.0f}},
+							   Vertex{Vector3Float(-0.5f, 0.5f, 0.5f), Vector3Float(1.0, 1.0, 1.0), {1.0f, 0.0f}}}},
 		{Faces::RIGHT,
-		 std::array<Vertex, 4>{Vertex{Vector3Float(0.5f, -0.5f, 0.5f), Vector3Float(1.0, 1.0, 1.0), {0.0f, 0.0f}},
-							   Vertex{Vector3Float(0.5f, -0.5f, -0.5f), Vector3Float(1.0, 1.0, 1.0), {1.0f, 0.0f}},
-							   Vertex{Vector3Float(0.5f, 0.5f, -0.5f), Vector3Float(1.0, 1.0, 1.0), {1.0f, 1.0f}},
-							   Vertex{Vector3Float(0.5f, 0.5f, 0.5f), Vector3Float(1.0, 1.0, 1.0), {0.0f, 1.0f}}}},
+		 std::array<Vertex, 4>{Vertex{Vector3Float(0.5f, -0.5f, 0.5f), Vector3Float(1.0, 1.0, 1.0), {0.0f, 1.0f}},
+							   Vertex{Vector3Float(0.5f, -0.5f, -0.5f), Vector3Float(1.0, 1.0, 1.0), {1.0f, 1.0f}},
+							   Vertex{Vector3Float(0.5f, 0.5f, -0.5f), Vector3Float(1.0, 1.0, 1.0), {1.0f, 0.0f}},
+							   Vertex{Vector3Float(0.5f, 0.5f, 0.5f), Vector3Float(1.0, 1.0, 1.0), {0.0f, 0.0f}}}},
 		{Faces::FRONT,
-		 std::array<Vertex, 4>{Vertex{Vector3Float(0.5f, -0.5f, 0.5f), Vector3Float(1.0, 1.0, 1.0), {1.0f, 0.0f}},
-							   Vertex{Vector3Float(-0.5f, -0.5f, 0.5f), Vector3Float(1.0, 1.0, 1.0), {0.0f, 0.0f}},
-							   Vertex{Vector3Float(-0.5f, 0.5f, 0.5f), Vector3Float(1.0, 1.0, 1.0), {0.0f, 1.0f}},
-							   Vertex{Vector3Float(0.5f, 0.5f, 0.5f), Vector3Float(1.0, 1.0, 1.0), {1.0f, 1.0f}}}},
+		 std::array<Vertex, 4>{Vertex{Vector3Float(0.5f, -0.5f, 0.5f), Vector3Float(1.0, 1.0, 1.0), {1.0f, 1.0f}},
+							   Vertex{Vector3Float(-0.5f, -0.5f, 0.5f), Vector3Float(1.0, 1.0, 1.0), {0.0f, 1.0f}},
+							   Vertex{Vector3Float(-0.5f, 0.5f, 0.5f), Vector3Float(1.0, 1.0, 1.0), {0.0f, 0.0f}},
+							   Vertex{Vector3Float(0.5f, 0.5f, 0.5f), Vector3Float(1.0, 1.0, 1.0), {1.0f, 0.0f}}}},
 		{Faces::BACK,
-		 std::array<Vertex, 4>{Vertex{Vector3Float(0.5f, -0.5f, -0.5f), Vector3Float(1.0, 1.0, 1.0), {0.0f, 0.0f}},
-							   Vertex{Vector3Float(-0.5f, -0.5f, -0.5f), Vector3Float(1.0, 1.0, 1.0), {1.0f, 0.0f}},
-							   Vertex{Vector3Float(-0.5f, 0.5f, -0.5f), Vector3Float(1.0, 1.0, 1.0), {1.0f, 1.0f}},
-							   Vertex{Vector3Float(0.5f, 0.5f, -0.5f), Vector3Float(1.0, 1.0, 1.0), {0.0f, 1.0f}}}},
-	};
-} // namespace Vox::Game::World::Chuncks
+		 std::array<Vertex, 4>{Vertex{Vector3Float(0.5f, -0.5f, -0.5f), Vector3Float(1.0, 1.0, 1.0), {0.0f, 1.0f}},
+							   Vertex{Vector3Float(-0.5f, -0.5f, -0.5f), Vector3Float(1.0, 1.0, 1.0), {1.0f, 1.0f}},
+							   Vertex{Vector3Float(-0.5f, 0.5f, -0.5f), Vector3Float(1.0, 1.0, 1.0), {1.0f, 0.0f}},
+							   Vertex{Vector3Float(0.5f, 0.5f, -0.5f), Vector3Float(1.0, 1.0, 1.0), {0.0f, 0.0f}}}},
+		};
+	} // namespace Vox::Game::World::Chuncks
 
 #endif // __FACESDATA_HPP__
