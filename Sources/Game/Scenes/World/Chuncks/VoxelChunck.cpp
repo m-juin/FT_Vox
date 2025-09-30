@@ -1,4 +1,5 @@
 #include "Game/Scenes/World/Chuncks/VoxelChunck.hpp"
+#include "Game/Scenes/World/Chuncks/GenerationUtils.hpp"
 
 #include <array>
 
@@ -39,27 +40,31 @@ namespace Vox::Game::World::Chuncks
 
 	void VoxelChunck::BuildVoxelObject(
 		const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl,
-		const uint8_t hMap[CHUNCK_SIZE * CHUNCK_SIZE], const uint32_t &seed)
+		const std::vector<Game::Utils::Textures::TextureInfo> &textInfo, const uint8_t hMap[CHUNCK_SIZE * CHUNCK_SIZE],
+		const uint32_t &seed)
 	{
-		(void)spl;
+		(void)textInfo;
 		std::bitset<CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE> clusterContent = this->BuildContent(hMap);
 
 		LocalVector it(0);
 
-		auto checkFace = [this, &clusterContent, &seed, &spl, &hMap](const LocalVector &it, int offsetX, int offsetY,
-																	 int offsetZ, Faces face, Vector3Float color)
+		auto checkFace = [this, &clusterContent, &seed, &spl, &textInfo, &hMap](const LocalVector &it, int offsetX,
+																				int offsetY, int offsetZ, Faces face,
+																				Vector3Float color)
 		{
 			LocalVector neighbor = it;
 			neighbor[0] += offsetX;
 			neighbor[1] += offsetY;
 			neighbor[2] += offsetZ;
 
+			const std::string blockType = "Dirt";
+
 			if (neighbor[0] >= 0 && neighbor[0] < CHUNCK_SIZE && neighbor[1] >= 0 && neighbor[1] < CHUNCK_SIZE &&
 				neighbor[2] >= 0 && neighbor[2] < CHUNCK_SIZE)
 			{
 				uint16_t neighborIndex = GetLocalIndex(neighbor);
 				if (!clusterContent[neighborIndex])
-					this->AddFace(face, it, color);
+					this->AddFace(textInfo, face, it, blockType, color);
 				return;
 			}
 
@@ -72,7 +77,7 @@ namespace Vox::Game::World::Chuncks
 
 				bool neighborFilled = (yWorld <= static_cast<int>(h));
 				if (!neighborFilled)
-					this->AddFace(face, it, color);
+					this->AddFace(textInfo, face, it, blockType, color);
 				return;
 			}
 			if (!Generation::Perlins::IsBlockAt({static_cast<int>(this->_position[0]) + it[0] + offsetX,
@@ -80,7 +85,7 @@ namespace Vox::Game::World::Chuncks
 												 static_cast<int>(this->_position[2]) + it[2] + offsetZ},
 												seed, spl))
 			{
-				this->AddFace(face, it, color);
+				this->AddFace(textInfo, face, it, blockType, color);
 			}
 		};
 
@@ -93,7 +98,9 @@ namespace Vox::Game::World::Chuncks
 					uint16_t mapIndex = GetLocalIndex(it);
 					if (!clusterContent[mapIndex])
 						continue;
-					Vector3Float color = {(static_cast<float>(rand()) / (float)(RAND_MAX)), (static_cast<float>(rand()) / (float)(RAND_MAX)), (static_cast<float>(rand()) / (float)(RAND_MAX))};
+					Vector3Float color = {(static_cast<float>(rand()) / (float)(RAND_MAX)),
+										  (static_cast<float>(rand()) / (float)(RAND_MAX)),
+										  (static_cast<float>(rand()) / (float)(RAND_MAX))};
 
 					checkFace(it, 0, 1, 0, Faces::TOP, color);
 					// checkFace(it, 0, -1, 0, Faces::BOT);
@@ -188,17 +195,23 @@ namespace Vox::Game::World::Chuncks
 		return this->_bufferIndex;
 	}
 
-	void VoxelChunck::AddFace(const Faces &face, const LocalVector &facePos, const Vector3Float &faceColor)
+	void VoxelChunck::AddFace(const std::vector<Game::Utils::Textures::TextureInfo> &textInfo, const Faces &face,
+							  const LocalVector &facePos, const std::string &blockType, const Vector3Float &faceColor)
 	{
 		std::array<Vertex, 4> toAdd = defaultFacesPos.at(face);
 
+		auto texture = Game::Generation::Utils::GetFaceTextureInfo(textInfo, blockType, face);
+
+		(void)faceColor;
 		for (auto &ref : toAdd)
 		{
 			for (uint8_t i = 0; i < 3; i++)
 			{
 				ref.vertPos[i] += facePos[i];
-				ref.vertColor = faceColor;
+				ref.vertColor = {1.0, 1.0, 1.0};
 			}
+			ref.vertCoord[0] = texture.uOffset + ref.vertCoord[0] * texture.uSize;
+			ref.vertCoord[1] = texture.vOffset + ref.vertCoord[1] * texture.vSize;
 		}
 		auto beg = vertex.end();
 

@@ -65,7 +65,7 @@ namespace Vox::Front::Utils
 		BuildAtlas(std::move(atlasTextures));
 	}
 
-	const TexturesAtlas::TextureInfo &TexturesAtlas::GetTextureInfo(size_t index) const
+	const TextureInfo &TexturesAtlas::GetTextureInfo(size_t index) const
 	{
 		if (index >= _textureInfos.size())
 		{
@@ -74,7 +74,7 @@ namespace Vox::Front::Utils
 		return _textureInfos[index];
 	}
 
-	const TexturesAtlas::TextureInfo &TexturesAtlas::GetTextureInfo(const std::string &key) const
+	const TextureInfo &TexturesAtlas::GetTextureInfo(const std::string &key) const
 	{
 		auto it = std::find_if(this->_textureInfos.begin(), this->_textureInfos.end(),
 							   [key](const TextureInfo &info) { return key == info.key; });

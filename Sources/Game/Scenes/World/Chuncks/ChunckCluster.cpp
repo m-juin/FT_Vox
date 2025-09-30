@@ -20,7 +20,7 @@ namespace Vox::Game::World::Chuncks
 				ch->Render();
 	}
 
-	void ChunckCluster::BuildClusterContent(const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl,
+	void ChunckCluster::BuildClusterContent(const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl, const std::vector<Game::Utils::Textures::TextureInfo> &textInfo,
 											const uint32_t seed)
 	{
 		this->ChangeGenerationState(Generation::E_GenerationState::Mesh);
@@ -29,24 +29,13 @@ namespace Vox::Game::World::Chuncks
 		GenerateHeightMap(spl, seed, hMap);
 
 		int chunksPerCluster = WORLD_HEIGHT / CHUNCK_SIZE;
-		if (this->_clusterPos == 0 && this->_clusterPos[1] == 0)
-		{
-			for (size_t x = 0; x < CHUNCK_SIZE; x++)
-			{
-				for (size_t z = 0; z < CHUNCK_SIZE; z++)
-				{
-					std::cout << (int)hMap[x * CHUNCK_SIZE + z] << " ";
-				}
-				std::cout << std::endl;
-			}
-		}
 		for (int y = chunksPerCluster - 1; y >= 0; y--)
 		{
 			if (this->IsGenerationCancelled())
 				return;
 			this->_clusterContent[y] = new VoxelChunck(Vector3Int(this->_clusterPos[0], y, this->_clusterPos[1]));
 
-			this->_clusterContent[y]->BuildVoxelObject(spl, hMap, seed);
+			this->_clusterContent[y]->BuildVoxelObject(spl, textInfo, hMap, seed);
 		}
 		this->ChangeGenerationState(Generation::E_GenerationState::WaitingBuffer);
 	}

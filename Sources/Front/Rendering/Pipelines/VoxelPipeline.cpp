@@ -12,6 +12,10 @@
 
 #include "Game/Scenes/World/Player/Camera.hpp"
 
+#include "Game/GameManager.hpp"
+
+#include "Front/Utils/TexturesData.hpp"
+
 namespace Vox::Front::Rendering::Pipelines
 {
 	VoxelPipeline::VoxelPipeline()
@@ -159,6 +163,17 @@ namespace Vox::Front::Rendering::Pipelines
 
 	void VoxelPipeline::InitSet(std::vector<VkBuffer> buffers, VkDeviceSize size)
 	{
+
+		auto &texturesManager = Game::GameManager::GetInstance().GetTexturesManager();
+		auto textureAtlas = texturesManager.operator[]("A_Blocks");
+
+		std::cout << textureAtlas << std::endl;
+
+		VkDescriptorImageInfo textureInfo{};
+		textureInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+		textureInfo.imageView = textureAtlas->GetView();
+		textureInfo.sampler = textureAtlas->GetSampler();
+
 		for (size_t i = 0; i < 2; i++)
 		{
 			VkDescriptorBufferInfo objectBufferInfo{};
@@ -166,7 +181,7 @@ namespace Vox::Front::Rendering::Pipelines
 			objectBufferInfo.offset = 0;
 			objectBufferInfo.range = size;
 
-			std::array<VkWriteDescriptorSet, 1> descriptorWrites{};
+			std::array<VkWriteDescriptorSet, 2> descriptorWrites{};
 
 			descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 			descriptorWrites[0].dstSet = this->_set[i];
@@ -175,6 +190,14 @@ namespace Vox::Front::Rendering::Pipelines
 			descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
 			descriptorWrites[0].descriptorCount = 1;
 			descriptorWrites[0].pBufferInfo = &objectBufferInfo;
+
+			descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			descriptorWrites[1].dstSet = this->_set[i];
+			descriptorWrites[1].dstBinding = 1;
+			descriptorWrites[1].dstArrayElement = 0;
+			descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+			descriptorWrites[1].descriptorCount = 1;
+			descriptorWrites[1].pImageInfo = &textureInfo;
 
 			vkUpdateDescriptorSets(Device::GetInstance().GetLogicalDevice(),
 								   static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
@@ -201,12 +224,17 @@ namespace Vox::Front::Rendering::Pipelines
 
 	void VoxelPipeline::CreateSetLayout()
 	{
-		std::array<VkDescriptorSetLayoutBinding, 1> samplerLayoutBindings{};
+		std::array<VkDescriptorSetLayoutBinding, 2> samplerLayoutBindings{};
 
 		samplerLayoutBindings[0].binding = 0;
 		samplerLayoutBindings[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
 		samplerLayoutBindings[0].descriptorCount = 1;
 		samplerLayoutBindings[0].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+
+		samplerLayoutBindings[1].binding = 1;
+		samplerLayoutBindings[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+		samplerLayoutBindings[1].descriptorCount = 1;
+		samplerLayoutBindings[1].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 
 		VkDescriptorSetLayoutCreateInfo layoutInfo{};
 		layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;

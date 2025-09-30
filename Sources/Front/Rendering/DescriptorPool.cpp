@@ -13,7 +13,7 @@ namespace Vox::Front::Rendering
 {
 	DescriptorPool::DescriptorPool()
 	{
-		std::array<VkDescriptorPoolSize, 3> poolSizes;
+		std::array<VkDescriptorPoolSize, 4> poolSizes;
 		poolSizes[0].descriptorCount = 2;
 		poolSizes[0].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER; // Interface, texture atlas + font atlas;
 
@@ -23,12 +23,15 @@ namespace Vox::Front::Rendering
 		poolSizes[2].descriptorCount = Vox::Front::Utils::TexturesData::MAX_DYNAMIC_TEXTURES;
 		poolSizes[2].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER; // dynamic textures;
 
+		poolSizes[3].descriptorCount = 2;
+		poolSizes[3].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER; // BlocksTextures
+
 		VkDescriptorPoolCreateInfo poolInfo{};
 		poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
 		poolInfo.poolSizeCount = poolSizes.size();
 		poolInfo.pPoolSizes = poolSizes.data();
 
-		size_t total = 3;
+		size_t total = poolSizes.size();
 
 		poolInfo.maxSets = total;
 
