@@ -9,6 +9,8 @@
 
 #include <sstream>
 
+#include "Game/Scenes/World/Generation/BiomesPerlin.hpp"
+
 namespace Vox::Game::Scenes::World::Interfaces
 {
 	using namespace Front::Interfaces::Elements;
@@ -30,22 +32,65 @@ namespace Vox::Game::Scenes::World::Interfaces
 			pm.color = {0.5, 0.5, 0.5, 1.0};
 			pm.content = "LoadedChunck: ";
 			pm.scale = 0.3f;
-			pm.pos = {this->_pos[0] + 50, this->_pos[1] + 100};
+			pm.pos = {this->_pos[0] + 50, this->_pos[1] + 75};
 			pm.size = {100, 50};
 
 			this->AddElement("TXT_C_Loaded", std::make_unique<Text>(pm));
 
 			pm.content = "ChunckWaiting: ";
-			pm.pos = {this->_pos[0] + 50, this->_pos[1] + 150};
+			pm.pos = {this->_pos[0] + 50, this->_pos[1] + 100};
 			this->AddElement("TXT_C_Waiting", std::make_unique<Text>(pm));
 		}
 
+		{
+			Text::Vox_Text_Constructor pm{};
+			pm.color = {0.5, 0.5, 0.5, 1.0};
+			pm.content = "Generation Datas:";
+			pm.scale = 0.3;
+			pm.pos = {this->_pos[0] + 50, this->_pos[1] + 150};
+			pm.size = {100, 50};
+			this->AddElement("TXT_Generation_Label", std::make_unique<Text>(pm));
+			pm.pos[0] += 50;
+			pm.pos[1] += 25;
+			pm.content = "Continental: ";
+			this->AddElement("TXT_Generation_Continental", std::make_unique<Text>(pm));
+			pm.pos[1] += 25;
+			pm.content = "Erosion: ";
+			this->AddElement("TXT_Generation_Erosion", std::make_unique<Text>(pm));
+			pm.pos[1] += 25;
+			pm.content = "P&V: ";
+			this->AddElement("TXT_Generation_PV", std::make_unique<Text>(pm));
+		}
+		
 		this->onUpdate.AddCallBack(
 			[this]()
 			{
 				this->UpdatePlayerPos();
 				this->UpdateGenerationCount();
+				this->UpdateBiomeInfos();
 			});
+	}
+
+	void I_F3::UpdateBiomeInfos()
+	{
+		auto &wm = Game::World::WorldManager::GetInstance();
+		auto info = Game::Generation::Perlins::GetBiomeInfoAtPoint(wm.GetCamera().GetPosition()[0], wm.GetCamera().GetPosition()[2], wm.GetGenerationManager().GetSeed());
+		std::stringstream ss;
+
+		ss << "Continental: " << info.Continental;
+		this->GetElement<Text>("TXT_Generation_Continental")->SetContent(ss.str());
+		ss.clear();
+		ss.str("");
+
+		ss << "Erosion: " << info.Erosion;
+		this->GetElement<Text>("TXT_Generation_Erosion")->SetContent(ss.str());
+		ss.clear();
+		ss.str("");
+
+		ss << "P&V: " << info.PV;
+		this->GetElement<Text>("TXT_Generation_PV")->SetContent(ss.str());
+		ss.clear();
+		ss.str("");
 	}
 
 	I_F3::~I_F3() {}

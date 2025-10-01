@@ -26,6 +26,7 @@ namespace Vox::Game::Scenes::World::Interfaces
 
             void UpdatePlayerPos();
             void UpdateGenerationCount();
+            void UpdateBiomeInfos();
             /* private */
     
     };

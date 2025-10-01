@@ -36,13 +36,13 @@ namespace Vox::Game::Generation::Perlins
 			val = 0.0f;
 		else if (val <= -0.455)
 			val = 1.0f;
-		else if (val <= -0.19)
+		else if (val <= -0.25)
 			val = 2.0f;
-		else if (val <= -0.11)
+		else if (val <= -0.15)
 			val = 3.0f;
-		else if (val <= 0.03)
+		else if (val <= 0.1)
 			val = 4.0f;
-		else if (val <= 0.3)
+		else if (val <= 0.5)
 			val = 5.0f;
 		else
 			val = 6.0f;
@@ -71,13 +71,13 @@ namespace Vox::Game::Generation::Perlins
 		float val = GetPerlinValue(x, y, seed, Utils::PeaksAndValleyData, {-1, 1});
 
 		val = 1 - std::abs(3 * std::abs(val) - 2);
-		if (val <= -0.85)
+		if (val <= -0.95)
 			val = 0.0f;
 		else if (val <= -0.6f)
 			val = 1.0f;
 		else if (val <= 0.2f)
 			val = 2.0f;
-		else if (val <= 0.7f)
+		else if (val <= 0.8f)
 			val = 3.0f;
 		else
 			val = 4.0f;
@@ -521,6 +521,33 @@ namespace Vox::Game::Generation::Perlins
 		}
 		return ;
 	}
+
+	struct BiomesInfos {
+		double Continental;
+		double Erosion;
+		double PV;
+		double Weirdness;
+		double Temperature;
+		double Humidity;
+		Biomes Biome;
+	};
+
+	const inline BiomesInfos GetBiomeInfoAtPoint(float x, float y, uint32_t seed)
+	{
+		x += 125000;
+		y += 125000;
+		auto info = BiomesInfos{
+			GetPerlinValue(x, y, seed, Utils::ContinentalnessData, {-1.2f, 1.0f}),
+			GetPerlinValue(x, y, seed, Utils::ErosionData, {-1.0f, 1.0f}),
+			GetPerlinValue(x, y, seed, Utils::PeaksAndValleyData, {-1.0f, 1.0f}),
+			GetPerlinValue(x, y, seed, Utils::WeirdnessData, {-1.0f, 1.0f}),
+			GetPerlinValue(x, y, seed, Utils::TemperatureData, {-1.0f, 1.0f}),
+			GetPerlinValue(x, y, seed, Utils::HumidityData, {-1.0f, 1.0f}),
+			GetBiomeAtPoint(x, y, seed),
+		};
+		return info;
+	}
+
 } // namespace Vox::Game::Generation::Perlins
 
 #endif // __BIOMESPERLIN_HPP__
