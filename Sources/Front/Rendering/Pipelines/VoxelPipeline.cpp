@@ -16,6 +16,8 @@
 
 #include "Front/Utils/TexturesData.hpp"
 
+#include "Front/Utils/MaskedTexturesAtlas.hpp"
+
 namespace Vox::Front::Rendering::Pipelines
 {
 	VoxelPipeline::VoxelPipeline()
@@ -165,14 +167,17 @@ namespace Vox::Front::Rendering::Pipelines
 	{
 
 		auto &texturesManager = Game::GameManager::GetInstance().GetTexturesManager();
-		auto textureAtlas = texturesManager.operator[]("A_Blocks");
-
-		std::cout << textureAtlas << std::endl;
+		auto textureAtlas = static_cast<Front::Utils::MaskedTexturesAtlas *>(texturesManager.operator[]("A_Blocks"));
 
 		VkDescriptorImageInfo textureInfo{};
 		textureInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 		textureInfo.imageView = textureAtlas->_mainAtlas->GetView();
 		textureInfo.sampler = textureAtlas->_mainAtlas->GetSampler();
+
+		VkDescriptorImageInfo maskInfo{};
+		maskInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+		maskInfo.imageView = textureAtlas->_maskAtlas->GetView();
+		maskInfo.sampler = textureAtlas->_maskAtlas->GetSampler();
 
 		for (size_t i = 0; i < 2; i++)
 		{
@@ -181,7 +186,7 @@ namespace Vox::Front::Rendering::Pipelines
 			objectBufferInfo.offset = 0;
 			objectBufferInfo.range = size;
 
-			std::array<VkWriteDescriptorSet, 2> descriptorWrites{};
+			std::array<VkWriteDescriptorSet, 3> descriptorWrites{};
 
 			descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 			descriptorWrites[0].dstSet = this->_set[i];
@@ -198,6 +203,14 @@ namespace Vox::Front::Rendering::Pipelines
 			descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 			descriptorWrites[1].descriptorCount = 1;
 			descriptorWrites[1].pImageInfo = &textureInfo;
+
+			descriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			descriptorWrites[2].dstSet = this->_set[i];
+			descriptorWrites[2].dstBinding = 2;
+			descriptorWrites[2].dstArrayElement = 0;
+			descriptorWrites[2].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+			descriptorWrites[2].descriptorCount = 1;
+			descriptorWrites[2].pImageInfo = &maskInfo;
 
 			vkUpdateDescriptorSets(Device::GetInstance().GetLogicalDevice(),
 								   static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
@@ -224,7 +237,7 @@ namespace Vox::Front::Rendering::Pipelines
 
 	void VoxelPipeline::CreateSetLayout()
 	{
-		std::array<VkDescriptorSetLayoutBinding, 2> samplerLayoutBindings{};
+		std::array<VkDescriptorSetLayoutBinding, 3> samplerLayoutBindings{};
 
 		samplerLayoutBindings[0].binding = 0;
 		samplerLayoutBindings[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
@@ -235,6 +248,11 @@ namespace Vox::Front::Rendering::Pipelines
 		samplerLayoutBindings[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 		samplerLayoutBindings[1].descriptorCount = 1;
 		samplerLayoutBindings[1].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+
+		samplerLayoutBindings[2].binding = 2;
+		samplerLayoutBindings[2].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+		samplerLayoutBindings[2].descriptorCount = 1;
+		samplerLayoutBindings[2].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 
 		VkDescriptorSetLayoutCreateInfo layoutInfo{};
 		layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;

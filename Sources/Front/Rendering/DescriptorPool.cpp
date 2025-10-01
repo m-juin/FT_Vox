@@ -13,7 +13,7 @@ namespace Vox::Front::Rendering
 {
 	DescriptorPool::DescriptorPool()
 	{
-		std::array<VkDescriptorPoolSize, 4> poolSizes;
+		std::array<VkDescriptorPoolSize, 5> poolSizes;
 		poolSizes[0].descriptorCount = 2;
 		poolSizes[0].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER; // Interface, texture atlas + font atlas;
 
@@ -25,6 +25,9 @@ namespace Vox::Front::Rendering
 
 		poolSizes[3].descriptorCount = 2;
 		poolSizes[3].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER; // BlocksTextures
+		
+		poolSizes[4].descriptorCount = 2;
+		poolSizes[4].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER; // BlocksTexturesMask
 
 		VkDescriptorPoolCreateInfo poolInfo{};
 		poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;

@@ -172,7 +172,7 @@ namespace Vox::Front::Utils
 
 			auto size = this->_maskAtlas->GetSize();
 
-			this->_maskAtlas->CreateImage(VK_FORMAT_R8_SINT, VK_IMAGE_TILING_OPTIMAL,
+			this->_maskAtlas->CreateImage(VK_FORMAT_R8_UNORM, VK_IMAGE_TILING_OPTIMAL,
 										  VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT |
 											  VK_IMAGE_USAGE_TRANSFER_SRC_BIT,
 										  VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
@@ -184,7 +184,7 @@ namespace Vox::Front::Utils
 			vkDestroyBuffer(Front::Rendering::Device::GetInstance().GetLogicalDevice(), stagingBuffer, nullptr);
 			vkFreeMemory(Front::Rendering::Device::GetInstance().GetLogicalDevice(), stagingBufferMemory, nullptr);
 
-			this->_maskAtlas->CreateView(VK_FORMAT_R8_SINT, VK_IMAGE_ASPECT_COLOR_BIT);
+			this->_maskAtlas->CreateView(VK_FORMAT_R8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT);
 			this->_maskAtlas->CreateSampler();
 		}
 	}
