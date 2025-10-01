@@ -5,8 +5,6 @@
 
 #include "./ATexturesAtlas.hpp"
 
-#include "Front/Rendering/Images/VulkanImage.hpp"
-
 #include <memory>
 #include <vector>
 
@@ -15,12 +13,11 @@ namespace Vox::Front::Utils
 	class TexturesAtlas : public ATexturesAtlas
 	{
 		private:
-			void BuildAtlas(const std::vector<ATexturesAtlas> &&datas);
-			void BuildImages(std::unique_ptr<unsigned char[]> mainData, std::unique_ptr<unsigned char[]> maskData,
-							 VkDeviceSize mainSize, VkDeviceSize maskSize);
+			void BuildAtlas(const std::vector<TexturesDatas> &&datas);
+			void BuildImages(std::unique_ptr<unsigned char[]> mainData, VkDeviceSize mainSize);
 
 		public:
-			TexturesAtlas(const std::vector<MaskedTexturesDatas> &&datas, uint32_t mainChannelCount = 4);
+			TexturesAtlas(const std::vector<TexturesDatas> &&datas, uint32_t mainChannelCount = 4);
 			TexturesAtlas() = delete;
 			~TexturesAtlas() {};
 

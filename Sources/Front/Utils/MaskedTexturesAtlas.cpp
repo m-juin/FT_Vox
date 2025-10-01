@@ -168,7 +168,7 @@ namespace Vox::Front::Utils
 			void *data;
 			vkMapMemory(Front::Rendering::Device::GetInstance().GetLogicalDevice(), stagingBufferMemory, 0, maskSize, 0,
 						&data);
-			memcpy(data, mainData.get(), static_cast<size_t>(maskSize));
+			memcpy(data, maskData.get(), static_cast<size_t>(maskSize));
 			vkUnmapMemory(Front::Rendering::Device::GetInstance().GetLogicalDevice(), stagingBufferMemory);
 
 			auto size = this->_maskAtlas->GetSize();

@@ -73,7 +73,7 @@ namespace Vox::Front::Interfaces::Elements
 			this->_uvMappingData.uvMin[1] = uvData.vOffset;
 			this->_uvMappingData.uvMax[0] = uvData.uOffset + uvData.uSize;
 			this->_uvMappingData.uvMax[1] = uvData.vOffset + uvData.vSize;
-			this->_uvMappingData.atlasSize = atlas->GetSize();
+			this->_uvMappingData.atlasSize = atlas->_mainAtlas->GetSize();
 
 			this->_vertex[0] = Vertex(PointPixelToVulkan(this->_pos, screenSize), {0.0f, 0.0f}, this->_colorMod);
 			this->_vertex[1] = Vertex(PointPixelToVulkan({this->_pos[0] + this->_size[0], this->_pos[1]}, screenSize),
@@ -167,7 +167,7 @@ namespace Vox::Front::Interfaces::Elements
 		this->_uvMappingData.uvMin[1] = uvData.vOffset;
 		this->_uvMappingData.uvMax[0] = uvData.uOffset + uvData.uSize;
 		this->_uvMappingData.uvMax[1] = uvData.vOffset + uvData.vSize;
-		this->_uvMappingData.atlasSize = atlas->GetSize();
+		this->_uvMappingData.atlasSize = atlas->_mainAtlas->GetSize();
 
 		this->B_Vertices->Update(&this->_vertex, 4 * sizeof(Vertex));
 	}

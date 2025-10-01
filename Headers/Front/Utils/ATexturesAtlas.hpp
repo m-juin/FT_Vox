@@ -3,11 +3,10 @@
 
 #include "Game/Utils/TexturesData.hpp"
 
-#include "./TexturesAtlas.hpp"
-
 #include "Front/Rendering/Images/VulkanImage.hpp"
 
 #include <memory>
+#include <vector>
 
 namespace Vox::Front::Utils
 {
@@ -18,13 +17,6 @@ namespace Vox::Front::Utils
 	{
 		protected:
 			static constexpr uint32_t MAX_TEXTURE_SIZE = 8192;
-			struct uvData
-			{
-					MGL::Vectors::Vector2<float> uvMin;
-					MGL::Vectors::Vector2<float> uvMax;
-					MGL::Vectors::Vector2<uint16_t> atlasSize;
-					int textureID;
-			};
 			struct TexturesDatas
 			{
 					const std::string key;
@@ -42,6 +34,7 @@ namespace Vox::Front::Utils
 			size_t _textureChannels;
 			static uint32_t nextPowerOfTwo(uint32_t value);
 			unsigned char *LoadSingleTexture(const std::string &path, uint8_t expectedChannel);
+
 
 		public:
 			struct uvData

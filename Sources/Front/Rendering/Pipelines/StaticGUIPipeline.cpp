@@ -222,8 +222,8 @@ namespace Vox::Front::Rendering::Pipelines
 
 		VkDescriptorImageInfo textureInfo{};
 		textureInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-		textureInfo.imageView = textureAtlas->GetView();
-		textureInfo.sampler = textureAtlas->GetSampler();
+		textureInfo.imageView = textureAtlas->_mainAtlas->GetView();
+		textureInfo.sampler = textureAtlas->_mainAtlas->GetSampler();
 
 		VkDescriptorImageInfo fontInfo{};
 		fontInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;

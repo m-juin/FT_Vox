@@ -4,8 +4,8 @@
 #include <unordered_map>
 #include <iostream>
 
-#include "Front/Utils/TexturesAtlas.hpp"
-#include "Front/Utils/MaskedTexturesAtlas.hpp"
+#include "Front/Utils/ATexturesAtlas.hpp"
+// #include "Front/Utils/MaskedTexturesAtlas.hpp"
 
 #include "Front/Rendering/Images/FontImage.hpp"
 
@@ -26,8 +26,8 @@ namespace Vox::Front::Scenes
             
             void CreateMap(const std::string &T_Path);
 
-            Utils::TexturesAtlas *operator[](const std::string &key) {return this->_texturesMap[key];};
-            const Utils::TexturesAtlas &operator[](const std::string &key) const {return *this->_texturesMap.at(key);};
+            Utils::ATexturesAtlas *operator[](const std::string &key) {return this->_texturesMap[key];};
+            const Utils::ATexturesAtlas &operator[](const std::string &key) const {return *this->_texturesMap.at(key);};
 
             Front::Rendering::Images::FontImage &GetFont() {return *this->_fontImage;};
 
@@ -51,7 +51,7 @@ namespace Vox::Front::Scenes
             std::bitset<Utils::TexturesData::MAX_DYNAMIC_TEXTURES> _avalaibleDynamicImages;
 
             std::unique_ptr<Front::Rendering::Images::FontImage>_fontImage;
-            std::unordered_map<std::string, Utils::TexturesAtlas *> _texturesMap;
+            std::unordered_map<std::string, Utils::ATexturesAtlas *> _texturesMap;
             /* private */
     
     };

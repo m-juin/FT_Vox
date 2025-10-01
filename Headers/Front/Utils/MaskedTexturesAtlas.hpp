@@ -5,8 +5,6 @@
 
 #include "./ATexturesAtlas.hpp"
 
-#include "Front/Rendering/Images/VulkanImage.hpp"
-
 #include <memory>
 
 namespace Vox::Front::Utils

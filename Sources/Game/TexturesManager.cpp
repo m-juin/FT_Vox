@@ -7,6 +7,9 @@
 
 #include "Front/Rendering/Images/DummyImage.hpp"
 
+#include "Front/Utils/MaskedTexturesAtlas.hpp"
+#include "Front/Utils/TexturesAtlas.hpp"
+
 namespace Vox::Front::Scenes
 {
 	TexturesManager::TexturesManager(const std::string &T_Path)
@@ -43,13 +46,13 @@ namespace Vox::Front::Scenes
 				{"Button_Disabled", T_Path + "GUI/button_disabled.png"},
 			},
 			4);
-		this->_texturesMap["A_Blocks"] = new Front::Utils::TexturesAtlas(
+		this->_texturesMap["A_Blocks"] = new Front::Utils::MaskedTexturesAtlas(
 			{
 				{"Dirt", T_Path + "Blocks/dirt.png"},
 				{"Stone", T_Path + "Blocks/stone.png"},
 				{"Grass", T_Path + "Blocks/grass_uncolored.png"},
-				{"Grass_Top", T_Path + "Blocks/grass_uncolored_top.png"},
-				{"Grass_Bot", T_Path + "Blocks/grass_bot.png"},
+				{"Grass_Top", T_Path + "Blocks/grass_uncolored_top.png", T_Path + "Blocks/Masks/mask_grass_uncolored_top.png"},
+				{"Grass_Bot", T_Path + "Blocks/grass_bot.png", T_Path + "Blocks/Masks/mask_grass_uncolored.png"},
 				{"Sand", T_Path + "Blocks/sand.png"},
 			},
 			4);
