@@ -22,7 +22,16 @@ namespace Vox::Front::Scenes
 			this->_dynamicImages[i] = dummy.GetView();
 	}
 
-	TexturesManager::~TexturesManager() {}
+	TexturesManager::~TexturesManager()
+	{
+		VkDevice device = Front::Rendering::Device::GetInstance().GetLogicalDevice();
+		if (this->_dynamicSampler != VK_NULL_HANDLE)
+			vkDestroySampler(device, this->_dynamicSampler, nullptr);
+		for (auto pair : this->_texturesMap)
+			if (pair.second != nullptr)
+				delete pair.second;
+		Rendering::Images::DummyImage::Clean();
+	}
 
 	void TexturesManager::CreateMap(const std::string &T_Path)
 	{
