@@ -1,9 +1,8 @@
 #include "Front/Utils/MaskedTexturesAtlas.hpp"
 
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb/stb_image.h"
-
 #include <algorithm>
+
+#include "stb/stb_image.h"
 
 #include "Front/Rendering/Device.hpp"
 #include "Front/Rendering/Utils/Buffers/Utils.hpp"

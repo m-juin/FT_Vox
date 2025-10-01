@@ -3,10 +3,13 @@
 
 #include "Game/Utils/TexturesData.hpp"
 
+
 #include "Front/Rendering/Images/VulkanImage.hpp"
 
 #include <memory>
 #include <vector>
+
+#include <cstring>
 
 namespace Vox::Front::Utils
 {
