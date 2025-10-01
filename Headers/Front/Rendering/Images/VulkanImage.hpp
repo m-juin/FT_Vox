@@ -31,11 +31,13 @@ namespace Vox::Front::Rendering::Images
 			VulkanImage &operator=(VulkanImage &&) noexcept = default;
 
 		protected:
+			void GenerateMipMap();
+
 			void TransitionImageLayout(VkImageLayout oldLayout, VkImageLayout newLayout);
 			void CopyBufferToImage(VkBuffer buffer);
 
 			void CreateImage(VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage,
-							 VkMemoryPropertyFlags properties);
+							 VkMemoryPropertyFlags properties, uint32_t mipLevels = 1);
 			void CreateView(VkFormat format, VkImageAspectFlags aspectFlags);
 			virtual void CreateSampler();
 
@@ -47,6 +49,8 @@ namespace Vox::Front::Rendering::Images
 
 			VkImageView _view;
 			VkSampler _sampler;
+
+			uint32_t _mipLevels;
 			/* private */
 	};
 } // namespace Vox::Front::Rendering::Images

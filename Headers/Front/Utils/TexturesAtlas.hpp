@@ -42,6 +42,7 @@ namespace Vox::Front::Utils
 			}
 			// TexturesAtlas(std::vector<std::string> atlasTextures, size_t textureSize = 32, size_t textureChannels =
 			// 4);
+			~TexturesAtlas();
 			TexturesAtlas(std::vector<std::pair<std::string, std::string>> &&atlasTextures, size_t textureChannels = 4);
 			const TextureInfo &GetTextureInfo(size_t index) const;
 			const TextureInfo &GetTextureInfo(const std::string &key) const;

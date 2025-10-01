@@ -1,9 +1,9 @@
 #include "Front/Rendering/Images/VulkanImage.hpp"
 
-#include "Front/Rendering/Device.hpp"
 #include "Front/Rendering/CommandsPool.hpp"
-#include "Front/Rendering/SyncObjects.hpp"
+#include "Front/Rendering/Device.hpp"
 #include "Front/Rendering/SwapChain.hpp"
+#include "Front/Rendering/SyncObjects.hpp"
 #include "Front/Rendering/Utils/Buffers/Utils.hpp"
 
 namespace Vox::Front::Rendering::Images
@@ -18,6 +18,75 @@ namespace Vox::Front::Rendering::Images
 		this->_height = height;
 	}
 
+	void VulkanImage::GenerateMipMap()
+	{
+		VkCommandBuffer commandBuffer = Utils::Buffers::Utils::BeginSingleTimeCommands(
+			Device::GetInstance().GetLogicalDevice(), CommandsPool::GetInstance().GetPool());
+
+		VkImageMemoryBarrier barrier{};
+		barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+		barrier.image = this->_image;
+		barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+		barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+		barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+		barrier.subresourceRange.baseArrayLayer = 0;
+		barrier.subresourceRange.layerCount = 1;
+		barrier.subresourceRange.levelCount = 1;
+
+		int32_t mipWidth = this->_width;
+		int32_t mipHeight = this->_height;
+
+		for (uint32_t i = 1; i < this->_mipLevels; i++)
+		{
+			barrier.subresourceRange.baseMipLevel = i - 1;
+			barrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+			barrier.newLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
+			barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+			barrier.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
+
+			vkCmdPipelineBarrier(commandBuffer, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, 0, 0,
+								 nullptr, 0, nullptr, 1, &barrier);
+			VkImageBlit blit{};
+			blit.srcOffsets[0] = {0, 0, 0};
+			blit.srcOffsets[1] = {mipWidth, mipHeight, 1};
+			blit.srcSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+			blit.srcSubresource.mipLevel = i - 1;
+			blit.srcSubresource.baseArrayLayer = 0;
+			blit.srcSubresource.layerCount = 1;
+			blit.dstOffsets[0] = {0, 0, 0};
+			blit.dstOffsets[1] = {mipWidth > 1 ? mipWidth / 2 : 1, mipHeight > 1 ? mipHeight / 2 : 1, 1};
+			blit.dstSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+			blit.dstSubresource.mipLevel = i;
+			blit.dstSubresource.baseArrayLayer = 0;
+			blit.dstSubresource.layerCount = 1;
+
+			vkCmdBlitImage(commandBuffer, this->_image, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, this->_image,
+						   VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &blit, VK_FILTER_LINEAR);
+			barrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
+			barrier.newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+			barrier.srcAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
+			barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+
+			vkCmdPipelineBarrier(commandBuffer, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
+								 0, 0, nullptr, 0, nullptr, 1, &barrier);
+			if (mipWidth > 1)
+				mipWidth /= 2;
+			if (mipHeight > 1)
+				mipHeight /= 2;
+		}
+		barrier.subresourceRange.baseMipLevel = this->_mipLevels - 1;
+		barrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+		barrier.newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+		barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+		barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+
+		vkCmdPipelineBarrier(commandBuffer, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, 0, 0,
+							 nullptr, 0, nullptr, 1, &barrier);
+		Utils::Buffers::Utils::EndSingleTimeCommands(commandBuffer, Device::GetInstance().GetLogicalDevice(),
+													 CommandsPool::GetInstance().GetPool(),
+													 SwapChain::GetInstance().GetGraphicQueue());
+	}
+
 	VulkanImage::~VulkanImage()
 	{
 		VkDevice device = Device::GetInstance().GetLogicalDevice();
@@ -29,9 +98,10 @@ namespace Vox::Front::Rendering::Images
 	}
 
 	void VulkanImage::CreateImage(VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage,
-								  VkMemoryPropertyFlags properties)
+								  VkMemoryPropertyFlags properties, uint32_t mipLevels)
 	{
 		Front::Rendering::Device &device = Device::GetInstance();
+		this->_mipLevels = mipLevels;
 
 		VkImageCreateInfo imageInfo{};
 		imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
@@ -39,7 +109,7 @@ namespace Vox::Front::Rendering::Images
 		imageInfo.extent.width = this->_width;
 		imageInfo.extent.height = this->_height;
 		imageInfo.extent.depth = 1;
-		imageInfo.mipLevels = 1;
+		imageInfo.mipLevels = mipLevels;
 		imageInfo.arrayLayers = 1;
 		imageInfo.format = format;
 		imageInfo.tiling = tiling;
@@ -77,7 +147,7 @@ namespace Vox::Front::Rendering::Images
 		viewInfo.format = format;
 		viewInfo.subresourceRange.aspectMask = aspectFlags;
 		viewInfo.subresourceRange.baseMipLevel = 0;
-		viewInfo.subresourceRange.levelCount = 1;
+		viewInfo.subresourceRange.levelCount = this->_mipLevels;
 		viewInfo.subresourceRange.baseArrayLayer = 0;
 		viewInfo.subresourceRange.layerCount = 1;
 
@@ -95,10 +165,13 @@ namespace Vox::Front::Rendering::Images
 		samplerInfo.magFilter = VK_FILTER_NEAREST;
 		samplerInfo.minFilter = VK_FILTER_NEAREST;
 		samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_NEAREST;
-		samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT;
-		samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT;
-		samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT;
-		samplerInfo.anisotropyEnable = VK_TRUE;
+		samplerInfo.minLod = 0.0f;
+		samplerInfo.maxLod = VK_LOD_CLAMP_NONE;
+		samplerInfo.mipLodBias = 0.0f;
+		samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+		samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+		samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+		samplerInfo.anisotropyEnable = VK_FALSE;
 		samplerInfo.maxAnisotropy = properties.limits.maxSamplerAnisotropy;
 		samplerInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK;
 		samplerInfo.unnormalizedCoordinates = VK_FALSE;
@@ -110,10 +183,10 @@ namespace Vox::Front::Rendering::Images
 			throw std::runtime_error("Failed to create texture sampler!");
 	}
 
-
 	void VulkanImage::TransitionImageLayout(VkImageLayout oldLayout, VkImageLayout newLayout)
 	{
-		VkCommandBuffer commandBuffer = Utils::Buffers::Utils::BeginSingleTimeCommands(Device::GetInstance().GetLogicalDevice(), CommandsPool::GetInstance().GetPool());
+		VkCommandBuffer commandBuffer = Utils::Buffers::Utils::BeginSingleTimeCommands(
+			Device::GetInstance().GetLogicalDevice(), CommandsPool::GetInstance().GetPool());
 
 		VkImageMemoryBarrier barrier{};
 		barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
@@ -126,7 +199,7 @@ namespace Vox::Front::Rendering::Images
 		barrier.image = this->_image;
 		barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 		barrier.subresourceRange.baseMipLevel = 0;
-		barrier.subresourceRange.levelCount = 1;
+		barrier.subresourceRange.levelCount = this->_mipLevels;
 		barrier.subresourceRange.baseArrayLayer = 0;
 		barrier.subresourceRange.layerCount = 1;
 
@@ -164,12 +237,15 @@ namespace Vox::Front::Rendering::Images
 
 		vkCmdPipelineBarrier(commandBuffer, sourceStage, destinationStage, 0, 0, nullptr, 0, nullptr, 1, &barrier);
 
-		Utils::Buffers::Utils::EndSingleTimeCommands(commandBuffer, Device::GetInstance().GetLogicalDevice(), CommandsPool::GetInstance().GetPool(), SwapChain::GetInstance().GetGraphicQueue());
+		Utils::Buffers::Utils::EndSingleTimeCommands(commandBuffer, Device::GetInstance().GetLogicalDevice(),
+													 CommandsPool::GetInstance().GetPool(),
+													 SwapChain::GetInstance().GetGraphicQueue());
 	}
 
 	void VulkanImage::CopyBufferToImage(VkBuffer buffer)
 	{
-		VkCommandBuffer commandBuffer = Utils::Buffers::Utils::BeginSingleTimeCommands(Device::GetInstance().GetLogicalDevice(), CommandsPool::GetInstance().GetPool());
+		VkCommandBuffer commandBuffer = Utils::Buffers::Utils::BeginSingleTimeCommands(
+			Device::GetInstance().GetLogicalDevice(), CommandsPool::GetInstance().GetPool());
 
 		VkBufferImageCopy region{};
 		region.bufferOffset = 0;
@@ -186,7 +262,9 @@ namespace Vox::Front::Rendering::Images
 
 		vkCmdCopyBufferToImage(commandBuffer, buffer, this->_image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 
-		Utils::Buffers::Utils::EndSingleTimeCommands(commandBuffer, Device::GetInstance().GetLogicalDevice(), CommandsPool::GetInstance().GetPool(), SwapChain::GetInstance().GetGraphicQueue());
+		Utils::Buffers::Utils::EndSingleTimeCommands(commandBuffer, Device::GetInstance().GetLogicalDevice(),
+													 CommandsPool::GetInstance().GetPool(),
+													 SwapChain::GetInstance().GetGraphicQueue());
 	}
 
 } // namespace Vox::Front::Rendering::Images

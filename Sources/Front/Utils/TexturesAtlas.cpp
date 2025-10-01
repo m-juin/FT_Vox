@@ -84,7 +84,11 @@ namespace Vox::Front::Utils
 		}
 		return *it;
 	}
-
+	
+	TexturesAtlas::~TexturesAtlas()
+	{
+		std::cout << "Texture Atlas\n";
+	}
 
 	void TexturesAtlas::BuildAtlas(std::vector<std::pair<std::string, std::string>> &&textures)
 	{
@@ -168,11 +172,13 @@ namespace Vox::Front::Utils
 		vkUnmapMemory(Front::Rendering::Device::GetInstance().GetLogicalDevice(), stagingBufferMemory);
 
 		this->CreateImage(VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL,
-						  VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
-						  VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+						  VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT,
+						  VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+						  static_cast<uint32_t>(floor(log2(std::max(this->_width, this->_height))) + 1));
 		this->TransitionImageLayout(VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 		this->CopyBufferToImage(stagingBuffer);
-		this->TransitionImageLayout(VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+		this->GenerateMipMap();
+		// this->TransitionImageLayout(VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
 		vkDestroyBuffer(Front::Rendering::Device::GetInstance().GetLogicalDevice(), stagingBuffer, nullptr);
 		vkFreeMemory(Front::Rendering::Device::GetInstance().GetLogicalDevice(), stagingBufferMemory, nullptr);
