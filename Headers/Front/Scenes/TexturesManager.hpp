@@ -5,6 +5,7 @@
 #include <iostream>
 
 #include "Front/Utils/TexturesAtlas.hpp"
+#include "Front/Utils/MaskedTexturesAtlas.hpp"
 
 #include "Front/Rendering/Images/FontImage.hpp"
 

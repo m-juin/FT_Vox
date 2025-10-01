@@ -5,10 +5,16 @@
 
 #include "MathGraphicalLib/Vectors/Vector2.hpp"
 
+namespace Vox::Front::Utils
+{
+	class MaskedTexturesAtlas;
+} // namespace Vox::Front::Utils
+
 namespace Vox::Front::Rendering::Images
 {
 	class VulkanImage
 	{
+		friend class Vox::Front::Utils::MaskedTexturesAtlas;
 		public:
 			VulkanImage(size_t width, size_t height);
 			virtual ~VulkanImage();
