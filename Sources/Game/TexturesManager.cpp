@@ -54,6 +54,7 @@ namespace Vox::Front::Scenes
 				{"Grass_Top", T_Path + "Blocks/grass_uncolored_top.png", T_Path + "Blocks/Masks/mask_grass_uncolored_top.png"},
 				{"Grass_Bot", T_Path + "Blocks/grass_bot.png"},
 				{"Sand", T_Path + "Blocks/sand.png"},
+				{"Gravel", T_Path + "Blocks/gravel.png"},
 			},
 			4);
 		this->_fontImage = std::make_unique<Front::Rendering::Images::FontImage>(T_Path + "GUI/Fonts/Minecraft.ttf");

@@ -207,6 +207,7 @@ namespace Vox::Game::Generation::Datas::Biomes
 		{Biomes::Eroded_Badlands, {230, 102, 51}},
 	};
 
+
 } // namespace Vox::Game::Generation::Datas::Biomes
 
 #endif // __BIOMES_HPP__

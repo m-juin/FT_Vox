@@ -60,6 +60,9 @@ namespace Vox::Game::Scenes::World::Interfaces
 			pm.pos[1] += 25;
 			pm.content = "P&V: ";
 			this->AddElement("TXT_Generation_PV", std::make_unique<Text>(pm));
+			pm.pos[1] += 25;
+			pm.content = "Biome: ";
+			this->AddElement("TXT_Generation_Biome", std::make_unique<Text>(pm));
 		}
 		
 		this->onUpdate.AddCallBack(
@@ -89,6 +92,13 @@ namespace Vox::Game::Scenes::World::Interfaces
 
 		ss << "P&V: " << info.PV;
 		this->GetElement<Text>("TXT_Generation_PV")->SetContent(ss.str());
+		ss.clear();
+		ss.str("");
+
+		ss << "Biome: " << info.Biome;
+		auto str = ss.str();
+		std::replace(str.begin(), str.end(), '_', ' ');
+		this->GetElement<Text>("TXT_Generation_Biome")->SetContent(str);
 		ss.clear();
 		ss.str("");
 	}

@@ -54,9 +54,8 @@ namespace Vox::Front::Utils
 	void MaskedTexturesAtlas::BuildAtlas(const std::vector<MaskedTexturesDatas> &&datas)
 	{
 		this->_textureInfos.reserve(datas.size());
-
-		size_t atlasSize = (_textureWidth * _textureHeight * _textureChannels) * nextPowerOfTwo(datas.size());
-		size_t maskAtlasSize = (_textureWidth * _textureHeight) * nextPowerOfTwo(datas.size());
+		size_t atlasSize = (_atlasWidth * _textureWidth) * (_atlasHeight * _textureHeight) * _textureChannels;
+		size_t maskAtlasSize = (_atlasWidth * _textureWidth) * (_atlasHeight * _textureHeight);
 
 		std::unique_ptr<unsigned char[]> atlasData(new unsigned char[atlasSize]);
 		std::unique_ptr<unsigned char[]> maskAtlasData(new unsigned char[maskAtlasSize]);

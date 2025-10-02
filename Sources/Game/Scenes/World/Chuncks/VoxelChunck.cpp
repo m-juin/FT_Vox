@@ -20,6 +20,7 @@
 #include "Game/Scenes/World/Generation/Perlin.hpp"
 
 #include "Game/Utils/Datas/Biomes.hpp"
+#include "Game/Utils/Datas/BiomesData/SurfaceDecoration.hpp"
 
 namespace Vox::Game::World::Chuncks
 {
@@ -106,18 +107,13 @@ namespace Vox::Game::World::Chuncks
 					std::string blockType;
 					Vector3Float color = {1.0, 1.0, 1.0};
 					size_t worldHeight = hMap[it[0] * CHUNCK_SIZE + it[2]];
-					if (this->_position[1] + it[1] == worldHeight)
+					blockType = Game::Generation::Datas::Biomes::GetBlockType(biome, (int)worldHeight - (this->_position[1] + (int)it[1]));
+					if (blockType == "Grass")
 					{
-						blockType = "Grass";
 						Vector3Int biomeColor = Game::Generation::Datas::Biomes::biomesColors[biome];
 						color = {static_cast<float>(biomeColor[0]) / 256.0f, static_cast<float>(biomeColor[1]) / 256.0f, static_cast<float>(biomeColor[2]) / 256.0f};
 						// std::cout << color << std::endl;
 					}
-					else if (this->_position[1] + it[1] > worldHeight - 3)
-						blockType = "Dirt";
-					else
-						blockType = "Stone";
-
 					checkFace(it, 0, 1, 0, Faces::TOP, blockType, color);
 					// checkFace(it, 0, -1, 0, Faces::BOT);
 					checkFace(it, -1, 0, 0, Faces::LEFT, blockType, color);
