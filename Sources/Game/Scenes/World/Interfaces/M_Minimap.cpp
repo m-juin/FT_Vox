@@ -41,14 +41,16 @@ namespace Vox::Game::Scenes::World::Interfaces
 			this->_process.join();
 	}
 
-	void M_Minimap::RequestUpdate(MGL::Vectors::Vector3<float> newPlayerPos, const uint32_t &newSeed)
+	void M_Minimap::RequestUpdate(MGL::Vectors::Vector3<float> newPlayerPos, const uint32_t &newSeed, const float &newScale, const uint8_t &newMap)
 	{
 		{
 			std::lock_guard<std::mutex> lock(_processMutex);
-			if (newPlayerPos == this->_requestedPos && newSeed == this->_requestedSeed)
+			if (newPlayerPos == this->_requestedPos && newSeed == this->_requestedSeed && newScale == this->_requestedScale && newMap == this->_requestedMap)
 				return;
 			this->_requestedPos = newPlayerPos;
 			this->_requestedSeed = newSeed;
+			this->_requestedScale = newScale;
+			this->_requestedMap = newMap;
 			this->_hasRequest = true;
 		}
 		_cv.notify_one();
@@ -72,9 +74,11 @@ namespace Vox::Game::Scenes::World::Interfaces
 
 			MGL::Vectors::Vector2<int> requestPos = {static_cast<int>(this->_requestedPos[0]), static_cast<int>(this->_requestedPos[2])};
 			uint32_t requestSeed = this->_requestedSeed;
+			float requestScale = _requestedScale;
+			uint8_t map = _requestedMap;
 			lock.unlock();
 
-			this->Generate(this->_backBuffer, requestPos, requestSeed);
+			this->Generate(this->_backBuffer, requestPos, requestSeed, requestScale, map);
 
 			{
 				std::lock_guard FrontLock(this->_processMutex);
@@ -83,8 +87,11 @@ namespace Vox::Game::Scenes::World::Interfaces
 		}
 	}
 
-	void M_Minimap::Generate(std::vector<uint8_t> &targetBuffer, MGL::Vectors::Vector2<int> playerPos, uint32_t seed)
+	void M_Minimap::Generate(std::vector<uint8_t> &targetBuffer, MGL::Vectors::Vector2<int> playerPos, uint32_t seed, float scale, uint8_t map)
 	{
-        Game::Generation::Perlins::GenerateBiomeImage(targetBuffer, playerPos, seed, 400, 0.5);
+		if (map == 0)
+        	Game::Generation::Perlins::GenerateBiomeImage(targetBuffer, playerPos, seed, 400, scale);
+		else
+			Game::Generation::Perlins::GeneratePerlinImage(targetBuffer, playerPos, seed, 400, scale, map);
 	}
 } // namespace Vox::Game::Scenes::World::Interfaces

@@ -101,8 +101,11 @@ namespace Vox::Game::Generation::Perlins
 
 		float eroVal = spl.at("Erosion").first.GetValue(
 			GetPerlinValue(x + WORLD_CENTER, z + WORLD_CENTER, seed, Utils::ErosionData, {-1.0f, 1.0f}));
-		float PAVVal = spl.at("P&V").first.GetValue(
-			GetPerlinValue(x + WORLD_CENTER, z + WORLD_CENTER, seed, Utils::PeaksAndValleyData, {-1.0f, 1.0f}));
+
+		double PAVVal = GetPerlinValue(x + WORLD_CENTER, z + WORLD_CENTER, seed, Utils::PeaksAndValleyData, {-1.0f, 1.0f});
+
+		PAVVal = 1 - std::abs(3 * std::abs(PAVVal) - 2);
+		PAVVal = spl.at("P&V").first.GetValue(PAVVal);
 		contVal *= spl.at("Continental").second;
 		eroVal *= spl.at("Erosion").second;
 		PAVVal *= spl.at("P&V").second;

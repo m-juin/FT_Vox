@@ -23,7 +23,7 @@ namespace Vox::Game::Scenes::World::Interfaces
 			void Start();
 			void Stop();
 
-			void RequestUpdate(MGL::Vectors::Vector3<float> newPlayerPos, const uint32_t &newSeed);
+			void RequestUpdate(MGL::Vectors::Vector3<float> newPlayerPos, const uint32_t &newSeed, const float &newScale, const uint8_t &newMap);
 			const std::vector<uint8_t> &GetLatestBuffer();
 
 		private:
@@ -41,10 +41,12 @@ namespace Vox::Game::Scenes::World::Interfaces
 			std::mutex _cvMutex;
 			bool _hasRequest = false;
 			MGL::Vectors::Vector3<float> _requestedPos;
+			float _requestedScale;
 			uint32_t _requestedSeed;
+			uint8_t _requestedMap;
 
 			void WorkerLoop();
-			void Generate(std::vector<uint8_t> &targetBuffer, MGL::Vectors::Vector2<int> playerPos, uint32_t seed);
+			void Generate(std::vector<uint8_t> &targetBuffer, MGL::Vectors::Vector2<int> playerPos, uint32_t seed, float scale, uint8_t map);
 	};
 
 } // namespace Vox::Game::Scenes::World::Interfaces

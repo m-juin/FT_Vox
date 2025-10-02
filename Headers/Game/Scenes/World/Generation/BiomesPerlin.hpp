@@ -494,8 +494,8 @@ namespace Vox::Game::Generation::Perlins
 		return dataArray;
 	}
 
-	inline void GenerateBiomeImage(std::vector<uint8_t> &target, MGL::Vectors::Vector2<int> center, uint32_t seed, uint16_t imgSize,
-												   float scale)
+	inline void GenerateBiomeImage(std::vector<uint8_t> &target, MGL::Vectors::Vector2<int> center, uint32_t seed,
+								   uint16_t imgSize, float scale)
 	{
 		// std::cout << "scale = " << scale << std::endl;
 		uint16_t halfSize = imgSize / 2;
@@ -519,17 +519,71 @@ namespace Vox::Game::Generation::Perlins
 				target[index + 3] = 255;
 			}
 		}
-		return ;
+		return;
+	}
+	inline Utils::PerlinData GetData(const uint8_t &perlin)
+	{
+		switch (perlin)
+		{
+		case 1:
+			return Utils::ContinentalnessData;
+		case 2:
+			return Utils::ErosionData;
+		case 3:
+			return Utils::PeaksAndValleyData;
+		case 4:
+			return Utils::WeirdnessData;
+		case 5:
+			return Utils::TemperatureData;
+		case 6:
+			return Utils::HumidityData;
+		default:
+			return Utils::ContinentalnessData;
+		}
+	};
+	inline void GeneratePerlinImage(std::vector<uint8_t> &target, MGL::Vectors::Vector2<int> center, uint32_t seed,
+							 uint16_t imgSize, float scale, uint8_t perlin)
+	{
+		auto data = GetData(perlin);
+		std::pair<float, float> range = {-1., 1.};
+		if (data.amp == 1.2f)
+			range.first = -1.2f;
+		center[0] += 125000;
+		center[1] += 125000;
+		uint16_t halfSize = imgSize / 2;
+
+		MGL::Vectors::Vector2<int> effectivePos = center;
+		for (int x = -halfSize; x < halfSize; x++)
+		{
+			effectivePos[0] = center[0] + (x * scale);
+			effectivePos[0] += 125000;
+			for (int y = -halfSize; y < halfSize; y++)
+			{
+				effectivePos[1] = center[1] + (y * scale);
+				effectivePos[1] += 125000;
+				auto value = GetPerlinValue(effectivePos[0], effectivePos[1], seed, data, range);
+				int inted = std::round(Spline::GetNormalizedRangedValue(value, range, {0, 255}));;
+				MGL::Vectors::Vector3<int> color = {inted, inted, inted};
+
+				uint64_t index = ((imgSize * (y + halfSize)) + (x + halfSize)) * 4;
+				target[index] = color[0];
+				target[index + 1] = color[1];
+				target[index + 2] = color[2];
+				target[index + 3] = 255;
+			}
+		}
+		return;
 	}
 
-	struct BiomesInfos {
-		double Continental;
-		double Erosion;
-		double PV;
-		double Weirdness;
-		double Temperature;
-		double Humidity;
-		Biomes Biome;
+	struct BiomesInfos
+	{
+			double Continental;
+			double Erosion;
+			double PV;
+			double Weirdness;
+			double Temperature;
+			double Humidity;
+			Biomes Biome;
 	};
 
 	const inline BiomesInfos GetBiomeInfoAtPoint(float x, float y, uint32_t seed)

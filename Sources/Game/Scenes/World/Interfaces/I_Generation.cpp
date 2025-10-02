@@ -201,7 +201,7 @@ namespace Vox::Game::Scenes::World::Interfaces
 			this->AddElement("BTN_Update", std::move(btn), 1);
 		}
 
-		{ // IMG_Biomes && BTN_DisplayIMG
+		{ // IMG_Biomes && BTN_DisplayIMG && IF_Scale && IF_Map
 
 			DynamicImage::Constructor imgPM{};
 			imgPM.pos = {this->_pos[0] + size[0] / 2 - 200, this->_pos[1] + size[1] / 2 - 200};
@@ -238,29 +238,54 @@ namespace Vox::Game::Scenes::World::Interfaces
 				{
 					if (button != GLFW_MOUSE_BUTTON_LEFT || action != GLFW_RELEASE)
 						return;
-					auto &imgContainer = this->GetContainerElement("IMG_Biome");
-					imgContainer.isVisible = !imgContainer.isVisible;
+					auto &container = this->GetContainerElement("IMG_Biome");
+					this->GetContainerElement("IF_Scale_IMG_Biomes").isVisible = !container.isVisible;
+					this->GetContainerElement("IF_Map_IMG_Biomes").isVisible = !container.isVisible;
+					container.isVisible = !container.isVisible;
 				});
 
 			this->AddElement("BTN_Display_IMG_Biomes", std::move(btn), 1);
+
+			InputField::Constructor ifPm{};
+			ifPm.BGAtlas = "";
+			ifPm.BGAtlasKey = "";
+			ifPm.defaultValue = "0.5";
+			ifPm.inputMode = InputField::E_InputMode::Numeric;
+			ifPm.inputScale = 0.3f;
+			ifPm.pos = {imgPM.pos[0] + (imgPM.size[0] / 2) - 50, imgPM.pos[1] + imgPM.size[1] + 25};
+			ifPm.size = {100, 25};
+
+			auto iptf = std::make_unique<InputField>(ifPm);
+			this->AddElement("IF_Scale_IMG_Biomes", std::move(iptf), 1, false);
+
+			ifPm.pos[1] += 25;
+			ifPm.defaultValue = "0";
+			this->AddElement("IF_Map_IMG_Biomes", std::make_unique<InputField>(ifPm), 1, false);
 		}
 
 		this->_mMinimap.Start();
-		this->onUpdate.AddCallBack([this] () {
-			this->_mMinimap.RequestUpdate(Game::World::WorldManager::GetInstance().GetCamera().GetPosition(), Game::World::WorldManager::GetInstance().GetGenerationManager().GetSeed());
-			auto img = this->GetElement<DynamicImage>("IMG_Biome");
-			img->SetData(this->_mMinimap.GetLatestBuffer());
-		});
+		this->onUpdate.AddCallBack(
+			[this]()
+			{
+				float scale = std::atof(this->GetElement<InputField>("IF_Scale_IMG_Biomes")->GetValue().c_str());
+				const uint8_t map = std::atoi(this->GetElement<InputField>("IF_Map_IMG_Biomes")->GetValue().c_str());
+				this->_mMinimap.RequestUpdate(
+					Game::World::WorldManager::GetInstance().GetCamera().GetPosition(),
+					Game::World::WorldManager::GetInstance().GetGenerationManager().GetSeed(), scale, map);
+				auto img = this->GetElement<DynamicImage>("IMG_Biome");
+				img->SetData(this->_mMinimap.GetLatestBuffer());
+			});
 
 		this->_enabled = false;
 	}
 
 	I_Generation::~I_Generation() {}
-	
+
 	void I_Generation::UpdateMap(MGL::Vectors::Vector2<int> playerPos)
 	{
 		auto img = this->GetElement<DynamicImage>("IMG_Biome");
-		auto newData = Game::Generation::Perlins::GenerateBiomeImage(playerPos, Game::World::WorldManager::GetInstance().GetGenerationManager().GetSeed(), 400, 0.01);
+		auto newData = Game::Generation::Perlins::GenerateBiomeImage(
+			playerPos, Game::World::WorldManager::GetInstance().GetGenerationManager().GetSeed(), 400, 0.01);
 		img->SetData(newData);
 	}
 

@@ -105,7 +105,7 @@ namespace Vox::Front::Interfaces::Elements
 
 		bool isValid = im == 4	 ? std::isprint(converted)
 					   : im == 2 ? std::isalnum(converted)
-					   : im == 1 ? std::isdigit(converted)
+					   : im == 1 ? (std::isdigit(converted) || converted == '.')
 								 : std::isalpha(converted);
 
 		if (isValid)
