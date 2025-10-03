@@ -56,6 +56,8 @@ namespace Vox::Game::World::Chuncks
 						  &cache](const LocalVector &it, int offsetX, int offsetY, int offsetZ, Faces face,
 								  const std::string &blockType, const Vector3Float &color)
 		{
+			(void)seed;
+			(void)spl;
 			// LocalVector neighbor = it;
 			MGL::Vectors::Vector3<int> neighbor = {it[0] + offsetX, it[1] + offsetY, it[2] + offsetZ};
 			// neighbor[0] += offsetX;
@@ -73,27 +75,14 @@ namespace Vox::Game::World::Chuncks
 				return;
 			}
 
-			if (offsetY != 0 && offsetX == 0 && offsetZ == 0)
+			else
 			{
-				int yWorld = static_cast<int>(this->_position[1]) + neighbor[1];
-				int lx = it[0];
-				int lz = it[2];
+				size_t neighborIndex = (neighbor[0] + Generation::Utils::GENERATION_BLEND_RADIUS) * Generation::Utils::CACHE_SIZE + (neighbor[2] + Generation::Utils::GENERATION_BLEND_RADIUS);
+				int neighborWorldY = this->_position[1] + neighbor[1];
+				uint8_t neighborColHeight = cache.heightMap[neighborIndex];
 
-				size_t cacheIndex = (lx + Generation::Utils::GENERATION_BLEND_RADIUS) * Generation::Utils::CACHE_SIZE +
-									(lz + Generation::Utils::GENERATION_BLEND_RADIUS);
-				uint8_t h = cache.heightMap[cacheIndex];
-
-				bool neighborFilled = (yWorld <= static_cast<int>(h));
-				if (!neighborFilled)
+				if ( neighborWorldY > neighborColHeight)
 					this->AddFace(textInfo, face, it, blockType, color);
-				return;
-			}
-			if (!Generation::Perlins::IsBlockAt({static_cast<int>(this->_position[0]) + it[0] + offsetX,
-												 static_cast<int>(this->_position[1]) + it[1] + offsetY,
-												 static_cast<int>(this->_position[2]) + it[2] + offsetZ},
-												seed, spl))
-			{
-				this->AddFace(textInfo, face, it, blockType, color);
 			}
 		};
 
@@ -101,10 +90,10 @@ namespace Vox::Game::World::Chuncks
 		{
 			for (it[2] = 0; it[2] < CHUNCK_SIZE; it[2]++)
 			{
-				Game::Generation::Datas::Biomes::Biomes biome = cache.biome[it[0] * CHUNCK_SIZE + it[2]];
 				size_t cacheIndex =
 					(it[0] + Generation::Utils::GENERATION_BLEND_RADIUS) * Generation::Utils::CACHE_SIZE +
 					(it[2] + Generation::Utils::GENERATION_BLEND_RADIUS);
+				Game::Generation::Datas::Biomes::Biomes biome = cache.biome[cacheIndex];
 				uint8_t worldHeight = cache.heightMap[cacheIndex];
 				for (it[1] = 0; it[1] < CHUNCK_SIZE; it[1]++)
 				{

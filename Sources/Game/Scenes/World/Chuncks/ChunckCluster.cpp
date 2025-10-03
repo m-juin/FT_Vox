@@ -21,19 +21,16 @@ namespace Vox::Game::World::Chuncks
 
 		bool needPrint = this->_clusterPos[0] == 3 && this->_clusterPos[1] == 1;
 
-		// on parcourt la zone étendue (chunk + bords pour blending)
 		for (int x = -Game::Generation::Utils::GENERATION_BLEND_RADIUS;
 			 x < static_cast<int>(CHUNCK_SIZE) + Game::Generation::Utils::GENERATION_BLEND_RADIUS; ++x)
 		{
 			for (int z = -Game::Generation::Utils::GENERATION_BLEND_RADIUS;
 				 z < static_cast<int>(CHUNCK_SIZE) + Game::Generation::Utils::GENERATION_BLEND_RADIUS; ++z)
 			{
-				// coordonnées locales dans le cache
 				size_t localIndex =
 					(x + Game::Generation::Utils::GENERATION_BLEND_RADIUS) * Game::Generation::Utils::CACHE_SIZE +
 					(z + Game::Generation::Utils::GENERATION_BLEND_RADIUS);
 
-				// coordonnées globales dans le monde
 				int worldX = baseX + x;
 				int worldZ = baseZ + z;
 
@@ -43,16 +40,24 @@ namespace Vox::Game::World::Chuncks
 				cacheSt.erosion[localIndex] = i.Erosion;
 				cacheSt.peaks[localIndex] = i.PV;
 				cacheSt.biome[localIndex] = i.Biome;
-
-				// ⚠️ pour la heightmap, on peut calculer même sur les bords
-				cacheSt.heightMap[localIndex] = Generation::Perlins::GetHeightFromCache(x, z, spl, cacheSt);
+			}
+		}
+		for (int x = -Game::Generation::Utils::GENERATION_BLEND_RADIUS;
+			 x < static_cast<int>(CHUNCK_SIZE) + Game::Generation::Utils::GENERATION_BLEND_RADIUS; ++x)
+		{
+			for (int z = -Game::Generation::Utils::GENERATION_BLEND_RADIUS;
+				 z < static_cast<int>(CHUNCK_SIZE) + Game::Generation::Utils::GENERATION_BLEND_RADIUS; ++z)
+			{
+				size_t localIndex =
+					(x + Game::Generation::Utils::GENERATION_BLEND_RADIUS) * Game::Generation::Utils::CACHE_SIZE +
+					(z + Game::Generation::Utils::GENERATION_BLEND_RADIUS);
+				cacheSt.heightMap[localIndex] = Generation::Perlins::GetBlendedCached(x, z, spl, cacheSt);
 				if (needPrint)
 					std::cout << (int)cacheSt.heightMap[localIndex] << " ";
 			}
 			if (needPrint)
 					std::cout << "\n";
 		}
-
 		return cacheSt;
 	}
 
