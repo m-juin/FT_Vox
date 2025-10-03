@@ -600,6 +600,7 @@ namespace Vox::Game::Generation::Perlins
 			GetPerlinValue(x, y, seed, Utils::HumidityData, {-1.0f, 1.0f}),
 			GetBiomeAtPoint(x, y, seed),
 		};
+		info.PV =  1 - std::abs(3 * std::abs(info.PV) - 2);
 		return info;
 	}
 

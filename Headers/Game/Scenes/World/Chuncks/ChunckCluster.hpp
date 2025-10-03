@@ -9,6 +9,8 @@
 #include "VoxelChunck.hpp"
 #include "Game/Utils/TexturesData.hpp"
 
+#include "Game/Scenes/World/Generation/Utils.hpp"
+
 namespace Vox::Game::World::Chuncks
 {
 	class ChunckCluster : public Generation::Threads::ThreadObject, public Vox::Utils::AUpdatable
@@ -21,6 +23,7 @@ namespace Vox::Game::World::Chuncks
 		public:
 			uint16_t _bufferIndex;
 			uint16_t GetBuffer() const;
+			Game::Generation::Utils::ChunckCache GenerateCache(const uint32_t seed, const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl);
 			void Render();
 			void BuildClusterContent(const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl, const std::vector<Game::Utils::Textures::TextureInfo> &textInfo, const uint32_t seed);
 			ChunckCoord GetPosition();

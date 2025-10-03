@@ -20,6 +20,8 @@
 
 #include "Game/Utils/TexturesData.hpp"
 
+#include "Game/Scenes/World/Generation/Utils.hpp"
+
 namespace Vox::Game::World::Chuncks
 {
 	using namespace Game::Utils::Defines;
@@ -40,7 +42,7 @@ namespace Vox::Game::World::Chuncks
 			void Render();
 			void BuildVoxelObject(const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl,
 								  const std::vector<Game::Utils::Textures::TextureInfo> &textInfo,
-								  const uint8_t hMap[CHUNCK_SIZE * CHUNCK_SIZE], const uint32_t &seed);
+								  const Generation::Utils::ChunckCache &cache, const uint32_t &seed);
 			void BuildBufferObject(const uint16_t &buffer);
 
 			Vector3Int GetChunckPosition()
@@ -65,7 +67,7 @@ namespace Vox::Game::World::Chuncks
 			static size_t GetLocalIndex(const LocalVector &vec);
 			static LocalVector GetLocalVector(const size_t &index);
 			std::bitset<CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE> BuildContent(
-				const uint8_t hMap[CHUNCK_SIZE * CHUNCK_SIZE]);
+				const uint8_t hMap[Generation::Utils::CACHE_SIZE * Generation::Utils::CACHE_SIZE]);
 
 			size_t _bufferIndex;
 			sbuffer *B_Vertex;

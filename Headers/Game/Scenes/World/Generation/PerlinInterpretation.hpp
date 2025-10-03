@@ -5,6 +5,8 @@
 #include "./Perlin.hpp"
 #include "Spline/Spline.hpp"
 
+#include "./Utils.hpp"
+
 namespace Vox::Game::Generation::Perlins
 {
 	inline float GetBlendedHeightAt(int x, int z, uint32_t seed,
@@ -85,11 +87,43 @@ namespace Vox::Game::Generation::Perlins
 		return static_cast<uint8_t>(GetBlendedHeightAt(x, z, seed, spl, 4));
 	}
 
+    inline uint8_t GetHeightFromCache(int x, int z, const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl, const Generation::Utils::ChunckCache &cache)
+    {
+        size_t index = (x + Generation::Utils::GENERATION_BLEND_RADIUS) * Generation::Utils::CACHE_SIZE +
+               (z + Generation::Utils::GENERATION_BLEND_RADIUS);
+		float contVal =
+			spl.at("Continental")
+				.first.GetValue(cache.continental[index]);
+
+		float eroVal =
+			spl.at("Erosion").first.GetValue(cache.erosion[index]);
+
+		// double PAVVal = cache.peaks[index];
+
+		// PAVVal = 1 - std::abs(3 * std::abs(PAVVal) - 2);
+		// PAVVal = spl.at("P&V").first.GetValue(PAVVal);
+		contVal *= spl.at("Continental").second;
+
+		auto biome = cache.biome[index];
+
+		// eroVal *= spl.at("Erosion").second;
+		float eroded = contVal * eroVal;
+
+		eroded = Game::Generation::Datas::Biomes::GetHeight(biome, eroded);
+		// PAVVal *= spl.at("P&V").second;
+        return static_cast<uint8_t>(eroded);
+
+    }
+
 	inline bool IsBlockAt(const Game::Utils::Defines::Vector3Int pos, const uint32_t &seed,
 						  const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl)
 	{
-		uint8_t h = GetHeightAt(pos[0], pos[2], seed, spl);
-		return pos[1] <= h;
+		// uint8_t h = GetHeightAt(pos[0], pos[2], seed, spl);
+		// return pos[1] <= h;
+        (void)pos;
+        (void)seed;
+        (void)spl;
+        return false;
 	}
 } // namespace Vox::Game::Generation::Perlins
 

@@ -11,6 +11,51 @@ namespace Vox::Game::World::Chuncks
 		return _bufferIndex;
 	}
 
+	Game::Generation::Utils::ChunckCache ChunckCluster::GenerateCache(
+		const uint32_t seed, const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl)
+	{
+		Game::Generation::Utils::ChunckCache cacheSt;
+
+		int baseX = static_cast<int>(this->_clusterPos[0] * CHUNCK_SIZE);
+		int baseZ = static_cast<int>(this->_clusterPos[1] * CHUNCK_SIZE);
+
+		bool needPrint = this->_clusterPos[0] == 3 && this->_clusterPos[1] == 1;
+
+		// on parcourt la zone étendue (chunk + bords pour blending)
+		for (int x = -Game::Generation::Utils::GENERATION_BLEND_RADIUS;
+			 x < static_cast<int>(CHUNCK_SIZE) + Game::Generation::Utils::GENERATION_BLEND_RADIUS; ++x)
+		{
+			for (int z = -Game::Generation::Utils::GENERATION_BLEND_RADIUS;
+				 z < static_cast<int>(CHUNCK_SIZE) + Game::Generation::Utils::GENERATION_BLEND_RADIUS; ++z)
+			{
+				// coordonnées locales dans le cache
+				size_t localIndex =
+					(x + Game::Generation::Utils::GENERATION_BLEND_RADIUS) * Game::Generation::Utils::CACHE_SIZE +
+					(z + Game::Generation::Utils::GENERATION_BLEND_RADIUS);
+
+				// coordonnées globales dans le monde
+				int worldX = baseX + x;
+				int worldZ = baseZ + z;
+
+				auto i = Generation::Perlins::GetBiomeInfoAtPoint(worldX, worldZ, seed);
+
+				cacheSt.continental[localIndex] = i.Continental;
+				cacheSt.erosion[localIndex] = i.Erosion;
+				cacheSt.peaks[localIndex] = i.PV;
+				cacheSt.biome[localIndex] = i.Biome;
+
+				// ⚠️ pour la heightmap, on peut calculer même sur les bords
+				cacheSt.heightMap[localIndex] = Generation::Perlins::GetHeightFromCache(x, z, spl, cacheSt);
+				if (needPrint)
+					std::cout << (int)cacheSt.heightMap[localIndex] << " ";
+			}
+			if (needPrint)
+					std::cout << "\n";
+		}
+
+		return cacheSt;
+	}
+
 	void ChunckCluster::Render()
 	{
 		if (this->GetGenerationState() != Generation::E_GenerationState::End)
@@ -20,8 +65,9 @@ namespace Vox::Game::World::Chuncks
 				ch->Render();
 	}
 
-	void ChunckCluster::GenerateHeightMap(const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl,
-										  const uint32_t seed, uint8_t hMap[CHUNCK_SIZE * CHUNCK_SIZE])
+	void ChunckCluster::GenerateHeightMap(
+		const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl, const uint32_t seed,
+		uint8_t hMap[CHUNCK_SIZE * CHUNCK_SIZE])
 	{
 		int baseX = static_cast<int>(this->_clusterPos[0] * CHUNCK_SIZE);
 		int baseZ = static_cast<int>(this->_clusterPos[1] * CHUNCK_SIZE);
@@ -35,13 +81,15 @@ namespace Vox::Game::World::Chuncks
 		}
 	}
 
-	void ChunckCluster::BuildClusterContent(const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl, const std::vector<Game::Utils::Textures::TextureInfo> &textInfo,
-											const uint32_t seed)
+	void ChunckCluster::BuildClusterContent(
+		const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl,
+		const std::vector<Game::Utils::Textures::TextureInfo> &textInfo, const uint32_t seed)
 	{
 		this->ChangeGenerationState(Generation::E_GenerationState::Mesh);
 
-		uint8_t hMap[CHUNCK_SIZE * CHUNCK_SIZE];
-		GenerateHeightMap(spl, seed, hMap);
+		// uint8_t hMap[CHUNCK_SIZE * CHUNCK_SIZE];
+		// GenerateHeightMap(spl, seed, hMap);
+		auto st = GenerateCache(seed, spl);
 
 		int chunksPerCluster = WORLD_HEIGHT / CHUNCK_SIZE;
 		for (int y = chunksPerCluster - 1; y >= 0; y--)
@@ -50,7 +98,7 @@ namespace Vox::Game::World::Chuncks
 				return;
 			this->_clusterContent[y] = new VoxelChunck(Vector3Int(this->_clusterPos[0], y, this->_clusterPos[1]));
 
-			this->_clusterContent[y]->BuildVoxelObject(spl, textInfo, hMap, seed);
+			this->_clusterContent[y]->BuildVoxelObject(spl, textInfo, st, seed);
 		}
 		this->ChangeGenerationState(Generation::E_GenerationState::WaitingBuffer);
 	}
