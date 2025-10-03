@@ -1,7 +1,7 @@
 #ifndef __SURFACEDECORATION_HPP__
 #define __SURFACEDECORATION_HPP__
 
-#include "./DecorationRule.hpp"
+#include "./GenerationRules.hpp"
 
 #include <unordered_map>
 #include <vector>
@@ -12,23 +12,24 @@ namespace Vox::Game::Generation::Datas::Biomes
 {
 	struct SurfaceDecoration
 	{
-			const std::vector<SurfaceRule> rules;
+			const std::vector<SurfaceRule> surfaceRules;
+			const HeightRule heightRules;
 	};
 
 	static const std::unordered_map<const Biomes, const SurfaceDecoration> biomesSurfaces = {
-		{Biomes::Plains, {{{0, "Grass"}, {3, "Dirt"}, {9999, "Stone"}}}},
-		{Biomes::Beach, {{{3, "Sand"}, {9999, "Stone"}}}},
+		{Biomes::Plains, {{{0, "Grass"}, {3, "Dirt"}, {9999, "Stone"}}, {0.8f, 80}}},
+		{Biomes::Beach, {{{3, "Sand"}, {9999, "Stone"}}, {0.8f, 80}}},
 
-		{Biomes::Ocean, {{{5, "Gravel"}, {9999, "Stone"}}}},
-		{Biomes::Cold_Ocean, {{{5, "Gravel"}, {9999, "Stone"}}}},
-		{Biomes::Deep_Ocean, {{{5, "Gravel"}, {9999, "Stone"}}}},
-		{Biomes::Warm_Ocean, {{{5, "Gravel"}, {9999, "Stone"}}}},
-		{Biomes::Frozen_Ocean, {{{5, "Gravel"}, {9999, "Stone"}}}},
-		{Biomes::Lukewarm_Ocean, {{{5, "Gravel"}, {9999, "Stone"}}}},
-		{Biomes::Deep_Cold_Ocean, {{{5, "Gravel"}, {9999, "Stone"}}}},
-		{Biomes::Deep_Frozen_Ocean, {{{5, "Gravel"}, {9999, "Stone"}}}},
-		{Biomes::Deep_Lukewarm_Ocean, {{{5, "Gravel"}, {9999, "Stone"}}}},
-		{Biomes::Deep_Ocean, {{{5, "Gravel"}, {9999, "Stone"}}}},
+		{Biomes::Ocean, {{{5, "Gravel"}, {9999, "Stone"}}, {1.0f, 50}}},
+		{Biomes::Cold_Ocean, {{{5, "Gravel"}, {9999, "Stone"}}, {1.0f, 50}}},
+		{Biomes::Deep_Ocean, {{{5, "Gravel"}, {9999, "Stone"}}, {1.0f, 50}}},
+		{Biomes::Warm_Ocean, {{{5, "Gravel"}, {9999, "Stone"}}, {1.0f, 50}}},
+		{Biomes::Frozen_Ocean, {{{5, "Gravel"}, {9999, "Stone"}}, {1.0f, 50}}},
+		{Biomes::Lukewarm_Ocean, {{{5, "Gravel"}, {9999, "Stone"}}, {1.0f, 50}}},
+		{Biomes::Deep_Cold_Ocean, {{{5, "Gravel"}, {9999, "Stone"}}, {1.0f, 50}}},
+		{Biomes::Deep_Frozen_Ocean, {{{5, "Gravel"}, {9999, "Stone"}}, {1.0f, 50}}},
+		{Biomes::Deep_Lukewarm_Ocean, {{{5, "Gravel"}, {9999, "Stone"}}, {1.0f, 50}}},
+		{Biomes::Deep_Ocean, {{{5, "Gravel"}, {9999, "Stone"}}, {1.0f, 50}}},
 	};
 
 	inline const std::string GetBlockType(Biomes biome, int depth)
@@ -42,12 +43,19 @@ namespace Vox::Game::Generation::Datas::Biomes
             // else 
             return "Stone";
         }
-		for (auto &r : biomesSurfaces.at(biome).rules)
+		for (auto &r : biomesSurfaces.at(biome).surfaceRules)
 		{
 			if (depth <= r.surfaceDist)
 				return r.blockType;
 		}
 		return "Stone";
+	}
+
+	inline float GetHeight(Biomes biome, const float &val)
+	{
+		if (biomesSurfaces.find(biome) == biomesSurfaces.end())
+			return val;
+		return biomesSurfaces.at(biome).heightRules.Apply(val);
 	}
 } // namespace Vox::Game::Generation::Datas::Biomes
 

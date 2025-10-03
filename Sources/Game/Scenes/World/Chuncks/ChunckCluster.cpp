@@ -1,6 +1,6 @@
 #include "Game/Scenes/World/Chuncks/ChunckCluster.hpp"
 
-#include "Game/Scenes/World/Generation/Perlin.hpp"
+#include "Game/Scenes/World/Generation/PerlinInterpretation.hpp"
 
 #include "Game/Scenes/World/Generation/PerlinUtils.hpp"
 
@@ -18,6 +18,21 @@ namespace Vox::Game::World::Chuncks
 		for (auto ch : this->_clusterContent)
 			if (ch)
 				ch->Render();
+	}
+
+	void ChunckCluster::GenerateHeightMap(const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl,
+										  const uint32_t seed, uint8_t hMap[CHUNCK_SIZE * CHUNCK_SIZE])
+	{
+		int baseX = static_cast<int>(this->_clusterPos[0] * CHUNCK_SIZE);
+		int baseZ = static_cast<int>(this->_clusterPos[1] * CHUNCK_SIZE);
+
+		for (size_t x = 0; x < CHUNCK_SIZE; x++)
+		{
+			for (size_t z = 0; z < CHUNCK_SIZE; z++)
+			{
+				hMap[x * CHUNCK_SIZE + z] = Generation::Perlins::GetHeightAt(baseX + x, baseZ + z, seed, spl);
+			}
+		}
 	}
 
 	void ChunckCluster::BuildClusterContent(const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl, const std::vector<Game::Utils::Textures::TextureInfo> &textInfo,
@@ -58,21 +73,6 @@ namespace Vox::Game::World::Chuncks
 				ch->BuildBufferObject(globalIndex);
 		}
 		this->_currentState = Generation::E_GenerationState::End;
-	}
-
-	void ChunckCluster::GenerateHeightMap(const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl,
-										  const uint32_t seed, uint8_t hMap[CHUNCK_SIZE * CHUNCK_SIZE])
-	{
-		int baseX = static_cast<int>(this->_clusterPos[0] * CHUNCK_SIZE);
-		int baseZ = static_cast<int>(this->_clusterPos[1] * CHUNCK_SIZE);
-
-		for (size_t x = 0; x < CHUNCK_SIZE; x++)
-		{
-			for (size_t z = 0; z < CHUNCK_SIZE; z++)
-			{
-				hMap[x * CHUNCK_SIZE + z] = Generation::Perlins::GetHeightAt(baseX + x, baseZ + z, seed, spl);
-			}
-		}
 	}
 
 	ChunckCluster::ChunckCluster(const ChunckCoord &coord) : _clusterContent{}

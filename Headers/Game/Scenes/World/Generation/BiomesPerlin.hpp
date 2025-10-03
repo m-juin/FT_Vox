@@ -2,6 +2,7 @@
 #define __BIOMESPERLIN_HPP__
 
 #include "./Perlin.hpp"
+#include "Spline/Spline.hpp"
 #include "Game/Utils/Datas/Biomes.hpp"
 
 namespace Vox::Game::Generation::Perlins

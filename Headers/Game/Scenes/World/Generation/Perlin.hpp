@@ -5,11 +5,13 @@
 #include "MathGraphicalLib/Vectors/Vector2.hpp"
 
 #include "./PerlinUtils.hpp"
-#include "Spline/Spline.hpp"
 
 #include "Game/Scenes/World/Utils/Defines.hpp"
+#include "Game/Utils/Datas/BiomesData/SurfaceDecoration.hpp"
 
 #include <unordered_map>
+
+#include "Spline/Spline.hpp"
 
 namespace Vox::Game::Generation::Perlins
 {
@@ -76,6 +78,7 @@ namespace Vox::Game::Generation::Perlins
 			return value;
 		}
 	} // namespace
+	
 	inline double GetPerlinValue(float x, float y, uint32_t seed, Utils::PerlinData data,
 								 std::pair<double, double> range)
 	{
@@ -91,32 +94,6 @@ namespace Vox::Game::Generation::Perlins
 			amp /= 2;
 		}
 		return Spline::GetNormalizedRangedValue(val, {-1.0f, 1.0f}, range);
-	}
-	inline uint8_t GetHeightAt(int x, int z, uint32_t seed,
-							   const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl)
-	{
-		float contVal = spl.at("Continental").first
-							.GetValue(GetPerlinValue(x + WORLD_CENTER, z + WORLD_CENTER, seed,
-													 Utils::ContinentalnessData, {-1.2f, 1.0f}));
-
-		float eroVal = spl.at("Erosion").first.GetValue(
-			GetPerlinValue(x + WORLD_CENTER, z + WORLD_CENTER, seed, Utils::ErosionData, {-1.0f, 1.0f}));
-
-		double PAVVal = GetPerlinValue(x + WORLD_CENTER, z + WORLD_CENTER, seed, Utils::PeaksAndValleyData, {-1.0f, 1.0f});
-
-		PAVVal = 1 - std::abs(3 * std::abs(PAVVal) - 2);
-		PAVVal = spl.at("P&V").first.GetValue(PAVVal);
-		contVal *= spl.at("Continental").second;
-		eroVal *= spl.at("Erosion").second;
-		PAVVal *= spl.at("P&V").second;
-		return static_cast<uint8_t>(contVal + eroVal + PAVVal);
-	}
-
-	inline bool IsBlockAt(const Game::Utils::Defines::Vector3Int pos, const uint32_t &seed,
-						  const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl)
-	{
-		uint8_t h = GetHeightAt(pos[0], pos[2], seed, spl);
-		return pos[1] <= h;
 	}
 } // namespace Vox::Game::Generation::Perlins
 

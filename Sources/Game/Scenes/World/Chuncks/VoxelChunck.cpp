@@ -17,7 +17,7 @@
 #include <bitset>
 
 #include "Game/Scenes/World/Generation/BiomesPerlin.hpp"
-#include "Game/Scenes/World/Generation/Perlin.hpp"
+#include "Game/Scenes/World/Generation/PerlinInterpretation.hpp"
 
 #include "Game/Utils/Datas/Biomes.hpp"
 #include "Game/Utils/Datas/BiomesData/SurfaceDecoration.hpp"
