@@ -19,13 +19,13 @@ namespace Vox::Game::World::Chuncks
 		int baseX = static_cast<int>(this->_clusterPos[0] * CHUNCK_SIZE);
 		int baseZ = static_cast<int>(this->_clusterPos[1] * CHUNCK_SIZE);
 
-		bool needPrint = this->_clusterPos[0] == 3 && this->_clusterPos[1] == 1;
+		bool needPrint = this->_clusterPos[0] == -44 && this->_clusterPos[1] == 19;
 
 		for (int x = -Game::Generation::Utils::GENERATION_BLEND_RADIUS;
-			 x < static_cast<int>(CHUNCK_SIZE) + Game::Generation::Utils::GENERATION_BLEND_RADIUS; ++x)
+			 x < static_cast<int>(CHUNCK_SIZE) + Game::Generation::Utils::GENERATION_BLEND_RADIUS; x++)
 		{
 			for (int z = -Game::Generation::Utils::GENERATION_BLEND_RADIUS;
-				 z < static_cast<int>(CHUNCK_SIZE) + Game::Generation::Utils::GENERATION_BLEND_RADIUS; ++z)
+				 z < static_cast<int>(CHUNCK_SIZE) + Game::Generation::Utils::GENERATION_BLEND_RADIUS; z++)
 			{
 				size_t localIndex =
 					(x + Game::Generation::Utils::GENERATION_BLEND_RADIUS) * Game::Generation::Utils::CACHE_SIZE +
@@ -43,10 +43,10 @@ namespace Vox::Game::World::Chuncks
 			}
 		}
 		for (int x = -Game::Generation::Utils::GENERATION_BLEND_RADIUS;
-			 x < static_cast<int>(CHUNCK_SIZE) + Game::Generation::Utils::GENERATION_BLEND_RADIUS; ++x)
+			 x < static_cast<int>(CHUNCK_SIZE) + Game::Generation::Utils::GENERATION_BLEND_RADIUS; x++)
 		{
 			for (int z = -Game::Generation::Utils::GENERATION_BLEND_RADIUS;
-				 z < static_cast<int>(CHUNCK_SIZE) + Game::Generation::Utils::GENERATION_BLEND_RADIUS; ++z)
+				 z < static_cast<int>(CHUNCK_SIZE) + Game::Generation::Utils::GENERATION_BLEND_RADIUS; z++)
 			{
 				size_t localIndex =
 					(x + Game::Generation::Utils::GENERATION_BLEND_RADIUS) * Game::Generation::Utils::CACHE_SIZE +

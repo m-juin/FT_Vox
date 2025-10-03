@@ -123,7 +123,7 @@ namespace Vox::Game::Generation::Perlins
 		}
 
 		float finalHeight = weightedSum / totalWeight;
-		return static_cast<uint8_t>(finalHeight);
+		return static_cast<uint8_t>(std::floor(finalHeight));
 	}
 
 	inline uint8_t GetHeightAt(int x, int z, uint32_t seed,

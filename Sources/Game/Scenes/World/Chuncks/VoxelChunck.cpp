@@ -81,7 +81,7 @@ namespace Vox::Game::World::Chuncks
 				int neighborWorldY = this->_position[1] + neighbor[1];
 				uint8_t neighborColHeight = cache.heightMap[neighborIndex];
 
-				if ( neighborWorldY > neighborColHeight)
+				if (neighborWorldY > neighborColHeight)
 					this->AddFace(textInfo, face, it, blockType, color);
 			}
 		};
