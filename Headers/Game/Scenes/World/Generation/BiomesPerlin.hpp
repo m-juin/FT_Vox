@@ -72,7 +72,7 @@ namespace Vox::Game::Generation::Perlins
 		float val = GetPerlinValue(x, y, seed, Utils::PeaksAndValleyData, {-1, 1});
 
 		val = 1 - std::abs(3 * std::abs(val) - 2);
-		if (val <= -0.95)
+		if (val <= -0.92)
 			val = 0.0f;
 		else if (val <= -0.6f)
 			val = 1.0f;

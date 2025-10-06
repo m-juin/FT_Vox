@@ -100,9 +100,9 @@ namespace Vox::Game::Generation::Perlins
 		float weightedSum = 0.0f;
 		float totalWeight = 0.0f;
 
-		for (int dx = -Generation::Utils::GENERATION_BLEND_RADIUS; dx <= Generation::Utils::GENERATION_BLEND_RADIUS; dx++)
+		for (int dx = -Generation::Utils::GENERATION_BLEND_RADIUS / 2; dx <= Generation::Utils::GENERATION_BLEND_RADIUS / 2; dx++)
 		{
-			for (int dz = -Generation::Utils::GENERATION_BLEND_RADIUS; dz <= Generation::Utils::GENERATION_BLEND_RADIUS; dz++)
+			for (int dz = -Generation::Utils::GENERATION_BLEND_RADIUS / 2; dz <= Generation::Utils::GENERATION_BLEND_RADIUS / 2; dz++)
 			{
 				int ncx = cx + dx;
 				int ncz = cz + dz;

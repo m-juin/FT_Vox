@@ -15,6 +15,8 @@ rwildcard=$(foreach d,$(wildcard $(1:=/*)),$(call rwildcard,$d,$2) $(filter $(su
 HDRS := $(call rwildcard, $(HDRS_ROOT), *.hpp)
 SRCS := $(call rwildcard, $(SRCS_ROOT), *.cpp)
 
+SRCS := $(filter-out $(SRCS_ROOT)/Checkers/%, $(SRCS))
+
 Includes :=
 
 OBJS := $(patsubst $(SRCS_ROOT)/%.cpp,$(OBJS_ROOT)/%.o,$(SRCS))
@@ -57,10 +59,20 @@ clean:
 
 include Shaders.mk
 
+checkers:
+	@printf '\033[1;33mRunning all Checkers tests...\033[0m\n'
+	@for file in $(call rwildcard,$(SRCS_ROOT)/Checkers,*.cpp); do \
+		name=$$(basename $$file .cpp); \
+		$(CPP) $(CPPFLAGS) $$file -o $(OBJS_ROOT)/$$name $(Libs) || exit 1; \
+		$(OBJS_ROOT)/$$name || exit 1; \
+		rm -f $(OBJS_ROOT)/$$name; \
+	done
+	@printf '\033[1;32mAll Checkers finished successfully!\033[0m\n'
+
 fclean: clean cleanShaders STB_clean FTP_Clean
 	@printf '$(ERASE_LINE)\033[1;36mCleaning project executable...\033[1;30m'
 	@rm -rf $(NAME)
 	@printf '$(ERASE_LINE)\033[1;32mProject cleaned.\033[1;30m\n'
 
 
-.PHONY: all $(NAME) createFold clean fclean external
+.PHONY: all $(NAME) createFold clean fclean external checkers

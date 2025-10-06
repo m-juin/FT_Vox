@@ -17,8 +17,18 @@ namespace Vox::Game::Generation::Datas::Biomes
 	};
 
 	static const std::unordered_map<const Biomes, const SurfaceDecoration> biomesSurfaces = {
-		{Biomes::Plains, {{{0, "Grass"}, {3, "Dirt"}, {9999, "Stone"}}, {0.8f, 80}}},
-		{Biomes::Beach, {{{3, "Sand"}, {9999, "Stone"}}, {0.8f, 80}}},
+		{Biomes::Plains, {{{0, "Grass"}, {3, "Dirt"}, {9999, "Stone"}}, {1.0, 80}}},
+		{Biomes::Beach, {{{3, "Sand"}, {9999, "Stone"}}, {1.0, 80}}},
+
+		{Biomes::Forest, {{{0, "Grass"}, {3, "Dirt"}, {9999, "Stone"}}, {1.0, 80}}},
+		{Biomes::Birch_Forest, {{{0, "Grass"}, {3, "Dirt"}, {9999, "Stone"}}, {1.0, 80}}},
+		{Biomes::Dark_Forest, {{{0, "Grass"}, {3, "Dirt"}, {9999, "Stone"}}, {1.0, 80}}},
+		{Biomes::Flower_Forest, {{{0, "Grass"}, {3, "Dirt"}, {9999, "Stone"}}, {1.0, 80}}},
+		{Biomes::Windswept_Forest, {{{0, "Grass"}, {3, "Dirt"}, {9999, "Stone"}}, {1.0, 80}}},
+		{Biomes::Jungle, {{{0, "Grass"}, {3, "Dirt"}, {9999, "Stone"}}, {1.0, 80}}},
+
+		{Biomes::River, {{{9999, "Sand"}}, {1.f, 75}}},
+		{Biomes::Frozen_River, {{{9999, "Gravel"}}, {1.f, 75}}},
 
 		{Biomes::Ocean, {{{5, "Gravel"}, {9999, "Stone"}}, {1.0f, 50}}},
 		{Biomes::Cold_Ocean, {{{5, "Gravel"}, {9999, "Stone"}}, {1.0f, 50}}},

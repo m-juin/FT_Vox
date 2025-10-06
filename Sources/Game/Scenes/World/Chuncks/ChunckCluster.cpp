@@ -19,7 +19,7 @@ namespace Vox::Game::World::Chuncks
 		int baseX = static_cast<int>(this->_clusterPos[0] * CHUNCK_SIZE);
 		int baseZ = static_cast<int>(this->_clusterPos[1] * CHUNCK_SIZE);
 
-		bool needPrint = this->_clusterPos[0] == -44 && this->_clusterPos[1] == 19;
+		bool needPrint = this->_clusterPos[0] >= -45 && this->_clusterPos[0] <= -43 && this->_clusterPos[1] >= 19 && this->_clusterPos[1] <= 21;
 
 		for (int x = -Game::Generation::Utils::GENERATION_BLEND_RADIUS;
 			 x < static_cast<int>(CHUNCK_SIZE) + Game::Generation::Utils::GENERATION_BLEND_RADIUS; x++)

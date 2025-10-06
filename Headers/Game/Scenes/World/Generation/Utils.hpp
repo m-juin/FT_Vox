@@ -15,7 +15,7 @@ namespace Vox::Game::Generation::Utils
 		return std::to_string(rand());
 	}
 
-	constexpr uint8_t GENERATION_BLEND_RADIUS = 4;
+	constexpr uint8_t GENERATION_BLEND_RADIUS = 8;
 	constexpr size_t CACHE_SIZE = Game::Utils::Defines::CHUNCK_SIZE + 2 * GENERATION_BLEND_RADIUS;
 
 	struct ChunckCache
