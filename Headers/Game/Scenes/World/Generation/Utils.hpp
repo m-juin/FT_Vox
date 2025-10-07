@@ -18,6 +18,8 @@ namespace Vox::Game::Generation::Utils
 	constexpr uint8_t GENERATION_BLEND_RADIUS = 8;
 	constexpr size_t CACHE_SIZE = Game::Utils::Defines::CHUNCK_SIZE + 2 * GENERATION_BLEND_RADIUS;
 
+	constexpr size_t WATER_LEVEL = 80;
+
 	struct ChunckCache
 	{
 			float continental[CACHE_SIZE * CACHE_SIZE];

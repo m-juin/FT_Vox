@@ -33,7 +33,7 @@ namespace Vox::Game::Generation
 
 		auto seed = this->_seed;
 		Game::GameManager::GetInstance().GetThreadManager().EnQueue(
-			[ch, seed](std::unordered_map<std::string, std::pair<const Spline::Spline, float>> spl, std::vector<Game::Utils::Textures::TextureInfo> textInfo) { ch->BuildClusterContent(spl, textInfo, seed);});
+			[ch, seed](std::unordered_map<std::string, std::pair<const Spline::Spline, float>> spl, std::vector<Game::Utils::Textures::TextureInfo> textInfo, std::vector<Game::Utils::Textures::TextureInfo> transparent) { ch->BuildClusterContent(spl, textInfo, transparent, seed);});
 	}
 
 	size_t GenerationManager::GetWaitingData() const

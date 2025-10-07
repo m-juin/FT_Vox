@@ -1,5 +1,6 @@
 SHADERS :=	GUIStaticV1 \
-			Voxel
+			Voxel \
+			TransparentVoxel
 
 GLSLANG_VALIDATOR := glslc
 

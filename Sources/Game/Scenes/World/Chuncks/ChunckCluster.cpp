@@ -19,7 +19,7 @@ namespace Vox::Game::World::Chuncks
 		int baseX = static_cast<int>(this->_clusterPos[0] * CHUNCK_SIZE);
 		int baseZ = static_cast<int>(this->_clusterPos[1] * CHUNCK_SIZE);
 
-		bool needPrint = this->_clusterPos[0] >= -45 && this->_clusterPos[0] <= -43 && this->_clusterPos[1] >= 19 && this->_clusterPos[1] <= 21;
+		// bool needPrint = this->_clusterPos[0] >= -45 && this->_clusterPos[0] <= -43 && this->_clusterPos[1] >= 19 && this->_clusterPos[1] <= 21;
 
 		for (int x = -Game::Generation::Utils::GENERATION_BLEND_RADIUS;
 			 x < static_cast<int>(CHUNCK_SIZE) + Game::Generation::Utils::GENERATION_BLEND_RADIUS; x++)
@@ -52,22 +52,18 @@ namespace Vox::Game::World::Chuncks
 					(x + Game::Generation::Utils::GENERATION_BLEND_RADIUS) * Game::Generation::Utils::CACHE_SIZE +
 					(z + Game::Generation::Utils::GENERATION_BLEND_RADIUS);
 				cacheSt.heightMap[localIndex] = Generation::Perlins::GetBlendedCached(x, z, spl, cacheSt);
-				if (needPrint)
-					std::cout << (int)cacheSt.heightMap[localIndex] << " ";
 			}
-			if (needPrint)
-					std::cout << "\n";
 		}
 		return cacheSt;
 	}
 
-	void ChunckCluster::Render()
+	void ChunckCluster::Render(uint8_t toRender)
 	{
 		if (this->GetGenerationState() != Generation::E_GenerationState::End)
 			return;
 		for (auto ch : this->_clusterContent)
 			if (ch)
-				ch->Render();
+				ch->Render(toRender);
 	}
 
 	void ChunckCluster::GenerateHeightMap(
@@ -88,7 +84,7 @@ namespace Vox::Game::World::Chuncks
 
 	void ChunckCluster::BuildClusterContent(
 		const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl,
-		const std::vector<Game::Utils::Textures::TextureInfo> &textInfo, const uint32_t seed)
+		const std::vector<Game::Utils::Textures::TextureInfo> &textInfo, const std::vector<Game::Utils::Textures::TextureInfo> &transparenttextInfo, const uint32_t seed)
 	{
 		this->ChangeGenerationState(Generation::E_GenerationState::Mesh);
 
@@ -103,7 +99,7 @@ namespace Vox::Game::World::Chuncks
 				return;
 			this->_clusterContent[y] = new VoxelChunck(Vector3Int(this->_clusterPos[0], y, this->_clusterPos[1]));
 
-			this->_clusterContent[y]->BuildVoxelObject(spl, textInfo, st, seed);
+			this->_clusterContent[y]->BuildVoxelObject(spl, textInfo, transparenttextInfo, st, seed);
 		}
 		this->ChangeGenerationState(Generation::E_GenerationState::WaitingBuffer);
 	}

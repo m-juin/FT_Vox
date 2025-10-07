@@ -2,6 +2,7 @@
 
 #include "Front/Rendering/Pipelines/PipelinesManager.hpp"
 #include "Front/Rendering/Pipelines/VoxelPipeline.hpp"
+#include "Front/Rendering/Pipelines/TransparentVoxelPipeline.hpp"
 #include "Front/Rendering/SyncObjects.hpp"
 
 #include <cstring>
@@ -13,7 +14,7 @@ namespace Vox::Game::World
 	WorldManager::WorldManager(const Scenes::Menu::Saves::WorldData &wd)
 		: _camera({0.0, 160.0, 0.0}, {0.0, 0.0, 0.0}),
 		  _chunckBuffer(2, Utils::Vulkan::GetAlignedChunckSize() * Utils::Defines::CHUNCK_AMOUNT,
-						VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT)
+							  VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT)
 	{
 		this->_gManager = std::make_unique<Generation::GenerationManager>(std::stoull(wd.seed.c_str()));
 		this->_bManager = std::make_unique<Generation::BufferManager>();
@@ -22,6 +23,11 @@ namespace Vox::Game::World
 		auto pipeline = Front::Rendering::Pipelines::PipelinesManager::GetInstance()
 							.operator[]<Front::Rendering::Pipelines::VoxelPipeline>("Voxel");
 		pipeline->InitSet({this->_chunckBuffer.GetBuffer(0), this->_chunckBuffer.GetBuffer(1)},
+						  sizeof(Chuncks::VoxelChunck::ChunckUniform));
+
+		auto pipeline2 = Front::Rendering::Pipelines::PipelinesManager::GetInstance()
+							.operator[]<Front::Rendering::Pipelines::TransparentVoxelPipeline>("Voxel_Transparent");
+		pipeline2->InitSet({this->_chunckBuffer.GetBuffer(0), this->_chunckBuffer.GetBuffer(1)},
 						  sizeof(Chuncks::VoxelChunck::ChunckUniform));
 
 		this->InitWorld();
@@ -76,7 +82,7 @@ namespace Vox::Game::World
 	{
 		auto frame = Vox::Front::Rendering::SyncObjects::GetInstance().GetNextFrame();
 		this->_chunckBuffer.UpdateAtOffset(frame, index * Utils::Vulkan::GetAlignedChunckSize(), (void *)&uniform,
-										   sizeof(Chuncks::VoxelChunck::ChunckUniform));
+												 sizeof(Chuncks::VoxelChunck::ChunckUniform));
 	}
 
 	void WorldManager::Render()
@@ -85,7 +91,10 @@ namespace Vox::Game::World
 		Front::Rendering::Pipelines::PipelinesManager::GetInstance().BindPipeline("Voxel");
 		for (auto &_pair : this->_chuncks)
 			if (_pair.second)
-				_pair.second->Render();
+				_pair.second->Render(0);
+		for (auto &_pair : this->_chuncks)
+			if (_pair.second)
+				_pair.second->Render(1);
 	}
 
 	void WorldManager::CheckCreation()

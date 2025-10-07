@@ -55,6 +55,12 @@ namespace Vox::Front::Scenes
 				{"Grass_Bot", T_Path + "Blocks/grass_bot.png"},
 				{"Sand", T_Path + "Blocks/sand.png"},
 				{"Gravel", T_Path + "Blocks/gravel.png"},
+				{"Water", T_Path + "Blocks/water.png", T_Path + "Blocks/Masks/mask_grass_uncolored_top.png"},
+			},
+			4);
+		this->_texturesMap["A_Blocks_Transparent"] = new Front::Utils::MaskedTexturesAtlas(
+			{
+				{"Water", T_Path + "Blocks/water.png", T_Path + "Blocks/Masks/mask_grass_uncolored_top.png"},
 			},
 			4);
 		this->_fontImage = std::make_unique<Front::Rendering::Images::FontImage>(T_Path + "GUI/Fonts/Minecraft.ttf");

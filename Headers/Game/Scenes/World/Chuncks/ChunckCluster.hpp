@@ -24,8 +24,8 @@ namespace Vox::Game::World::Chuncks
 			uint16_t _bufferIndex;
 			uint16_t GetBuffer() const;
 			Game::Generation::Utils::ChunckCache GenerateCache(const uint32_t seed, const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl);
-			void Render();
-			void BuildClusterContent(const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl, const std::vector<Game::Utils::Textures::TextureInfo> &textInfo, const uint32_t seed);
+			void Render(uint8_t toRender);
+			void BuildClusterContent(const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl, const std::vector<Game::Utils::Textures::TextureInfo> &textInfo, const std::vector<Game::Utils::Textures::TextureInfo> &transparenttextInfo, const uint32_t seed);
 			ChunckCoord GetPosition();
 
 			void BuildBuffers(const uint16_t &buffer);
