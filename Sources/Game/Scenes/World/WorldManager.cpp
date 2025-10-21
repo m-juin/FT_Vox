@@ -92,6 +92,7 @@ namespace Vox::Game::World
 		for (auto &_pair : this->_chuncks)
 			if (_pair.second)
 				_pair.second->Render(0);
+		Front::Rendering::Pipelines::PipelinesManager::GetInstance().BindPipeline("Voxel_Transparent");
 		for (auto &_pair : this->_chuncks)
 			if (_pair.second)
 				_pair.second->Render(1);
