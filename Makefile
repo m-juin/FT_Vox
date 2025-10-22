@@ -1,78 +1,72 @@
-NAME := FT_Vox
+EXECUTABLE := FT_Vox
 
-CPP := clang++
-
+CXX := clang++
 HDRS_ROOT := Headers
 SRCS_ROOT := Sources
 OBJS_ROOT := .Objects
 
-CPPFLAGS := -Werror -Wextra -Wall -std=c++17 -g -IHeaders/ -IExt/ -IExt/freeType/include/freetype2
+CXXFLAGS := -Werror -Wextra -Wall -std=c++17 -g -IHeaders/ -IExt/ -IExt/freeType/include/freetype2
 
-Libs =
+ERASE_LINE := \033[2K\r
 
 rwildcard=$(foreach d,$(wildcard $(1:=/*)),$(call rwildcard,$d,$2) $(filter $(subst *,%,$2),$d))
 
 HDRS := $(call rwildcard, $(HDRS_ROOT), *.hpp)
 SRCS := $(call rwildcard, $(SRCS_ROOT), *.cpp)
-
 SRCS := $(filter-out $(SRCS_ROOT)/Checkers/%, $(SRCS))
-
-Includes :=
-
 OBJS := $(patsubst $(SRCS_ROOT)/%.cpp,$(OBJS_ROOT)/%.o,$(SRCS))
-
-ERASE_LINE = \033[2K\r
+OBJS_DIRS := $(sort $(dir $(OBJS)))
 
 UNAME := $(shell uname)
-
 ifeq ($(UNAME), Linux)
-    Libs += -lglfw -lvulkan -LExt/freeType/lib -lfreetype
+    Libs := -lglfw -lvulkan -LExt/freeType/lib -lfreetype
 else
-    Libs += -lglfw3 -lvulkan-1 -LExt/freeType/lib -lfreetype
+    Libs := -lglfw3 -lvulkan-1 -LExt/freeType/lib -lfreetype
 endif
 
+include Shaders.mk
 include stb.mk
+include JSONLib.mk
 include FreeType.mk
 
-$(OBJS_ROOT)/%.o: $(SRCS_ROOT)/%.cpp $(HDRS)
-	@printf '$(ERASE_LINE)\033[1;37mCompiling \033[1;35m"$<"\033[1;37m into \033[1;35m"$@"\033[1;37m.'
-	@$(CPP) $(CPPFLAGS) -c $< -o $@
+Deps := $(JSONLib) $(STB_OBJS) $(Shaders) $(FTP_INSTALL_DIR)
 
-all: $(NAME)
+.PHONY: all $(EXECUTABLE) clean fclean checkers
 
-$(NAME): external createFold shaders $(OBJS)
-	@printf '$(ERASE_LINE)\033[1;37mCompiling the executable \033[1;35m${NAME}\033[1;37m...'
-	@$(CPP) $(CPPFLAGS) $(OBJS) -o $@ $(Libs)
-	@printf '$(ERASE_LINE)\033[1;32mCompilation ended\033[1;30m\n'
+all: $(OBJS) $(EXECUTABLE)
 
-external: STB_download DL_FreeType
+$(OBJS_DIRS):
+	@mkdir -p $@
+	@printf '$(ERASE_LINE)\033[1;37mObject folder created at "$(OBJS_ROOT)"\033[0m\n'
 
-createFold:
-	@printf '$(ERASE_LINE)\033[1;31mCreating object folder...\033[1;30m'
-	@mkdir -p $(sort $(dir $(OBJS)))
-	@printf '$(ERASE_LINE)\033[1;37mObject folder created at "$(OBJS_ROOT)".\n'
+$(OBJS_ROOT)/%.o: $(SRCS_ROOT)/%.cpp $(HDRS) | $(OBJS_DIRS) $(Deps)
+	@printf '$(ERASE_LINE)\033[1;37mCompiling \033[1;35m$<\033[1;37m into \033[1;35m$@\033[0m\n'
+	@$(CXX) $(CXXFLAGS) -c $< -o $@
 
-clean:
-	@printf '$(ERASE_LINE)\033[1;36mCleaning project sources...\033[1;30m'
-	@rm -rf $(OBJS_ROOT)
-	@printf '$(ERASE_LINE)\033[1;32mProject sources cleaned.\033[1;30m\n'
-
-include Shaders.mk
+$(EXECUTABLE): $(OBJS)
+	@printf '$(ERASE_LINE)\033[1;37mLinking executable \033[1;35m$(EXECUTABLE)\033[0m\n'
+	@$(CXX) $(CXXFLAGS) $(OBJS) -o $@ $(Libs)
+	@printf '$(ERASE_LINE)\033[1;32mCompilation ended\033[0m\n'
 
 checkers:
 	@printf '\033[1;33mRunning all Checkers tests...\033[0m\n'
+	@mkdir -p $(OBJS_ROOT)
 	@for file in $(call rwildcard,$(SRCS_ROOT)/Checkers,*.cpp); do \
-		name=$$(basename $$file .cpp); \
-		$(CPP) $(CPPFLAGS) $$file -o $(OBJS_ROOT)/$$name $(Libs) || exit 1; \
-		$(OBJS_ROOT)/$$name || exit 1; \
-		rm -f $(OBJS_ROOT)/$$name; \
+		name=$$(basename "$$file" .cpp); \
+		echo "Compiling test $$name..."; \
+		$(CXX) $(CXXFLAGS) "$$file" -o "$(OBJS_ROOT)/$$name" $(Libs) || { echo "Compilation failed for $$name"; exit 1; }; \
+		echo "Running test $$name..."; \
+		"$(OBJS_ROOT)/$$name" || { echo "Test failed for $$name"; exit 1; }; \
+		rm -f "$(OBJS_ROOT)/$$name"; \
 	done
 	@printf '\033[1;32mAll Checkers finished successfully!\033[0m\n'
 
-fclean: clean cleanShaders STB_clean FTP_Clean
-	@printf '$(ERASE_LINE)\033[1;36mCleaning project executable...\033[1;30m'
-	@rm -rf $(NAME)
-	@printf '$(ERASE_LINE)\033[1;32mProject cleaned.\033[1;30m\n'
+clean:
+	@printf '$(ERASE_LINE)\033[1;36mCleaning project sources...\033[0m\n'
+	@rm -rf $(OBJS_ROOT)
+	@printf '$(ERASE_LINE)\033[1;32mProject sources cleaned.\033[0m\n'
 
-
-.PHONY: all $(NAME) createFold clean fclean external checkers
+fclean: clean cleanShaders STB_clean FTP_Clean JsonLib_Clean
+	@printf '$(ERASE_LINE)\033[1;36mCleaning project executable...\033[0m\n'
+	@rm -rf $(EXECUTABLE)
+	@printf '$(ERASE_LINE)\033[1;32mProject cleaned.\033[0m\n'

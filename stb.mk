@@ -4,20 +4,20 @@ TARGET := Ext/stb/
 
 STB_URL := https://raw.githubusercontent.com/nothings/stb/master/
 
-EXTOBJS = $(patsubst %, $(TARGET)stb_%.h, $(FILES))
+STB_OBJS = $(patsubst %, $(TARGET)stb_%.h, $(FILES))
 
 ERASE_LINE = \033[2K\r
 
 # Règle par défaut
 .PHONY: all STB_clean STB_download
-all: STB_download
+all: $(STB_OBJS)
 
 # Création du répertoire cible
 $(TARGET):
 	@mkdir -p $@;
 
 # Téléchargement des fichiers
-STB_download: $(TARGET) $(EXTOBJS)
+$(STB_OBJS): | $(TARGET)
 
 # Pattern pour télécharger chaque fichier
 $(TARGET)stb_%.h:
