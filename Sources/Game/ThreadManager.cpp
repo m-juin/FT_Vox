@@ -1,6 +1,7 @@
 #include "Game/ThreadManager.hpp"
 
 #include "Game/Scenes/World/Generation/SplinesManager.hpp"
+#include "Game/Scenes/World/Generation/RulesManager.hpp"
 
 #include "Game/GameManager.hpp"
 
@@ -28,6 +29,9 @@ namespace Vox::Game
 
 	void ThreadManager::BuildPool(const Game::Generation::SplinesManager &sManager, const Front::Scenes::TexturesManager &tManager)
 	{
+		if (Vox::Game::Generation::Datas::Biomes::RulesManager::IsInit() == true)
+			Vox::Game::Generation::Datas::Biomes::RulesManager::Clean();
+		Vox::Game::Generation::Datas::Biomes::RulesManager::Init();
 		if (this->_pool.empty() == false)
 		{
 			throw std::runtime_error("Trying to rebuild threadPool while previous one wasn't cleaned.");
