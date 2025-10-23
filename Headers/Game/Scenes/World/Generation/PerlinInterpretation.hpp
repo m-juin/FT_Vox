@@ -2,6 +2,7 @@
 #define __PERLININTERPRETATION_HPP__
 
 #include "./BiomesPerlin.hpp"
+#include "./RulesManager.hpp"
 #include "./Perlin.hpp"
 #include "Spline/Spline.hpp"
 
@@ -31,7 +32,7 @@ namespace Vox::Game::Generation::Perlins
 		// eroVal *= spl.at("Erosion").second;
 		float eroded = contVal * eroVal;
 
-		eroded = Game::Generation::Datas::Biomes::GetHeight(biome, eroded);
+		eroded = Game::Generation::Datas::Biomes::RulesManager::GetHeight(biome, eroded);
 		// PAVVal *= spl.at("P&V").second;
 		return static_cast<uint8_t>(eroded);
 	}
@@ -71,7 +72,7 @@ namespace Vox::Game::Generation::Perlins
 
 				float dist2 = float(dx * dx + dz * dz);
 				float weight = 1.0f / (dist2 + 1.0f);
-				float h = Game::Generation::Datas::Biomes::GetHeight(biome, baseHeight);
+				float h = Game::Generation::Datas::Biomes::RulesManager::GetHeight(biome, baseHeight);
 
 				weightedSum += h * weight;
 				totalWeight += weight;
@@ -115,7 +116,7 @@ namespace Vox::Game::Generation::Perlins
 				auto biome = cache.biome[index2];
 				float dist2 = float(dx * dx + dz * dz);
 				float weight = 1.0f / (dist2 + 1.0f);
-				float h = Game::Generation::Datas::Biomes::GetHeight(biome, baseHeight);
+				float h = Game::Generation::Datas::Biomes::RulesManager::GetHeight(biome, baseHeight);
 
 				weightedSum += h * weight;
 				totalWeight += weight;

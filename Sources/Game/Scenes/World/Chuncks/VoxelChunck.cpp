@@ -19,9 +19,9 @@
 
 #include "Game/Scenes/World/Generation/BiomesPerlin.hpp"
 #include "Game/Scenes/World/Generation/PerlinInterpretation.hpp"
+#include "Game/Scenes/World/Generation/RulesManager.hpp"
 
 #include "Game/Utils/Datas/Biomes.hpp"
-#include "Game/Utils/Datas/BiomesData/SurfaceDecoration.hpp"
 
 namespace Vox::Game::World::Chuncks
 {
@@ -143,7 +143,7 @@ namespace Vox::Game::World::Chuncks
 
 					std::string blockType;
 					Vector3Float color = {1.0, 1.0, 1.0};
-					blockType = Game::Generation::Datas::Biomes::GetBlockType(biome, (int)worldHeight - (h));
+					blockType = Game::Generation::Datas::Biomes::RulesManager::GetBlockType(biome, (int)worldHeight - (h));
 					if (blockType == "Grass")
 					{
 						Vector3Int biomeColor = Game::Generation::Datas::Biomes::biomesColors[biome];
