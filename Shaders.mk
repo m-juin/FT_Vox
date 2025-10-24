@@ -1,6 +1,7 @@
 SHADERS :=	GUIStaticV1 \
 			Voxel \
-			TransparentVoxel
+			TransparentVoxel \
+			SkyBox
 
 GLSLANG_VALIDATOR := glslc
 

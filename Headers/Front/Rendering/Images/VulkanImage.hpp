@@ -11,12 +11,19 @@ namespace Vox::Front::Utils
 	class MaskedTexturesAtlas;
 } // namespace Vox::Front::Utils
 
+namespace Vox::Game::World::Skybox
+{
+	class SkyTexture;
+} // namespace Game::Scene::World::Skybox
+
+
 namespace Vox::Front::Rendering::Images
 {
 	class VulkanImage
 	{
 		friend class Vox::Front::Utils::TexturesAtlas;
 		friend class Vox::Front::Utils::MaskedTexturesAtlas;
+		friend class Vox::Game::World::Skybox::SkyTexture;
 		public:
 			VulkanImage(size_t width, size_t height);
 			virtual ~VulkanImage();
@@ -42,15 +49,16 @@ namespace Vox::Front::Rendering::Images
 			void GenerateMipMap();
 
 			void TransitionImageLayout(VkImageLayout oldLayout, VkImageLayout newLayout);
-			void CopyBufferToImage(VkBuffer buffer);
+			virtual void CopyBufferToImage(VkBuffer buffer);
 
-			void CreateImage(VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage,
+			virtual void CreateImage(VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage,
 							 VkMemoryPropertyFlags properties, uint32_t mipLevels = 1);
 			void CreateView(VkFormat format, VkImageAspectFlags aspectFlags);
 			virtual void CreateSampler();
 
 			uint16_t _width;
 			uint16_t _height;
+			uint8_t _layerCount;
 
 			VkImage _image;
 			VkDeviceMemory _memory;

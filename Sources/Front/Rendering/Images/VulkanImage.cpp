@@ -16,6 +16,7 @@ namespace Vox::Front::Rendering::Images
 		this->_view = VK_NULL_HANDLE;
 		this->_width = width;
 		this->_height = height;
+		this->_layerCount = 1;
 	}
 
 	void VulkanImage::GenerateMipMap()
@@ -30,7 +31,7 @@ namespace Vox::Front::Rendering::Images
 		barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 		barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 		barrier.subresourceRange.baseArrayLayer = 0;
-		barrier.subresourceRange.layerCount = 1;
+		barrier.subresourceRange.layerCount = this->_layerCount;
 		barrier.subresourceRange.levelCount = 1;
 
 		int32_t mipWidth = this->_width;
@@ -52,13 +53,13 @@ namespace Vox::Front::Rendering::Images
 			blit.srcSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 			blit.srcSubresource.mipLevel = i - 1;
 			blit.srcSubresource.baseArrayLayer = 0;
-			blit.srcSubresource.layerCount = 1;
+			blit.srcSubresource.layerCount = this->_layerCount;
 			blit.dstOffsets[0] = {0, 0, 0};
 			blit.dstOffsets[1] = {mipWidth > 1 ? mipWidth / 2 : 1, mipHeight > 1 ? mipHeight / 2 : 1, 1};
 			blit.dstSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 			blit.dstSubresource.mipLevel = i;
 			blit.dstSubresource.baseArrayLayer = 0;
-			blit.dstSubresource.layerCount = 1;
+			blit.dstSubresource.layerCount = this->_layerCount;
 
 			vkCmdBlitImage(commandBuffer, this->_image, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, this->_image,
 						   VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &blit, VK_FILTER_LINEAR);
@@ -149,7 +150,7 @@ namespace Vox::Front::Rendering::Images
 		viewInfo.subresourceRange.baseMipLevel = 0;
 		viewInfo.subresourceRange.levelCount = this->_mipLevels;
 		viewInfo.subresourceRange.baseArrayLayer = 0;
-		viewInfo.subresourceRange.layerCount = 1;
+		viewInfo.subresourceRange.layerCount = this->_layerCount;
 
 		if (vkCreateImageView(Device::GetInstance().GetLogicalDevice(), &viewInfo, nullptr, &this->_view) != VK_SUCCESS)
 			throw std::runtime_error("Failed to create texture image view!!");
@@ -201,7 +202,7 @@ namespace Vox::Front::Rendering::Images
 		barrier.subresourceRange.baseMipLevel = 0;
 		barrier.subresourceRange.levelCount = this->_mipLevels;
 		barrier.subresourceRange.baseArrayLayer = 0;
-		barrier.subresourceRange.layerCount = 1;
+		barrier.subresourceRange.layerCount = this->_layerCount;
 
 		VkPipelineStageFlags sourceStage;
 		VkPipelineStageFlags destinationStage;
@@ -247,6 +248,7 @@ namespace Vox::Front::Rendering::Images
 		VkCommandBuffer commandBuffer = Utils::Buffers::Utils::BeginSingleTimeCommands(
 			Device::GetInstance().GetLogicalDevice(), CommandsPool::GetInstance().GetPool());
 
+			
 		VkBufferImageCopy region{};
 		region.bufferOffset = 0;
 		region.bufferRowLength = 0;
@@ -255,7 +257,7 @@ namespace Vox::Front::Rendering::Images
 		region.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 		region.imageSubresource.mipLevel = 0;
 		region.imageSubresource.baseArrayLayer = 0;
-		region.imageSubresource.layerCount = 1;
+		region.imageSubresource.layerCount = this->_layerCount;
 
 		region.imageOffset = {0, 0, 0};
 		region.imageExtent = {this->_width, this->_height, 1};

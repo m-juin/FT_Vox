@@ -3,6 +3,7 @@
 #include "Front/Rendering/Pipelines/StaticGUIPipeline.hpp"
 #include "Front/Rendering/Pipelines/VoxelPipeline.hpp"
 #include "Front/Rendering/Pipelines/TransparentVoxelPipeline.hpp"
+#include "Front/Rendering/Pipelines/SkyBoxPipeline.hpp"
 
 #include "Front/Rendering/Device.hpp"
 #include "Front/Rendering/SyncObjects.hpp"
@@ -19,6 +20,7 @@ namespace Vox::Front::Rendering::Pipelines
 		this->_pipelines["StaticGUI"] = new StaticGUIPipeline();
 		this->_pipelines["Voxel"] = new VoxelPipeline();
 		this->_pipelines["Voxel_Transparent"] = new TransparentVoxelPipeline();
+		this->_pipelines["Skybox"] = new SkyBoxPipeline();
 	}
 
 	void PipelinesManager::CreateRenderPass()

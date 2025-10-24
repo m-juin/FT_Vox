@@ -31,7 +31,7 @@ namespace Vox::Game::World::Chuncks
 		public:
 			struct ChunckUniform
 			{
-					MGL::Matrix::Matrix4 model;
+				MGL::Matrix::Matrix4 model;
 			};
 
 			using LocalVector = MGL::Vectors::Vector3<uint8_t>;
