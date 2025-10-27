@@ -26,7 +26,9 @@ namespace Vox::Game::World::Skybox
 						1, 5, 6, 6, 2, 1};
 
 		this->B_Index = new sbuffer(1, _index.size() * sizeof(uint16_t), VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
+		this->B_Index->Create(_index.data());
 		this->B_Vertex = new sbuffer(1, _vertex.size() * sizeof(Vertex), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
+		this->B_Vertex->Create(this->_vertex.data());
 	}
 
 	void SkyBox::Render()
@@ -40,10 +42,15 @@ namespace Vox::Game::World::Skybox
 			return;
 		VkDeviceSize offset = {0};
 		vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->GetLayout(), 0, 1,
-								&pipeline->GetSet(frame), 1, 0);
-		vkCmdBindVertexBuffers(buffer, 0, 1, &this->B_Vertex->GetBuffer(frame), &offset);
-		vkCmdBindIndexBuffer(buffer, this->B_Index->GetBuffer(frame), 0, VK_INDEX_TYPE_UINT16);
+								&pipeline->GetSet(0), 0, 0);
+		vkCmdBindVertexBuffers(buffer, 0, 1, &this->B_Vertex->GetBuffer(0), &offset);
+		vkCmdBindIndexBuffer(buffer, this->B_Index->GetBuffer(0), 0, VK_INDEX_TYPE_UINT16);
 		vkCmdDrawIndexed(buffer, this->_index.size(), 1, 0, 0, 0);
 	} // namespace Vox::Game::World::Skybox
+
+	SkyBox::~SkyBox()
+	{
+
+	}
 
 } // namespace Vox::Game::World::Skybox

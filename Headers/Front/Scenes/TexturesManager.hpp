@@ -8,6 +8,7 @@
 // #include "Front/Utils/MaskedTexturesAtlas.hpp"
 
 #include "Front/Rendering/Images/FontImage.hpp"
+#include "Game/Scenes/World/Skybox/SkyTexture.hpp"
 
 #include <memory>
 
@@ -30,6 +31,7 @@ namespace Vox::Front::Scenes
             const Utils::ATexturesAtlas &operator[](const std::string &key) const {return *this->_texturesMap.at(key);};
 
             Front::Rendering::Images::FontImage &GetFont() {return *this->_fontImage;};
+            Game::World::Skybox::SkyTexture &GetSkyTexture() {return *this->_skyImage;};
 
             int AddDynamicImage(VkImageView &view);
             void RemoveDynamicImage(const size_t &index);
@@ -51,6 +53,7 @@ namespace Vox::Front::Scenes
             std::bitset<Utils::TexturesData::MAX_DYNAMIC_TEXTURES> _avalaibleDynamicImages;
 
             std::unique_ptr<Front::Rendering::Images::FontImage>_fontImage;
+            std::unique_ptr<Game::World::Skybox::SkyTexture> _skyImage;
             std::unordered_map<std::string, Utils::ATexturesAtlas *> _texturesMap;
             /* private */
     

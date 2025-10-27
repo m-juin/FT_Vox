@@ -1,8 +1,9 @@
 #include "Game/Scenes/World/WorldManager.hpp"
 
 #include "Front/Rendering/Pipelines/PipelinesManager.hpp"
-#include "Front/Rendering/Pipelines/VoxelPipeline.hpp"
 #include "Front/Rendering/Pipelines/TransparentVoxelPipeline.hpp"
+#include "Front/Rendering/Pipelines/SkyBoxPipeline.hpp"
+#include "Front/Rendering/Pipelines/VoxelPipeline.hpp"
 #include "Front/Rendering/SyncObjects.hpp"
 
 #include <cstring>
@@ -14,7 +15,7 @@ namespace Vox::Game::World
 	WorldManager::WorldManager(const Scenes::Menu::Saves::WorldData &wd)
 		: _camera({0.0, 160.0, 0.0}, {0.0, 0.0, 0.0}),
 		  _chunckBuffer(2, Utils::Vulkan::GetAlignedChunckSize() * Utils::Defines::CHUNCK_AMOUNT,
-							  VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT)
+						VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT)
 	{
 		this->_gManager = std::make_unique<Generation::GenerationManager>(std::stoull(wd.seed.c_str()));
 		this->_bManager = std::make_unique<Generation::BufferManager>();
@@ -26,10 +27,13 @@ namespace Vox::Game::World
 						  sizeof(Chuncks::VoxelChunck::ChunckUniform));
 
 		auto pipeline2 = Front::Rendering::Pipelines::PipelinesManager::GetInstance()
-							.operator[]<Front::Rendering::Pipelines::TransparentVoxelPipeline>("Voxel_Transparent");
+							 .operator[]<Front::Rendering::Pipelines::TransparentVoxelPipeline>("Voxel_Transparent");
 		pipeline2->InitSet({this->_chunckBuffer.GetBuffer(0), this->_chunckBuffer.GetBuffer(1)},
-						  sizeof(Chuncks::VoxelChunck::ChunckUniform));
+						   sizeof(Chuncks::VoxelChunck::ChunckUniform));
 
+		auto pipeline3 = Front::Rendering::Pipelines::PipelinesManager::GetInstance()
+							 .operator[]<Front::Rendering::Pipelines::SkyBoxPipeline>("SkyBox");
+		pipeline3->InitSet();
 		this->InitWorld();
 		this->onUpdate.AddCallBack(
 			[this]()
@@ -49,6 +53,7 @@ namespace Vox::Game::World
 
 	void WorldManager::InitWorld()
 	{
+		this->_skyBox = std::make_unique<Game::World::Skybox::SkyBox>();
 		this->_chuncks.reserve(Utils::Defines::CHUNCK_BUFFER_AMOUNT);
 		_playerChunck = {0, 0};
 		for (int x = -Utils::Defines::RENDER_DISTANCE; x < Utils::Defines::RENDER_DISTANCE; x++)
@@ -82,12 +87,14 @@ namespace Vox::Game::World
 	{
 		auto frame = Vox::Front::Rendering::SyncObjects::GetInstance().GetNextFrame();
 		this->_chunckBuffer.UpdateAtOffset(frame, index * Utils::Vulkan::GetAlignedChunckSize(), (void *)&uniform,
-												 sizeof(Chuncks::VoxelChunck::ChunckUniform));
+										   sizeof(Chuncks::VoxelChunck::ChunckUniform));
 	}
 
 	void WorldManager::Render()
 	{
 		this->_camera.Update();
+		Front::Rendering::Pipelines::PipelinesManager::GetInstance().BindPipeline("Skybox");
+		this->_skyBox->Render();
 		Front::Rendering::Pipelines::PipelinesManager::GetInstance().BindPipeline("Voxel");
 		for (auto &_pair : this->_chuncks)
 			if (_pair.second)

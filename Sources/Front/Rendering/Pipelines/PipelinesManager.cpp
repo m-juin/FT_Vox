@@ -11,6 +11,8 @@
 #include "Front/Rendering/SwapChain.hpp"
 #include "Front/Rendering/Utils/FindFormat.hpp"
 
+#include "Front/Rendering/Images/DummyImage.hpp"
+
 #include <array>
 
 namespace Vox::Front::Rendering::Pipelines

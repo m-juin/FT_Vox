@@ -16,6 +16,7 @@
 #include "Game/GameManager.hpp"
 #include "Game/Scenes/World/Player/Camera.hpp"
 #include "Game/Scenes/World/Sc_World.hpp"
+#include "Game/Scenes/World/Skybox/SkyBox.hpp"
 
 #include "Utils/AUpdatable.hpp"
 
@@ -93,6 +94,7 @@ namespace Vox::Game::World
 				_chuncks;
 			Scenes::World::Player::Camera _camera;
 			Utils::Defines::dbuffer _chunckBuffer;
+			std::unique_ptr<Game::World::Skybox::SkyBox> _skyBox;
 
 			/* private */
 	};

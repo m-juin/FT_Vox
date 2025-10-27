@@ -18,6 +18,7 @@ namespace Vox::Front::Rendering::Pipelines
             void CreatePipeline() override;
 			void CreateSet(VkDescriptorPool &descPool) override;
             void UpdateSet(const size_t &index);
+            void InitSet();
         private:
 
             std::array<VkWriteDescriptorSet, 3> _descriptorWrites;

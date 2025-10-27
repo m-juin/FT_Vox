@@ -9,7 +9,7 @@ namespace Vox::Game::World::Skybox
 	class SkyTexture : public Front::Rendering::Images::VulkanImage
 	{
 		public:
-			SkyTexture();
+			SkyTexture(std::string path);
 			~SkyTexture();
 
 		private:

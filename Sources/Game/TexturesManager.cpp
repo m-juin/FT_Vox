@@ -14,15 +14,15 @@ namespace Vox::Front::Scenes
 {
 	TexturesManager::TexturesManager(const std::string &T_Path)
 	{
-		this->CreateMap(T_Path);
-		this->CreateDynamicSampler();
-
 		this->_avalaibleDynamicImages.flip();
 		if (Rendering::Images::DummyImage::IsInit() == false)
 			Rendering::Images::DummyImage::Init();
 		auto &dummy = Rendering::Images::DummyImage::GetInstance();
 		for (size_t i = 0; i < Vox::Front::Utils::TexturesData::MAX_DYNAMIC_TEXTURES; i++)
 			this->_dynamicImages[i] = dummy.GetView();
+
+		this->CreateMap(T_Path);
+		this->CreateDynamicSampler();
 	}
 
 	TexturesManager::~TexturesManager()
@@ -51,7 +51,8 @@ namespace Vox::Front::Scenes
 				{"Dirt", T_Path + "Blocks/dirt.png"},
 				{"Stone", T_Path + "Blocks/stone.png"},
 				{"Grass", T_Path + "Blocks/grass_uncolored.png", T_Path + "Blocks/Masks/mask_grass_uncolored.png"},
-				{"Grass_Top", T_Path + "Blocks/grass_uncolored_top.png", T_Path + "Blocks/Masks/mask_grass_uncolored_top.png"},
+				{"Grass_Top", T_Path + "Blocks/grass_uncolored_top.png",
+				 T_Path + "Blocks/Masks/mask_grass_uncolored_top.png"},
 				{"Grass_Bot", T_Path + "Blocks/grass_bot.png"},
 				{"Sand", T_Path + "Blocks/sand.png"},
 				{"Gravel", T_Path + "Blocks/gravel.png"},
@@ -63,7 +64,12 @@ namespace Vox::Front::Scenes
 				{"Water", T_Path + "Blocks/water.png", T_Path + "Blocks/Masks/mask_grass_uncolored_top.png"},
 			},
 			4);
+
 		this->_fontImage = std::make_unique<Front::Rendering::Images::FontImage>(T_Path + "GUI/Fonts/Minecraft.ttf");
+		for (size_t i = 0; i < Vox::Front::Utils::TexturesData::MAX_DYNAMIC_TEXTURES; ++i)
+			std::cout << _dynamicImages[i] << std::endl;
+
+		this->_skyImage = std::make_unique<Game::World::Skybox::SkyTexture>(T_Path);
 	}
 
 	int TexturesManager::AddDynamicImage(VkImageView &view)

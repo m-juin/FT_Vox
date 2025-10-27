@@ -1,11 +1,11 @@
-EXECUTABLE := FT_Vox
+ EXECUTABLE := FT_Vox
 
 CXX := clang++
 HDRS_ROOT := Headers
 SRCS_ROOT := Sources
 OBJS_ROOT := .Objects
 
-CXXFLAGS := -Werror -Wextra -Wall -std=c++17 -g -IHeaders/ -IExt/ -IExt/freeType/include/freetype2
+CXXFLAGS := -Werror -Wextra -Wall -std=c++17 -fsanitize=address -g -IHeaders/ -IExt/ -IExt/freeType/include/freetype2
 
 ERASE_LINE := \033[2K\r
 

@@ -53,7 +53,7 @@ namespace Vox::Front::Rendering::Images
 
 			virtual void CreateImage(VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage,
 							 VkMemoryPropertyFlags properties, uint32_t mipLevels = 1);
-			void CreateView(VkFormat format, VkImageAspectFlags aspectFlags);
+			void CreateView(VkFormat format, VkImageAspectFlags aspectFlags, VkImageViewType viewType = VK_IMAGE_VIEW_TYPE_2D);
 			virtual void CreateSampler();
 
 			uint16_t _width;

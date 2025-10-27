@@ -18,12 +18,13 @@ namespace Vox::Game::World::Skybox
 		"Right", "Left", "Top", "Bot", "Front", "Back",
 	};
 
-	SkyTexture::SkyTexture() : Front::Rendering::Images::VulkanImage(1, 1)
+	SkyTexture::SkyTexture(std::string path) : Front::Rendering::Images::VulkanImage(512, 512)
 	{
-		auto path = Game::GameManager::GetInstance().GetTexturePackPath();
 		path = path + "Skybox/";
 
 		this->CheckSBValidity(path);
+		std::cout << this->_width << std::endl;
+
 		this->_layerCount = 6;
 		this->CreateImage(VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL,
 						  VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT,
@@ -31,12 +32,13 @@ namespace Vox::Game::World::Skybox
 		auto val = this->LoadTextures(path);
 		auto buffer = this->CreateStagingBuffer(val.first, val.second);
 		this->TransitionImageLayout(VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
-
+		//
 		this->CopyBufferToImage(buffer.first);
 		vkDestroyBuffer(Front::Rendering::Device::GetInstance().GetLogicalDevice(), buffer.first, nullptr);
 		vkFreeMemory(Front::Rendering::Device::GetInstance().GetLogicalDevice(), buffer.second, nullptr);
-
-		this->CreateView(VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT);
+		//
+		this->CreateView(VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT, VK_IMAGE_VIEW_TYPE_CUBE);
+		this->CreateSampler();
 	}
 
 	SkyTexture::~SkyTexture() {}
@@ -77,17 +79,22 @@ namespace Vox::Game::World::Skybox
 		{
 			int imgWidth, imgHeight, imgChannels;
 			const std::string currentPath = path + texture + ".png";
-			unsigned char *imgData = stbi_load(currentPath.c_str(), &imgWidth, &imgHeight, &imgChannels, 4);
+			std::cout << currentPath << std::endl;
+			stbi_uc *imgData = stbi_load(currentPath.c_str(), &imgWidth, &imgHeight, &imgChannels, 4);
+			// std::cout << "imgWidth: " << imgWidth << " | imgHeight: " << imgHeight << " | channel: " << imgChannels
+			// << std::endl << currentPath << std::endl;
 			if (imgData != nullptr)
 			{
-				if (imgData != nullptr)
-				{
-					this->_width = imgWidth;
-					this->_height = imgHeight;
-				}
-				else
-					throw std::runtime_error("[Error] Invalid skybox texture in texture pack.");
+				std::cout << "I-I\n";
+				// 	this->_width = imgWidth;
+				// 	this->_height = imgHeight;
+				stbi_image_free(imgData);
 			}
+			// else
+			// {
+			// 	std::cout << "throw Called" << std::endl;
+			// 	throw std::runtime_error("[Error] Invalid skybox texture in texture pack.");
+			// }
 		}
 	}
 
@@ -109,7 +116,7 @@ namespace Vox::Game::World::Skybox
 		imageInfo.tiling = tiling;
 		imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 		imageInfo.usage = usage;
-		// imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+		imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
 		imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 		imageInfo.flags = VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT;
 
@@ -149,7 +156,7 @@ namespace Vox::Game::World::Skybox
 			region.imageSubresource.mipLevel = 0;
 			region.imageSubresource.baseArrayLayer = face;
 			region.imageSubresource.layerCount = 1;
-			region.imageExtent = {_height, _width, 1};
+			region.imageExtent = {_width, _height, 1};
 			regions.push_back(region);
 		}
 
@@ -184,8 +191,8 @@ namespace Vox::Game::World::Skybox
 		samplerInfo.compareEnable = VK_FALSE;
 		samplerInfo.compareOp = VK_COMPARE_OP_ALWAYS;
 
-		if (vkCreateSampler(Front::Rendering::Device::GetInstance().GetLogicalDevice(), &samplerInfo, nullptr, &this->_sampler) !=
-			VK_SUCCESS)
+		if (vkCreateSampler(Front::Rendering::Device::GetInstance().GetLogicalDevice(), &samplerInfo, nullptr,
+							&this->_sampler) != VK_SUCCESS)
 			throw std::runtime_error("Failed to create texture sampler!");
 	}
 
@@ -194,25 +201,32 @@ namespace Vox::Game::World::Skybox
 		std::array<unsigned char *, 6> ret;
 
 		VkDeviceSize size = 0;
-
 		for (size_t count = 0; count < 6; count++)
 		{
 			const std::string current = path + textureList[count] + ".png";
 			int imgWidth, imgHeight, imgChannels;
 			unsigned char *imgData = stbi_load(current.c_str(), &imgWidth, &imgHeight, &imgChannels, 4);
-			size = (imgWidth * imgHeight * imgChannels);
+			if (count == 0)
+				size = imgWidth * imgHeight * 4;
+			else if (imgWidth * imgHeight * 4 != static_cast<int>(size))
+			{
+				stbi_image_free(imgData);
+				for (size_t j = 0; j < count; ++j)
+					delete[] ret[j];
+			}
 
 			// std::copy(std::begin(ret[count]))
 
 			// std::copy(&imgData, &imgData + size, ret[count]);
 
-			// stbi_image_free(imgData);
-			ret[count] = imgData;
+			ret[count] = new unsigned char[size];
+			memcpy(ret[count], imgData, static_cast<size_t>(size));
+			stbi_image_free(imgData);
 		}
 		return {ret, size * 6};
 	}
 
-	std::pair<VkBuffer, VkDeviceMemory> SkyTexture::CreateStagingBuffer(std::array<unsigned char*, 6> array,
+	std::pair<VkBuffer, VkDeviceMemory> SkyTexture::CreateStagingBuffer(std::array<unsigned char *, 6> array,
 																		VkDeviceSize size)
 	{
 		VkBuffer stagingBuffer;
@@ -224,10 +238,14 @@ namespace Vox::Game::World::Skybox
 			stagingBufferMemory);
 
 		void *data = nullptr;
-		unsigned char *dst = static_cast<unsigned char *>(data);
 		vkMapMemory(Front::Rendering::Device::GetInstance().GetLogicalDevice(), stagingBufferMemory, 0, size, 0, &data);
+		unsigned char *dst = static_cast<unsigned char *>(data);
+		VkDeviceSize faceSize = size / 6;
+
 		for (size_t count = 0; count < 6; count++)
-			memcpy(dst + (count * (size / 6)), array[count], static_cast<size_t>(size / 6));
+		{
+			memcpy(dst + (count * faceSize), array[count], static_cast<size_t>(faceSize));
+		}
 		vkUnmapMemory(Front::Rendering::Device::GetInstance().GetLogicalDevice(), stagingBufferMemory);
 
 		return {stagingBuffer, stagingBufferMemory};

@@ -16,7 +16,7 @@
 
 #include "Front/Utils/TexturesData.hpp"
 
-#include "Front/Utils/MaskedTexturesAtlas.hpp"
+#include "Game/Scenes/World/Skybox/SkyTexture.hpp"
 
 namespace Vox::Front::Rendering::Pipelines
 {
@@ -163,39 +163,27 @@ namespace Vox::Front::Rendering::Pipelines
 		vkDestroyShaderModule(device, vertShaderModule, nullptr);
 	}
 
-	void SkyBoxPipeline::InitSet(std::vector<VkBuffer> buffers, VkDeviceSize size)
+	void SkyBoxPipeline::InitSet()
 	{
 
-		// auto &texturesManager = Game::GameManager::GetInstance().GetTexturesManager();
-		// auto textureAtlas = static_cast<Front::Utils::MaskedTexturesAtlas *>(texturesManager.operator[]("A_Blocks"));
+		auto &texturesManager = Game::GameManager::GetInstance().GetTexturesManager();
 
 		VkDescriptorImageInfo textureInfo{};
 		textureInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+		textureInfo.imageView = texturesManager.GetSkyTexture().GetView();
+		textureInfo.sampler = texturesManager.GetSkyTexture().GetSampler();
 
 		for (size_t i = 0; i < 1; i++)
 		{
-			VkDescriptorBufferInfo objectBufferInfo{};
-			objectBufferInfo.buffer = buffers[i];
-			objectBufferInfo.offset = 0;
-			objectBufferInfo.range = size;
-
-			std::array<VkWriteDescriptorSet, 2> descriptorWrites{};
+			std::array<VkWriteDescriptorSet, 1> descriptorWrites{};
 
 			descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 			descriptorWrites[0].dstSet = this->_set[i];
 			descriptorWrites[0].dstBinding = 0;
 			descriptorWrites[0].dstArrayElement = 0;
-			descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+			descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 			descriptorWrites[0].descriptorCount = 1;
-			descriptorWrites[0].pBufferInfo = &objectBufferInfo;
-
-			descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-			descriptorWrites[1].dstSet = this->_set[i];
-			descriptorWrites[1].dstBinding = 1;
-			descriptorWrites[1].dstArrayElement = 0;
-			descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-			descriptorWrites[1].descriptorCount = 1;
-			descriptorWrites[1].pImageInfo = &textureInfo;
+			descriptorWrites[0].pImageInfo = &textureInfo;
 
 			vkUpdateDescriptorSets(Device::GetInstance().GetLogicalDevice(),
 								   static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
@@ -225,14 +213,9 @@ namespace Vox::Front::Rendering::Pipelines
 		std::array<VkDescriptorSetLayoutBinding, 1> samplerLayoutBindings{};
 
 		samplerLayoutBindings[0].binding = 0;
-		samplerLayoutBindings[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		samplerLayoutBindings[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 		samplerLayoutBindings[0].descriptorCount = 1;
-		samplerLayoutBindings[0].stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
-
-		samplerLayoutBindings[1].binding = 1;
-		samplerLayoutBindings[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		samplerLayoutBindings[1].descriptorCount = 1;
-		samplerLayoutBindings[1].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+		samplerLayoutBindings[0].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 
 		VkDescriptorSetLayoutCreateInfo layoutInfo{};
 		layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;

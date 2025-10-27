@@ -5,6 +5,9 @@
 #include "Game/Scenes/World/Generation/SplinesManager.hpp"
 #include "Front/Interfaces/InterfacesManager.hpp"
 
+#include "Front/Rendering/Pipelines/PipelinesManager.hpp"
+#include "Front/Rendering/Pipelines/StaticGUIPipeline.hpp"
+
 namespace Vox::Game
 {
 	void GameManager::Render()
@@ -17,7 +20,9 @@ namespace Vox::Game
 		this->_tManager = std::make_unique<ThreadManager>(std::thread::hardware_concurrency() - 2);
 		this->_sManager = std::make_unique<Generation::SplinesManager>(this->GetTexturePackPath());
 		this->_texturesManager = std::make_unique<Front::Scenes::TexturesManager>(this->GetTexturePackPath());
-
+		// auto pipeline = Front::Rendering::Pipelines::PipelinesManager::GetInstance()
+		// 					.operator[]<Front::Rendering::Pipelines::StaticGUIPipeline>("StaticGUI");
+		// pipeline->InitSet();
 		onUpdate.AddCallBack([this]()
 		{
 			this->_iManager.HandlePerFrameInput();

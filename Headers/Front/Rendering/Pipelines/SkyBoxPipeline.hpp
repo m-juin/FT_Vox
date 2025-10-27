@@ -13,7 +13,7 @@ namespace Vox::Front::Rendering::Pipelines
 			~SkyBoxPipeline();
 
 			void CreatePipeline() override;
-			void InitSet(std::vector<VkBuffer> buffers, VkDeviceSize size);
+			void InitSet();
 			void CreateSet(VkDescriptorPool &descPool) override;
 
 		private:

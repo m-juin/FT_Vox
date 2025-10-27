@@ -91,11 +91,14 @@ namespace Vox::Front::Rendering::Images
 	VulkanImage::~VulkanImage()
 	{
 		VkDevice device = Device::GetInstance().GetLogicalDevice();
-		vkFreeMemory(device, this->_memory, nullptr);
+		if (this->_memory)
+			vkFreeMemory(device, this->_memory, nullptr);
 		if (this->_sampler)
 			vkDestroySampler(device, this->_sampler, nullptr);
-		vkDestroyImageView(device, this->_view, nullptr);
-		vkDestroyImage(device, this->_image, nullptr);
+		if (this->_view)
+			vkDestroyImageView(device, this->_view, nullptr);
+		if (this->_image)
+			vkDestroyImage(device, this->_image, nullptr);
 	}
 
 	void VulkanImage::CreateImage(VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage,
@@ -139,12 +142,12 @@ namespace Vox::Front::Rendering::Images
 		vkBindImageMemory(device.GetLogicalDevice(), this->_image, this->_memory, 0);
 	}
 
-	void VulkanImage::CreateView(VkFormat format, VkImageAspectFlags aspectFlags)
+	void VulkanImage::CreateView(VkFormat format, VkImageAspectFlags aspectFlags, VkImageViewType viewType)
 	{
 		VkImageViewCreateInfo viewInfo{};
 		viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
 		viewInfo.image = this->_image;
-		viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+		viewInfo.viewType = viewType;
 		viewInfo.format = format;
 		viewInfo.subresourceRange.aspectMask = aspectFlags;
 		viewInfo.subresourceRange.baseMipLevel = 0;
