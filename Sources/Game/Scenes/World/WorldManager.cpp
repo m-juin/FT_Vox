@@ -32,7 +32,7 @@ namespace Vox::Game::World
 						   sizeof(Chuncks::VoxelChunck::ChunckUniform));
 
 		auto pipeline3 = Front::Rendering::Pipelines::PipelinesManager::GetInstance()
-							 .operator[]<Front::Rendering::Pipelines::SkyBoxPipeline>("SkyBox");
+							 .operator[]<Front::Rendering::Pipelines::SkyBoxPipeline>("Skybox");
 		pipeline3->InitSet();
 		this->InitWorld();
 		this->onUpdate.AddCallBack(
@@ -94,8 +94,10 @@ namespace Vox::Game::World
 	{
 		this->_camera.Update();
 		Front::Rendering::Pipelines::PipelinesManager::GetInstance().BindPipeline("Skybox");
+		this->_camera.PushConstant(1);
 		this->_skyBox->Render();
 		Front::Rendering::Pipelines::PipelinesManager::GetInstance().BindPipeline("Voxel");
+		this->_camera.PushConstant(0);
 		for (auto &_pair : this->_chuncks)
 			if (_pair.second)
 				_pair.second->Render(0);

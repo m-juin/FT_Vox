@@ -173,12 +173,13 @@ namespace Vox::Front::Rendering::Pipelines
 		textureInfo.imageView = texturesManager.GetSkyTexture().GetView();
 		textureInfo.sampler = texturesManager.GetSkyTexture().GetSampler();
 
+		
 		for (size_t i = 0; i < 1; i++)
 		{
 			std::array<VkWriteDescriptorSet, 1> descriptorWrites{};
 
 			descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-			descriptorWrites[0].dstSet = this->_set[i];
+			descriptorWrites[0].dstSet = this->_set[0];
 			descriptorWrites[0].dstBinding = 0;
 			descriptorWrites[0].dstArrayElement = 0;
 			descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
@@ -194,8 +195,9 @@ namespace Vox::Front::Rendering::Pipelines
 	{
 		this->CreateSetLayout();
 		this->_set.resize(1);
+		this->_set[0] = {};
 
-		std::vector<VkDescriptorSetLayout> layouts(this->_set.size(), this->_slayout);
+		std::vector<VkDescriptorSetLayout> layouts(1, this->_slayout);
 
 		VkDescriptorSetAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
@@ -206,6 +208,7 @@ namespace Vox::Front::Rendering::Pipelines
 		if (vkAllocateDescriptorSets(Device::GetInstance().GetLogicalDevice(), &allocInfo, this->_set.data()) !=
 			VK_SUCCESS)
 			throw std::runtime_error("Failed to allocate descriptor sets!");
+		std::cout << "\033[1;31m" << "[WARNING] Skybox set is Created." << std::endl << "\033[0m"; 
 	}
 
 	void SkyBoxPipeline::CreateSetLayout()

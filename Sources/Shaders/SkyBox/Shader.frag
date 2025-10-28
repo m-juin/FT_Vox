@@ -5,5 +5,5 @@ layout(location = 0) out vec4 outColor;
 layout(set = 0, binding = 0) uniform samplerCube skybox;
 
 void main() {
-    outColor = texture(skybox, fragDir);
+    outColor = texture(skybox, normalize(fragDir));
 }

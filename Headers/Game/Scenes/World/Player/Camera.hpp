@@ -27,6 +27,7 @@ namespace Vox::Game::Scenes::World::Player
 	class Camera : public Vox::Utils::AUpdatable
 	{
 		public:
+			void PushConstant(int target);
 			Camera() = delete;
 			Camera(Vector3Float defaultPos = {0.0, 0.0, 0.0}, Vector3Float defaultRot = {0.0f, 0.0f, 0.0f});
 			~Camera() {};
@@ -39,7 +40,8 @@ namespace Vox::Game::Scenes::World::Player
 		private:
 			void Rotate(const double &xOff, const double &yOff);
 
-			CameraInfo _info;
+			CameraInfo _worldInfo;
+			CameraInfo _skyInfo;
 			void RebuildInfo();
 			bool _isDirty;
 			Vector3Float _position;

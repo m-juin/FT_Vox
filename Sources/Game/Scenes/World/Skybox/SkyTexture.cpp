@@ -39,6 +39,7 @@ namespace Vox::Game::World::Skybox
 		//
 		this->CreateView(VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT, VK_IMAGE_VIEW_TYPE_CUBE);
 		this->CreateSampler();
+		this->TransitionImageLayout(VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 	}
 
 	SkyTexture::~SkyTexture() {}
@@ -86,8 +87,8 @@ namespace Vox::Game::World::Skybox
 			if (imgData != nullptr)
 			{
 				std::cout << "I-I\n";
-				// 	this->_width = imgWidth;
-				// 	this->_height = imgHeight;
+				this->_width = imgWidth;
+				this->_height = imgHeight;
 				stbi_image_free(imgData);
 			}
 			// else
@@ -107,9 +108,7 @@ namespace Vox::Game::World::Skybox
 		VkImageCreateInfo imageInfo{};
 		imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
 		imageInfo.imageType = VK_IMAGE_TYPE_2D;
-		imageInfo.extent.width = this->_width;
-		imageInfo.extent.height = this->_height;
-		imageInfo.extent.depth = 1;
+		imageInfo.extent = {_width, _height, 1};
 		imageInfo.mipLevels = mipLevels;
 		imageInfo.arrayLayers = 6;
 		imageInfo.format = format;

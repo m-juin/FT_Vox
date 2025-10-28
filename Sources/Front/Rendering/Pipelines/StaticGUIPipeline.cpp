@@ -268,6 +268,8 @@ namespace Vox::Front::Rendering::Pipelines
 		fontInfo.sampler = fontAtlas.GetSampler();
 
 		// std::array<VkWriteDescriptorSet, 3> descriptorWrites{};
+		for (auto &desc : _descriptorWrites)
+			desc = {};
 		_descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 		_descriptorWrites[0].dstSet = this->_set[0];
 		_descriptorWrites[0].dstBinding = 0;
@@ -293,7 +295,6 @@ namespace Vox::Front::Rendering::Pipelines
 			_dynamicInfos[index].imageView = dynamicsTextures[index];
 			_dynamicInfos[index].sampler = sampler;
 		}
-		std::cout << "Pipeline is Constructed\n";
 		_descriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 		_descriptorWrites[2].dstSet = this->_set[0];
 		_descriptorWrites[2].dstBinding = 2;

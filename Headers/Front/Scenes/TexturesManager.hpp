@@ -41,7 +41,6 @@ namespace Vox::Front::Scenes
                 return this->_dynamicImages;
             }
 
-
             inline const VkSampler &GetDynamicSampler() {return this->_dynamicSampler;};
 
         protected:

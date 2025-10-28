@@ -1,8 +1,33 @@
 
 #include "Game/Scenes/World/Player/Camera.hpp"
-
+#include "Front/Rendering/Pipelines/SkyBoxPipeline.hpp"
 namespace Vox::Game::Scenes::World::Player
 {
+	void Camera::PushConstant(int target)
+	{
+		using namespace Front::Rendering;
+		auto frame = SyncObjects::GetInstance().GetCurrentFrame();
+
+		auto buffer = CommandsPool::GetInstance().GetBuffer(frame);
+		if (target == 0)
+		{
+			auto pipeline = Pipelines::PipelinesManager::GetInstance().operator[]<Pipelines::VoxelPipeline>("Voxel");
+			if (pipeline == nullptr)
+				return;
+
+			vkCmdPushConstants(buffer, pipeline->GetLayout(), VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(this->_worldInfo),
+							   &this->_worldInfo);
+		}
+
+		if (target == 1)
+		{
+
+			auto pipeline = Pipelines::PipelinesManager::GetInstance().operator[]<Pipelines::SkyBoxPipeline>("Skybox");
+			vkCmdPushConstants(buffer, pipeline->GetLayout(), VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(this->_skyInfo),
+							   &this->_skyInfo);
+		}
+	} // namespace Vox::Game::Scenes::World::Player
+
 	Camera::Camera(Vector3Float defaultPos, Vector3Float defaultRot) : Vox::Utils::AUpdatable(1)
 	{
 		this->_position = defaultPos;
@@ -14,27 +39,19 @@ namespace Vox::Game::Scenes::World::Player
 			{
 				if (this->_isDirty == true)
 					this->RebuildInfo();
-				using namespace Front::Rendering;
-				auto frame = SyncObjects::GetInstance().GetCurrentFrame();
-
-				auto buffer = CommandsPool::GetInstance().GetBuffer(frame);
-				auto pipeline =
-					Pipelines::PipelinesManager::GetInstance().operator[]<Pipelines::VoxelPipeline>("Voxel");
-				if (pipeline == nullptr)
-					return;
-
-				vkCmdPushConstants(buffer, pipeline->GetLayout(), VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(this->_info),
-								   &this->_info);
 			});
 	}
 
 	void Camera::RebuildInfo()
 	{
 		float aspect = 1920.0f / 1080.0f;
-		this->_info.projection =
+		this->_worldInfo.projection =
 			MGL::Matrix::Operations::Perspective(MGL::Utils::Radians(45.0f), aspect, 0.001f, 1000.0f);
-
-		this->_info.view = MGL::Matrix::Operations::LookAt(this->_position, this->_position + this->_front, this->_up);
+		this->_skyInfo.projection = this->_worldInfo.projection;
+		this->_worldInfo.view =
+			MGL::Matrix::Operations::LookAt(this->_position, this->_position + this->_front, this->_up);
+		Vector3Float origin = {0.0f, 0.0f, 0.0f};
+		this->_skyInfo.view = MGL::Matrix::Operations::LookAt(origin, origin + this->_front, this->_up);
 
 		this->_isDirty = false;
 	}
@@ -90,7 +107,7 @@ namespace Vox::Game::Scenes::World::Player
 		else if (axis[2] != 0)
 			this->_position += this->_front * _cameraSpeed * axis[2];
 		else
-			return ;
+			return;
 		this->UpdateVectors();
 	}
 
