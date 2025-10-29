@@ -14,6 +14,7 @@ rwildcard=$(foreach d,$(wildcard $(1:=/*)),$(call rwildcard,$d,$2) $(filter $(su
 HDRS := $(call rwildcard, $(HDRS_ROOT), *.hpp)
 SRCS := $(call rwildcard, $(SRCS_ROOT), *.cpp)
 SRCS := $(filter-out $(SRCS_ROOT)/Checkers/%, $(SRCS))
+SRCS := $(filter-out $(SRCS_ROOT)/Tools/%, $(SRCS))
 OBJS := $(patsubst $(SRCS_ROOT)/%.cpp,$(OBJS_ROOT)/%.o,$(SRCS))
 OBJS_DIRS := $(sort $(dir $(OBJS)))
 

@@ -64,9 +64,6 @@ namespace Vox::Game::Scenes::World::Player
 		this->_skyInfo.projection = this->_worldInfo.projection;
 		this->_worldInfo.view =
 			MGL::Matrix::Operations::Perspective(MGL::Utils::Radians(45.0f), aspect, 0.001f, 1000.0f);
-		Vector3Float origin = {0.0f, 0.0f, 0.0f};
-		// this->_skyInfo.projection.SetIdentity();
-		// this->_skyInfo.view.SetIdentity();
 		this->_skyInfo.view = SkyboxView(this->_worldInfo.view);
 
 		this->_isDirty = false;
