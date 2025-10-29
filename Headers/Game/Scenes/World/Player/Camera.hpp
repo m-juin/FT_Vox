@@ -39,6 +39,7 @@ namespace Vox::Game::Scenes::World::Player
 
 		private:
 			void Rotate(const double &xOff, const double &yOff);
+			MGL::Matrix::Matrix4 SkyboxView(MGL::Matrix::Matrix4 &cameraView);
 
 			CameraInfo _worldInfo;
 			CameraInfo _skyInfo;

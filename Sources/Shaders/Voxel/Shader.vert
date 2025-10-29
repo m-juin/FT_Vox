@@ -21,7 +21,7 @@ layout(location = 2) out flat uint fragIsColorAffected;
 
 void main()
 {
-    gl_Position = camera.view * camera.proj * obo.model * vec4(inVertPos, 1.0);
+    gl_Position = camera.proj * camera.view * obo.model * vec4(inVertPos, 1.0);
     outVertColor = inVertColor;
     outVertCoord = inVertCoord;
     fragIsColorAffected = inIsColorAffected;

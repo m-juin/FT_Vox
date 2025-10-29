@@ -64,7 +64,6 @@ namespace MGL::Matrix::Operations
 
 		return m1;
 	}
-
 	inline Matrix4 Perspective(float fov, float aspect, float near, float far)
 	{
 		float f = 1.0f / std::tan(fov / 2.0f);

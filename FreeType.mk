@@ -5,7 +5,7 @@ ARCHIVE_NAME = $(FOLD_NAME).tar.xz
 FTP_INSTALL_DIR = $(PWD)/Ext/freeType
 ERASE_LINE = \033[2K\r
 
-# Utiliser le dossier d'installation comme cible principale
+.PHONY: all FTP_Clean DL_FreeType
 
 all: $(FTP_INSTALL_DIR)
 
@@ -26,5 +26,3 @@ $(FTP_INSTALL_DIR):
 FTP_Clean:
 	@printf '$(ERASE_LINE)\033[1;32mDeleting FreeType installation...\n\033[1;30m'
 	@rm -rf $(FTP_INSTALL_DIR)
-
-.PHONY: all FTP_Clean DL_FreeType

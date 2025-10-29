@@ -10,9 +10,16 @@ layout(push_constant) uniform Camera {
 layout(location = 0) out vec3 fragDir;
 
 void main() {
-    mat4 viewNoTrans = mat4(mat3(camera.view)); // garde juste la rotation
+    // Garde seulement la rotation de la matrice vue
+    mat4 viewNoTrans = mat4(mat3(camera.view));
+    
+    // Transforme la position
     vec4 pos = camera.proj * viewNoTrans * vec4(inVertPos, 1.0);
-    gl_Position = pos.xyww;
-    fragDir = mat3(viewNoTrans) * inVertPos;
-    fragDir.y = -fragDir.y;
+    
+    // Force z = w pour que la depth soit toujours 1.0 (le plus loin)
+    gl_Position = vec4(pos.xy, pos.w, pos.w);
+    
+    // Passe la direction directement (pas d'inversion Y ici)
+    fragDir = inVertPos;
+    // fragDir.y *= -1;
 }

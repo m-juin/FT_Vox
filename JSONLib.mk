@@ -4,6 +4,8 @@ JSONLib = Ext/JsonLib/Json.hpp
 
 ARCHIVE_PATH = Temp/JsonLib.tar.gz
 
+.PHONY: JsonLib_Clean
+
 all: $(JSONLib)
 
 $(JSONLib):
@@ -20,5 +22,3 @@ $(JSONLib):
 JsonLib_Clean:
 	@printf '$(ERASE_LINE)\033[1;32mDeleting JsonLib...\n\033[1;30m'
 	@rm -rf Ext/JsonLib
-
-.PHONY: JsonLib_Clean

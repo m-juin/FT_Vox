@@ -1,6 +1,7 @@
 
 #include "Game/Scenes/World/Player/Camera.hpp"
 #include "Front/Rendering/Pipelines/SkyBoxPipeline.hpp"
+
 namespace Vox::Game::Scenes::World::Player
 {
 	void Camera::PushConstant(int target)
@@ -26,7 +27,7 @@ namespace Vox::Game::Scenes::World::Player
 			vkCmdPushConstants(buffer, pipeline->GetLayout(), VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(this->_skyInfo),
 							   &this->_skyInfo);
 		}
-	} // namespace Vox::Game::Scenes::World::Player
+	}
 
 	Camera::Camera(Vector3Float defaultPos, Vector3Float defaultRot) : Vox::Utils::AUpdatable(1)
 	{
@@ -42,16 +43,31 @@ namespace Vox::Game::Scenes::World::Player
 			});
 	}
 
+	MGL::Matrix::Matrix4 Camera::SkyboxView(MGL::Matrix::Matrix4 &cameraView)
+	{
+		MGL::Matrix::Matrix4 skyView = cameraView;
+
+		skyView(3, 0) = 0.0f;
+		skyView(3, 1) = 0.0f;
+		skyView(3, 2) = 0.0f;
+		skyView(3, 3) = 1.0f;
+
+		return skyView;
+	}
+
 	void Camera::RebuildInfo()
 	{
 		float aspect = 1920.0f / 1080.0f;
 		this->_worldInfo.projection =
-			MGL::Matrix::Operations::Perspective(MGL::Utils::Radians(45.0f), aspect, 0.001f, 1000.0f);
+			MGL::Matrix::Operations::LookAt(this->_position, this->_position + this->_front, this->_up);
+
 		this->_skyInfo.projection = this->_worldInfo.projection;
 		this->_worldInfo.view =
-			MGL::Matrix::Operations::LookAt(this->_position, this->_position + this->_front, this->_up);
+			MGL::Matrix::Operations::Perspective(MGL::Utils::Radians(45.0f), aspect, 0.001f, 1000.0f);
 		Vector3Float origin = {0.0f, 0.0f, 0.0f};
-		this->_skyInfo.view = MGL::Matrix::Operations::LookAt(origin, origin + this->_front, this->_up);
+		// this->_skyInfo.projection.SetIdentity();
+		// this->_skyInfo.view.SetIdentity();
+		this->_skyInfo.view = SkyboxView(this->_worldInfo.view);
 
 		this->_isDirty = false;
 	}

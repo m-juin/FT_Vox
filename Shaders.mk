@@ -14,6 +14,8 @@ FRAG_TARGETS := $(patsubst %, $(SHADER_ROOT)/%/Shader.frag.spv, $(SHADERS))
 VERT_TARGETS := $(patsubst %, $(SHADER_ROOT)/%/Shader.vert.spv, $(SHADERS))
 Shaders_Target := $(VERT_TARGETS) $(FRAG_TARGETS)
 
+.PHONY: cleanShaders
+
 all: $(Shaders_Target)
 	@if test -e $(STAMP_FILE); then \
 		printf '$(ERASE_LINE)\033[1;32mShaders compiled.\033[0m\n'; \
@@ -36,5 +38,3 @@ cleanShaders:
 	@printf '$(ERASE_LINE)\033[1;31mCleaning shaders.\033[1;30m'
 	@rm -rf $(SHADER_ROOT)
 	@printf '$(ERASE_LINE)\033[1;32mShaders cleaned.\n\033[1;30m'
-
-.PHONY: cleanShaders
