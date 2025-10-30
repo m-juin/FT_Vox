@@ -14,33 +14,30 @@ namespace Vox::World::Generation::Decorations
 	using Vector2 = MGL::Vectors::Vector2<float>;
 	using Vector2Int = MGL::Vectors::Vector2<int>;
 
-	static bool IsValid(Vector2 candidate, float sqrRadius, Vector2Int region, float cellSize,
-						std::vector<Vector2> &points, std::vector<int> &grid)
+	static bool IsValid(Vector2 candidate, float sqrRadius, Vector2Int region, int gridWidth, int gridHeight,
+						float cellSize, std::vector<Vector2> &points, std::vector<int> &grid)
 	{
 		if (candidate[0] >= 0 && candidate[0] < region[0] && candidate[1] >= 0 && candidate[1] < region[1])
 		{
-
-			int gridX = static_cast<int>(std::ceil(region[0] / cellSize));
-			int gridY = static_cast<int>(std::ceil(region[1] / cellSize));
-
 			int cellX = static_cast<int>(candidate[0] / cellSize);
 			int cellY = static_cast<int>(candidate[1] / cellSize);
+
 			int searchStartX = std::max(0, cellX - 2);
-			int searchEndX = std::min(cellX + 2, gridX - 1);
+			int searchEndX = std::min(cellX + 2, gridWidth - 1);
 			int searchStartY = std::max(0, cellY - 2);
-			int searchEndY = std::min(cellY + 2, gridY - 1);
+			int searchEndY = std::min(cellY + 2, gridHeight - 1);
 
 			for (int x = searchStartX; x <= searchEndX; x++)
 			{
 				for (int y = searchStartY; y <= searchEndY; y++)
 				{
-					int index = grid[x + y * gridX] - 1;
-
-					if (index != -1)
+					int index = grid[x + y * gridWidth];
+					if (index >= 0 && index < static_cast<int>(points.size()))
 					{
-						auto point = points[index];
-						auto vec = Vector2(candidate[0] - point[0], candidate[1] - point[1]);
-						float dst = vec[0] * vec[0] + vec[1] * vec[1];
+						Vector2 point = points[index];
+						float dx = candidate[0] - point[0];
+						float dy = candidate[1] - point[1];
+						float dst = dx * dx + dy * dy;
 						if (dst < sqrRadius)
 							return false;
 					}
@@ -62,70 +59,86 @@ namespace Vox::World::Generation::Decorations
 		float cellSize = radius / std::sqrt(2);
 		float sqrRadius = radius * radius;
 
-		int gridX = static_cast<int>(std::ceil(region[0] / cellSize));
-		int gridY = static_cast<int>(std::ceil(region[1] / cellSize));
-		int gridSize = gridX * gridY;
-		std::vector<int> grid(gridSize, -1);
+		int gridWidth = static_cast<int>(std::ceil(region[0] / cellSize));
+		int gridHeight = static_cast<int>(std::ceil(region[1] / cellSize));
+		int gridSize = gridWidth * gridHeight;
+
+		std::vector<int> grid(gridSize, 0); // Initialiser à -1
 		std::vector<Vector2> points;
 		std::vector<Vector2> spawnPoints;
 
 		spawnPoints.push_back({region[0] / 2.f, region[1] / 2.f});
-		while (spawnPoints.empty() == false)
+
+		while (!spawnPoints.empty())
 		{
-			size_t index = static_cast<size_t>(dist(gen) * spawnPoints.size());
-			Vector2 sCenter = spawnPoints[index];
-			bool accepted = false;
+			size_t spawnIndex = static_cast<size_t>(dist(gen) * spawnPoints.size());
+			Vector2 spawnCenter = spawnPoints[spawnIndex];
+			bool candidateAccepted = false;
 
 			for (size_t i = 0; i < tryBeforeRejection; i++)
 			{
 				float angle = dist(gen) * M_PI * 2;
 				Vector2 dir = {std::sin(angle), std::cos(angle)};
-				float mult = radius + dist(gen) * radius;
-				Vector2 candidate = {sCenter[0] + (dir[0] * mult), sCenter[1] + (dir[1] * mult)};
-				if (IsValid(candidate, sqrRadius, region, cellSize, points, grid))
+				float distance = radius + dist(gen) * radius; // Entre radius et 2*radius
+				Vector2 candidate = {spawnCenter[0] + dir[0] * distance, spawnCenter[1] + dir[1] * distance};
+
+				if (IsValid(candidate, sqrRadius, region, gridWidth, gridHeight, cellSize, points, grid))
 				{
 					points.push_back(candidate);
 					spawnPoints.push_back(candidate);
-					int gridX = static_cast<int>(candidate[0] / cellSize);
-					int gridY = static_cast<int>(candidate[1] / cellSize);
-					grid[gridX + gridY * gridX] = static_cast<int>(points.size() - 1);
-					accepted = true;
+
+					int candidateCellX = static_cast<int>(candidate[0] / cellSize);
+					int candidateCellY = static_cast<int>(candidate[1] / cellSize);
+					grid[candidateCellX + candidateCellY * gridWidth] = static_cast<int>(points.size() - 1);
+
+					candidateAccepted = true;
 					break;
 				}
 			}
-			if (accepted == false)
-				spawnPoints.erase(spawnPoints.begin() + index);
+
+			if (!candidateAccepted)
+			{
+				spawnPoints.erase(spawnPoints.begin() + spawnIndex);
+			}
 		}
 		return points;
 	}
+#include "Utils/Images/PutPixels.hpp"
 
-	#include "Utils/Images/PutPixels.hpp"
-
-	inline std::vector<uint8_t> GenerateDiskImage(uint32_t seed,
-								  uint16_t imgSize)
+	inline std::vector<uint8_t> GenerateDiskImage(uint32_t seed, uint16_t imgSize)
 	{
 		// uint16_t halfSize = imgSize / 2;
 
 		using namespace Vox::Utils::Images;
 
-		auto tree = GenerateDiskTree(seed, 2., {400, 400}, 15);
+		auto tree = GenerateDiskTree(seed, 10, {400, 400}, 15);
 
 		std::vector<uint8_t> img(imgSize * imgSize * 4, 255);
 
 		MGL::Vectors::Vector2<size_t> vImgSize = {imgSize, imgSize};
 
+		std::cout << tree.size() << std::endl;
+
+		size_t pixelCount = 0;
 		for (auto treePos : tree)
 		{
-			for (size_t x = -1; x <= 1; x++)
+			for (int x = -1; x <= 1; x++)
 			{
-				for (size_t y = -1; y <= 1; y++)
+				for (int y = -1; y <= 1; y++)
 				{
-					MGL::Vectors::Vector2<int> effectiveCoord = {static_cast<int>(treePos[0] + x), static_cast<int>(treePos[1] + y)};
-					if (effectiveCoord[0] >= 0 && treePos[0] < 400 && effectiveCoord[1] >= 0 && treePos[1] < 400)
-						PutPixel(img, vImgSize, {static_cast<size_t>(effectiveCoord[0]), static_cast<size_t>(effectiveCoord[1])}, false, {255, 0, 0});
+					MGL::Vectors::Vector2<int> effectiveCoord = {static_cast<int>(treePos[0] + x),
+																 static_cast<int>(treePos[1] + y)};
+					if (effectiveCoord[0] >= 0 && effectiveCoord[0] < 400 && effectiveCoord[1] >= 0 && effectiveCoord[1] < 400)
+					{
+						PutPixel(img, vImgSize,
+								 {static_cast<size_t>(effectiveCoord[0]), static_cast<size_t>(effectiveCoord[1])},
+								 false, {255, 0, 0});
+						pixelCount += 1;
+					}
 				}
 			}
 		}
+		std::cout << "[DEBUG] Pixelcount = " << pixelCount << std::endl;
 		return img;
 	}
 } // namespace Vox::World::Generation::Decorations
