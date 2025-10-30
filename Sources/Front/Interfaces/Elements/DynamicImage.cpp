@@ -115,6 +115,7 @@ namespace Vox::Front::Interfaces::Elements
 
 		this->_uvMappingData.textureID =
 			Game::GameManager::GetInstance().GetTexturesManager().AddDynamicImage(this->_view);
+			std::cout << this->_uvMappingData.textureID << std::endl;
 	}
 
 	void DynamicImage::Draw()

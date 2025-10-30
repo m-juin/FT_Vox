@@ -40,7 +40,7 @@ namespace Vox::Front::Utils
 
 
 		public:
-			struct uvData
+			struct alignas(16) uvData
 			{
 					MGL::Vectors::Vector2<float> uvMin;
 					MGL::Vectors::Vector2<float> uvMax;

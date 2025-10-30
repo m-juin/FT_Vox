@@ -36,7 +36,7 @@ namespace Vox::Front::Scenes
             int AddDynamicImage(VkImageView &view);
             void RemoveDynamicImage(const size_t &index);
 
-            inline const std::array<VkImageView, Utils::TexturesData::MAX_DYNAMIC_TEXTURES> GetDynamics()
+            inline const std::array<VkImageView, Utils::TexturesData::MAX_DYNAMIC_TEXTURES> &GetDynamics()
             {
                 return this->_dynamicImages;
             }

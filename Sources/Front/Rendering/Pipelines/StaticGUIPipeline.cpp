@@ -71,7 +71,7 @@ namespace Vox::Front::Rendering::Pipelines
 		VkPipelineDepthStencilStateCreateInfo depthStencil{};
 		depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
 		depthStencil.depthTestEnable = VK_FALSE;
-		depthStencil.depthWriteEnable = VK_TRUE;
+		depthStencil.depthWriteEnable = VK_FALSE;
 		depthStencil.depthCompareOp = VK_COMPARE_OP_NEVER;
 		depthStencil.depthBoundsTestEnable = VK_FALSE;
 		depthStencil.minDepthBounds = 0.0f;
@@ -234,8 +234,12 @@ namespace Vox::Front::Rendering::Pipelines
 			return;
 		}
 
+		std::cout << "\033[1;32m" << "[DEBUG] Dynamic descriptor set at " << index << " Updated" << "\033[0m"
+				  << std::endl;
+
 		_dynamicInfos[index].imageView = dynamicsTextures[index];
 		_dynamicInfos[index].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+		_dynamicInfos[index].sampler = Game::GameManager::GetInstance().GetTexturesManager().GetDynamicSampler();
 
 		VkWriteDescriptorSet write = {};
 		write.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
@@ -244,11 +248,10 @@ namespace Vox::Front::Rendering::Pipelines
 		write.dstBinding = 2;
 		write.dstArrayElement = static_cast<uint32_t>(index);
 		write.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		write.descriptorCount = Vox::Front::Utils::TexturesData::MAX_DYNAMIC_TEXTURES;
+		write.descriptorCount = 1;
 		write.pImageInfo = &_dynamicInfos[index];
 
 		vkUpdateDescriptorSets(Device::GetInstance().GetLogicalDevice(), 1, &write, 0, nullptr);
-		std::cout << "dstSetUpdate\n";
 	}
 
 	void StaticGUIPipeline::InitSet()
