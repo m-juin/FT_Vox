@@ -38,6 +38,8 @@ all: $(OBJS) $(EXECUTABLE)
 
 sanitize: CXXFLAGS += -fsanitize=address
 sanitize: clean
+# sanitize: 
+# 	@rm -rf $(EXECUTABLE)
 sanitize: all
 
 $(OBJS_DIRS):

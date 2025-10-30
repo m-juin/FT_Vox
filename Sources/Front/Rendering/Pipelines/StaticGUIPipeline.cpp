@@ -244,10 +244,11 @@ namespace Vox::Front::Rendering::Pipelines
 		write.dstBinding = 2;
 		write.dstArrayElement = static_cast<uint32_t>(index);
 		write.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		write.descriptorCount = 1;
+		write.descriptorCount = Vox::Front::Utils::TexturesData::MAX_DYNAMIC_TEXTURES;
 		write.pImageInfo = &_dynamicInfos[index];
 
 		vkUpdateDescriptorSets(Device::GetInstance().GetLogicalDevice(), 1, &write, 0, nullptr);
+		std::cout << "dstSetUpdate\n";
 	}
 
 	void StaticGUIPipeline::InitSet()

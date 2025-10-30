@@ -5,8 +5,8 @@
 
 #include "Front/Rendering/CommandsPool.hpp"
 #include "Front/Rendering/Pipelines/PipelinesManager.hpp"
-#include "Front/Rendering/Pipelines/VoxelPipeline.hpp"
 #include "Front/Rendering/Pipelines/TransparentVoxelPipeline.hpp"
+#include "Front/Rendering/Pipelines/VoxelPipeline.hpp"
 #include "Front/Rendering/SyncObjects.hpp"
 
 #include "Front/Rendering/Utils/Vertex/VoxelVertex.hpp"
@@ -49,10 +49,12 @@ namespace Vox::Game::World::Chuncks
 
 	void VoxelChunck::BuildVoxelObject(
 		const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl,
-		const std::vector<Game::Utils::Textures::TextureInfo> &textInfo, const std::vector<Game::Utils::Textures::TextureInfo> &transparenttextInfo, const Generation::Utils::ChunckCache &cache,
-		const uint32_t &seed)
+		const std::vector<Game::Utils::Textures::TextureInfo> &textInfo,
+		const std::vector<Game::Utils::Textures::TextureInfo> &transparenttextInfo,
+		const Generation::Utils::ChunckCache &cache, const uint32_t &seed)
 	{
-		
+		(void)spl;
+		(void)seed;
 		std::bitset<CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE> clusterContent = this->BuildContent(cache.heightMap);
 
 		LocalVector it(0);
@@ -86,9 +88,8 @@ namespace Vox::Game::World::Chuncks
 			}
 		};
 
-		auto checkFaceWater =
-			[this, &transparenttextInfo](const LocalVector &it, int offsetX, int offsetY,
-																	int offsetZ, Faces face, const Vector3Float &color)
+		auto checkFaceWater = [this, &transparenttextInfo](const LocalVector &it, int offsetX, int offsetY, int offsetZ,
+														   Faces face, const Vector3Float &color)
 		{
 			MGL::Vectors::Vector3<int> neighbor = {it[0] + offsetX, it[1] + offsetY, it[2] + offsetZ};
 
@@ -125,7 +126,8 @@ namespace Vox::Game::World::Chuncks
 
 					std::string blockType;
 					Vector3Float color = {1.0, 1.0, 1.0};
-					blockType = Game::Generation::Datas::Biomes::RulesManager::GetBlockType(biome, (int)worldHeight - (h));
+					blockType =
+						Game::Generation::Datas::Biomes::RulesManager::GetBlockType(biome, (int)worldHeight - (h));
 					if (blockType == "Grass")
 					{
 						Vector3Int biomeColor = Game::Generation::Datas::Biomes::biomesColors[biome];
@@ -244,7 +246,8 @@ namespace Vox::Game::World::Chuncks
 		}
 		else if (toRender == 1 && this->indexCountTransparent != 0)
 		{
-			auto pipeline = Pipelines::PipelinesManager::GetInstance().operator[]<Pipelines::TransparentVoxelPipeline>("Voxel_Transparent");
+			auto pipeline = Pipelines::PipelinesManager::GetInstance().operator[]<Pipelines::TransparentVoxelPipeline>(
+				"Voxel_Transparent");
 			if (pipeline == nullptr)
 				return;
 			VkDeviceSize offset = {0};

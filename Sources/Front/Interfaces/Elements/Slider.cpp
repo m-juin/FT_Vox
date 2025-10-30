@@ -158,7 +158,6 @@ namespace Vox::Front::Interfaces::Elements
 						 std::make_unique<Image>("", "", Vector2(this->_pos[0], this->_pos[1] + this->_size[1] / 4),
 												 Vector2(this->_size[0], this->_size[1] / 2), st.BGColor),
 						 0);
-		std::cout << this->_pos[0] + (this->_size[1] / 2) - GetHandlePos() << std::endl;
 
 		this->AddElement("IMG_Handle",
 						 std::make_unique<Image>("", "", Vector2(this->GetHandlePos(), this->_pos[1]),

@@ -14,6 +14,7 @@ namespace Vox::Utils::Images
 						 const MGL::Vectors::Vector2<size_t> &pixelCoord, bool opacity = false,
 						 const MGL::Vectors::Vector3<float> &pixelColor = {255, 255, 255})
 	{
+		(void)opacity;
 		size_t rPixelIndex = pixelCoord[1] * 4 * imgSize[0] + (pixelCoord[0] * 4);
 		for (size_t offset = 0; offset < 3; offset++)
 			image[rPixelIndex + offset] = pixelColor[offset];

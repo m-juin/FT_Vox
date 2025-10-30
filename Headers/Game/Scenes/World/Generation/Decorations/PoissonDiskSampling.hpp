@@ -99,28 +99,34 @@ namespace Vox::World::Generation::Decorations
 		return points;
 	}
 
-	inline void GenerateDiskImage(std::vector<uint8_t> &target, MGL::Vectors::Vector2<int> center, uint32_t seed,
+	#include "Utils/Images/PutPixels.hpp"
+
+	inline std::vector<uint8_t> GenerateDiskImage(uint32_t seed,
 								  uint16_t imgSize)
 	{
-		uint16_t halfSize = imgSize / 2;
+		// uint16_t halfSize = imgSize / 2;
+
+		using namespace Vox::Utils::Images;
 
 		auto tree = GenerateDiskTree(seed, 2., {400, 400}, 15);
 
+		std::vector<uint8_t> img(imgSize * imgSize * 4, 255);
+
+		MGL::Vectors::Vector2<size_t> vImgSize = {imgSize, imgSize};
+
 		for (auto treePos : tree)
 		{
-			treePos[0] - halfSize;
-			treePos[1] - halfSize;
-
-			
+			for (size_t x = -1; x <= 1; x++)
+			{
+				for (size_t y = -1; y <= 1; y++)
+				{
+					MGL::Vectors::Vector2<int> effectiveCoord = {static_cast<int>(treePos[0] + x), static_cast<int>(treePos[1] + y)};
+					if (effectiveCoord[0] >= 0 && treePos[0] < 400 && effectiveCoord[1] >= 0 && treePos[1] < 400)
+						PutPixel(img, vImgSize, {static_cast<size_t>(effectiveCoord[0]), static_cast<size_t>(effectiveCoord[1])}, false, {255, 0, 0});
+				}
+			}
 		}
-
-		// for (int x = -halfSize; x < halfSize; x++)
-		// {
-		// 	for (int y = -halfSize; y < halfSize; y++)
-		// 	{
-
-		// 	}
-		// }
+		return img;
 	}
 } // namespace Vox::World::Generation::Decorations
 

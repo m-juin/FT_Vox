@@ -21,6 +21,8 @@
 
 #include "Game/Scenes/World/Generation/BiomesPerlin.hpp"
 
+#include "Game/Scenes/World/Generation/Decorations/PoissonDiskSampling.hpp"
+
 namespace Vox::Game::Scenes::World::Interfaces
 {
 	using namespace Front::Interfaces::Elements;
@@ -262,18 +264,30 @@ namespace Vox::Game::Scenes::World::Interfaces
 			ifPm.defaultValue = "0";
 			this->AddElement("IF_Map_IMG_Biomes", std::make_unique<InputField>(ifPm), 1, false);
 		}
-
+		// static uint8_t currentImage = 0;
 		this->_mMinimap.Start();
 		this->onUpdate.AddCallBack(
 			[this]()
 			{
 				float scale = std::atof(this->GetElement<InputField>("IF_Scale_IMG_Biomes")->GetValue().c_str());
 				const uint8_t map = std::atoi(this->GetElement<InputField>("IF_Map_IMG_Biomes")->GetValue().c_str());
-				this->_mMinimap.RequestUpdate(
-					Game::World::WorldManager::GetInstance().GetCamera().GetPosition(),
-					Game::World::WorldManager::GetInstance().GetGenerationManager().GetSeed(), scale, map);
+				// if (map == 10 && currentImage != map)
+				// {
+				// currentImage = map;
+				// auto imgData = Vox::World::Generation::Decorations::GenerateDiskImage(
+				// Game::World::WorldManager::GetInstance().GetGenerationManager().GetSeed(), 400);
+				// auto img = this->GetElement<DynamicImage>("IMG_Biome");
+				// img->SetData(imgData);
+				// }
+				// if (map != 10)
+				// {
+				// currentImage = map;
+				this->_mMinimap.RequestUpdate(Game::World::WorldManager::GetInstance().GetCamera().GetPosition(),
+											  Game::World::WorldManager::GetInstance().GetGenerationManager().GetSeed(),
+											  scale, map);
 				auto img = this->GetElement<DynamicImage>("IMG_Biome");
 				img->SetData(this->_mMinimap.GetLatestBuffer());
+				// }
 			});
 
 		this->_enabled = false;

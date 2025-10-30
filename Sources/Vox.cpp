@@ -67,8 +67,8 @@ int main()
 
 	pool.CreateCommandBuffer();
 
-	Interfaces::InterfacesManager::Init();
 	Vox::Game::GameManager::Init();
+	Interfaces::InterfacesManager::Init();
 
 	auto &gm = Vox::Game::GameManager::GetInstance();
 	gm.InitGame();
