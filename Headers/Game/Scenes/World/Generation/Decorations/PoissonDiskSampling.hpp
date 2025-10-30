@@ -30,28 +30,28 @@ namespace Vox::World::Generation::Decorations
 			int searchStartY = std::max(0, cellY - 2);
 			int searchEndY = std::min(cellY + 2, gridY - 1);
 
-            for (int x = searchStartX; x <= searchEndX; x++)
+			for (int x = searchStartX; x <= searchEndX; x++)
 			{
 				for (int y = searchStartY; y <= searchEndY; y++)
 				{
 					int index = grid[x + y * gridX] - 1;
 
-                    if (index != -1)
-                    {
-                        auto point = points[index];
-                        auto vec = Vector2(candidate[0] - point[0], candidate[1] - point[1]);
-                        float dst = vec[0] * vec[0] + vec[1] * vec[1];
-                        if (dst < sqrRadius)
-                            return false;
-                    }
+					if (index != -1)
+					{
+						auto point = points[index];
+						auto vec = Vector2(candidate[0] - point[0], candidate[1] - point[1]);
+						float dst = vec[0] * vec[0] + vec[1] * vec[1];
+						if (dst < sqrRadius)
+							return false;
+					}
 				}
 			}
-            return true;
+			return true;
 		}
-        return false;
+		return false;
 	}
 
-	inline std::vector<Vector2> GenerateDiskGree(uint32_t seed, float radius = 2.f,
+	inline std::vector<Vector2> GenerateDiskTree(uint32_t seed, float radius = 2.f,
 												 Vector2Int region = {Game::Utils::Defines::CHUNCK_SIZE,
 																	  Game::Utils::Defines::CHUNCK_SIZE},
 												 size_t tryBeforeRejection = 30)
@@ -60,7 +60,7 @@ namespace Vox::World::Generation::Decorations
 		std::uniform_real_distribution<float> dist(0.0f, 1.0f);
 
 		float cellSize = radius / std::sqrt(2);
-        float sqrRadius = radius * radius;
+		float sqrRadius = radius * radius;
 
 		int gridX = static_cast<int>(std::ceil(region[0] / cellSize));
 		int gridY = static_cast<int>(std::ceil(region[1] / cellSize));
@@ -94,11 +94,33 @@ namespace Vox::World::Generation::Decorations
 				}
 			}
 			if (accepted == false)
-			{
 				spawnPoints.erase(spawnPoints.begin() + index);
-			}
 		}
 		return points;
+	}
+
+	inline void GenerateDiskImage(std::vector<uint8_t> &target, MGL::Vectors::Vector2<int> center, uint32_t seed,
+								  uint16_t imgSize)
+	{
+		uint16_t halfSize = imgSize / 2;
+
+		auto tree = GenerateDiskTree(seed, 2., {400, 400}, 15);
+
+		for (auto treePos : tree)
+		{
+			treePos[0] - halfSize;
+			treePos[1] - halfSize;
+
+			
+		}
+
+		// for (int x = -halfSize; x < halfSize; x++)
+		// {
+		// 	for (int y = -halfSize; y < halfSize; y++)
+		// 	{
+
+		// 	}
+		// }
 	}
 } // namespace Vox::World::Generation::Decorations
 

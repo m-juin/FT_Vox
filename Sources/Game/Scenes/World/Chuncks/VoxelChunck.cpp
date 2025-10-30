@@ -57,19 +57,11 @@ namespace Vox::Game::World::Chuncks
 
 		LocalVector it(0);
 
-		auto checkFace = [this, &clusterContent, &seed, &spl, &textInfo,
+		auto checkFace = [this, &clusterContent, &textInfo,
 						  &cache](const LocalVector &it, int offsetX, int offsetY, int offsetZ, Faces face,
 								  const std::string &blockType, const Vector3Float &color)
 		{
-			(void)seed;
-			(void)spl;
-			// LocalVector neighbor = it;
 			MGL::Vectors::Vector3<int> neighbor = {it[0] + offsetX, it[1] + offsetY, it[2] + offsetZ};
-			// neighbor[0] += offsetX;
-			// neighbor[1] += offsetY;
-			// neighbor[2] += offsetZ;
-
-			// const std::string blockType = "Grass";
 
 			if (neighbor[0] >= 0 && neighbor[0] < static_cast<int>(CHUNCK_SIZE) && neighbor[1] >= 0 &&
 				neighbor[1] < static_cast<int>(CHUNCK_SIZE) && neighbor[2] >= 0 &&
@@ -95,21 +87,11 @@ namespace Vox::Game::World::Chuncks
 		};
 
 		auto checkFaceWater =
-			[this, &clusterContent, &seed, &spl, &transparenttextInfo, &cache](const LocalVector &it, int offsetX, int offsetY,
+			[this, &transparenttextInfo](const LocalVector &it, int offsetX, int offsetY,
 																	int offsetZ, Faces face, const Vector3Float &color)
 		{
-			(void)seed;
-			(void)spl;
-			// LocalVector neighbor = it;
 			MGL::Vectors::Vector3<int> neighbor = {it[0] + offsetX, it[1] + offsetY, it[2] + offsetZ};
-			// neighbor[0] += offsetX;
-			// neighbor[1] += offsetY;
-			// neighbor[2] += offsetZ;
 
-			// const std::string blockType = "Grass";
-
-			(void)clusterContent;
-			(void)cache;
 			if (this->_position[1] + neighbor[1] > static_cast<int>(Generation::Utils::WATER_LEVEL))
 			{
 				this->AddFace(transparenttextInfo, face, it, "Water", color, true, 1.1);
