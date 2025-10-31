@@ -5,7 +5,6 @@
 #include <iostream>
 
 #include "Front/Utils/ATexturesAtlas.hpp"
-// #include "Front/Utils/MaskedTexturesAtlas.hpp"
 
 #include "Front/Rendering/Images/FontImage.hpp"
 #include "Game/Scenes/World/Skybox/SkyTexture.hpp"

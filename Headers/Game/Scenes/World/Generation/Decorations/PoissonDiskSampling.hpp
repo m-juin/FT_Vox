@@ -48,7 +48,7 @@ namespace Vox::World::Generation::Decorations
 		return false;
 	}
 
-	inline std::vector<Vector2> GenerateDiskTree(uint32_t seed, float radius = 2.f,
+	inline std::vector<Vector2> GenerateDiskTree(uint64_t seed, float radius = 2.f,
 												 Vector2Int region = {Game::Utils::Defines::CHUNCK_SIZE,
 																	  Game::Utils::Defines::CHUNCK_SIZE},
 												 size_t tryBeforeRejection = 30)
@@ -63,7 +63,7 @@ namespace Vox::World::Generation::Decorations
 		int gridHeight = static_cast<int>(std::ceil(region[1] / cellSize));
 		int gridSize = gridWidth * gridHeight;
 
-		std::vector<int> grid(gridSize, 0); // Initialiser à -1
+		std::vector<int> grid(gridSize, 0);
 		std::vector<Vector2> points;
 		std::vector<Vector2> spawnPoints;
 
@@ -105,13 +105,13 @@ namespace Vox::World::Generation::Decorations
 	}
 #include "Utils/Images/PutPixels.hpp"
 
-	inline std::vector<uint8_t> GenerateDiskImage(uint32_t seed, uint16_t imgSize)
+	inline std::vector<uint8_t> GenerateDiskImage(uint64_t seed, uint16_t imgSize)
 	{
 		// uint16_t halfSize = imgSize / 2;
 
 		using namespace Vox::Utils::Images;
 
-		auto tree = GenerateDiskTree(seed, 10, {400, 400}, 15);
+		auto tree = GenerateDiskTree(seed, 4, {16, 16}, 15);
 
 		std::vector<uint8_t> img(imgSize * imgSize * 4, 255);
 
@@ -126,8 +126,8 @@ namespace Vox::World::Generation::Decorations
 			{
 				for (int y = -1; y <= 1; y++)
 				{
-					MGL::Vectors::Vector2<int> effectiveCoord = {static_cast<int>(treePos[0] + x),
-																 static_cast<int>(treePos[1] + y)};
+					MGL::Vectors::Vector2<int> effectiveCoord = {static_cast<int>(treePos[0] * 25 + x),
+																 static_cast<int>(treePos[1] * 25 + y)};
 					if (effectiveCoord[0] >= 0 && effectiveCoord[0] < 400 && effectiveCoord[1] >= 0 && effectiveCoord[1] < 400)
 					{
 						PutPixel(img, vImgSize,

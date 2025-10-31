@@ -4,12 +4,14 @@
 #include <cstdint>
 #include <iostream>
 
+#include "../Blocks/BlocksType.hpp"
+
 namespace Vox::Game::Generation::Datas::Biomes
 {
     struct SurfaceRule
     {
         const uint16_t surfaceDist;
-        const std::string blockType;
+        const Game::Datas::Blocks::BlockType _type;
     };
     struct HeightRule
     {

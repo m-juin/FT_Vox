@@ -3,11 +3,11 @@
 
 #include "./Perlin.hpp"
 #include "Spline/Spline.hpp"
-#include "Game/Utils/Datas/Biomes.hpp"
+#include "Game/Datas/Biomes.hpp"
 
 namespace Vox::Game::Generation::Perlins
 {
-	using namespace Datas::Biomes;
+	using namespace Game::Datas::Biomes;
 
 	static float GetErosionValueAt(float x, float y, uint32_t seed)
 	{

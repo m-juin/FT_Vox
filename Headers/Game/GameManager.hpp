@@ -7,7 +7,7 @@
 #include "Front/Scenes/ScenesManager.hpp"
 #include "Game/InputManager.hpp"
 
-#include "Game/Utils/TexturesData.hpp"
+#include "Game/Datas/TexturesData.hpp"
 #include "Game/Scenes/World/Generation/SplinesManager.hpp"
 #include "Front/Scenes/TexturesManager.hpp"
 
@@ -37,7 +37,7 @@ namespace Vox::Game
             const Front::Scenes::ScenesManager &GetSceneManager() const {return this->_scManager;};
             InputManager &GetInputManager() {return this->_iManager;};
 
-            const std::string GetTexturePackPath() {return Game::Utils::Textures::TPacks_Path + this->_TPack + "/";}
+            const std::string GetTexturePackPath() {return Game::Datas::Textures::TPacks_Path + this->_TPack + "/";}
             void InitThreads() const;
             void CleanThreads() const;
             ThreadManager &GetThreadManager() {return *_tManager;};

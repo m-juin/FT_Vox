@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-namespace Vox::Game::Utils::Textures
+namespace Vox::Game::Datas::Textures
 {
 	constexpr const char *TPacks_Path = "Assets/TexturesPacks/";
 

@@ -21,7 +21,7 @@
 #include "Game/Scenes/World/Generation/PerlinInterpretation.hpp"
 #include "Game/Scenes/World/Generation/RulesManager.hpp"
 
-#include "Game/Utils/Datas/Biomes.hpp"
+#include "Game/Datas/Biomes.hpp"
 
 namespace Vox::Game::World::Chuncks
 {
@@ -49,8 +49,8 @@ namespace Vox::Game::World::Chuncks
 
 	void VoxelChunck::BuildVoxelObject(
 		const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl,
-		const std::vector<Game::Utils::Textures::TextureInfo> &textInfo,
-		const std::vector<Game::Utils::Textures::TextureInfo> &transparenttextInfo,
+		const std::vector<Game::Datas::Textures::TextureInfo> &textInfo,
+		const std::vector<Game::Datas::Textures::TextureInfo> &transparenttextInfo,
 		const Generation::Utils::ChunckCache &cache, const uint32_t &seed)
 	{
 		(void)spl;
@@ -61,7 +61,7 @@ namespace Vox::Game::World::Chuncks
 
 		auto checkFace = [this, &clusterContent, &textInfo,
 						  &cache](const LocalVector &it, int offsetX, int offsetY, int offsetZ, Faces face,
-								  const std::string &blockType, const Vector3Float &color)
+								  const Game::Datas::Blocks::BlockType &blockType, const Vector3Float &color)
 		{
 			MGL::Vectors::Vector3<int> neighbor = {it[0] + offsetX, it[1] + offsetY, it[2] + offsetZ};
 
@@ -95,7 +95,7 @@ namespace Vox::Game::World::Chuncks
 
 			if (this->_position[1] + neighbor[1] > static_cast<int>(Generation::Utils::WATER_LEVEL))
 			{
-				this->AddFace(transparenttextInfo, face, it, "Water", color, true, 1.1);
+				this->AddFace(transparenttextInfo, face, it, Game::Datas::Blocks::BlockType::Water, color, true, 1.1);
 			}
 		};
 
@@ -106,7 +106,7 @@ namespace Vox::Game::World::Chuncks
 				size_t cacheIndex =
 					(it[0] + Generation::Utils::GENERATION_BLEND_RADIUS) * Generation::Utils::CACHE_SIZE +
 					(it[2] + Generation::Utils::GENERATION_BLEND_RADIUS);
-				Game::Generation::Datas::Biomes::Biomes biome = cache.biome[cacheIndex];
+				Game::Datas::Biomes::Biomes biome = cache.biome[cacheIndex];
 				uint8_t worldHeight = cache.heightMap[cacheIndex];
 				for (it[1] = 0; it[1] < CHUNCK_SIZE; it[1]++)
 				{
@@ -117,30 +117,30 @@ namespace Vox::Game::World::Chuncks
 					else if (!clusterContent[mapIndex] && h == Generation::Utils::WATER_LEVEL)
 					{
 						Vector3Float color = {1.0, 1.0, 1.0};
-						Vector3Int biomeColor = Game::Generation::Datas::Biomes::biomesColors[biome];
+						Vector3Int biomeColor = Game::Datas::Biomes::biomesColors[biome];
 						color = {static_cast<float>(biomeColor[0]) / 256.0f, static_cast<float>(biomeColor[1]) / 256.0f,
 								 static_cast<float>(biomeColor[2]) / 256.0f};
 						checkFaceWater(it, 0, 1, 0, Faces::TOP, color);
 						continue;
 					}
 
-					std::string blockType;
+					Game::Datas::Blocks::BlockType _type;
 					Vector3Float color = {1.0, 1.0, 1.0};
-					blockType =
-						Game::Generation::Datas::Biomes::RulesManager::GetBlockType(biome, (int)worldHeight - (h));
-					if (blockType == "Grass")
+					_type =
+						Generation::Datas::Biomes::RulesManager::GetBlockType(biome, (int)worldHeight - (h));
+					if (_type == Game::Datas::Blocks::BlockType::Grass)
 					{
-						Vector3Int biomeColor = Game::Generation::Datas::Biomes::biomesColors[biome];
+						Vector3Int biomeColor = Game::Datas::Biomes::biomesColors[biome];
 						color = {static_cast<float>(biomeColor[0]) / 256.0f, static_cast<float>(biomeColor[1]) / 256.0f,
 								 static_cast<float>(biomeColor[2]) / 256.0f};
 						// std::cout << color << std::endl;
 					}
-					checkFace(it, 0, 1, 0, Faces::TOP, blockType, color);
+					checkFace(it, 0, 1, 0, Faces::TOP, _type, color);
 					// checkFace(it, 0, -1, 0, Faces::BOT);
-					checkFace(it, -1, 0, 0, Faces::LEFT, blockType, color);
-					checkFace(it, 1, 0, 0, Faces::RIGHT, blockType, color);
-					checkFace(it, 0, 0, 1, Faces::FRONT, blockType, color);
-					checkFace(it, 0, 0, -1, Faces::BACK, blockType, color);
+					checkFace(it, -1, 0, 0, Faces::LEFT, _type, color);
+					checkFace(it, 1, 0, 0, Faces::RIGHT, _type, color);
+					checkFace(it, 0, 0, 1, Faces::FRONT, _type, color);
+					checkFace(it, 0, 0, -1, Faces::BACK, _type, color);
 				}
 			}
 		}
@@ -168,6 +168,39 @@ namespace Vox::Game::World::Chuncks
 		}
 
 		return clusterContent;
+	}
+	
+	void VoxelChunck::SetBlockDatas(const Generation::Utils::ChunckCache &cache, std::bitset<CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE> &clusterContent)
+	{
+		LocalVector it(0);
+		for (it[0] = 0; it[0] < CHUNCK_SIZE; it[0]++)
+		{
+			for (it[2] = 0; it[2] < CHUNCK_SIZE; it[2]++)
+			{
+				size_t cacheIndex =
+					(it[0] + Generation::Utils::GENERATION_BLEND_RADIUS) * Generation::Utils::CACHE_SIZE +
+					(it[2] + Generation::Utils::GENERATION_BLEND_RADIUS);
+				Game::Datas::Biomes::Biomes biome = cache.biome[cacheIndex];
+				uint8_t worldHeight = cache.heightMap[cacheIndex];
+				for (it[1] = 0; it[1] < CHUNCK_SIZE; it[1]++)
+				{
+					uint16_t mapIndex = GetLocalIndex(it);
+					size_t h = this->_position[1] + (int)it[1];
+					if (!clusterContent[mapIndex])
+					{
+						if (h > Generation::Utils::WATER_LEVEL)
+							this->_blocksDatas[mapIndex].type = Game::Datas::Blocks::BlockType::Air;
+						else
+							this->_blocksDatas[mapIndex].type = Game::Datas::Blocks::BlockType::Water;
+					}
+					else
+					{
+						(void)worldHeight;
+						(void)biome;
+					}
+				}
+			}
+		}
 	}
 
 	void VoxelChunck::BuildBufferObject(const uint16_t &buffer)
@@ -264,8 +297,8 @@ namespace Vox::Game::World::Chuncks
 		return this->_bufferIndex;
 	}
 
-	void VoxelChunck::AddFace(const std::vector<Game::Utils::Textures::TextureInfo> &textInfo, const Faces &face,
-							  const LocalVector &facePos, const std::string &blockType, const Vector3Float &faceColor,
+	void VoxelChunck::AddFace(const std::vector<Game::Datas::Textures::TextureInfo> &textInfo, const Faces &face,
+							  const LocalVector &facePos, const Game::Datas::Blocks::BlockType &blockType, const Vector3Float &faceColor,
 							  bool target, float faceOffsef)
 	{
 		std::array<Vertex, 4> toAdd = defaultFacesPos.at(face);
@@ -282,7 +315,7 @@ namespace Vox::Game::World::Chuncks
 			ref.vertPos[1] += (1 - faceOffsef);
 			ref.vertCoord[0] = texture.uOffset + ref.vertCoord[0] * texture.uSize;
 			ref.vertCoord[1] = texture.vOffset + ref.vertCoord[1] * texture.vSize;
-			if (blockType == "Grass")
+			if (blockType == Game::Datas::Blocks::BlockType::Grass)
 				ref.isColorAffected = 1;
 		}
 

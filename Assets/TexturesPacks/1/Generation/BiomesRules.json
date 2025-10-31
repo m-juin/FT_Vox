@@ -6,15 +6,15 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Grass",
+                "Block": 1,
                 "SurfaceDistance": 0
             },
             {
-                "Block": "Dirt",
+                "Block": 0,
                 "SurfaceDistance": 3
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
@@ -28,11 +28,11 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Sand",
+                "Block": 3,
                 "SurfaceDistance": 3
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
@@ -46,15 +46,15 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Grass",
+                "Block": 1,
                 "SurfaceDistance": 0
             },
             {
-                "Block": "Dirt",
+                "Block": 0,
                 "SurfaceDistance": 3
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
@@ -68,15 +68,15 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Grass",
+                "Block": 1,
                 "SurfaceDistance": 0
             },
             {
-                "Block": "Dirt",
+                "Block": 0,
                 "SurfaceDistance": 3
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
@@ -90,11 +90,11 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Gravel",
+                "Block": 4,
                 "SurfaceDistance": 5
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
@@ -108,15 +108,15 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Grass",
+                "Block": 1,
                 "SurfaceDistance": 0
             },
             {
-                "Block": "Dirt",
+                "Block": 0,
                 "SurfaceDistance": 3
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
@@ -130,11 +130,11 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Gravel",
+                "Block": 4,
                 "SurfaceDistance": 5
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
@@ -148,11 +148,11 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Gravel",
+                "Block": 4,
                 "SurfaceDistance": 5
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
@@ -166,11 +166,11 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Gravel",
+                "Block": 4,
                 "SurfaceDistance": 5
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
@@ -184,11 +184,11 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Gravel",
+                "Block": 4,
                 "SurfaceDistance": 5
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
@@ -202,7 +202,7 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Sand",
+                "Block": 3,
                 "SurfaceDistance": 9999
             }
         ],
@@ -216,15 +216,15 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Grass",
+                "Block": 1,
                 "SurfaceDistance": 0
             },
             {
-                "Block": "Dirt",
+                "Block": 0,
                 "SurfaceDistance": 3
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
@@ -238,15 +238,15 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Grass",
+                "Block": 1,
                 "SurfaceDistance": 0
             },
             {
-                "Block": "Dirt",
+                "Block": 0,
                 "SurfaceDistance": 3
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
@@ -260,11 +260,11 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Gravel",
+                "Block": 4,
                 "SurfaceDistance": 5
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
@@ -278,7 +278,7 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
@@ -292,7 +292,7 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Gravel",
+                "Block": 4,
                 "SurfaceDistance": 9999
             }
         ],
@@ -306,15 +306,15 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Grass",
+                "Block": 1,
                 "SurfaceDistance": 0
             },
             {
-                "Block": "Dirt",
+                "Block": 0,
                 "SurfaceDistance": 3
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
@@ -328,7 +328,7 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Dirt",
+                "Block": 0,
                 "SurfaceDistance": 9999
             }
         ],
@@ -342,15 +342,15 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Grass",
+                "Block": 1,
                 "SurfaceDistance": 0
             },
             {
-                "Block": "Dirt",
+                "Block": 0,
                 "SurfaceDistance": 3
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
@@ -364,11 +364,11 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Gravel",
+                "Block": 4,
                 "SurfaceDistance": 5
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
@@ -382,7 +382,7 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
@@ -396,15 +396,15 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Grass",
+                "Block": 1,
                 "SurfaceDistance": 0
             },
             {
-                "Block": "Dirt",
+                "Block": 0,
                 "SurfaceDistance": 3
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
@@ -418,15 +418,15 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Grass",
+                "Block": 1,
                 "SurfaceDistance": 1
             },
             {
-                "Block": "Dirt",
+                "Block": 0,
                 "SurfaceDistance": 3
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
@@ -440,11 +440,11 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Gravel",
+                "Block": 4,
                 "SurfaceDistance": 5
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
@@ -458,15 +458,15 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Grass",
+                "Block": 1,
                 "SurfaceDistance": 0
             },
             {
-                "Block": "Dirt",
+                "Block": 0,
                 "SurfaceDistance": 3
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
@@ -480,15 +480,15 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Grass",
+                "Block": 1,
                 "SurfaceDistance": 0
             },
             {
-                "Block": "Dirt",
+                "Block": 0,
                 "SurfaceDistance": 3
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
@@ -502,15 +502,15 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Grass",
+                "Block": 1,
                 "SurfaceDistance": 0
             },
             {
-                "Block": "Dirt",
+                "Block": 0,
                 "SurfaceDistance": 3
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
@@ -524,15 +524,15 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Grass",
+                "Block": 1,
                 "SurfaceDistance": 0
             },
             {
-                "Block": "Dirt",
+                "Block": 0,
                 "SurfaceDistance": 3
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
@@ -546,7 +546,7 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Sand",
+                "Block": 3,
                 "SurfaceDistance": 9999
             }
         ],
@@ -560,15 +560,15 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Grass",
+                "Block": 1,
                 "SurfaceDistance": 0
             },
             {
-                "Block": "Dirt",
+                "Block": 0,
                 "SurfaceDistance": 3
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
@@ -582,15 +582,15 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Grass",
+                "Block": 1,
                 "SurfaceDistance": 0
             },
             {
-                "Block": "Dirt",
+                "Block": 0,
                 "SurfaceDistance": 3
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
@@ -604,7 +604,7 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
@@ -618,15 +618,15 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Grass",
+                "Block": 1,
                 "SurfaceDistance": 0
             },
             {
-                "Block": "Dirt",
+                "Block": 0,
                 "SurfaceDistance": 3
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
@@ -640,7 +640,7 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
@@ -654,15 +654,15 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Grass",
+                "Block": 1,
                 "SurfaceDistance": 0
             },
             {
-                "Block": "Dirt",
+                "Block": 0,
                 "SurfaceDistance": 3
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
@@ -676,15 +676,15 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Grass",
+                "Block": 1,
                 "SurfaceDistance": 0
             },
             {
-                "Block": "Dirt",
+                "Block": 0,
                 "SurfaceDistance": 3
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
@@ -698,7 +698,7 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
@@ -712,7 +712,7 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
@@ -726,15 +726,15 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Grass",
+                "Block": 1,
                 "SurfaceDistance": 0
             },
             {
-                "Block": "Dirt",
+                "Block": 0,
                 "SurfaceDistance": 3
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
@@ -748,7 +748,7 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
@@ -762,15 +762,15 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Grass",
+                "Block": 1,
                 "SurfaceDistance": 0
             },
             {
-                "Block": "Dirt",
+                "Block": 0,
                 "SurfaceDistance": 3
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
@@ -784,11 +784,11 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Gravel",
+                "Block": 4,
                 "SurfaceDistance": 5
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
@@ -802,15 +802,15 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Grass",
+                "Block": 1,
                 "SurfaceDistance": 0
             },
             {
-                "Block": "Dirt",
+                "Block": 0,
                 "SurfaceDistance": 3
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
@@ -824,7 +824,7 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
@@ -838,7 +838,7 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
@@ -852,15 +852,15 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Grass",
+                "Block": 1,
                 "SurfaceDistance": 0
             },
             {
-                "Block": "Dirt",
+                "Block": 0,
                 "SurfaceDistance": 3
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],

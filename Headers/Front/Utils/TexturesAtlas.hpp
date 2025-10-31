@@ -1,7 +1,7 @@
 #ifndef __TEXTURESATLAS_HPP__
 #define __TEXTURESATLAS_HPP__
 
-#include "Game/Utils/TexturesData.hpp"
+#include "Game/Datas/TexturesData.hpp"
 
 #include "./ATexturesAtlas.hpp"
 

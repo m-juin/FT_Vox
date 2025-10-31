@@ -7,7 +7,7 @@
 #include "./PerlinUtils.hpp"
 
 #include "Game/Scenes/World/Utils/Defines.hpp"
-#include "Game/Utils/Datas/BiomesData/SurfaceDecoration.hpp"
+#include "Game/Datas/BiomesData/SurfaceDecoration.hpp"
 
 #include <unordered_map>
 

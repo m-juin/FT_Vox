@@ -264,24 +264,25 @@ namespace Vox::Game::Scenes::World::Interfaces
 			ifPm.defaultValue = "0";
 			this->AddElement("IF_Map_IMG_Biomes", std::make_unique<InputField>(ifPm), 1, false);
 		}
-		static uint8_t currentImage = 0;
+		static Vox::Game::Utils::Defines::ChunckCoord playerPos = {100, -100};
 		this->_mMinimap.Start();
 		this->onUpdate.AddCallBack(
 			[this]()
 			{
 				float scale = std::atof(this->GetElement<InputField>("IF_Scale_IMG_Biomes")->GetValue().c_str());
 				const uint8_t map = std::atoi(this->GetElement<InputField>("IF_Map_IMG_Biomes")->GetValue().c_str());
-				if (map == 10 && currentImage != map)
+				Vox::Game::Utils::Defines::ChunckCoord coord = Game::World::WorldManager::GetInstance().GetPlayerChunck();
+				if (map == 10 && coord != playerPos)
 				{
-					currentImage = map;
+					playerPos = coord;
+					auto seeded = MGL::Vectors::Vector2Hash<int>()(playerPos) + Game::World::WorldManager::GetInstance().GetGenerationManager().GetSeed();
 					auto imgData = Vox::World::Generation::Decorations::GenerateDiskImage(
-						Game::World::WorldManager::GetInstance().GetGenerationManager().GetSeed(), 400);
+						seeded, 400);
 					auto img = this->GetElement<DynamicImage>("IMG_Biome");
 					img->SetData(imgData);
 				}
 				if (map != 10)
 				{
-					currentImage = map;
 					this->_mMinimap.RequestUpdate(
 						Game::World::WorldManager::GetInstance().GetCamera().GetPosition(),
 						Game::World::WorldManager::GetInstance().GetGenerationManager().GetSeed(), scale, map);

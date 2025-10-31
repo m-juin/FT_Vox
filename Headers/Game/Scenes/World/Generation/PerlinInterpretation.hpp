@@ -32,7 +32,7 @@ namespace Vox::Game::Generation::Perlins
 		// eroVal *= spl.at("Erosion").second;
 		float eroded = contVal * eroVal;
 
-		eroded = Game::Generation::Datas::Biomes::RulesManager::GetHeight(biome, eroded);
+		eroded = Datas::Biomes::RulesManager::GetHeight(biome, eroded);
 		// PAVVal *= spl.at("P&V").second;
 		return static_cast<uint8_t>(eroded);
 	}
@@ -72,7 +72,7 @@ namespace Vox::Game::Generation::Perlins
 
 				float dist2 = float(dx * dx + dz * dz);
 				float weight = 1.0f / (dist2 + 1.0f);
-				float h = Game::Generation::Datas::Biomes::RulesManager::GetHeight(biome, baseHeight);
+				float h = Datas::Biomes::RulesManager::GetHeight(biome, baseHeight);
 
 				weightedSum += h * weight;
 				totalWeight += weight;
@@ -116,7 +116,7 @@ namespace Vox::Game::Generation::Perlins
 				auto biome = cache.biome[index2];
 				float dist2 = float(dx * dx + dz * dz);
 				float weight = 1.0f / (dist2 + 1.0f);
-				float h = Game::Generation::Datas::Biomes::RulesManager::GetHeight(biome, baseHeight);
+				float h = Datas::Biomes::RulesManager::GetHeight(biome, baseHeight);
 
 				weightedSum += h * weight;
 				totalWeight += weight;
@@ -150,7 +150,7 @@ namespace Vox::Game::Generation::Perlins
 		// // eroVal *= spl.at("Erosion").second;
 		// float eroded = contVal * eroVal;
 
-		// eroded = Game::Generation::Datas::Biomes::GetHeight(biome, eroded);
+		// eroded = Game::Datas::Biomes::GetHeight(biome, eroded);
 		// PAVVal *= spl.at("P&V").second;
 		return static_cast<uint8_t>(GetBlendedHeightAt(x, z, seed, spl, 4));
 	}

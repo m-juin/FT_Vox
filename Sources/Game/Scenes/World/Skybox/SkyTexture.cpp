@@ -252,7 +252,7 @@ namespace Vox::Game::World::Skybox
 
 	// void SkyTexture::BuildAtlas(const std::string &path)
 	// {
-	// 	using TextureInfo = Game::Utils::Textures::TextureInfo;
+	// 	using TextureInfo = Game::Datas::Textures::TextureInfo;
 	// 	using namespace Vox::Front::Rendering::Images;
 
 	// 	this->_textureInfos.reserve(textureList.size());

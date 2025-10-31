@@ -1,5 +1,5 @@
-#include "Game/Utils/Datas/Biomes.hpp"
-#include "Game/Utils/Datas/BiomesData/SurfaceDecoration.hpp"
+#include "Game/Datas/Biomes.hpp"
+#include "Game/Datas/BiomesData/SurfaceDecoration.hpp"
 
 #include "Utils/Colors.hpp"
 

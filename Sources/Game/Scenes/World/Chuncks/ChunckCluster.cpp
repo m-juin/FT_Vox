@@ -82,7 +82,8 @@ namespace Vox::Game::World::Chuncks
 
 	void ChunckCluster::BuildClusterContent(
 		const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl,
-		const std::vector<Game::Utils::Textures::TextureInfo> &textInfo, const std::vector<Game::Utils::Textures::TextureInfo> &transparenttextInfo, const uint32_t seed)
+		const std::vector<Game::Datas::Textures::TextureInfo> &textInfo,
+		const std::vector<Game::Datas::Textures::TextureInfo> &transparenttextInfo, const uint32_t seed)
 	{
 		this->ChangeGenerationState(Generation::E_GenerationState::Mesh);
 
@@ -97,12 +98,29 @@ namespace Vox::Game::World::Chuncks
 
 			this->_clusterContent[y]->BuildVoxelObject(spl, textInfo, transparenttextInfo, st, seed);
 		}
+		this->GenerateClusterDecoration(spl, textInfo, transparenttextInfo, seed);
 		this->ChangeGenerationState(Generation::E_GenerationState::WaitingBuffer);
+	}
+
+	void ChunckCluster::GenerateClusterDecoration(
+		const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl,
+		const std::vector<Game::Datas::Textures::TextureInfo> &textInfo,
+		const std::vector<Game::Datas::Textures::TextureInfo> &transparenttextInfo, const uint32_t seed)
+	{
+		(void)spl;
+		(void)textInfo;
+		(void)transparenttextInfo;
+		(void)seed;
 	}
 
 	ChunckCoord ChunckCluster::GetPosition()
 	{
 		return this->_clusterPos;
+	}
+	
+	void ChunckCluster::SetBlock(MGL::Vectors::Vector3<uint8_t> localPos)
+	{
+		(void)localPos;
 	}
 
 	void ChunckCluster::BuildBuffers(const uint16_t &buffer)
