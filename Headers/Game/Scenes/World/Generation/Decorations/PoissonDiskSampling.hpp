@@ -79,7 +79,7 @@ namespace Vox::World::Generation::Decorations
 			{
 				float angle = dist(gen) * M_PI * 2;
 				Vector2 dir = {std::sin(angle), std::cos(angle)};
-				float distance = radius + dist(gen) * radius; // Entre radius et 2*radius
+				float distance = radius + dist(gen) * radius;
 				Vector2 candidate = {spawnCenter[0] + dir[0] * distance, spawnCenter[1] + dir[1] * distance};
 
 				if (IsValid(candidate, sqrRadius, region, gridWidth, gridHeight, cellSize, points, grid))
@@ -107,8 +107,6 @@ namespace Vox::World::Generation::Decorations
 
 	inline std::vector<uint8_t> GenerateDiskImage(uint64_t seed, uint16_t imgSize)
 	{
-		// uint16_t halfSize = imgSize / 2;
-
 		using namespace Vox::Utils::Images;
 
 		auto tree = GenerateDiskTree(seed, 4, {16, 16}, 15);

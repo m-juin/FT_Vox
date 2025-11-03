@@ -60,13 +60,12 @@ namespace Vox::Front::Interfaces::Elements::Bases
 			{
 				for (size_t i = 0; i < _content.size(); ++i)
 				{
-					// Vérifie si le pointeur correspond à l'élément stocké
 					if (_content[i].elem.get() == elemPtr)
 					{
-						return static_cast<int>(i); // retourne l'index trouvé
+						return static_cast<int>(i);
 					}
 				}
-				return -1; // retourne -1 si l'élément n'a pas été trouvé
+				return -1;
 			}
 
 		protected:

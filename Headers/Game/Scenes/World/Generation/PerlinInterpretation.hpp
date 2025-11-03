@@ -21,19 +21,13 @@ namespace Vox::Game::Generation::Perlins
 		float eroVal =
 			spl.at("Erosion").first.GetValue(cache.erosion[index]);
 
-		// double PAVVal = cache.peaks[index];
-
-		// PAVVal = 1 - std::abs(3 * std::abs(PAVVal) - 2);
-		// PAVVal = spl.at("P&V").first.GetValue(PAVVal);
 		contVal *= spl.at("Continental").second;
 
 		auto biome = cache.biome[index];
 
-		// eroVal *= spl.at("Erosion").second;
 		float eroded = contVal * eroVal;
 
 		eroded = Datas::Biomes::RulesManager::GetHeight(biome, eroded);
-		// PAVVal *= spl.at("P&V").second;
 		return static_cast<uint8_t>(eroded);
 	}
 
@@ -41,7 +35,6 @@ namespace Vox::Game::Generation::Perlins
 									const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl,
 									int blendRadius = 4)
 	{
-		// Valeur de base commune à tous
 		size_t xPos = x + WORLD_CENTER;
 		size_t zPos = z + WORLD_CENTER;
 
@@ -130,28 +123,6 @@ namespace Vox::Game::Generation::Perlins
 	inline uint8_t GetHeightAt(int x, int z, uint32_t seed,
 							   const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl)
 	{
-		// size_t xPos = x + WORLD_CENTER;
-		// size_t zPos = z + WORLD_CENTER;
-		// float contVal =
-		// 	spl.at("Continental")
-		// 		.first.GetValue(GetPerlinValue(xPos, zPos, seed, Utils::ContinentalnessData, {-1.2f, 1.0f}));
-
-		// float eroVal =
-		// 	spl.at("Erosion").first.GetValue(GetPerlinValue(xPos, zPos, seed, Utils::ErosionData, {-1.0f, 1.0f}));
-
-		// double PAVVal = GetPerlinValue(xPos, zPos, seed, Utils::PeaksAndValleyData, {-1.0f, 1.0f});
-
-		// PAVVal = 1 - std::abs(3 * std::abs(PAVVal) - 2);
-		// PAVVal = spl.at("P&V").first.GetValue(PAVVal);
-		// contVal *= spl.at("Continental").second;
-
-		// auto biome = Perlins::GetBiomeAtPoint(xPos, zPos, seed);
-
-		// // eroVal *= spl.at("Erosion").second;
-		// float eroded = contVal * eroVal;
-
-		// eroded = Game::Datas::Biomes::GetHeight(biome, eroded);
-		// PAVVal *= spl.at("P&V").second;
 		return static_cast<uint8_t>(GetBlendedHeightAt(x, z, seed, spl, 4));
 	}
 

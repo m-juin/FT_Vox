@@ -34,7 +34,6 @@ namespace Vox::Game::Scenes::Menu
 			}
 	};
 
-	// Enregistrement de la scène dans le registre global
 } // namespace Vox::Game::Scenes::Menu
 
 template <> void Vox::Front::Scenes::RegisterSceneFactory<Vox::Game::Scenes::Menu::Sc_Menu>();

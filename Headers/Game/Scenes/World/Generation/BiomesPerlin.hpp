@@ -467,7 +467,6 @@ namespace Vox::Game::Generation::Perlins
 	inline std::vector<uint8_t> GenerateBiomeImage(MGL::Vectors::Vector2<int> center, uint32_t seed, uint16_t imgSize,
 												   float scale)
 	{
-		// std::cout << "scale = " << scale << std::endl;
 		std::vector<uint8_t> dataArray;
 		dataArray.resize(imgSize * imgSize * 4);
 		uint16_t halfSize = imgSize / 2;
@@ -497,7 +496,6 @@ namespace Vox::Game::Generation::Perlins
 	inline void GenerateBiomeImage(std::vector<uint8_t> &target, MGL::Vectors::Vector2<int> center, uint32_t seed,
 								   uint16_t imgSize, float scale)
 	{
-		// std::cout << "scale = " << scale << std::endl;
 		uint16_t halfSize = imgSize / 2;
 
 		MGL::Vectors::Vector2<int> effectivePos = center;

@@ -19,7 +19,6 @@ namespace Vox::Game::Generation::Threads
 		inline void ChangeGenerationState(const Game::Generation::E_GenerationState &newState)
 		{
 			std::unique_lock<std::mutex> lock(this->_mutex);
-			// if (this->_generationState == Generation::GenerationState::Cancelled) return ;
 			this->_currentState = newState;
 			lock.unlock();
 		}
@@ -48,7 +47,6 @@ namespace Vox::Game::Generation::Threads
 		}
 
 		Game::Generation::E_GenerationState _currentState;
-		/* private */
 	};
 } // namespace Vox::Game::Generation::Threads
 

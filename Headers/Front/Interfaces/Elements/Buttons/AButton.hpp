@@ -25,9 +25,6 @@ namespace Vox::Front::Interfaces::Elements
 						Color textColor;
 
 						float textScale;
-						// Color bgColor;
-						//
-						// Color hoverBGColor;
 						Color hoverTXTColor;
 						Color disabledTXTColor;
 
@@ -56,9 +53,7 @@ namespace Vox::Front::Interfaces::Elements
 				void ResetVertex() override;
 
 			protected:
-				// std::vector<ClickCallBack> _onClickCallbacks;
-
-				/* private */
+				/* protected */
 		};
 	} // namespace Buttons
 } // namespace Vox::Front::Interfaces::Elements

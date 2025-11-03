@@ -14,7 +14,6 @@ namespace Vox::Front::Interfaces::Elements
 				Vector2 pos;
 				Vector2 size;
                 
-                // bool enableDeletion;
                 std::vector<std::unique_ptr<AElement>> content;
 			};
 
