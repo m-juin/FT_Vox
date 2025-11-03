@@ -132,9 +132,7 @@ namespace Vox::Game::World
 	{
 		for (auto cluster : this->_chuncks)
 		{
-			// const auto it = this->_chuncks.find(pos);
 			const uint16_t index = cluster.second->GetBuffer();
-			// this->_chuncks.erase(it);
 			this->_bManager->ReleaseBuffer(index);
 		}
 		this->_chuncks.clear();
@@ -145,11 +143,9 @@ namespace Vox::Game::World
 		std::vector<Utils::Defines::ChunckCoord> toDelete;
 		for (auto _pair : this->_chuncks)
 		{
-			// std::cout << _pair.first << std::endl;
 			if (MGL::Vectors::Dist(_pair.first, _playerChunck) >= Utils::Defines::SQUARE_RENDER_DISTANCE)
 				toDelete.push_back(_pair.first);
 		}
-		// std::cout << std::endl;
 		for (auto pos : toDelete)
 		{
 			const auto it = this->_chuncks.find(pos);

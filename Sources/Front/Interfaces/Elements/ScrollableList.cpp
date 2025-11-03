@@ -28,7 +28,6 @@ namespace Vox::Front::Interfaces::Elements
 				constexpr float scrollStep = -20.f;
 				this->_scrollOffset += yOff * scrollStep;
 
-				// la limite basse = taille totale du contenu - taille visible
 				float maxOffset = std::max(0.f, _fullSize - _size[1]);
 				_scrollOffset = std::clamp(_scrollOffset, 0.f, maxOffset);
 

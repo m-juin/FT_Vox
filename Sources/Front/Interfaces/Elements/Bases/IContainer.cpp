@@ -19,9 +19,7 @@ namespace Vox::Front::Interfaces::Elements::Bases
 	{
 		if (index >= _content.size())
 			return false;
-		// Suppression de l'élément
 		_content.erase(_content.begin() + index);
-		// Notification des callbacks avant suppression
 		onElementRemove.Notify();
 
 		return true;

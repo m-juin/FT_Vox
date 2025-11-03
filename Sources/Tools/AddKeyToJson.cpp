@@ -1,11 +1,5 @@
 #include "JsonLib/Json.hpp"
 
-// void AddKey(JSONLib::Dictionnary rootDict, std::vector<std::string> keyToEmplacement, const std::string &newElemKey,
-// 			JSONLib::Dictionnary toAdd)
-// {
-// 	JSONLib::Dictionnary &current = rootDict;
-// }
-
 int main()
 {
 	auto dict = JSONLib::LoadJSON("./Assets/TexturesPacks/1/Generation/BiomesRules.json");

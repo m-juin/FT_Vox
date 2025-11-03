@@ -199,10 +199,8 @@ namespace Vox::Game::World::Chuncks
 						Vector3Int biomeColor = Game::Datas::Biomes::biomesColors[biome];
 						color = {static_cast<float>(biomeColor[0]) / 256.0f, static_cast<float>(biomeColor[1]) / 256.0f,
 								 static_cast<float>(biomeColor[2]) / 256.0f};
-						// std::cout << color << std::endl;
 					}
 					checkFace(it, 0, 1, 0, Faces::TOP, _type, color);
-					// checkFace(it, 0, -1, 0, Faces::BOT);
 					checkFace(it, -1, 0, 0, Faces::LEFT, _type, color);
 					checkFace(it, 1, 0, 0, Faces::RIGHT, _type, color);
 					checkFace(it, 0, 0, 1, Faces::FRONT, _type, color);

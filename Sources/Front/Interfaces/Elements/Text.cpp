@@ -127,8 +127,6 @@ namespace Vox::Front::Interfaces::Elements
 		auto cmdBuffer =
 			Rendering::CommandsPool::GetInstance().GetBuffer(Rendering::SyncObjects::GetInstance().GetCurrentFrame());
 		VkDeviceSize offsets[] = {0};
-		// vkCmdPushConstants(cmdBuffer, Front::Rendering::Pipelines::PipelinesManager::GetInstance().operator[]<Front::Rendering::Pipelines::StaticGUIPipeline>("StaticGUI")->GetLayout(), VK_SHADER_STAGE_FRAGMENT_BIT, 0,
-						//    sizeof(this->_uvMappingData), &this->_uvMappingData);
 		vkCmdBindVertexBuffers(cmdBuffer, 0, 1, &this->B_Vertex->GetBuffer(0), offsets);
 		vkCmdBindIndexBuffer(cmdBuffer, this->B_Index->GetBuffer(0), 0, VK_INDEX_TYPE_UINT32);
 		vkCmdDrawIndexed(cmdBuffer, static_cast<uint32_t>(_indexCount), 1, 0, 0, 0);

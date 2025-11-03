@@ -107,7 +107,6 @@ namespace Vox::Front::Rendering::Utils::Buffers
 
 		Buffers::Utils::EndSingleTimeCommands(copyCmd, device.GetLogicalDevice(), pool, SwapChain::GetInstance().GetGraphicQueue());
 
-		// Nettoyage des ressources temporaires
 		vkDestroyBuffer(device.GetLogicalDevice(), stagingBuffer, nullptr);
 		vkFreeMemory(device.GetLogicalDevice(), stagingBufferMemory, nullptr);
 	}

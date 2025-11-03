@@ -9,7 +9,6 @@ namespace Vox::Front::Interfaces::Elements::Buttons
 
 	AButton::AButton(const std::string &content_, Color textColor_)
 	{
-		// this->AddElement("IMG_BackGround", std::make_unique<Image>("", "", this->_pos, this->_size, bgColor_), 0);
 
 		Text::Vox_Text_Constructor stText{};
 		stText.color = textColor_;
@@ -22,7 +21,6 @@ namespace Vox::Front::Interfaces::Elements::Buttons
 
 	AButton::AButton(const Vox_Button_Constructor &st)
 	{
-		// this->AddElement("IMG_BackGround", std::make_unique<Image>("", "", this->_pos, this->_size, st.bgColor), 0);
 
 		Text::Vox_Text_Constructor stText{};
 		stText.color = st.textColor;

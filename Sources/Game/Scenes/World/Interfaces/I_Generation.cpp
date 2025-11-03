@@ -211,10 +211,10 @@ namespace Vox::Game::Scenes::World::Interfaces
 			imgPM.defaultData.resize(400 * 400 * 4);
 			for (size_t i = 0; i < 400 * 400; ++i)
 			{
-				imgPM.defaultData[i * 4 + 0] = 255; // R
-				imgPM.defaultData[i * 4 + 1] = 255; // G
-				imgPM.defaultData[i * 4 + 2] = 255; // B
-				imgPM.defaultData[i * 4 + 3] = 255; // A
+				imgPM.defaultData[i * 4 + 0] = 255;
+				imgPM.defaultData[i * 4 + 1] = 255;
+				imgPM.defaultData[i * 4 + 2] = 255;
+				imgPM.defaultData[i * 4 + 3] = 255;
 			}
 			auto img = std::make_unique<DynamicImage>(imgPM);
 			this->AddElement("IMG_Biome", std::move(img), 2, false);

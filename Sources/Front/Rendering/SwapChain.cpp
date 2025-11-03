@@ -176,7 +176,6 @@ namespace Vox::Front::Rendering
 
 		this->CreateSwapChain();
 		VulkanManager::GetInstance().SetDepthImage(new Rendering::Images::DepthImage());
-		// DrawManager::GetInstance().CreateDepthImage();
 		this->CreateFrameBuffer(Pipelines::PipelinesManager::GetInstance().GetRenderPass(), VulkanManager::GetInstance().GetDepthImage()->GetView());
 	}
 

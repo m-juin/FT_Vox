@@ -20,9 +20,6 @@
 
 using namespace Vox::Front;
 
-// Front::Window *win;
-// Front::Rendering::VulkanManager *vkManager;
-
 #include "Front/Utils/TexturesAtlas.hpp"
 
 void CleanUp()
@@ -134,9 +131,7 @@ int main()
 
 		if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR) // || FrameBufferResized
 		{
-			// this->ChangeFBStatus(false);
 			swap.RecreateSwapChain();
-			// SwapChain::GetInstance().Recreate(PipelinesManager::GetInstance().GetRenderPass());
 		}
 		else if (result != VK_SUCCESS)
 			throw std::runtime_error("Failed to present swap chain image!");

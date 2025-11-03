@@ -12,17 +12,12 @@ namespace Vox::Game::World::Skybox
 		this->_vertex = {Vector3(-1.0f, 1.0f, -1.0f), Vector3(-1.0f, -1.0f, -1.0f), Vector3(1.0f, -1.0f, -1.0f),
 						 Vector3(1.0f, 1.0f, -1.0f),  Vector3(-1.0f, 1.0f, 1.0f),	Vector3(-1.0f, -1.0f, 1.0f),
 						 Vector3(1.0f, -1.0f, 1.0f),  Vector3(1.0f, 1.0f, 1.0f)};
-		this->_index = {// face arrière
+		this->_index = {
 						0, 1, 2, 2, 3, 0,
-						// face avant
 						4, 5, 6, 6, 7, 4,
-						// gauche
 						4, 5, 1, 1, 0, 4,
-						// droite
 						3, 2, 6, 6, 7, 3,
-						// haut
 						4, 0, 3, 3, 7, 4,
-						// bas
 						1, 5, 6, 6, 2, 1};
 
 		this->B_Index = new sbuffer(1, _index.size() * sizeof(uint16_t), VK_BUFFER_USAGE_INDEX_BUFFER_BIT);

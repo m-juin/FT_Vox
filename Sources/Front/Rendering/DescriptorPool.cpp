@@ -15,10 +15,10 @@ namespace Vox::Front::Rendering
 	{
 		std::array<VkDescriptorPoolSize, 2> poolSizes;
 		poolSizes[0].descriptorCount = 11 + Vox::Front::Utils::TexturesData::MAX_DYNAMIC_TEXTURES;
-		poolSizes[0].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER; // Interface, texture atlas + font atlas;
+		poolSizes[0].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 
 		poolSizes[1].descriptorCount = 4;
-		poolSizes[1].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC; // VoxelObjects
+		poolSizes[1].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
 
 		VkDescriptorPoolCreateInfo poolInfo{};
 		poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;

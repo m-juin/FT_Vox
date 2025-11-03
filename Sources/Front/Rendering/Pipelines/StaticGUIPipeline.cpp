@@ -187,8 +187,6 @@ namespace Vox::Front::Rendering::Pipelines
 		samplerLayoutBindings[2].pImmutableSamplers = nullptr;
 		samplerLayoutBindings[2].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 
-		// std::vector<VkDescriptorSetLayoutBinding> bindings = {samplerLayoutBinding};
-
 		VkDescriptorSetLayoutCreateInfo layoutInfo{};
 		layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
 		layoutInfo.bindingCount = static_cast<uint32_t>(samplerLayoutBindings.size());
@@ -271,7 +269,6 @@ namespace Vox::Front::Rendering::Pipelines
 		fontInfo.imageView = fontAtlas.GetView();
 		fontInfo.sampler = fontAtlas.GetSampler();
 
-		// std::array<VkWriteDescriptorSet, 3> descriptorWrites{};
 		for (auto &desc : _descriptorWrites)
 			desc = {};
 		_descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;

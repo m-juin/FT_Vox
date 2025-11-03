@@ -32,7 +32,6 @@ namespace Vox::Game
 		E_InputAction inputAction =
 			button == this->_inputMap[E_InputAction::I_F3] ? E_InputAction::I_F3 : E_InputAction::I_Generation;
 		Game::GameManager::GetInstance().GetSceneManager().GetCurrentScene().HandleInputAction(inputAction);
-		// if (Game::GameManager::GetInstance().GetSceneManager().GetCurrentScene().HandleInputAction(inputAction))
 		return true;
 	}
 	

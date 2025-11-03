@@ -23,7 +23,7 @@ void main()
 	vec4 text;
 	if (inTexMode == 0)
 	{
-		float alpha = texture(fontAtlas, texCoord).r;   // masque de la font
+		float alpha = texture(fontAtlas, texCoord).r;
     	text = vec4(1.0, 1.0, 1.0, alpha);  
 	}
 	else if (inTexMode == 1)

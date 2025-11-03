@@ -12,7 +12,6 @@ namespace Vox::Game::Generation::Datas::Biomes
 	{
 		std::string path = Game::GameManager::GetInstance().GetTexturePackPath() + "Generation/BiomesRules.json";
 		JSONLib::Dictionnary rules = JSONLib::LoadJSON(path);
-		// JSONLib::Serializer::WriteDictToFD(std::cout, rules, 0, true);
 		for (const auto &pair : rules.As<JSONLib::JSONObject>())
 		{
 			Biomes bi = biomesStringToEnum.at(pair.first);
@@ -21,8 +20,6 @@ namespace Vox::Game::Generation::Datas::Biomes
 			for (auto item : current["SurfaceRules"].As<JSONLib::JSONVector>())
 				vList.push_back(
 					{static_cast<uint16_t>(item["SurfaceDistance"].As<int>()), static_cast<Game::Datas::Blocks::BlockType>(item["Block"].As<int>())});
-			// std::cout << "hello : " << std::boolalpha << current["HeightRule"]["MinHeight"].IsType<double>() <<
-			// std::endl;
 			std::pair<const Biomes, const SurfaceDecoration> paired = {
 				bi,
 				{vList,
@@ -39,11 +36,6 @@ namespace Vox::Game::Generation::Datas::Biomes
         auto &biomesSurfaces = RulesManager::RulesManager::GetInstance().decorationRule;
 		if (biomesSurfaces.find(biome) == biomesSurfaces.end())
 		{
-			// if (depth <= 0)
-			// return "Grass";
-			// else if (depth <= 3)
-			// return "Dirt";
-			// else
 			return Game::Datas::Blocks::BlockType::Stone;
 		}
 		for (auto &r : biomesSurfaces.at(biome).surfaceRules)
