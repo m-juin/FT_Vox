@@ -14,6 +14,8 @@ namespace Vox::Game::Datas::Blocks
 		Sand = 3,
 		Gravel = 4,
 
+		DEBUG= -5,
+
 		Water = 1001,
 	};
 
@@ -25,6 +27,7 @@ namespace Vox::Game::Datas::Blocks
 		{BlockType::Sand, "Sand"},
 		{BlockType::Gravel, "Gravel"},
 		{BlockType::Water, "Water"},
+		{BlockType::DEBUG, "Debug"}
 	};
 
 } // namespace Vox::Game::Datas::Blocks

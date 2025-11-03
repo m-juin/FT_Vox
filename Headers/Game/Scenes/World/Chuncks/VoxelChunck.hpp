@@ -28,6 +28,8 @@ namespace Vox::Game::World::Chuncks
 {
 	using namespace Game::Utils::Defines;
 
+	class ChunckCluster;
+
 	class VoxelChunck : public Models::DynamicObject
 	{
 		public:
@@ -35,6 +37,8 @@ namespace Vox::Game::World::Chuncks
 			{
 				MGL::Matrix::Matrix4 model;
 			};
+
+			friend class ChunckCluster;
 
 			using LocalVector = MGL::Vectors::Vector3<uint8_t>;
 			VoxelChunck() = delete;
@@ -53,6 +57,9 @@ namespace Vox::Game::World::Chuncks
 			};
 
 			uint16_t GetBuffer() const;
+			static size_t GetLocalIndex(const LocalVector &vec);
+			static LocalVector GetLocalVector(const size_t &index);
+
 
 		private:
 			std::array<Game::Datas::Blocks::BlockData, CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE> _blocksDatas;
@@ -69,12 +76,13 @@ namespace Vox::Game::World::Chuncks
 						 const LocalVector &facePos, const Game::Datas::Blocks::BlockType &blockType,
 						 const Vector3Float &faceColor = {1.0, 1.0, 1.0}, bool target = 0, float faceOffsef = 1.0);
 			void AssignModel() override;
-			static size_t GetLocalIndex(const LocalVector &vec);
-			static LocalVector GetLocalVector(const size_t &index);
 			std::bitset<CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE> BuildContent(
 				const uint8_t hMap[Generation::Utils::CACHE_SIZE * Generation::Utils::CACHE_SIZE]);
 
-			void SetBlockDatas(const Generation::Utils::ChunckCache &cache, std::bitset<CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE> &clusterContent);
+			void SetBlocksDatas(const Generation::Utils::ChunckCache &cache, std::bitset<CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE> &clusterContent);
+			void SetBlockDatas(const LocalVector &localPos, Vox::Game::Datas::Blocks::BlockType newType);
+
+			void BuildMesh(const std::vector<Game::Datas::Textures::TextureInfo> &textInfo, const std::vector<Game::Datas::Textures::TextureInfo> &transparenttextInfo, const Generation::Utils::ChunckCache &cache);
 
 			size_t _bufferIndex;
 			sbuffer *B_VertexOpaque;

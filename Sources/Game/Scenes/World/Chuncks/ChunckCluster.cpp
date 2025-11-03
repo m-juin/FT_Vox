@@ -4,6 +4,8 @@
 
 #include "Game/Scenes/World/Generation/PerlinUtils.hpp"
 
+#include "Game/Scenes/World/Generation/Decorations/PoissonDiskSampling.hpp"
+
 namespace Vox::Game::World::Chuncks
 {
 	uint16_t ChunckCluster::GetBuffer() const
@@ -98,18 +100,43 @@ namespace Vox::Game::World::Chuncks
 
 			this->_clusterContent[y]->BuildVoxelObject(spl, textInfo, transparenttextInfo, st, seed);
 		}
-		this->GenerateClusterDecoration(spl, textInfo, transparenttextInfo, seed);
+		if (this->IsGenerationCancelled())
+			return;
+		this->GenerateClusterDecoration(st, spl, seed);
+		if (this->IsGenerationCancelled())
+			return;
+		for (int y = chunksPerCluster - 1; y >= 0; y--)
+		{
+			if (this->IsGenerationCancelled())
+				return;
+			this->_clusterContent[y]->BuildMesh(textInfo, transparenttextInfo, st);
+		}
 		this->ChangeGenerationState(Generation::E_GenerationState::WaitingBuffer);
 	}
 
 	void ChunckCluster::GenerateClusterDecoration(
-		const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl,
-		const std::vector<Game::Datas::Textures::TextureInfo> &textInfo,
-		const std::vector<Game::Datas::Textures::TextureInfo> &transparenttextInfo, const uint32_t seed)
+		const Vox::Game::Generation::Utils::ChunckCache &cache,
+		const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl, const uint32_t seed)
 	{
+		auto seeded = MGL::Vectors::Vector2Hash<int>()(this->_clusterPos) + seed;
+		auto trees = Vox::World::Generation::Decorations::GenerateDiskTree(seeded, 4, {16, 16}, 10);
+		for (auto treePos : trees)
+		{
+			int localX = treePos[0];
+			int localZ = treePos[1];
+
+			int cacheX = localX + Game::Generation::Utils::GENERATION_BLEND_RADIUS;
+			int cacheZ = localZ + Game::Generation::Utils::GENERATION_BLEND_RADIUS;
+
+			size_t arrayIndex = cacheX * Game::Generation::Utils::CACHE_SIZE + cacheZ;
+			size_t worldHeight = cache.heightMap[arrayIndex];
+			auto chunckIndex = worldHeight / CHUNCK_SIZE;
+			float localHeight = worldHeight % CHUNCK_SIZE;
+			this->_clusterContent[chunckIndex]->SetBlockDatas(
+				{static_cast<uint8_t>(treePos[0]), static_cast<uint8_t>(localHeight), static_cast<uint8_t>(treePos[1])},
+				Vox::Game::Datas::Blocks::BlockType::DEBUG);
+		}
 		(void)spl;
-		(void)textInfo;
-		(void)transparenttextInfo;
 		(void)seed;
 	}
 
@@ -117,7 +144,7 @@ namespace Vox::Game::World::Chuncks
 	{
 		return this->_clusterPos;
 	}
-	
+
 	void ChunckCluster::SetBlock(MGL::Vectors::Vector3<uint8_t> localPos)
 	{
 		(void)localPos;

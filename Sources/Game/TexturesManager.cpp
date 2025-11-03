@@ -56,6 +56,7 @@ namespace Vox::Front::Scenes
 				{"Sand", T_Path + "Blocks/sand.png"},
 				{"Gravel", T_Path + "Blocks/gravel.png"},
 				{"Water", T_Path + "Blocks/water.png", T_Path + "Blocks/Masks/mask_grass_uncolored_top.png"},
+				{"Debug", T_Path + "Blocks/DEBUG/TMP_White_Debug.png"},
 			},
 			4);
 		this->_texturesMap["A_Blocks_Transparent"] = new Front::Utils::MaskedTexturesAtlas(

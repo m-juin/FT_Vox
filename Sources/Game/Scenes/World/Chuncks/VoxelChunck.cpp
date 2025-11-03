@@ -55,11 +55,80 @@ namespace Vox::Game::World::Chuncks
 	{
 		(void)spl;
 		(void)seed;
+		(void)textInfo;
+		(void)transparenttextInfo;
 		std::bitset<CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE> clusterContent = this->BuildContent(cache.heightMap);
+		this->SetBlocksDatas(cache, clusterContent);
+	}
+
+	std::bitset<CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE> VoxelChunck::BuildContent(
+		const uint8_t hMap[Generation::Utils::CACHE_SIZE * Generation::Utils::CACHE_SIZE])
+	{
+		std::bitset<CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE> clusterContent;
 
 		LocalVector it(0);
+		for (it[0] = 0; it[0] < Utils::Defines::CHUNCK_SIZE; it[0]++)
+		{
+			for (it[2] = 0; it[2] < Utils::Defines::CHUNCK_SIZE; it[2]++)
+			{
+				uint8_t target =
+					hMap[(it[0] + Generation::Utils::GENERATION_BLEND_RADIUS) * Generation::Utils::CACHE_SIZE +
+						 (it[2] + Generation::Utils::GENERATION_BLEND_RADIUS)];
+				for (it[1] = 0; it[1] < CHUNCK_SIZE; it[1]++)
+				{
+					if (it[1] + this->_position[1] <= target)
+						clusterContent.set(GetLocalIndex(it));
+				}
+			}
+		}
 
-		auto checkFace = [this, &clusterContent, &textInfo,
+		return clusterContent;
+	}
+
+	void VoxelChunck::SetBlocksDatas(const Generation::Utils::ChunckCache &cache,
+									 std::bitset<CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE> &clusterContent)
+	{
+		LocalVector it(0);
+		for (it[0] = 0; it[0] < CHUNCK_SIZE; it[0]++)
+		{
+			for (it[2] = 0; it[2] < CHUNCK_SIZE; it[2]++)
+			{
+				size_t cacheIndex =
+					(it[0] + Generation::Utils::GENERATION_BLEND_RADIUS) * Generation::Utils::CACHE_SIZE +
+					(it[2] + Generation::Utils::GENERATION_BLEND_RADIUS);
+				Game::Datas::Biomes::Biomes biome = cache.biome[cacheIndex];
+				uint8_t worldHeight = cache.heightMap[cacheIndex];
+				for (it[1] = 0; it[1] < CHUNCK_SIZE; it[1]++)
+				{
+					uint16_t mapIndex = GetLocalIndex(it);
+					size_t h = this->_position[1] + (int)it[1];
+					if (!clusterContent[mapIndex])
+					{
+						if (h > Generation::Utils::WATER_LEVEL)
+							this->_blocksDatas[mapIndex].type = Game::Datas::Blocks::BlockType::Air;
+						else
+							this->_blocksDatas[mapIndex].type = Game::Datas::Blocks::BlockType::Water;
+					}
+					else
+					{
+						this->_blocksDatas[mapIndex].type = Generation::Datas::Biomes::RulesManager::GetBlockType(biome, (int)worldHeight - (h));
+					}
+				}
+			}
+		}
+	}
+
+	void VoxelChunck::SetBlockDatas(const LocalVector &localPos, Vox::Game::Datas::Blocks::BlockType newType)
+	{
+		size_t index = this->GetLocalIndex(localPos);
+		this->_blocksDatas[index].type = newType;
+	}
+
+	void VoxelChunck::BuildMesh(const std::vector<Game::Datas::Textures::TextureInfo> &textInfo,
+								const std::vector<Game::Datas::Textures::TextureInfo> &transparenttextInfo,
+								const Generation::Utils::ChunckCache &cache)
+	{
+		auto checkFace = [this, &textInfo,
 						  &cache](const LocalVector &it, int offsetX, int offsetY, int offsetZ, Faces face,
 								  const Game::Datas::Blocks::BlockType &blockType, const Vector3Float &color)
 		{
@@ -70,7 +139,8 @@ namespace Vox::Game::World::Chuncks
 				neighbor[2] < static_cast<int>(CHUNCK_SIZE))
 			{
 				uint16_t neighborIndex = GetLocalIndex(LocalVector(neighbor[0], neighbor[1], neighbor[2]));
-				if (!clusterContent[neighborIndex])
+				Vox::Game::Datas::Blocks::BlockType neightborType = this->_blocksDatas[neighborIndex].type;
+				if (neightborType == Vox::Game::Datas::Blocks::BlockType::Air || neightborType == Vox::Game::Datas::Blocks::BlockType::Water)
 					this->AddFace(textInfo, face, it, blockType, color);
 				return;
 			}
@@ -99,6 +169,7 @@ namespace Vox::Game::World::Chuncks
 			}
 		};
 
+		LocalVector it(0);
 		for (it[0] = 0; it[0] < CHUNCK_SIZE; it[0]++)
 		{
 			for (it[2] = 0; it[2] < CHUNCK_SIZE; it[2]++)
@@ -107,14 +178,13 @@ namespace Vox::Game::World::Chuncks
 					(it[0] + Generation::Utils::GENERATION_BLEND_RADIUS) * Generation::Utils::CACHE_SIZE +
 					(it[2] + Generation::Utils::GENERATION_BLEND_RADIUS);
 				Game::Datas::Biomes::Biomes biome = cache.biome[cacheIndex];
-				uint8_t worldHeight = cache.heightMap[cacheIndex];
 				for (it[1] = 0; it[1] < CHUNCK_SIZE; it[1]++)
 				{
 					uint16_t mapIndex = GetLocalIndex(it);
-					size_t h = this->_position[1] + (int)it[1];
-					if (!clusterContent[mapIndex] && h != Generation::Utils::WATER_LEVEL)
+					Game::Datas::Blocks::BlockType _type = this->_blocksDatas[mapIndex].type;
+					if (_type == Vox::Game::Datas::Blocks::BlockType::Air)
 						continue;
-					else if (!clusterContent[mapIndex] && h == Generation::Utils::WATER_LEVEL)
+					else if (_type == Vox::Game::Datas::Blocks::BlockType::Water)
 					{
 						Vector3Float color = {1.0, 1.0, 1.0};
 						Vector3Int biomeColor = Game::Datas::Biomes::biomesColors[biome];
@@ -123,11 +193,7 @@ namespace Vox::Game::World::Chuncks
 						checkFaceWater(it, 0, 1, 0, Faces::TOP, color);
 						continue;
 					}
-
-					Game::Datas::Blocks::BlockType _type;
 					Vector3Float color = {1.0, 1.0, 1.0};
-					_type =
-						Generation::Datas::Biomes::RulesManager::GetBlockType(biome, (int)worldHeight - (h));
 					if (_type == Game::Datas::Blocks::BlockType::Grass)
 					{
 						Vector3Int biomeColor = Game::Datas::Biomes::biomesColors[biome];
@@ -141,63 +207,6 @@ namespace Vox::Game::World::Chuncks
 					checkFace(it, 1, 0, 0, Faces::RIGHT, _type, color);
 					checkFace(it, 0, 0, 1, Faces::FRONT, _type, color);
 					checkFace(it, 0, 0, -1, Faces::BACK, _type, color);
-				}
-			}
-		}
-	}
-
-	std::bitset<CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE> VoxelChunck::BuildContent(
-		const uint8_t hMap[Generation::Utils::CACHE_SIZE * Generation::Utils::CACHE_SIZE])
-	{
-		std::bitset<CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE> clusterContent;
-
-		LocalVector it(0);
-		for (it[0] = 0; it[0] < Utils::Defines::CHUNCK_SIZE; it[0]++)
-		{
-			for (it[2] = 0; it[2] < Utils::Defines::CHUNCK_SIZE; it[2]++)
-			{
-				uint8_t target =
-					hMap[(it[0] + Generation::Utils::GENERATION_BLEND_RADIUS) * Generation::Utils::CACHE_SIZE +
-						 (it[2] + Generation::Utils::GENERATION_BLEND_RADIUS)];
-				for (it[1] = 0; it[1] < CHUNCK_SIZE; it[1]++)
-				{
-					if (it[1] + this->_position[1] <= target)
-						clusterContent.set(GetLocalIndex(it));
-				}
-			}
-		}
-
-		return clusterContent;
-	}
-	
-	void VoxelChunck::SetBlockDatas(const Generation::Utils::ChunckCache &cache, std::bitset<CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE> &clusterContent)
-	{
-		LocalVector it(0);
-		for (it[0] = 0; it[0] < CHUNCK_SIZE; it[0]++)
-		{
-			for (it[2] = 0; it[2] < CHUNCK_SIZE; it[2]++)
-			{
-				size_t cacheIndex =
-					(it[0] + Generation::Utils::GENERATION_BLEND_RADIUS) * Generation::Utils::CACHE_SIZE +
-					(it[2] + Generation::Utils::GENERATION_BLEND_RADIUS);
-				Game::Datas::Biomes::Biomes biome = cache.biome[cacheIndex];
-				uint8_t worldHeight = cache.heightMap[cacheIndex];
-				for (it[1] = 0; it[1] < CHUNCK_SIZE; it[1]++)
-				{
-					uint16_t mapIndex = GetLocalIndex(it);
-					size_t h = this->_position[1] + (int)it[1];
-					if (!clusterContent[mapIndex])
-					{
-						if (h > Generation::Utils::WATER_LEVEL)
-							this->_blocksDatas[mapIndex].type = Game::Datas::Blocks::BlockType::Air;
-						else
-							this->_blocksDatas[mapIndex].type = Game::Datas::Blocks::BlockType::Water;
-					}
-					else
-					{
-						(void)worldHeight;
-						(void)biome;
-					}
 				}
 			}
 		}
@@ -298,8 +307,8 @@ namespace Vox::Game::World::Chuncks
 	}
 
 	void VoxelChunck::AddFace(const std::vector<Game::Datas::Textures::TextureInfo> &textInfo, const Faces &face,
-							  const LocalVector &facePos, const Game::Datas::Blocks::BlockType &blockType, const Vector3Float &faceColor,
-							  bool target, float faceOffsef)
+							  const LocalVector &facePos, const Game::Datas::Blocks::BlockType &blockType,
+							  const Vector3Float &faceColor, bool target, float faceOffsef)
 	{
 		std::array<Vertex, 4> toAdd = defaultFacesPos.at(face);
 
