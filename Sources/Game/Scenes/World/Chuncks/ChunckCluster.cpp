@@ -118,8 +118,8 @@ namespace Vox::Game::World::Chuncks
 		const Vox::Game::Generation::Utils::ChunckCache &cache,
 		const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl, const uint32_t seed)
 	{
-		auto seeded = MGL::Vectors::Vector2Hash<int>()(this->_clusterPos) + seed;
-		auto trees = Vox::World::Generation::Decorations::GenerateDiskTree(seeded, 4, {16, 16}, 10);
+		size_t regionSeed = Vox::World::Generation::Decorations::GetRegionnedSeed(seed, this->_clusterPos, 2);
+		auto trees = Vox::World::Generation::Decorations::GetChunckDiskSampling(this->_clusterPos, regionSeed, 7.0, 2, 10);
 		for (auto treePos : trees)
 		{
 			int localX = treePos[0];
@@ -129,9 +129,13 @@ namespace Vox::Game::World::Chuncks
 			int cacheZ = localZ + Game::Generation::Utils::GENERATION_BLEND_RADIUS;
 
 			size_t arrayIndex = cacheX * Game::Generation::Utils::CACHE_SIZE + cacheZ;
+			if (Vox::Game::Generation::Datas::Biomes::RulesManager::GetTreeDentisty(cache.biome[arrayIndex]) == 0)
+				continue;
 			size_t worldHeight = cache.heightMap[arrayIndex];
 			auto chunckIndex = worldHeight / CHUNCK_SIZE;
 			float localHeight = worldHeight % CHUNCK_SIZE;
+			if (worldHeight < Generation::Utils::WATER_LEVEL)
+				continue;
 			this->_clusterContent[chunckIndex]->SetBlockDatas(
 				{static_cast<uint8_t>(treePos[0]), static_cast<uint8_t>(localHeight), static_cast<uint8_t>(treePos[1])},
 				Vox::Game::Datas::Blocks::BlockType::DEBUG);

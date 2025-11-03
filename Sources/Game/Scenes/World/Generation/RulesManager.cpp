@@ -25,7 +25,7 @@ namespace Vox::Game::Generation::Datas::Biomes
 				{vList,
 				 HeightRule(current["HeightRule"]["Multipliyer"].As<double>(),
 							static_cast<double>(current["HeightRule"]["MinHeight"].As<int>())),
-				 current["WaterAffecter"].As<bool>()}};
+				 current["WaterAffecter"].As<bool>(), current["TreeDensity"].As<double>()}};
 
 			this->decorationRule.insert(paired);
 		}
@@ -53,4 +53,13 @@ namespace Vox::Game::Generation::Datas::Biomes
 			return val;
 		return biomesSurfaces.at(biome).heightRules.Apply(val);
 	}
+
+	float RulesManager::GetTreeDentisty(Biomes biome)
+	{
+        auto &biomesSurfaces = RulesManager::RulesManager::GetInstance().decorationRule;
+		if (biomesSurfaces.find(biome) == biomesSurfaces.end())
+			return 4.0;
+		return biomesSurfaces.at(biome).treeDensity;
+	}
+
 } // namespace Vox::Game::Generation::Datas::Biomes

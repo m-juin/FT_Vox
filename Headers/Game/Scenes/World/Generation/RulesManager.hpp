@@ -17,6 +17,7 @@ namespace Vox::Game::Generation::Datas::Biomes
             ~RulesManager() {};
             static Game::Datas::Blocks::BlockType GetBlockType(Biomes biome, int depth);
             static float GetHeight(Biomes biome, const float &val);
+            static float GetTreeDentisty(Biomes biome);
             std::unordered_map<const Biomes, const SurfaceDecoration> decorationRule;
         private:
             // JSONLib::Dictionnary _rules;

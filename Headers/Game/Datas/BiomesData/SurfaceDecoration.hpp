@@ -17,6 +17,7 @@ namespace Vox::Game::Generation::Datas::Biomes
 			const std::vector<SurfaceRule> surfaceRules;
 			const HeightRule heightRules;
 			const bool haveWater;
+			const double treeDensity;
 	};
 
 	using Biomes = Game::Datas::Biomes::Biomes;

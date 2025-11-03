@@ -103,6 +103,63 @@ namespace Vox::World::Generation::Decorations
 		}
 		return points;
 	}
+	/// @brief Generate a PoissonDisk based on multiple factors annd inside a particular region
+	/// @param worldChunck the target world chunck
+	/// @param seed the Seed of the world + the hash of the region
+	/// @param radius radius between each tree
+	/// @param regionRadius the number of chunck around the target one
+	/// @param tryBeforeRejection the try amount to find a suitable spawnPoint
+	/// @return
+inline std::vector<Vector2> GetChunckDiskSampling(
+    Vector2Int worldChunk, 
+    uint64_t seed, 
+    float radius = 2.f, 
+    size_t regionRadius = 2,
+    size_t tryBeforeRejection = 30)
+{
+    int regionSize = static_cast<int>(regionRadius * 2 + 1);
+    
+    
+    Vector2Int chunkInRegion = {
+        (worldChunk[0] % regionSize + regionSize) %regionSize,
+        (worldChunk[1] % regionSize + regionSize) %regionSize
+    };
+    
+	int regionSizeInBlock = static_cast<int>(regionSize * Game::Utils::Defines::CHUNCK_SIZE);
+    
+    auto regionTrees = GenerateDiskTree(seed, radius, {regionSizeInBlock, regionSizeInBlock}, tryBeforeRejection);
+    
+    Vector2Int chunkStartInRegion = {
+        static_cast<int>(chunkInRegion[0] * Game::Utils::Defines::CHUNCK_SIZE),
+        static_cast<int>(chunkInRegion[1] * Game::Utils::Defines::CHUNCK_SIZE)
+    };
+    
+    std::vector<Vector2> localTrees;
+    for (const auto& tree : regionTrees) 
+    {
+        if (tree[0] >= chunkStartInRegion[0] && 
+            tree[0] < chunkStartInRegion[0] + Game::Utils::Defines::CHUNCK_SIZE &&
+            tree[1] >= chunkStartInRegion[1] && 
+            tree[1] < chunkStartInRegion[1] + Game::Utils::Defines::CHUNCK_SIZE) 
+        {
+            localTrees.push_back({
+                tree[0] - chunkStartInRegion[0],
+                tree[1] - chunkStartInRegion[1]
+            });
+        }
+    }
+    
+    return localTrees;
+}
+
+	inline uint64_t GetRegionnedSeed(uint64_t worldSeed, Vector2Int chunckPos, uint8_t regionRadius)
+	{
+		size_t regionSize = regionRadius * 2 + 1;
+		Vector2Int worldRegion = {static_cast<int>(chunckPos[0] / regionSize), static_cast<int>(chunckPos[1] / regionSize)};
+		size_t regionSeed = worldSeed + MGL::Vectors::Vector2Hash<int>()(worldRegion);
+		return regionSeed;
+	}
+
 #include "Utils/Images/PutPixels.hpp"
 
 	inline std::vector<uint8_t> GenerateDiskImage(uint64_t seed, uint16_t imgSize)
@@ -126,7 +183,8 @@ namespace Vox::World::Generation::Decorations
 				{
 					MGL::Vectors::Vector2<int> effectiveCoord = {static_cast<int>(treePos[0] * 25 + x),
 																 static_cast<int>(treePos[1] * 25 + y)};
-					if (effectiveCoord[0] >= 0 && effectiveCoord[0] < 400 && effectiveCoord[1] >= 0 && effectiveCoord[1] < 400)
+					if (effectiveCoord[0] >= 0 && effectiveCoord[0] < 400 && effectiveCoord[1] >= 0 &&
+						effectiveCoord[1] < 400)
 					{
 						PutPixel(img, vImgSize,
 								 {static_cast<size_t>(effectiveCoord[0]), static_cast<size_t>(effectiveCoord[1])},
