@@ -6,6 +6,7 @@
 #include <list>
 
 #include "Game/Scenes/World/Utils/Defines.hpp"
+#include "./ChunkOverflowManager.hpp"
 
 namespace Vox::Game::World::Chuncks
 {
@@ -33,7 +34,7 @@ namespace Vox::Game::Generation
 			void FlagPool();
 
 		private:
-
+			std::unique_ptr<Game::Generation::ChunkOverflowManager> _oManager;
 			void CheckForPoolRebuild();
 			bool _needThreadRefresh = false;
 			uint64_t _seed; 

@@ -160,9 +160,9 @@ namespace Vox::Game::World::Chuncks
 		const Vox::Game::Generation::Utils::ChunckCache &cache,
 		const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl, const uint32_t seed)
 	{
-		GenerateTree(cache, seed);
 		(void)spl;
 		(void)seed;
+		(void)cache;
 	}
 
 	ChunckCoord ChunckCluster::GetPosition()

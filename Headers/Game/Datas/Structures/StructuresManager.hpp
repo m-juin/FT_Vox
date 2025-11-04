@@ -1,0 +1,31 @@
+#ifndef __STRUCTURESMANAGER_HPP__
+#define __STRUCTURESMANAGER_HPP__
+
+#include <unordered_map>
+
+#include "./StructuresTypes.hpp"
+#include "./Structure.hpp"
+
+#include "MathGraphicalLib/Vectors/Vector3.hpp"
+
+namespace Vox::Game::Datas::Structures
+{
+    class StructuresManager
+    {
+        public:
+            StructuresManager();
+            ~StructuresManager();
+    
+            std::unordered_map<MGL::Vectors::Vector3<uint8_t>, Blocks::BlockType, MGL::Vectors::Vector3Hash<uint8_t>> GetStructBlocks(StructuresType _type);
+
+        private:
+            void LoadStructures();
+            std::unordered_map<StructuresType, Structure> _list;
+            /* private */
+    
+    };
+} // namespace Vox::Game::Datas::Structures
+
+
+
+#endif // __STRUCTURESMANAGER_HPP__
