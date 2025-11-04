@@ -5,19 +5,29 @@
 
 #include <unordered_map>
 #include <vector>
+#include <algorithm>
 
 #include "../Biomes.hpp"
 
 #include "MathGraphicalLib/Vectors/Vector3.hpp"
 
+
 namespace Vox::Game::Generation::Datas::Biomes
 {
+
 	struct SurfaceDecoration
 	{
 			const std::vector<SurfaceRule> surfaceRules;
 			const HeightRule heightRules;
 			const bool haveWater;
-			const double treeDensity;
+			const double treeChance;
+
+			SurfaceDecoration(std::vector<SurfaceRule> surfaceRules_, HeightRule heightRules_, bool haveWater_,
+							  double treeChance_)
+				: surfaceRules(surfaceRules_), heightRules(heightRules_), haveWater(haveWater_),
+				  treeChance(treeChance_)
+			{
+			}
 	};
 
 	using Biomes = Game::Datas::Biomes::Biomes;

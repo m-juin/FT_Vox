@@ -6,7 +6,7 @@ int main()
     
 	for (auto &subDict : dict.As<JSONLib::JSONObject>())
     {
-        dict[subDict.first]["TreeDensity"] = 0.0;
+        dict[subDict.first]["TreeChance"] = 0.0;
     }
     JSONLib::ExportToJSON(dict, "./Assets/TexturesPacks/1/Generation/BiomesRules2.json");
 }

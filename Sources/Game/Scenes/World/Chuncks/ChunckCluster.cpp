@@ -114,12 +114,12 @@ namespace Vox::Game::World::Chuncks
 		this->ChangeGenerationState(Generation::E_GenerationState::WaitingBuffer);
 	}
 
-	void ChunckCluster::GenerateClusterDecoration(
-		const Vox::Game::Generation::Utils::ChunckCache &cache,
-		const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl, const uint32_t seed)
+	void ChunckCluster::GenerateTree(const Vox::Game::Generation::Utils::ChunckCache &cache, const uint32_t seed)
 	{
 		size_t regionSeed = Vox::World::Generation::Decorations::GetRegionnedSeed(seed, this->_clusterPos, 2);
-		auto trees = Vox::World::Generation::Decorations::GetChunckDiskSampling(this->_clusterPos, regionSeed, 7.0, 2, 10);
+		auto trees =
+			Vox::World::Generation::Decorations::GetChunckDiskSampling(this->_clusterPos, regionSeed, 4.0, 2, 10);
+		std::map<Game::Datas::Biomes::Biomes, uint8_t> counters;
 		for (auto treePos : trees)
 		{
 			int localX = treePos[0];
@@ -129,17 +129,38 @@ namespace Vox::Game::World::Chuncks
 			int cacheZ = localZ + Game::Generation::Utils::GENERATION_BLEND_RADIUS;
 
 			size_t arrayIndex = cacheX * Game::Generation::Utils::CACHE_SIZE + cacheZ;
-			if (Vox::Game::Generation::Datas::Biomes::RulesManager::GetTreeDentisty(cache.biome[arrayIndex]) == 0)
+			auto biome = cache.biome[arrayIndex];
+			auto biomeDensity = Vox::Game::Generation::Datas::Biomes::RulesManager::GetTreeChance(biome);
+			if (biomeDensity == 0)
 				continue;
 			size_t worldHeight = cache.heightMap[arrayIndex];
 			auto chunckIndex = worldHeight / CHUNCK_SIZE;
 			float localHeight = worldHeight % CHUNCK_SIZE;
 			if (worldHeight < Generation::Utils::WATER_LEVEL)
 				continue;
-			this->_clusterContent[chunckIndex]->SetBlockDatas(
-				{static_cast<uint8_t>(treePos[0]), static_cast<uint8_t>(localHeight), static_cast<uint8_t>(treePos[1])},
-				Vox::Game::Datas::Blocks::BlockType::DEBUG);
+			auto it = counters.find(biome);
+			if (it == counters.end())
+			{
+				counters[biome] = 1;
+				it = counters.find(biome); 
+			}
+			else
+				it->second += 1;
+			if ((double)it->second >= 10 - biomeDensity / 10)
+				it->second = 0;
+			if (it->second == 0.0)
+				this->_clusterContent[chunckIndex]->SetBlockDatas({static_cast<uint8_t>(treePos[0]),
+																   static_cast<uint8_t>(localHeight),
+																   static_cast<uint8_t>(treePos[1])},
+																  Vox::Game::Datas::Blocks::BlockType::DEBUG);
 		}
+	}
+
+	void ChunckCluster::GenerateClusterDecoration(
+		const Vox::Game::Generation::Utils::ChunckCache &cache,
+		const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl, const uint32_t seed)
+	{
+		GenerateTree(cache, seed);
 		(void)spl;
 		(void)seed;
 	}
