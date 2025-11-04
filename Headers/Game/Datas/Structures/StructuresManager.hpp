@@ -2,6 +2,7 @@
 #define __STRUCTURESMANAGER_HPP__
 
 #include <unordered_map>
+#include <cstdint>
 
 #include "./StructuresTypes.hpp"
 #include "./Structure.hpp"

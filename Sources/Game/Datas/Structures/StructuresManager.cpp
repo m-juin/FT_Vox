@@ -12,9 +12,10 @@ namespace Vox::Game::Datas::Structures
         
     }
     
-    std::unordered_map<MGL::Vectors::Vector3<uint8_t>, Blocks::BlockType, MGL::Vectors::Vector3Hash<uint8_t>> StructuresManager::GetStructBlocks(StructuresType _type)
+    std::unordered_map<MGL::Vectors::Vector3<uint8_t>, Blocks::BlockType, MGL::Vectors::Vector3Hash<uint8_t>> StructuresManager::GetStructBlocks(StructuresType type)
     {
-        
+        (void)type;
+        return {};
     }
     
     void StructuresManager::LoadStructures()

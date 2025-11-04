@@ -2,6 +2,7 @@
 #define __BLOCKSTYPE_HPP__
 
 #include <map>
+#include <string>
 
 namespace Vox::Game::Datas::Blocks
 {
