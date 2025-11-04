@@ -14,6 +14,7 @@ namespace Vox::Game::Generation
 	GenerationManager::GenerationManager(const uint64_t seed) : _seed(seed)
 	{
 		this->_oManager = std::make_unique<Generation::ChunkOverflowManager>();
+		this->_sManager = std::make_unique<Game::Datas::Structures::StructuresManager>();
 		this->onUpdate.AddCallBack([this]() { this->UpdateGeneration(); });
 		this->onUpdate.AddCallBack([this]() { this->CheckForPoolRebuild();});
 	}

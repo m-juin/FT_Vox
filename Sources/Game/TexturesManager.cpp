@@ -14,14 +14,14 @@ namespace Vox::Front::Scenes
 {
 	TexturesManager::TexturesManager(const std::string &T_Path)
 	{
-		this->CreateMap(T_Path);
-		this->CreateDynamicSampler();
 		this->_avalaibleDynamicImages.flip();
 		if (Rendering::Images::DummyImage::IsInit() == false)
 			Rendering::Images::DummyImage::Init();
 		auto &dummy = Rendering::Images::DummyImage::GetInstance();
 		for (size_t i = 0; i < Vox::Front::Utils::TexturesData::MAX_DYNAMIC_TEXTURES; i++)
 			this->_dynamicImages[i] = dummy.GetView();
+		this->CreateMap(T_Path);
+		this->CreateDynamicSampler();
 	}
 
 	TexturesManager::~TexturesManager()
@@ -71,7 +71,7 @@ namespace Vox::Front::Scenes
 
 	int TexturesManager::AddDynamicImage(VkImageView &view)
 	{
-		std::cout << "Image is added\n";
+		std::cout << "here1\n";
 		int index = this->_avalaibleDynamicImages._Find_first();
 		if (index == Vox::Front::Utils::TexturesData::MAX_DYNAMIC_TEXTURES)
 			return -1;
@@ -81,7 +81,10 @@ namespace Vox::Front::Scenes
 		auto pipeline = pipelineManager.operator[]<Rendering::Pipelines::StaticGUIPipeline>("StaticGUI");
 
 		if (pipeline == nullptr)
+		{
+			std::cout << "here2\n";
 			return index;
+		}
 		pipeline->UpdateSet(index);
 		return index;
 	}

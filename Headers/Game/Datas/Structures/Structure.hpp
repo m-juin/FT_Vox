@@ -8,13 +8,15 @@ namespace Vox::Game::Datas::Structures
     class Structure
     {
         public:
-            Structure() {};
+            Structure() = delete;
+            Structure(const std::string &path);
             ~Structure() {};
     
         private:
             /* private */
     
     };
+    
 } // namespace Vox::Game::Datas::Structures
 
 #endif // __STRUCTURE_HPP__

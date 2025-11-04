@@ -7,6 +7,7 @@
 
 #include "Game/Scenes/World/Utils/Defines.hpp"
 #include "./ChunkOverflowManager.hpp"
+#include "Game/Datas/Structures/StructuresManager.hpp"
 
 namespace Vox::Game::World::Chuncks
 {
@@ -35,6 +36,7 @@ namespace Vox::Game::Generation
 
 		private:
 			std::unique_ptr<Game::Generation::ChunkOverflowManager> _oManager;
+			std::unique_ptr<Game::Datas::Structures::StructuresManager> _sManager;
 			void CheckForPoolRebuild();
 			bool _needThreadRefresh = false;
 			uint64_t _seed; 

@@ -104,7 +104,7 @@ namespace Vox::Front::Rendering::Pipelines
 		colorBlendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
 		colorBlendAttachment.colorBlendOp = VK_BLEND_OP_ADD;
 
-		
+
 		colorBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
 		colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
 		colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;
@@ -297,6 +297,7 @@ namespace Vox::Front::Rendering::Pipelines
 		{
 			_dynamicInfos[index].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 			_dynamicInfos[index].imageView = dynamicsTextures[index];
+			std::cout << dynamicsTextures[index] << std::endl;
 			_dynamicInfos[index].sampler = sampler;
 		}
 		_descriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
