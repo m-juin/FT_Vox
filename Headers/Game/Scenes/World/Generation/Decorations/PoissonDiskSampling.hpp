@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "MathGraphicalLib/Vectors/Vector2.hpp"
+#include "MathGraphicalLib/Utils.hpp"
 
 #include "Game/Scenes/World/Generation/Utils.hpp"
 

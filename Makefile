@@ -37,8 +37,11 @@ Deps := $(JSONLib) $(STB_OBJS) $(Shaders) $(FTP_INSTALL_DIR)
 all: $(OBJS) $(EXECUTABLE)
 
 sanitize: CXXFLAGS += -fsanitize=address
-sanitize: clean
-sanitize: all
+sanitize: clean all
+
+debug: CXXFLAGS += -DDEBUG_WORLD
+debug: all
+	./FT_VOX
 
 $(OBJS_DIRS):
 	@mkdir -p $@

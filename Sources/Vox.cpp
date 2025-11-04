@@ -45,16 +45,18 @@ int main()
 	Rendering::VulkanManager::Init();
 	Window::GetInstance().SetupSurface();
 
-	Rendering::Device::Init(Rendering::VulkanManager::GetInstance().GetVkInstance(), Window::GetInstance().GetSurface());
+	Rendering::Device::Init(Rendering::VulkanManager::GetInstance().GetVkInstance(),
+							Window::GetInstance().GetSurface());
 
 	Rendering::Device &device = Rendering::Device::GetInstance();
 
 	Rendering::SwapChain::Init();
 	Rendering::DescriptorPool::Init();
 	Rendering::Pipelines::PipelinesManager::Init();
-	Rendering::VulkanManager::GetInstance().SetDepthImage(
-		new Rendering::Images::DepthImage());
-	Rendering::SwapChain::GetInstance().CreateFrameBuffer(Rendering::Pipelines::PipelinesManager::GetInstance().GetRenderPass(), Rendering::VulkanManager::GetInstance().GetDepthImage()->GetView());
+	Rendering::VulkanManager::GetInstance().SetDepthImage(new Rendering::Images::DepthImage());
+	Rendering::SwapChain::GetInstance().CreateFrameBuffer(
+		Rendering::Pipelines::PipelinesManager::GetInstance().GetRenderPass(),
+		Rendering::VulkanManager::GetInstance().GetDepthImage()->GetView());
 	Rendering::CommandsPool::Init(Window::GetInstance().GetSurface());
 	Rendering::SyncObjects::Init();
 
@@ -78,9 +80,8 @@ int main()
 		vkWaitForFences(device.GetLogicalDevice(), 1, &fence, VK_TRUE, UINT64_MAX);
 
 		uint32_t imageIndex = 0;
-		VkResult result = vkAcquireNextImageKHR(
-			device.GetLogicalDevice(), swap.GetVulkanInstance(), UINT64_MAX,
-			sync.GetCurrentImageSemaphore(), VK_NULL_HANDLE, &imageIndex);
+		VkResult result = vkAcquireNextImageKHR(device.GetLogicalDevice(), swap.GetVulkanInstance(), UINT64_MAX,
+												sync.GetCurrentImageSemaphore(), VK_NULL_HANDLE, &imageIndex);
 		if (result == VK_ERROR_OUT_OF_DATE_KHR)
 		{
 			swap.RecreateSwapChain();
