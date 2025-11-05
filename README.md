@@ -124,6 +124,11 @@ Current state of the project.
 
 Some screenshots of in game content. Still WIP:
 
+<img width="3836" height="2053" alt="Capture d&#39;écran 2025-11-05 151307" src="https://github.com/user-attachments/assets/62ebb4f9-871f-49dc-884a-ee747698fa0d" />
+<img width="3834" height="2055" alt="Capture d&#39;écran 2025-11-05 151223" src="https://github.com/user-attachments/assets/634231d5-3df6-4616-b431-289110d7fce1" />
+<img width="3836" height="2055" alt="Capture d&#39;écran 2025-11-05 151055" src="https://github.com/user-attachments/assets/a7e66198-284d-487e-b54a-80819f27007e" />
+
+
 ---
 
 ## Controls
