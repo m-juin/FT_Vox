@@ -1,4 +1,4 @@
-URL = https://github.com/m-juin/JSONLib/archive/refs/tags/1.0.0.tar.gz
+URL = https://github.com/m-juin/JSONLib/archive/refs/tags/1.0.1.tar.gz
 
 JSONLib = Ext/JsonLib/Json.hpp
 
