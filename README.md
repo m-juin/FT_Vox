@@ -112,11 +112,14 @@ Current state of the project.
 |**Skybox**| Implementation of a cubemap skybox. |<span style="color:green">**Completed**</span>| 
 |**Biomes Decoration**| Implement some biomes decoration such as Tree, lacs, flower ...|<span style="color:yellow">**Started**</span>|
 |**Better generation values**| Improve the current generation value for a better result.  |<span style="color:yellow">**Started**</span>|
+|**Ressources packs**| Allowing loading of custom ressources pack who include generation parameter, textures, structures...  |<span style="color:yellow">**Started**</span>|
 |**Camera Frustrum**| Display chunck only if they are on the camera frustrum. |<span style="color:red">**Not Started**</span>| 
 |**Caves**| Implementation of a caving system. |<span style="color:red">**Not Started**</span>|
 |**Chunck Modification**| Allowing user to add / break blocks. |<span style="color:red">**Not Started**</span>|
 |**Saving System**| Allowing a saving of generated chuncks with their blocks modifications. |<span style="color:red">**Not Started**</span>|
 |**Day / Night system**| Creation of a day and night cycle with visibles sun and moon.  |<span style="color:red">**Not Started**</span>|
+|**UI Scaling**| Resizable UI system to support wide screen and mores resolutions.  |<span style="color:red">**Not Started**</span>|
+|**Input**| Allowing user to change is inputs.  |<span style="color:red">**Not Started**</span>|
 
 ---
 
