@@ -70,8 +70,8 @@ int main()
 	Interfaces::InterfacesManager::Init();
 
 	auto &gm = Vox::Game::GameManager::GetInstance();
-	gm.InitGame();
 	Rendering::Pipelines::PipelinesManager::GetInstance().CreatePipelines();
+	gm.InitGame();
 
 	while (!glfwWindowShouldClose(Window::GetInstance().GetWindow()))
 	{
