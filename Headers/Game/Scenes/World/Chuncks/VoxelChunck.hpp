@@ -62,6 +62,8 @@ namespace Vox::Game::World::Chuncks
 
 
 		private:
+			bool _isMeshDirty = false;
+
 			std::array<Game::Datas::Blocks::BlockData, CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE> _blocksDatas;
 			std::vector<uint16_t> indexOpaque;
 			std::vector<Vertex> vertexOpaque;
@@ -81,9 +83,9 @@ namespace Vox::Game::World::Chuncks
 
 			void SetBlocksDatas(const Generation::Utils::ChunckCache &cache, std::bitset<CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE> &clusterContent);
 			void SetBlockDatas(const LocalVector &localPos, Vox::Game::Datas::Blocks::BlockType newType);
+			Vox::Game::Datas::Blocks::BlockType GetBlockDatas(const LocalVector &localPos);
 
 			void BuildMesh(const std::vector<Game::Datas::Textures::TextureInfo> &textInfo, const std::vector<Game::Datas::Textures::TextureInfo> &transparenttextInfo, const Generation::Utils::ChunckCache &cache);
-
 			size_t _bufferIndex;
 			sbuffer *B_VertexOpaque;
 			sbuffer *B_IndexOpaque;

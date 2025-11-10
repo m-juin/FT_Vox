@@ -172,5 +172,13 @@ namespace Vox::Game::World
 		if (chunck)
 			this->_chuncks[chunck->GetPosition()] = chunck;
 	}
+	
+	std::shared_ptr<Chuncks::ChunckCluster> WorldManager::GetCluster(Utils::Defines::ChunckCoord coord)
+	{
+		auto it = this->_chuncks.find(coord); 
+		if (it == this->_chuncks.end())
+			return nullptr;
+		return it->second;
+	}
 
 } // namespace Vox::Game::World

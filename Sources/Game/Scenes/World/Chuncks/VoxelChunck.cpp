@@ -122,6 +122,13 @@ namespace Vox::Game::World::Chuncks
 	{
 		size_t index = this->GetLocalIndex(localPos);
 		this->_blocksDatas[index].type = newType;
+		this->_isMeshDirty = true;
+	}
+
+	Vox::Game::Datas::Blocks::BlockType VoxelChunck::GetBlockDatas(const LocalVector &localPos)
+	{
+		size_t index = this->GetLocalIndex(localPos);
+		return this->_blocksDatas[index].type;
 	}
 
 	void VoxelChunck::BuildMesh(const std::vector<Game::Datas::Textures::TextureInfo> &textInfo,
@@ -265,6 +272,16 @@ namespace Vox::Game::World::Chuncks
 
 	void VoxelChunck::Render(uint8_t toRender)
 	{
+		// if (this->_isMeshDirty)
+		// {
+		// 	this->vertexOpaque.clear();
+		// 	this->vertexTransparent.clear();
+		// 	this->indexCountOpaque = 0;
+		// 	this->indexCountTransparent = 0;
+		// 	this->indexOpaque.clear();
+		// 	this->indexTransparent.clear();
+		// 	this->_isMeshDirty = false;
+		// }
 		using namespace Front::Rendering;
 		auto frame = SyncObjects::GetInstance().GetCurrentFrame();
 		if ((this->indexCountOpaque == 0 && this->indexCountTransparent == 0) || this->_isDirty[frame] == true)

@@ -9,8 +9,8 @@
 #include "Game/Datas/TexturesData.hpp"
 #include "VoxelChunck.hpp"
 
-#include "Game/Scenes/World/Generation/Utils.hpp"
 #include "Game/Datas/Structures/StructuresTypes.hpp"
+#include "Game/Scenes/World/Generation/Utils.hpp"
 
 namespace Vox::Game::World::Chuncks
 {
@@ -27,6 +27,8 @@ namespace Vox::Game::World::Chuncks
 				const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl,
 				const uint32_t seed);
 			void SpawnStructure(Game::Datas::Structures::StructuresType type, Vector3Int Pos);
+			void GetOverflowBlocks();
+
 		public:
 			uint16_t _bufferIndex;
 			uint16_t GetBuffer() const;
@@ -40,7 +42,7 @@ namespace Vox::Game::World::Chuncks
 									 const uint32_t seed);
 			ChunckCoord GetPosition();
 
-			void SetBlock(MGL::Vectors::Vector3<uint8_t> localPos);
+			void SetBlock(MGL::Vectors::Vector3<uint8_t> localPos, Game::Datas::Blocks::BlockType type);
 
 			void BuildBuffers(const uint16_t &buffer);
 			void GenerateHeightMap(const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl,

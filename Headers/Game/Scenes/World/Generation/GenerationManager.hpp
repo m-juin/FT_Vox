@@ -30,6 +30,7 @@ namespace Vox::Game::Generation
 
 			uint64_t GetSeed() const {return this->_seed;} ;
 			const Game::Datas::Structures::StructuresManager *GetStructuresManager() {return this->_sManager.get();} ;
+			Game::Generation::ChunkOverflowManager *GetOverflowManager() {return this->_oManager.get();} ;
 			bool UpdateSeed(uint64_t newSeed);
 			bool GetThreadRefreshState() {return this->_needThreadRefresh;};
 

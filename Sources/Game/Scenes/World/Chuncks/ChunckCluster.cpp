@@ -10,6 +10,8 @@
 
 #include "Game/Datas/Structures/StructuresManager.hpp"
 
+#include "Game/Scenes/World/Generation/ChunkOverflowManager.hpp"
+
 namespace Vox::Game::World::Chuncks
 {
 	uint16_t ChunckCluster::GetBuffer() const
@@ -151,10 +153,6 @@ namespace Vox::Game::World::Chuncks
 			if ((double)it->second >= 10 - biomeDensity / 10)
 				it->second = 0;
 			if (it->second == 0.0)
-				// this->_clusterContent[chunckIndex]->SetBlockDatas({static_cast<uint8_t>(treePos[0]),
-				//    static_cast<uint8_t>(localHeight),
-				//    static_cast<uint8_t>(treePos[1])},
-				//   Vox::Game::Datas::Blocks::BlockType::DEBUG);
 				this->SpawnStructure(Game::Datas::Structures::StructuresType::Oak_Tree1,
 									 {static_cast<uint8_t>(treePos[0]), static_cast<uint8_t>(worldHeight + 1),
 									  static_cast<uint8_t>(treePos[1])});
@@ -167,17 +165,17 @@ namespace Vox::Game::World::Chuncks
 	{
 		(void)spl;
 		GenerateTree(cache, seed);
+		GetOverflowBlocks();
 	}
 
 	void ChunckCluster::SpawnStructure(Game::Datas::Structures::StructuresType type, Vector3Int pos)
 	{
 		(void)type;
 
-		// auto chunckIndex = pos[1] / CHUNCK_SIZE;
-		// float localHeight = pos[1] % CHUNCK_SIZE;
+		auto &gManager = Game::World::WorldManager::GetInstance().GetGenerationManager();
 
-		auto s = Game::World::WorldManager::GetInstance().GetGenerationManager().GetStructuresManager()->GetStructure(
-			Game::Datas::Structures::StructuresType::Oak_Tree1);
+		auto s = gManager.GetStructuresManager()->GetStructure(Game::Datas::Structures::StructuresType::Oak_Tree1);
+		auto oManager = gManager.GetOverflowManager();
 
 		auto content = s.GetContent();
 		Vector3Int sSize = {static_cast<int>(s._structureSize[0]), static_cast<int>(s._structureSize[1]),
@@ -202,6 +200,18 @@ namespace Vox::Game::World::Chuncks
 					if (oPos[0] < 0 || oPos[0] >= static_cast<int>(CHUNCK_SIZE) || oPos[2] < 0 ||
 						static_cast<int>(oPos[2] >= static_cast<int>(CHUNCK_SIZE)))
 					{
+						Vector3Int offset;
+						Vector3Int worldPos = {static_cast<int>((this->_clusterPos[0] * CHUNCK_SIZE) + oPos[0]),
+											   oPos[1],
+											   static_cast<int>((this->_clusterPos[2] * CHUNCK_SIZE) + oPos[2])};
+
+						Game::Generation::ChunkOverflowBlock block = {{static_cast<int>(worldPos[0] % CHUNCK_SIZE),
+																	   static_cast<int>(worldPos[1] % CHUNCK_SIZE),
+																	   static_cast<int>(worldPos[2] % CHUNCK_SIZE)},
+																	  bType};
+						oManager->AddBlock(
+							{static_cast<int>(worldPos[0] / CHUNCK_SIZE), static_cast<int>(worldPos[2] / CHUNCK_SIZE)},
+							block);
 						continue;
 					}
 					this->_clusterContent[chunckIndex]->SetBlockDatas({static_cast<uint8_t>(oPos[0]),
@@ -211,9 +221,24 @@ namespace Vox::Game::World::Chuncks
 				}
 			}
 		}
-		// this->_clusterContent[chunckIndex]->SetBlockDatas(
-		// 	{static_cast<uint8_t>(pos[0]), static_cast<uint8_t>(localHeight), static_cast<uint8_t>(pos[2])},
-		// 	Vox::Game::Datas::Blocks::BlockType::DEBUG);
+	}
+	void ChunckCluster::GetOverflowBlocks()
+	{
+		auto &gManager = Game::World::WorldManager::GetInstance().GetGenerationManager();
+
+		auto oManager = gManager.GetOverflowManager();
+		auto blocks = oManager->ExtractClusterBlocks(this->_clusterPos);
+		for (auto block : blocks)
+		{
+			auto chunckIndex = block.localCoord[1] / CHUNCK_SIZE;
+			float localHeight = block.localCoord[1] % CHUNCK_SIZE;
+			const Vox::Game::World::Chuncks::VoxelChunck::LocalVector localPos{
+				static_cast<uint8_t>(block.localCoord[0]), static_cast<uint8_t>(localHeight),
+				static_cast<uint8_t>(block.localCoord[2])};
+			if (this->_clusterContent[chunckIndex]->GetBlockDatas(localPos) != Vox::Game::Datas::Blocks::BlockType::Air)
+				continue;
+			this->_clusterContent[chunckIndex]->SetBlockDatas(localPos, block.type);
+		}
 	}
 
 	ChunckCoord ChunckCluster::GetPosition()
@@ -221,9 +246,12 @@ namespace Vox::Game::World::Chuncks
 		return this->_clusterPos;
 	}
 
-	void ChunckCluster::SetBlock(MGL::Vectors::Vector3<uint8_t> localPos)
+	void ChunckCluster::SetBlock(MGL::Vectors::Vector3<uint8_t> localPos, Game::Datas::Blocks::BlockType type)
 	{
-		(void)localPos;
+		auto chunckIndex = localPos[1] / CHUNCK_SIZE;
+		uint8_t localHeight = localPos[1] % CHUNCK_SIZE;
+
+		this->_clusterContent[chunckIndex]->SetBlockDatas({localPos[0], localHeight, localPos[2] }, type);
 	}
 
 	void ChunckCluster::BuildBuffers(const uint16_t &buffer)
