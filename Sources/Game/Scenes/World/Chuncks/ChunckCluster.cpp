@@ -3,8 +3,12 @@
 #include "Game/Scenes/World/Generation/PerlinInterpretation.hpp"
 
 #include "Game/Scenes/World/Generation/PerlinUtils.hpp"
+#include "Game/Scenes/World/Generation/GenerationManager.hpp"
+#include "Game/Scenes/World/WorldManager.hpp"
 
 #include "Game/Scenes/World/Generation/Decorations/PoissonDiskSampling.hpp"
+
+#include "Game/Datas/Structures/StructuresManager.hpp"
 
 namespace Vox::Game::World::Chuncks
 {
@@ -134,25 +138,26 @@ namespace Vox::Game::World::Chuncks
 			if (biomeDensity == 0)
 				continue;
 			size_t worldHeight = cache.heightMap[arrayIndex];
-			auto chunckIndex = worldHeight / CHUNCK_SIZE;
-			float localHeight = worldHeight % CHUNCK_SIZE;
 			if (worldHeight < Generation::Utils::WATER_LEVEL)
 				continue;
 			auto it = counters.find(biome);
 			if (it == counters.end())
 			{
 				counters[biome] = 1;
-				it = counters.find(biome); 
+				it = counters.find(biome);
 			}
 			else
 				it->second += 1;
 			if ((double)it->second >= 10 - biomeDensity / 10)
 				it->second = 0;
 			if (it->second == 0.0)
-				this->_clusterContent[chunckIndex]->SetBlockDatas({static_cast<uint8_t>(treePos[0]),
-																   static_cast<uint8_t>(localHeight),
-																   static_cast<uint8_t>(treePos[1])},
-																  Vox::Game::Datas::Blocks::BlockType::DEBUG);
+				// this->_clusterContent[chunckIndex]->SetBlockDatas({static_cast<uint8_t>(treePos[0]),
+				//    static_cast<uint8_t>(localHeight),
+				//    static_cast<uint8_t>(treePos[1])},
+				//   Vox::Game::Datas::Blocks::BlockType::DEBUG);
+				this->SpawnStructure(Game::Datas::Structures::StructuresType::Oak_Tree1,
+									 {static_cast<uint8_t>(treePos[0]), static_cast<uint8_t>(worldHeight + 1),
+									  static_cast<uint8_t>(treePos[1])});
 		}
 	}
 
@@ -161,8 +166,23 @@ namespace Vox::Game::World::Chuncks
 		const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl, const uint32_t seed)
 	{
 		(void)spl;
-		(void)seed;
-		(void)cache;
+		GenerateTree(cache, seed);
+	}
+
+	void ChunckCluster::SpawnStructure(Game::Datas::Structures::StructuresType type, Vector3Int pos)
+	{
+		(void)type;
+
+		auto chunckIndex = pos[1] / CHUNCK_SIZE;
+		float localHeight = pos[1] % CHUNCK_SIZE;
+
+		auto sm = Game::World::WorldManager::GetInstance().GetGenerationManager().
+
+		this->_clusterContent[chunckIndex]->SetBlockDatas({static_cast<uint8_t>(pos[0]),
+				   static_cast<uint8_t>(localHeight),
+				   static_cast<uint8_t>(pos[2])},
+				  Vox::Game::Datas::Blocks::BlockType::DEBUG);
+
 	}
 
 	ChunckCoord ChunckCluster::GetPosition()

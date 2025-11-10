@@ -10,6 +10,7 @@
 #include "VoxelChunck.hpp"
 
 #include "Game/Scenes/World/Generation/Utils.hpp"
+#include "Game/Datas/Structures/StructuresTypes.hpp"
 
 namespace Vox::Game::World::Chuncks
 {
@@ -21,7 +22,11 @@ namespace Vox::Game::World::Chuncks
 			ChunckCoord _clusterPos;
 
 			void GenerateTree(const Vox::Game::Generation::Utils::ChunckCache &cache, const uint32_t seed);
-
+			void GenerateClusterDecoration(
+				const Vox::Game::Generation::Utils::ChunckCache &cache,
+				const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl,
+				const uint32_t seed);
+			void SpawnStructure(Game::Datas::Structures::StructuresType type, Vector3Int Pos);
 		public:
 			uint16_t _bufferIndex;
 			uint16_t GetBuffer() const;
@@ -33,10 +38,6 @@ namespace Vox::Game::World::Chuncks
 									 const std::vector<Game::Datas::Textures::TextureInfo> &textInfo,
 									 const std::vector<Game::Datas::Textures::TextureInfo> &transparenttextInfo,
 									 const uint32_t seed);
-			void GenerateClusterDecoration(
-				const Vox::Game::Generation::Utils::ChunckCache &cache,
-				const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl,
-				const uint32_t seed);
 			ChunckCoord GetPosition();
 
 			void SetBlock(MGL::Vectors::Vector3<uint8_t> localPos);

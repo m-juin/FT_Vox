@@ -104,15 +104,6 @@ namespace Vox::Game::Datas::Structures
 		this->_anchorPoint = parseResult._anchor;
 		this->_content.resize(this->_structureSize[0] * this->_structureSize[1] * this->_structureSize[2]);
 		this->BuildContent(fileDatas.at(step::Design), parseResult._types);
-		std::cout << (int)this->_content[GetLocalIndex(this->_anchorPoint)] << std::endl;
-		std::cout << (int)this->_content[GetLocalIndex({0, 0, 0})] << std::endl;
-		std::cout << (int)this->_content[GetLocalIndex({2, 1, 2})] << std::endl;
-		std::cout << (int)this->_content[GetLocalIndex({2, 2, 2})] << std::endl;
-		std::cout << (int)this->_content[GetLocalIndex({2, 3, 2})] << std::endl;
-		std::cout << (int)this->_content[GetLocalIndex({2, 4, 2})] << std::endl;
-		std::cout << (int)this->_content[GetLocalIndex({2, 5, 2})] << std::endl;
-		std::cout << (int)this->_content[GetLocalIndex({2, 6, 2})] << std::endl;
-		std::cout << (int)this->_content[GetLocalIndex({2, 7, 2})] << std::endl;
 	}
 
 	size_t Structure::GetLocalIndex(MGL::Vectors::Vector3<size_t> pos) { return pos[0] + (pos[2] * (this->_structureSize[0]) +
