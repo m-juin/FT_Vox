@@ -2,8 +2,8 @@
 
 #include "Game/Scenes/World/Generation/PerlinInterpretation.hpp"
 
-#include "Game/Scenes/World/Generation/PerlinUtils.hpp"
 #include "Game/Scenes/World/Generation/GenerationManager.hpp"
+#include "Game/Scenes/World/Generation/PerlinUtils.hpp"
 #include "Game/Scenes/World/WorldManager.hpp"
 
 #include "Game/Scenes/World/Generation/Decorations/PoissonDiskSampling.hpp"
@@ -173,16 +173,47 @@ namespace Vox::Game::World::Chuncks
 	{
 		(void)type;
 
-		auto chunckIndex = pos[1] / CHUNCK_SIZE;
-		float localHeight = pos[1] % CHUNCK_SIZE;
+		// auto chunckIndex = pos[1] / CHUNCK_SIZE;
+		// float localHeight = pos[1] % CHUNCK_SIZE;
 
-		auto sm = Game::World::WorldManager::GetInstance().GetGenerationManager().
+		auto s = Game::World::WorldManager::GetInstance().GetGenerationManager().GetStructuresManager()->GetStructure(
+			Game::Datas::Structures::StructuresType::Oak_Tree1);
 
-		this->_clusterContent[chunckIndex]->SetBlockDatas({static_cast<uint8_t>(pos[0]),
-				   static_cast<uint8_t>(localHeight),
-				   static_cast<uint8_t>(pos[2])},
-				  Vox::Game::Datas::Blocks::BlockType::DEBUG);
+		auto content = s.GetContent();
+		Vector3Int sSize = {static_cast<int>(s._structureSize[0]), static_cast<int>(s._structureSize[1]),
+							static_cast<int>(s._structureSize[2])};
 
+		MGL::Vectors::Vector3<int> sPos{};
+		for (sPos[0] = 0; sPos[0] < sSize[0]; sPos[0]++)
+		{
+			for (sPos[1] = 0; sPos[1] < sSize[1]; sPos[1]++)
+			{
+				for (sPos[2] = 0; sPos[2] < sSize[2]; sPos[2]++)
+				{
+					auto bType = content[s.GetLocalIndex(sPos)];
+					Vector3Int oPos = {static_cast<int>(sPos[0] - s._anchorPoint[0] + pos[0]),
+									   static_cast<int>(sPos[1] - s._anchorPoint[1] + pos[1]),
+									   static_cast<int>(sPos[2] - s._anchorPoint[2] + pos[2])};
+					if (bType == Game::Datas::Blocks::BlockType::Air)
+						continue;
+					auto chunckIndex = oPos[1] / CHUNCK_SIZE;
+					float localHeight = oPos[1] % CHUNCK_SIZE;
+
+					if (oPos[0] < 0 || oPos[0] >= static_cast<int>(CHUNCK_SIZE) || oPos[2] < 0 ||
+						static_cast<int>(oPos[2] >= static_cast<int>(CHUNCK_SIZE)))
+					{
+						continue;
+					}
+					this->_clusterContent[chunckIndex]->SetBlockDatas({static_cast<uint8_t>(oPos[0]),
+																	   static_cast<uint8_t>(localHeight),
+																	   static_cast<uint8_t>(oPos[2])},
+																	  bType);
+				}
+			}
+		}
+		// this->_clusterContent[chunckIndex]->SetBlockDatas(
+		// 	{static_cast<uint8_t>(pos[0]), static_cast<uint8_t>(localHeight), static_cast<uint8_t>(pos[2])},
+		// 	Vox::Game::Datas::Blocks::BlockType::DEBUG);
 	}
 
 	ChunckCoord ChunckCluster::GetPosition()

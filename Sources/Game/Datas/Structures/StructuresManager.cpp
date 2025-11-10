@@ -14,11 +14,14 @@ namespace Vox::Game::Datas::Structures
         
     }
     
-    std::unordered_map<MGL::Vectors::Vector3<uint8_t>, Blocks::BlockType, MGL::Vectors::Vector3Hash<uint8_t>> StructuresManager::GetStructBlocks(StructuresType type)
-    {
-        (void)type;
-        return {};
-    }
+    // const std::pair(std::vector<Blocks::BlockType>, MGL::Vectors::Vector3) &StructuresManager::GetStructBlocks(StructuresType type) const
+    // {
+    //     auto it = this->_list.find(type);
+    //     if (it == this->_list.end())
+    //         throw std::runtime_error("Structure type not found");
+    //     return it->second.GetContent();
+    //     return {};
+    // }
     
     void StructuresManager::LoadStructures()
     {

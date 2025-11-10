@@ -105,9 +105,24 @@ namespace Vox::Game::Datas::Structures
 		this->_content.resize(this->_structureSize[0] * this->_structureSize[1] * this->_structureSize[2]);
 		this->BuildContent(fileDatas.at(step::Design), parseResult._types);
 	}
+	size_t Structure::GetLocalIndex(MGL::Vectors::Vector3<size_t> pos) const
+	{
+		return pos[0] + (pos[1] * this->_structureSize[0]) +
+			   (pos[2] * this->_structureSize[0] * this->_structureSize[1]);
+	}
+	size_t Structure::GetLocalIndex(MGL::Vectors::Vector3<int> pos) const
+	{
+		return pos[0] + (pos[1] * this->_structureSize[0]) +
+			   (pos[2] * this->_structureSize[0] * this->_structureSize[1]);
+	}
 
-	size_t Structure::GetLocalIndex(MGL::Vectors::Vector3<size_t> pos) { return pos[0] + (pos[2] * (this->_structureSize[0]) +
-										 (pos[1] * (this->_structureSize[0] * this->_structureSize[2])));} 
+	MGL::Vectors::Vector3<size_t> Structure::FromIndexToVector(size_t index) const
+	{
+		size_t x = index % this->_structureSize[0];
+		size_t y = (index / this->_structureSize[0]) % this->_structureSize[1];
+		size_t z = index / (this->_structureSize[0] * this->_structureSize[1]);
+		return {x, y, z};
+	}
 
 	void Structure::BuildContent(std::vector<std::string> fileData,
 								 const std::map<std::string, Game::Datas::Blocks::BlockType> &mapping)
@@ -139,8 +154,7 @@ namespace Vox::Game::Datas::Structures
 				if (blockType == mapping.end())
 				{
 					std::stringstream ss;
-					ss << "Invalid structure file. Error at design line: \"" << line << "\" unknown value: "
-					   << val;
+					ss << "Invalid structure file. Error at design line: \"" << line << "\" unknown value: " << val;
 					throw std::runtime_error(ss.str());
 				}
 				this->_content[index] = blockType->second;
