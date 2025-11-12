@@ -59,6 +59,7 @@ namespace Vox::Game::World::Chuncks
 		(void)transparenttextInfo;
 		std::bitset<CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE> clusterContent = this->BuildContent(cache.heightMap);
 		this->SetBlocksDatas(cache, clusterContent);
+		this->FacesCulling(cache);
 	}
 
 	std::bitset<CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE> VoxelChunck::BuildContent(
@@ -85,6 +86,72 @@ namespace Vox::Game::World::Chuncks
 		return clusterContent;
 	}
 
+	/*							if (it[0] > 0)
+							{
+								this->_blocksDatas[GetLocalIndex({static_cast<uint8_t>(it[0] - 1), it[1], it[2]})]
+									.UpdateFaceVisibility(true, Faces::RIGHT);
+							}
+							if (it[0] < CHUNCK_SIZE - 1)
+								this->_blocksDatas[GetLocalIndex({static_cast<uint8_t>(it[0] + 1), it[1], it[2]})]
+									.UpdateFaceVisibility(true, Faces::LEFT);
+							if (it[1] > 0)
+								this->_blocksDatas[GetLocalIndex({it[0], static_cast<uint8_t>(it[1] - 1), it[2]})]
+									.UpdateFaceVisibility(true, Faces::TOP);
+							if (it[1] < CHUNCK_SIZE - 1)
+								this->_blocksDatas[GetLocalIndex({it[0], static_cast<uint8_t>(it[1] + 1), it[2]})]
+									.UpdateFaceVisibility(true, Faces::BOT);
+							if (it[2] > 0)
+								this->_blocksDatas[GetLocalIndex({it[0], it[1], static_cast<uint8_t>(it[2] - 1)})]
+									.UpdateFaceVisibility(true, Faces::FRONT);
+							if (it[2] < CHUNCK_SIZE - 1)
+								this->_blocksDatas[GetLocalIndex({it[0], it[1], static_cast<uint8_t>(it[2] + 1)})]
+									.UpdateFaceVisibility(true, Faces::BACK);*/
+
+	/*if (it[0] == 0)
+							{
+								MGL::Vectors::Vector3<int> neighbor = {it[0] - 1, it[1], it[2]};
+								size_t neighborIndex = (neighbor[0] + Generation::Utils::GENERATION_BLEND_RADIUS) *
+														   Generation::Utils::CACHE_SIZE +
+													   (neighbor[2] + Generation::Utils::GENERATION_BLEND_RADIUS);
+								int neighborWorldY = this->_position[1] + neighbor[1];
+								uint8_t neighborColHeight = cache.heightMap[neighborIndex];
+								if (neighborWorldY > neighborColHeight)
+									this->_blocksDatas[mapIndex].UpdateFaceVisibility(true, Faces::LEFT);
+							}
+							else if (it[0] == CHUNCK_SIZE - 1)
+							{
+								MGL::Vectors::Vector3<int> neighbor = {it[0] + 1, it[1], it[2]};
+								size_t neighborIndex = (neighbor[0] + Generation::Utils::GENERATION_BLEND_RADIUS) *
+														   Generation::Utils::CACHE_SIZE +
+													   (neighbor[2] + Generation::Utils::GENERATION_BLEND_RADIUS);
+								int neighborWorldY = this->_position[1] + neighbor[1];
+								uint8_t neighborColHeight = cache.heightMap[neighborIndex];
+								if (neighborWorldY > neighborColHeight)
+									this->_blocksDatas[mapIndex].UpdateFaceVisibility(true, Faces::RIGHT);
+							}
+							if (it[2] == 0)
+							{
+								MGL::Vectors::Vector3<int> neighbor = {it[0], it[1], it[2] - 2};
+								size_t neighborIndex = (neighbor[0] + Generation::Utils::GENERATION_BLEND_RADIUS) *
+														   Generation::Utils::CACHE_SIZE +
+													   (neighbor[2] + Generation::Utils::GENERATION_BLEND_RADIUS);
+								int neighborWorldY = this->_position[1] + neighbor[1];
+								uint8_t neighborColHeight = cache.heightMap[neighborIndex];
+								if (neighborWorldY > neighborColHeight)
+									this->_blocksDatas[mapIndex].UpdateFaceVisibility(true, Faces::FRONT);
+							}
+							else if (it[2] == CHUNCK_SIZE - 1)
+							{
+								MGL::Vectors::Vector3<int> neighbor = {it[0], it[1], it[2] + 2};
+								size_t neighborIndex = (neighbor[0] + Generation::Utils::GENERATION_BLEND_RADIUS) *
+														   Generation::Utils::CACHE_SIZE +
+													   (neighbor[2] + Generation::Utils::GENERATION_BLEND_RADIUS);
+								int neighborWorldY = this->_position[1] + neighbor[1];
+								uint8_t neighborColHeight = cache.heightMap[neighborIndex];
+								if (neighborWorldY > neighborColHeight)
+									this->_blocksDatas[mapIndex].UpdateFaceVisibility(true, Faces::BACK);
+							}*/
+
 	void VoxelChunck::SetBlocksDatas(const Generation::Utils::ChunckCache &cache,
 									 std::bitset<CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE> &clusterContent)
 	{
@@ -107,26 +174,7 @@ namespace Vox::Game::World::Chuncks
 						if (h > Generation::Utils::WATER_LEVEL)
 						{
 							this->_blocksDatas[mapIndex].type = Game::Datas::Blocks::BlockType::Air;
-							if (it[0] > 0)
-							{
-								this->_blocksDatas[GetLocalIndex({static_cast<uint8_t>(it[0] - 1), it[1], it[2]})]
-									.UpdateFaceVisibility(true, Faces::RIGHT);
-							}
-							if (it[0] < CHUNCK_SIZE - 1)
-								this->_blocksDatas[GetLocalIndex({static_cast<uint8_t>(it[0] + 1), it[1], it[2]})]
-									.UpdateFaceVisibility(true, Faces::LEFT);
-							if (it[1] > 0)
-								this->_blocksDatas[GetLocalIndex({it[0], static_cast<uint8_t>(it[1] - 1), it[2]})]
-									.UpdateFaceVisibility(true, Faces::TOP);
-							if (it[1] < CHUNCK_SIZE - 1)
-								this->_blocksDatas[GetLocalIndex({it[0], static_cast<uint8_t>(it[1] + 1), it[2]})]
-									.UpdateFaceVisibility(true, Faces::BOT);
-							if (it[2] > 0)
-								this->_blocksDatas[GetLocalIndex({it[0], it[1], static_cast<uint8_t>(it[2] - 1)})]
-									.UpdateFaceVisibility(true, Faces::FRONT);
-							if (it[2] < CHUNCK_SIZE - 1)
-								this->_blocksDatas[GetLocalIndex({it[0], it[1], static_cast<uint8_t>(it[2] + 1)})]
-									.UpdateFaceVisibility(true, Faces::BACK);
+							this->_blocksDatas[mapIndex].UpdateFacesTransparency({true, true, true, true, true, true});
 						}
 						else
 						{
@@ -138,51 +186,8 @@ namespace Vox::Game::World::Chuncks
 					{
 						this->_blocksDatas[mapIndex].type =
 							Generation::Datas::Biomes::RulesManager::GetBlockType(biome, (int)worldHeight - (h));
-
-						if (it[0] == 0)
-						{
-							MGL::Vectors::Vector3<int> neighbor = {it[0] - 1, it[1], it[2]};
-							size_t neighborIndex = (neighbor[0] + Generation::Utils::GENERATION_BLEND_RADIUS) *
-													   Generation::Utils::CACHE_SIZE +
-												   (neighbor[2] + Generation::Utils::GENERATION_BLEND_RADIUS);
-							int neighborWorldY = this->_position[1] + neighbor[1];
-							uint8_t neighborColHeight = cache.heightMap[neighborIndex];
-							if (neighborWorldY > neighborColHeight)
-								this->_blocksDatas[mapIndex].UpdateFaceVisibility(true, Faces::LEFT);
-						}
-						else if (it[0] == CHUNCK_SIZE - 1)
-						{
-							MGL::Vectors::Vector3<int> neighbor = {it[0] + 1, it[1], it[2]};
-							size_t neighborIndex = (neighbor[0] + Generation::Utils::GENERATION_BLEND_RADIUS) *
-													   Generation::Utils::CACHE_SIZE +
-												   (neighbor[2] + Generation::Utils::GENERATION_BLEND_RADIUS);
-							int neighborWorldY = this->_position[1] + neighbor[1];
-							uint8_t neighborColHeight = cache.heightMap[neighborIndex];
-							if (neighborWorldY > neighborColHeight)
-								this->_blocksDatas[mapIndex].UpdateFaceVisibility(true, Faces::RIGHT);
-						}
-						if (it[2] == 0)
-						{
-							MGL::Vectors::Vector3<int> neighbor = {it[0], it[1], it[2] - 2};
-							size_t neighborIndex = (neighbor[0] + Generation::Utils::GENERATION_BLEND_RADIUS) *
-													   Generation::Utils::CACHE_SIZE +
-												   (neighbor[2] + Generation::Utils::GENERATION_BLEND_RADIUS);
-							int neighborWorldY = this->_position[1] + neighbor[1];
-							uint8_t neighborColHeight = cache.heightMap[neighborIndex];
-							if (neighborWorldY > neighborColHeight)
-								this->_blocksDatas[mapIndex].UpdateFaceVisibility(true, Faces::FRONT);
-						}
-						else if (it[2] == CHUNCK_SIZE - 1)
-						{
-							MGL::Vectors::Vector3<int> neighbor = {it[0], it[1], it[2] + 2};
-							size_t neighborIndex = (neighbor[0] + Generation::Utils::GENERATION_BLEND_RADIUS) *
-													   Generation::Utils::CACHE_SIZE +
-												   (neighbor[2] + Generation::Utils::GENERATION_BLEND_RADIUS);
-							int neighborWorldY = this->_position[1] + neighbor[1];
-							uint8_t neighborColHeight = cache.heightMap[neighborIndex];
-							if (neighborWorldY > neighborColHeight)
-								this->_blocksDatas[mapIndex].UpdateFaceVisibility(true, Faces::BACK);
-						}
+						this->_blocksDatas[mapIndex].UpdateFacesTransparency(
+							{false, false, false, false, false, false});
 					}
 				}
 			}
@@ -200,6 +205,84 @@ namespace Vox::Game::World::Chuncks
 		else
 		{
 			this->_blocksDatas[index].UpdateFacesTransparency({false, false, false, false, false, false});
+		}
+	}
+
+	void VoxelChunck::FacesCulling(const Generation::Utils::ChunckCache &cache)
+	{
+		using Vox::Game::Datas::Blocks::BlockData;
+		using Vox::Game::Datas::Blocks::BlockType;
+
+		auto GetAdjacentBlockData = [this, &cache](const LocalVector &it, Faces face)
+		{
+			Vector3Int neighbor(it[0], it[1], it[2]);
+			if (face == Faces::LEFT)
+				neighbor[0] += -1;
+			else if (face == Faces::RIGHT)
+				neighbor[0] += 1;
+			else if (face == Faces::BOT)
+				neighbor[1] += -1;
+			else if (face == Faces::TOP)
+				neighbor[1] += 1;
+			else if (face == Faces::BACK)
+				neighbor[2] += -1;
+			else
+				neighbor[2] += 1;
+			if ((it[0] != 0 || face != Faces::LEFT) && (it[0] != CHUNCK_SIZE - 1 || face != Faces::RIGHT) &&
+				(it[1] != 0 || face != Faces::BOT) && (it[1] != CHUNCK_SIZE - 1 || face != Faces::TOP) &&
+				(it[2] != 0 || face != Faces::FRONT) && (it[2] != CHUNCK_SIZE - 1 || face != Faces::BACK))
+			{
+				auto index = this->GetLocalIndex({static_cast<uint8_t>(neighbor[0]), static_cast<uint8_t>(neighbor[1]),
+												  static_cast<uint8_t>(neighbor[2])});
+				std::cout << neighbor << " | " << static_cast<int>(face) << std::endl;;
+				return this->_blocksDatas[index];
+			}
+			else
+			{
+				BlockData data;
+				size_t neighborIndex =
+					(neighbor[0] + Generation::Utils::GENERATION_BLEND_RADIUS) * Generation::Utils::CACHE_SIZE +
+					(neighbor[2] + Generation::Utils::GENERATION_BLEND_RADIUS);
+				int neighborWorldY = this->_position[1] + neighbor[1];
+				uint8_t neighborColHeight = cache.heightMap[neighborIndex];
+				if (neighborWorldY > neighborColHeight)
+				{
+					if (neighborWorldY > static_cast<int>(Generation::Utils::WATER_LEVEL))
+						data.type = neighborWorldY > static_cast<int>(Generation::Utils::WATER_LEVEL)
+										? BlockType::Air
+										: BlockType::Water;
+					data.UpdateFacesTransparency({true, true, true, true, true, true});
+				}
+				else
+					data.type = BlockType::Dirt;
+				return data;
+			}
+		};
+		LocalVector it(0);
+		for (it[0] = 0; it[0] < CHUNCK_SIZE; it[0]++)
+		{
+			for (it[2] = 0; it[2] < CHUNCK_SIZE; it[2]++)
+			{
+				for (it[1] = 0; it[1] < CHUNCK_SIZE; it[1]++)
+				{
+					uint16_t mapIndex = GetLocalIndex(it);
+					auto &bData = this->_blocksDatas[mapIndex];
+					if (bData.type == BlockType::Air)
+						continue;
+					for (auto &face : bData.GetFacesData())
+					{
+						int value = static_cast<int>(face.faceDirection);
+						std::cout << value << std::endl;
+						Faces opposite = value % 2 == 0 ? static_cast<Faces>(value + 1) : static_cast<Faces>(value - 1);
+						auto adjacent = GetAdjacentBlockData(it, face.faceDirection);
+						if (!face.isTransparent && !adjacent.GetFaceData(opposite).isTransparent)
+							this->_blocksDatas[mapIndex]._faces[static_cast<int>(face.faceDirection)].isVisible = true;
+						else if (face.isTransparent && adjacent.type != bData.type &&
+								 adjacent.GetFaceData(opposite).isTransparent)
+							this->_blocksDatas[mapIndex]._faces[static_cast<int>(face.faceDirection)].isVisible = true;
+					}
+				}
+			}
 		}
 	}
 
@@ -244,14 +327,15 @@ namespace Vox::Game::World::Chuncks
 	// 		}
 	// 	};
 
-	// 	auto checkFaceWater = [this, &transparenttextInfo](const LocalVector &it, int offsetX, int offsetY, int offsetZ,
-	// 													   Faces face, const Vector3Float &color)
+	// 	auto checkFaceWater = [this, &transparenttextInfo](const LocalVector &it, int offsetX, int offsetY, int
+	// offsetZ, 													   Faces face, const Vector3Float &color)
 	// 	{
 	// 		MGL::Vectors::Vector3<int> neighbor = {it[0] + offsetX, it[1] + offsetY, it[2] + offsetZ};
 
 	// 		if (this->_position[1] + neighbor[1] > static_cast<int>(Generation::Utils::WATER_LEVEL))
 	// 		{
-	// 			this->AddFace(transparenttextInfo, face, it, Game::Datas::Blocks::BlockType::Water, color, true, 1.1);
+	// 			this->AddFace(transparenttextInfo, face, it, Game::Datas::Blocks::BlockType::Water, color,
+	// true, 1.1);
 	// 		}
 	// 	};
 
@@ -274,17 +358,16 @@ namespace Vox::Game::World::Chuncks
 	// 				{
 	// 					Vector3Float color = {1.0, 1.0, 1.0};
 	// 					Vector3Int biomeColor = Game::Datas::Biomes::biomesColors[biome];
-	// 					color = {static_cast<float>(biomeColor[0]) / 256.0f, static_cast<float>(biomeColor[1]) / 256.0f,
-	// 							 static_cast<float>(biomeColor[2]) / 256.0f};
-	// 					checkFaceWater(it, 0, 1, 0, Faces::TOP, color);
-	// 					continue;
+	// 					color = {static_cast<float>(biomeColor[0]) / 256.0f, static_cast<float>(biomeColor[1]) /
+	// 256.0f, 							 static_cast<float>(biomeColor[2]) / 256.0f};
+	// checkFaceWater(it, 0, 1, 0, Faces::TOP, color); 					continue;
 	// 				}
 	// 				Vector3Float color = {1.0, 1.0, 1.0};
 	// 				if (_type == Game::Datas::Blocks::BlockType::Grass)
 	// 				{
 	// 					Vector3Int biomeColor = Game::Datas::Biomes::biomesColors[biome];
-	// 					color = {static_cast<float>(biomeColor[0]) / 256.0f, static_cast<float>(biomeColor[1]) / 256.0f,
-	// 							 static_cast<float>(biomeColor[2]) / 256.0f};
+	// 					color = {static_cast<float>(biomeColor[0]) / 256.0f, static_cast<float>(biomeColor[1]) /
+	// 256.0f, 							 static_cast<float>(biomeColor[2]) / 256.0f};
 	// 				}
 	// 				checkFace(it, 0, 1, 0, Faces::TOP, _type, color);
 	// 				checkFace(it, -1, 0, 0, Faces::LEFT, _type, color);

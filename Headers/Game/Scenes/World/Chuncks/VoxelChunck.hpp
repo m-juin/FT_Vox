@@ -83,6 +83,7 @@ namespace Vox::Game::World::Chuncks
 
 			void SetBlocksDatas(const Generation::Utils::ChunckCache &cache, std::bitset<CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE> &clusterContent);
 			void SetBlockDatas(const LocalVector &localPos, Vox::Game::Datas::Blocks::BlockType newType);
+			void FacesCulling(const Generation::Utils::ChunckCache &cache);
 			Vox::Game::Datas::Blocks::BlockType GetBlockDatas(const LocalVector &localPos);
 
 			void BuildMesh(const std::vector<Game::Datas::Textures::TextureInfo> &textInfo, const std::vector<Game::Datas::Textures::TextureInfo> &transparenttextInfo, const Generation::Utils::ChunckCache &cache);

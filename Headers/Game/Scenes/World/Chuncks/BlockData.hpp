@@ -10,25 +10,26 @@
 
 namespace Vox::Game::Datas::Blocks
 {
+    using Vox::Game::World::Chuncks::Faces;
     struct BlockFaceData
     {
         bool isVisible;
         bool isTransparent;
         Vox::Game::World::Chuncks::Faces faceDirection;
 
-        BlockFaceData(Vox::Game::World::Chuncks::Faces direction_) : isVisible(false), isTransparent(false), faceDirection(direction_) {};
+        BlockFaceData(Faces direction_) : isVisible(false), isTransparent(false), faceDirection(direction_) {};
     };
     
     struct BlockData
     {
         BlockType type;
         std::array<BlockFaceData, 6> _faces = {
-            BlockFaceData(Vox::Game::World::Chuncks::Faces::TOP),
-            BlockFaceData(Vox::Game::World::Chuncks::Faces::BOT),
-            BlockFaceData(Vox::Game::World::Chuncks::Faces::LEFT),
-            BlockFaceData(Vox::Game::World::Chuncks::Faces::RIGHT),
-            BlockFaceData(Vox::Game::World::Chuncks::Faces::FRONT),
-            BlockFaceData(Vox::Game::World::Chuncks::Faces::BACK),
+            BlockFaceData(Faces::TOP),
+            BlockFaceData(Faces::BOT),
+            BlockFaceData(Faces::LEFT),
+            BlockFaceData(Faces::RIGHT),
+            BlockFaceData(Faces::FRONT),
+            BlockFaceData(Faces::BACK),
         };
 
         inline void UpdateFacesVisibility(std::array<bool, 6> newData)
@@ -39,7 +40,7 @@ namespace Vox::Game::Datas::Blocks
             }
             
         }
-        inline void UpdateFaceVisibility(bool newVisibility, Vox::Game::World::Chuncks::Faces faceDir)
+        inline void UpdateFaceVisibility(bool newVisibility, Faces faceDir)
         {
             this->_faces[static_cast<int>(faceDir)].isVisible = newVisibility;
         }
@@ -54,6 +55,7 @@ namespace Vox::Game::Datas::Blocks
         }
 
         inline const std::array<BlockFaceData, 6> &GetFacesData() {return this->_faces;}
+        inline const BlockFaceData &GetFaceData(Faces faceDir) {return this->_faces[static_cast<int>(faceDir)];}
     };
 
 } // namespace Vox::Game::Datas::Blocks
