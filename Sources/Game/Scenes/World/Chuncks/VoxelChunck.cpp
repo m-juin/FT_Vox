@@ -194,7 +194,7 @@ namespace Vox::Game::World::Chuncks
 		}
 	}
 
-	void VoxelChunck::SetBlockDatas(const LocalVector &localPos, Vox::Game::Datas::Blocks::BlockType newType)
+	void VoxelChunck::SetBlockDatas(const LocalVector &localPos, Vox::Game::Datas::Blocks::BlockType newType, bool isTransparent, bool needFullMeshRebuild)
 	{
 		size_t index = this->GetLocalIndex(localPos);
 		this->_blocksDatas[index].type = newType;
@@ -206,6 +206,10 @@ namespace Vox::Game::World::Chuncks
 		{
 			this->_blocksDatas[index].UpdateFacesTransparency({false, false, false, false, false, false});
 		}
+		// for (auto &face : this->_blocksDatas[index].GetFacesData())
+		// {
+		// 	this->AddFace(,face.faceDirection, localPos, newType, {1.f, 1.f, 1.f}, isTransparent);
+		// }
 	}
 
 	void VoxelChunck::FacesCulling(const Generation::Utils::ChunckCache &cache)
