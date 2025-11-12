@@ -108,15 +108,15 @@ namespace Vox::Game::World::Chuncks
 		}
 		if (this->IsGenerationCancelled())
 			return;
-		this->GenerateClusterDecoration(st, spl, seed);
-		if (this->IsGenerationCancelled())
-			return;
 		for (int y = chunksPerCluster - 1; y >= 0; y--)
 		{
 			if (this->IsGenerationCancelled())
 				return;
 			this->_clusterContent[y]->BuildMesh(textInfo, transparenttextInfo, st);
 		}
+		if (this->IsGenerationCancelled())
+			return;
+		this->GenerateClusterDecoration(st, spl, seed);
 		this->ChangeGenerationState(Generation::E_GenerationState::WaitingBuffer);
 	}
 
@@ -164,17 +164,19 @@ namespace Vox::Game::World::Chuncks
 		const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl, const uint32_t seed)
 	{
 		(void)spl;
-		GenerateTree(cache, seed);
-		GetOverflowBlocks();
+		(void)cache;
+		(void)seed;
+		// GenerateTree(cache, seed);
+		// GetOverflowBlocks();
 	}
 
 	void ChunckCluster::SpawnStructure(Game::Datas::Structures::StructuresType type, Vector3Int pos)
 	{
-		(void)type;
 
+		
 		auto &gManager = Game::World::WorldManager::GetInstance().GetGenerationManager();
 
-		auto s = gManager.GetStructuresManager()->GetStructure(Game::Datas::Structures::StructuresType::Oak_Tree1);
+		auto s = gManager.GetStructuresManager()->GetStructure(type);
 		auto oManager = gManager.GetOverflowManager();
 
 		auto content = s.GetContent();

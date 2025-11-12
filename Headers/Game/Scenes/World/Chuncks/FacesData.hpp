@@ -9,13 +9,13 @@ namespace Vox::Game::World::Chuncks
 	using namespace Utils::Defines;
 	enum class Faces
 	{
-		TOP,
-		BOT,
-		LEFT,
-		RIGHT,
-		FRONT,
-		BACK,
-		NONE
+		TOP = 0,
+		BOT = 1,
+		LEFT = 2,
+		RIGHT = 3,
+		FRONT = 4,
+		BACK = 5,
+		NONE = 6
 	};
 	constexpr std::string_view faceNames[] = {"Top", "Bot", "Left", "Right", "Front", "Back", ""};
 	constexpr std::string_view ToString(Faces face)
