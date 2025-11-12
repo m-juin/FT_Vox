@@ -225,16 +225,15 @@ namespace Vox::Game::World::Chuncks
 			else if (face == Faces::TOP)
 				neighbor[1] += 1;
 			else if (face == Faces::BACK)
-				neighbor[2] += -1;
-			else
 				neighbor[2] += 1;
+			else
+				neighbor[2] += -1;
 			if ((it[0] != 0 || face != Faces::LEFT) && (it[0] != CHUNCK_SIZE - 1 || face != Faces::RIGHT) &&
 				(it[1] != 0 || face != Faces::BOT) && (it[1] != CHUNCK_SIZE - 1 || face != Faces::TOP) &&
 				(it[2] != 0 || face != Faces::FRONT) && (it[2] != CHUNCK_SIZE - 1 || face != Faces::BACK))
 			{
 				auto index = this->GetLocalIndex({static_cast<uint8_t>(neighbor[0]), static_cast<uint8_t>(neighbor[1]),
 												  static_cast<uint8_t>(neighbor[2])});
-				std::cout << neighbor << " | " << static_cast<int>(face) << std::endl;;
 				return this->_blocksDatas[index];
 			}
 			else
@@ -254,11 +253,14 @@ namespace Vox::Game::World::Chuncks
 					data.UpdateFacesTransparency({true, true, true, true, true, true});
 				}
 				else
+				{
 					data.type = BlockType::Dirt;
+					data.UpdateFacesTransparency({false, false, false, false, false, false});
+				}
 				return data;
 			}
 		};
-		LocalVector it(0);
+		LocalVector it;
 		for (it[0] = 0; it[0] < CHUNCK_SIZE; it[0]++)
 		{
 			for (it[2] = 0; it[2] < CHUNCK_SIZE; it[2]++)
@@ -272,10 +274,9 @@ namespace Vox::Game::World::Chuncks
 					for (auto &face : bData.GetFacesData())
 					{
 						int value = static_cast<int>(face.faceDirection);
-						std::cout << value << std::endl;
 						Faces opposite = value % 2 == 0 ? static_cast<Faces>(value + 1) : static_cast<Faces>(value - 1);
 						auto adjacent = GetAdjacentBlockData(it, face.faceDirection);
-						if (!face.isTransparent && !adjacent.GetFaceData(opposite).isTransparent)
+						if (!face.isTransparent && adjacent.GetFaceData(opposite).isTransparent)
 							this->_blocksDatas[mapIndex]._faces[static_cast<int>(face.faceDirection)].isVisible = true;
 						else if (face.isTransparent && adjacent.type != bData.type &&
 								 adjacent.GetFaceData(opposite).isTransparent)
