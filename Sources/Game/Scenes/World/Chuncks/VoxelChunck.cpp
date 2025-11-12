@@ -225,12 +225,12 @@ namespace Vox::Game::World::Chuncks
 			else if (face == Faces::TOP)
 				neighbor[1] += 1;
 			else if (face == Faces::BACK)
-				neighbor[2] += 1;
-			else
 				neighbor[2] += -1;
+			else
+				neighbor[2] += 1;
 			if ((it[0] != 0 || face != Faces::LEFT) && (it[0] != CHUNCK_SIZE - 1 || face != Faces::RIGHT) &&
 				(it[1] != 0 || face != Faces::BOT) && (it[1] != CHUNCK_SIZE - 1 || face != Faces::TOP) &&
-				(it[2] != 0 || face != Faces::FRONT) && (it[2] != CHUNCK_SIZE - 1 || face != Faces::BACK))
+				(it[2] != 0 || face != Faces::BACK) && (it[2] != CHUNCK_SIZE - 1 || face != Faces::FRONT))
 			{
 				auto index = this->GetLocalIndex({static_cast<uint8_t>(neighbor[0]), static_cast<uint8_t>(neighbor[1]),
 												  static_cast<uint8_t>(neighbor[2])});
@@ -246,10 +246,8 @@ namespace Vox::Game::World::Chuncks
 				uint8_t neighborColHeight = cache.heightMap[neighborIndex];
 				if (neighborWorldY > neighborColHeight)
 				{
-					if (neighborWorldY > static_cast<int>(Generation::Utils::WATER_LEVEL))
-						data.type = neighborWorldY > static_cast<int>(Generation::Utils::WATER_LEVEL)
-										? BlockType::Air
-										: BlockType::Water;
+					data.type = neighborWorldY > static_cast<int>(Generation::Utils::WATER_LEVEL) ? BlockType::Air
+																								  : BlockType::Water;
 					data.UpdateFacesTransparency({true, true, true, true, true, true});
 				}
 				else
