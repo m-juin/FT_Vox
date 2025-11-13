@@ -169,7 +169,7 @@ namespace Vox::Game::World::Chuncks
 		(void)cache;
 		(void)seed;
 		GenerateTree(cache, seed);
-		// GetOverflowBlocks();
+		GetOverflowBlocks();
 	}
 
 	void ChunckCluster::SpawnStructure(Game::Datas::Structures::StructuresType type, Vector3Int pos)
@@ -239,7 +239,7 @@ namespace Vox::Game::World::Chuncks
 				static_cast<uint8_t>(block.localCoord[2])};
 			if (this->_clusterContent[chunckIndex]->GetBlockDatas(localPos) != Vox::Game::Datas::Blocks::BlockType::Air)
 				continue;
-			// this->_clusterContent[chunckIndex]->SetBlockDatas(localPos, block.type);
+			this->_clusterContent[chunckIndex]->SetBlockDatas(localPos, block.type, false, false);
 		}
 	}
 

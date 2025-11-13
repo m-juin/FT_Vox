@@ -200,10 +200,10 @@ namespace Vox::Game::World::Chuncks
 		(void)needFullMeshRebuild;
 
 		/*  */
-
+		const auto &tManagers = Vox::Front::Scenes::TexturesManager::GetInstance();
 		for (auto &face : this->_blocksDatas[index].GetFacesData())
 		{
-			this->AddFace(,face.faceDirection, localPos, newType, {1.f, 1.f, 1.f}, isTransparent);
+			this->AddFace((face.isTransparent ? tManagers.operator[]("A_Blocks_Transparent").GetTextureInfo() : tManagers.operator[]("A_Blocks").GetTextureInfo()),face.faceDirection, localPos, newType, {1.f, 1.f, 1.f}, isTransparent);
 		}
 	}
 
