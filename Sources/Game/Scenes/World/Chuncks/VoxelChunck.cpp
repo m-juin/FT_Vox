@@ -23,6 +23,8 @@
 
 #include "Game/Datas/Biomes.hpp"
 
+#include "Front/Scenes/TexturesManager.hpp"
+
 namespace Vox::Game::World::Chuncks
 {
 	VoxelChunck::VoxelChunck(const Vector3Int &defaultPos)
@@ -47,16 +49,9 @@ namespace Vox::Game::World::Chuncks
 		wm.UpdateBuffer(this->_bufferIndex, {this->GetModel()});
 	}
 
-	void VoxelChunck::BuildVoxelObject(
-		const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl,
-		const std::vector<Game::Datas::Textures::TextureInfo> &textInfo,
-		const std::vector<Game::Datas::Textures::TextureInfo> &transparenttextInfo,
-		const Generation::Utils::ChunckCache &cache, const uint32_t &seed)
+	void VoxelChunck::BuildVoxelObject(const Generation::Utils::ChunckCache &cache, const uint32_t &seed)
 	{
-		(void)spl;
 		(void)seed;
-		(void)textInfo;
-		(void)transparenttextInfo;
 		std::bitset<CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE> clusterContent = this->BuildContent(cache.heightMap);
 		this->SetBlocksDatas(cache, clusterContent);
 		this->FacesCulling(cache);
@@ -194,7 +189,8 @@ namespace Vox::Game::World::Chuncks
 		}
 	}
 
-	void VoxelChunck::SetBlockDatas(const LocalVector &localPos, Vox::Game::Datas::Blocks::BlockType newType, bool isTransparent, bool needFullMeshRebuild)
+	void VoxelChunck::SetBlockDatas(const LocalVector &localPos, Vox::Game::Datas::Blocks::BlockType newType,
+									bool isTransparent, bool needFullMeshRebuild)
 	{
 		size_t index = this->GetLocalIndex(localPos);
 		this->_blocksDatas[index].type = newType;
@@ -384,13 +380,11 @@ namespace Vox::Game::World::Chuncks
 	// 	}
 	// }
 
-	void VoxelChunck::BuildMesh(const std::vector<Game::Datas::Textures::TextureInfo> &textInfo,
-								const std::vector<Game::Datas::Textures::TextureInfo> &transparenttextInfo,
-								const Generation::Utils::ChunckCache &cache)
+	void VoxelChunck::BuildMesh()
 	{
-		(void)cache;
 		LocalVector it(0);
 		Vector3Float color(1.0, 1.0, 1.0);
+		const auto &tManagers = Vox::Front::Scenes::TexturesManager::GetInstance();
 		for (it[0] = 0; it[0] < CHUNCK_SIZE; it[0]++)
 		{
 			for (it[2] = 0; it[2] < CHUNCK_SIZE; it[2]++)
@@ -405,11 +399,12 @@ namespace Vox::Game::World::Chuncks
 					// if (data.type != Vox::Game::Datas::Blocks::BlockType::Air &&
 					// 	data.type != Vox::Game::Datas::Blocks::BlockType::Water)
 					// 	std::cout << data.GetFacesData()[0].isVisible << std::endl;
+
 					for (auto face : faces)
 					{
 						if (face.isVisible == false)
 							continue;
-						this->AddFace((face.isTransparent ? transparenttextInfo : textInfo), face.faceDirection, it,
+						this->AddFace((face.isTransparent ? tManagers.operator[]("A_Blocks_Transparent").GetTextureInfo() : tManagers.operator[]("A_Blocks").GetTextureInfo()), face.faceDirection, it,
 									  data.type, color, face.isTransparent);
 					}
 				}
@@ -434,9 +429,9 @@ namespace Vox::Game::World::Chuncks
 		if (vertexOpaque.size() != 0)
 		{
 			this->B_IndexOpaque =
-				new sbuffer(2, indexOpaque.size() * sizeof(uint16_t), VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
+				new dbuffer(2, indexOpaque.size() * sizeof(uint16_t), VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
 			this->B_VertexOpaque =
-				new sbuffer(2, vertexOpaque.size() * sizeof(Vertex), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
+				new dbuffer(2, vertexOpaque.size() * sizeof(Vertex), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
 			this->indexCountOpaque = indexOpaque.size();
 			this->B_IndexOpaque->Create(indexOpaque.data());
 			this->B_VertexOpaque->Create(vertexOpaque.data());
@@ -447,9 +442,9 @@ namespace Vox::Game::World::Chuncks
 		if (indexTransparent.size() != 0)
 		{
 			this->B_IndexTransparent =
-				new sbuffer(2, indexTransparent.size() * sizeof(uint16_t), VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
+				new dbuffer(2, indexTransparent.size() * sizeof(uint16_t), VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
 			this->B_VertexTransparent =
-				new sbuffer(2, vertexTransparent.size() * sizeof(Vertex), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
+				new dbuffer(2, vertexTransparent.size() * sizeof(Vertex), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
 			this->indexCountTransparent = indexTransparent.size();
 			this->B_IndexTransparent->Create(indexTransparent.data());
 			this->B_VertexTransparent->Create(vertexTransparent.data());

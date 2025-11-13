@@ -123,4 +123,9 @@ namespace Vox::Front::Scenes
 			throw std::runtime_error("Failed to create texture sampler!");
 	}
 
+	const TexturesManager &TexturesManager::GetInstance()
+	{
+		return Game::GameManager::GetInstance().GetTexturesManager();
+	}
+
 } // namespace Vox::Front::Scenes

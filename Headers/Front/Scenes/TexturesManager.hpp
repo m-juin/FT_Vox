@@ -16,6 +16,8 @@
 #include <array>
 #include <bitset>
 
+#include "Game/GameManager.hpp"
+
 namespace Vox::Front::Scenes
 {
     class TexturesManager
@@ -29,7 +31,7 @@ namespace Vox::Front::Scenes
             Utils::ATexturesAtlas *operator[](const std::string &key) {return this->_texturesMap[key];};
             const Utils::ATexturesAtlas &operator[](const std::string &key) const {return *this->_texturesMap.at(key);};
 
-            Front::Rendering::Images::FontImage &GetFont() {return *this->_fontImage;};
+            Front::Rendering::Images::FontImage &GetFont() const {return *this->_fontImage;};
             Game::World::Skybox::SkyTexture &GetSkyTexture() {return *this->_skyImage;};
 
             int AddDynamicImage(VkImageView &view);
@@ -41,6 +43,7 @@ namespace Vox::Front::Scenes
             }
 
             inline const VkSampler &GetDynamicSampler() {return this->_dynamicSampler;};
+            static const TexturesManager &GetInstance();
 
         protected:
             void CreateDynamicSampler();
@@ -56,7 +59,6 @@ namespace Vox::Front::Scenes
             /* private */
     
     };
-    
     
     
 } // namespace Vox::Front::Scenes

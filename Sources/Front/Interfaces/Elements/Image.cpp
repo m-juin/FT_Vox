@@ -8,7 +8,7 @@
 
 #include "Front/Interfaces/Utils/Maths.hpp"
 
-#include "Game/GameManager.hpp"
+#include "Front/Scenes/TexturesManager.hpp"
 #include "Game/Scenes/Menu/Sc_Menu.hpp"
 
 namespace Vox::Front::Interfaces::Elements

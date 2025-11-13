@@ -11,7 +11,7 @@
 
 #include <cstring>
 
-#include "Game/GameManager.hpp"
+#include "Front/Scenes/TexturesManager.hpp"
 
 namespace Vox::Front::Interfaces::Elements
 {

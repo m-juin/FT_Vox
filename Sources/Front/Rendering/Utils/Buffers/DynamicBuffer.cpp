@@ -63,16 +63,15 @@ namespace Vox::Front::Rendering::Utils::Buffers
 			}
 			vkBindBufferMemory(device.GetLogicalDevice(), _buffers[i], _memories[i], 0);
 			vkMapMemory(device.GetLogicalDevice(), _memories[i], 0, _size, 0, &_mappedMemories[i]);
+			if (initialData)
+				std::memcpy(_mappedMemories[i], initialData, this->_size);
+			else
+				std::memset(_mappedMemories[i], 0, this->_size);
 		}
 
-		size_t nextFrame = 0;
-		if (this->_memories.size() != 1)
-			nextFrame = SyncObjects::GetInstance().GetNextFrame();
-
-		if (initialData)
-			std::memcpy(_mappedMemories[nextFrame], initialData, this->_size);
-		else
-			std::memset(_mappedMemories[nextFrame], 0, this->_size);
+		// size_t nextFrame = 0;
+		// if (this->_memories.size() != 1)
+		// 	nextFrame = SyncObjects::GetInstance().GetNextFrame();
 	}
 
 	void DynamicBuffer::Update(void *newData, VkDeviceSize newDataSize)

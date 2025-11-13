@@ -8,6 +8,8 @@
 #include "Front/Rendering/Pipelines/PipelinesManager.hpp"
 #include "Front/Rendering/Pipelines/StaticGUIPipeline.hpp"
 
+#include "Front/Scenes/TexturesManager.hpp"
+
 namespace Vox::Game
 {
 	void GameManager::Render()

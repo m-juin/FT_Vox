@@ -93,6 +93,8 @@ namespace Vox::Game::World::Chuncks
 		const std::vector<Game::Datas::Textures::TextureInfo> &textInfo,
 		const std::vector<Game::Datas::Textures::TextureInfo> &transparenttextInfo, const uint32_t seed)
 	{
+		(void)textInfo;
+		(void)transparenttextInfo;
 		this->ChangeGenerationState(Generation::E_GenerationState::Mesh);
 
 		auto st = GenerateCache(seed, spl);
@@ -104,7 +106,7 @@ namespace Vox::Game::World::Chuncks
 				return;
 			this->_clusterContent[y] = new VoxelChunck(Vector3Int(this->_clusterPos[0], y, this->_clusterPos[1]));
 
-			this->_clusterContent[y]->BuildVoxelObject(spl, textInfo, transparenttextInfo, st, seed);
+			this->_clusterContent[y]->BuildVoxelObject(st, seed);
 		}
 		if (this->IsGenerationCancelled())
 			return;
@@ -112,7 +114,7 @@ namespace Vox::Game::World::Chuncks
 		{
 			if (this->IsGenerationCancelled())
 				return;
-			this->_clusterContent[y]->BuildMesh(textInfo, transparenttextInfo, st);
+			this->_clusterContent[y]->BuildMesh();
 		}
 		if (this->IsGenerationCancelled())
 			return;

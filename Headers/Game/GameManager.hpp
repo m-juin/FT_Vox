@@ -9,9 +9,14 @@
 
 #include "Game/Datas/TexturesData.hpp"
 #include "Game/Scenes/World/Generation/SplinesManager.hpp"
-#include "Front/Scenes/TexturesManager.hpp"
+// #include "Front/Scenes/TexturesManager.hpp"
 
 #include "Scenes/Menu/SavesData.hpp"
+
+namespace Vox::Front::Scenes
+{
+    class TexturesManager;
+} // namespace Vox::Front::Scenes
 
 
 namespace Vox::Game

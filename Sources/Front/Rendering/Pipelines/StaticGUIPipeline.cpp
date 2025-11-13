@@ -12,7 +12,7 @@
 
 #include "Front/Rendering/Images/FontImage.hpp"
 
-#include "Game/GameManager.hpp"
+#include "Front/Scenes/TexturesManager.hpp"
 
 #include "Front/Utils/TexturesData.hpp"
 

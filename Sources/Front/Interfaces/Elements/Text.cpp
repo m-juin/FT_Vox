@@ -6,7 +6,8 @@
 #include "Front/Rendering/Pipelines/PipelinesManager.hpp"
 #include "Front/Rendering/Pipelines/StaticGUIPipeline.hpp"
 
-#include "Game/GameManager.hpp"
+// #include "Game/GameManager.hpp"
+#include "Front/Scenes/TexturesManager.hpp"
 
 namespace Vox::Front::Interfaces::Elements
 {
@@ -42,7 +43,7 @@ namespace Vox::Front::Interfaces::Elements
 		float y = this->_pos[1];
 
 		auto &font =
-			Game::GameManager::GetInstance().GetTexturesManager().GetFont();
+			Front::Scenes::TexturesManager::GetInstance().GetFont();
 
 		const Vector2 screenSize(Rendering::SwapChain::GetInstance().GetExtent().width,
 								 Rendering::SwapChain::GetInstance().GetExtent().height);

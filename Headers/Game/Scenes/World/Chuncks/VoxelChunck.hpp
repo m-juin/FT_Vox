@@ -46,9 +46,7 @@ namespace Vox::Game::World::Chuncks
 			~VoxelChunck();
 
 			void Render(uint8_t toRender);
-			void BuildVoxelObject(const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl,
-								  const std::vector<Game::Datas::Textures::TextureInfo> &textInfo, const std::vector<Game::Datas::Textures::TextureInfo> &transparenttextInfo,
-								  const Generation::Utils::ChunckCache &cache, const uint32_t &seed);
+			void BuildVoxelObject(const Generation::Utils::ChunckCache &cache, const uint32_t &seed);
 			void BuildBufferObject(const uint16_t &buffer);
 
 			Vector3Int GetChunckPosition()
@@ -86,12 +84,12 @@ namespace Vox::Game::World::Chuncks
 			void FacesCulling(const Generation::Utils::ChunckCache &cache);
 			Vox::Game::Datas::Blocks::BlockType GetBlockDatas(const LocalVector &localPos);
 
-			void BuildMesh(const std::vector<Game::Datas::Textures::TextureInfo> &textInfo, const std::vector<Game::Datas::Textures::TextureInfo> &transparenttextInfo, const Generation::Utils::ChunckCache &cache);
+			void BuildMesh();
 			size_t _bufferIndex;
-			sbuffer *B_VertexOpaque;
-			sbuffer *B_IndexOpaque;
-			sbuffer *B_VertexTransparent;
-			sbuffer *B_IndexTransparent;
+			dbuffer *B_VertexOpaque;
+			dbuffer *B_IndexOpaque;
+			dbuffer *B_VertexTransparent;
+			dbuffer *B_IndexTransparent;
 
 			/* private */
 	};
