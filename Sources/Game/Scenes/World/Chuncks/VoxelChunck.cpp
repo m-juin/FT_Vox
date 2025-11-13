@@ -194,16 +194,20 @@ namespace Vox::Game::World::Chuncks
 	{
 		size_t index = this->GetLocalIndex(localPos);
 		this->_blocksDatas[index].type = newType;
-		isTransparent = newType == Game::Datas::Blocks::BlockType::Air || newType == Game::Datas::Blocks::BlockType::Water;
-			this->_blocksDatas[index].UpdateFacesTransparency({isTransparent, isTransparent, isTransparent, isTransparent, isTransparent, isTransparent});
-		(void)isTransparent;
+		isTransparent =
+			newType == Game::Datas::Blocks::BlockType::Air || newType == Game::Datas::Blocks::BlockType::Water;
+		this->_blocksDatas[index].UpdateFacesTransparency(
+			{isTransparent, isTransparent, isTransparent, isTransparent, isTransparent, isTransparent});
 		(void)needFullMeshRebuild;
 
-		/*  */
 		const auto &tManagers = Vox::Front::Scenes::TexturesManager::GetInstance();
 		for (auto &face : this->_blocksDatas[index].GetFacesData())
+			this->AddFace((face.isTransparent ? tManagers.operator[]("A_Blocks_Transparent").GetTextureInfo()
+											  : tManagers.operator[]("A_Blocks").GetTextureInfo()),
+						  face.faceDirection, localPos, newType, {1.f, 1.f, 1.f}, isTransparent);
+		if (needFullMeshRebuild)
 		{
-			this->AddFace((face.isTransparent ? tManagers.operator[]("A_Blocks_Transparent").GetTextureInfo() : tManagers.operator[]("A_Blocks").GetTextureInfo()),face.faceDirection, localPos, newType, {1.f, 1.f, 1.f}, isTransparent);
+			this->RefreshBuffers();
 		}
 	}
 
@@ -401,10 +405,50 @@ namespace Vox::Game::World::Chuncks
 					{
 						if (face.isVisible == false)
 							continue;
-						this->AddFace((face.isTransparent ? tManagers.operator[]("A_Blocks_Transparent").GetTextureInfo() : tManagers.operator[]("A_Blocks").GetTextureInfo()), face.faceDirection, it,
-									  data.type, color, face.isTransparent);
+						this->AddFace((face.isTransparent
+										   ? tManagers.operator[]("A_Blocks_Transparent").GetTextureInfo()
+										   : tManagers.operator[]("A_Blocks").GetTextureInfo()),
+									  face.faceDirection, it, data.type, color, face.isTransparent);
 					}
 				}
+			}
+		}
+	}
+
+	void VoxelChunck::RefreshBuffers()
+	{
+		if (vertexOpaque.size() != 0)
+		{
+			this->indexCountOpaque = indexOpaque.size();
+			if (this->B_IndexOpaque == nullptr)
+			{
+				this->B_IndexOpaque =
+					new dbuffer(2, indexOpaque.size() * sizeof(uint16_t), VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
+				this->B_VertexOpaque =
+					new dbuffer(2, vertexOpaque.size() * sizeof(Vertex), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
+			}
+			else
+			{
+				this->B_IndexOpaque->Update(indexOpaque.data(), indexCountOpaque * sizeof(uint16_t));
+				this->B_VertexOpaque->Update(vertexOpaque.data(), vertexOpaque.size() * sizeof(Vertex));
+			}
+		}
+		if (vertexTransparent.size() != 0)
+		{
+			this->indexCountTransparent = indexTransparent.size();
+			if (this->B_IndexTransparent == nullptr)
+			{
+				this->B_IndexTransparent =
+					new dbuffer(2, indexTransparent.size() * sizeof(uint16_t), VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
+				this->B_IndexTransparent =
+					new dbuffer(2, vertexTransparent.size() * sizeof(Vertex), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
+				this->B_IndexTransparent->Create(indexTransparent.data());
+				this->B_VertexTransparent->Create(vertexTransparent.data());
+			}
+			else
+			{
+				this->B_IndexTransparent->Update(indexTransparent.data(), indexCountOpaque * sizeof(uint16_t));
+				this->B_VertexTransparent->Update(vertexTransparent.data(), vertexTransparent.size() * sizeof(Vertex));
 			}
 		}
 	}
@@ -412,42 +456,7 @@ namespace Vox::Game::World::Chuncks
 	void VoxelChunck::BuildBufferObject(const uint16_t &buffer)
 	{
 		this->_bufferIndex = buffer;
-		if (this->B_IndexOpaque != nullptr)
-		{
-			delete this->B_VertexOpaque;
-			this->B_VertexOpaque = nullptr;
-			delete this->B_IndexOpaque;
-			this->B_IndexOpaque = nullptr;
-		}
-		if (this->vertexOpaque.size() == 0 && indexTransparent.size() == 0)
-		{
-			return;
-		}
-		if (vertexOpaque.size() != 0)
-		{
-			this->B_IndexOpaque =
-				new dbuffer(2, indexOpaque.size() * sizeof(uint16_t), VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
-			this->B_VertexOpaque =
-				new dbuffer(2, vertexOpaque.size() * sizeof(Vertex), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
-			this->indexCountOpaque = indexOpaque.size();
-			this->B_IndexOpaque->Create(indexOpaque.data());
-			this->B_VertexOpaque->Create(vertexOpaque.data());
-			this->indexOpaque.clear();
-			this->vertexOpaque.clear();
-		}
-
-		if (indexTransparent.size() != 0)
-		{
-			this->B_IndexTransparent =
-				new dbuffer(2, indexTransparent.size() * sizeof(uint16_t), VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
-			this->B_VertexTransparent =
-				new dbuffer(2, vertexTransparent.size() * sizeof(Vertex), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
-			this->indexCountTransparent = indexTransparent.size();
-			this->B_IndexTransparent->Create(indexTransparent.data());
-			this->B_VertexTransparent->Create(vertexTransparent.data());
-			this->indexTransparent.clear();
-			this->vertexTransparent.clear();
-		}
+		this->RefreshBuffers();
 	}
 
 	size_t VoxelChunck::GetLocalIndex(const LocalVector &vec)

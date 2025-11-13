@@ -86,10 +86,11 @@ namespace Vox::Game::World::Chuncks
 
 			void BuildMesh();
 			size_t _bufferIndex;
-			dbuffer *B_VertexOpaque;
-			dbuffer *B_IndexOpaque;
-			dbuffer *B_VertexTransparent;
-			dbuffer *B_IndexTransparent;
+			dbuffer *B_VertexOpaque = nullptr;
+			dbuffer *B_IndexOpaque = nullptr;
+			dbuffer *B_VertexTransparent = nullptr;
+			dbuffer *B_IndexTransparent = nullptr;
+			void RefreshBuffers();
 
 			/* private */
 	};

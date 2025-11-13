@@ -258,6 +258,16 @@ namespace Vox::Game::World::Chuncks
 		(void)type;
 	}
 
+	// void ChunckCluster::SetBlocks(MGL::Vectors::Vector3<uint8_t> localPos, Game::Datas::Blocks::BlockType type)
+	// {
+	// 	auto chunckIndex = localPos[1] / CHUNCK_SIZE;
+	// 	uint8_t localHeight = localPos[1] % CHUNCK_SIZE;
+
+	// 	this->_clusterContent[chunckIndex]->SetBlockDatas({localPos[0], localHeight, localPos[2] }, type);
+	// 	(void)localPos;
+	// 	(void)type;
+	// }
+
 	void ChunckCluster::BuildBuffers(const uint16_t &buffer)
 	{
 		this->_bufferIndex = buffer;
