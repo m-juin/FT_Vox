@@ -196,8 +196,6 @@ namespace Vox::Game::World::Chuncks
 									   static_cast<int>(sPos[2] - s._anchorPoint[2] + pos[2])};
 					if (bType == Game::Datas::Blocks::BlockType::Air)
 						continue;
-					auto chunckIndex = oPos[1] / CHUNCK_SIZE;
-					float localHeight = oPos[1] % CHUNCK_SIZE;
 
 					if (oPos[0] < 0 || oPos[0] >= static_cast<int>(CHUNCK_SIZE) || oPos[2] < 0 ||
 						static_cast<int>(oPos[2] >= static_cast<int>(CHUNCK_SIZE)))
@@ -216,10 +214,10 @@ namespace Vox::Game::World::Chuncks
 							block);
 						continue;
 					}
-					this->_clusterContent[chunckIndex]->SetBlockDatas({static_cast<uint8_t>(oPos[0]),
-																	   static_cast<uint8_t>(localHeight),
-																	   static_cast<uint8_t>(oPos[2])},
-																	  bType);
+					// this->_clusterContent[chunckIndex]->SetBlockDatas({static_cast<uint8_t>(oPos[0]),
+					// 												   static_cast<uint8_t>(localHeight),
+					// 												   static_cast<uint8_t>(oPos[2])},
+					// 												  bType);
 				}
 			}
 		}
@@ -239,7 +237,7 @@ namespace Vox::Game::World::Chuncks
 				static_cast<uint8_t>(block.localCoord[2])};
 			if (this->_clusterContent[chunckIndex]->GetBlockDatas(localPos) != Vox::Game::Datas::Blocks::BlockType::Air)
 				continue;
-			this->_clusterContent[chunckIndex]->SetBlockDatas(localPos, block.type);
+			// this->_clusterContent[chunckIndex]->SetBlockDatas(localPos, block.type);
 		}
 	}
 
@@ -250,10 +248,12 @@ namespace Vox::Game::World::Chuncks
 
 	void ChunckCluster::SetBlock(MGL::Vectors::Vector3<uint8_t> localPos, Game::Datas::Blocks::BlockType type)
 	{
-		auto chunckIndex = localPos[1] / CHUNCK_SIZE;
-		uint8_t localHeight = localPos[1] % CHUNCK_SIZE;
+		// auto chunckIndex = localPos[1] / CHUNCK_SIZE;
+		// uint8_t localHeight = localPos[1] % CHUNCK_SIZE;
 
-		this->_clusterContent[chunckIndex]->SetBlockDatas({localPos[0], localHeight, localPos[2] }, type);
+		// this->_clusterContent[chunckIndex]->SetBlockDatas({localPos[0], localHeight, localPos[2] }, type);
+		(void)localPos;
+		(void)type;
 	}
 
 	void ChunckCluster::BuildBuffers(const uint16_t &buffer)

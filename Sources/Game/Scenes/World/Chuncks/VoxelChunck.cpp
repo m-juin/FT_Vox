@@ -206,6 +206,8 @@ namespace Vox::Game::World::Chuncks
 		{
 			this->_blocksDatas[index].UpdateFacesTransparency({false, false, false, false, false, false});
 		}
+		(void)isTransparent;
+		(void)needFullMeshRebuild;
 		// for (auto &face : this->_blocksDatas[index].GetFacesData())
 		// {
 		// 	this->AddFace(,face.faceDirection, localPos, newType, {1.f, 1.f, 1.f}, isTransparent);
