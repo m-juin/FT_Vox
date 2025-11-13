@@ -194,20 +194,17 @@ namespace Vox::Game::World::Chuncks
 	{
 		size_t index = this->GetLocalIndex(localPos);
 		this->_blocksDatas[index].type = newType;
-		if (newType == Game::Datas::Blocks::BlockType::Air || newType == Game::Datas::Blocks::BlockType::Water)
-		{
-			this->_blocksDatas[index].UpdateFacesTransparency({true, true, true, true, true, true});
-		}
-		else
-		{
-			this->_blocksDatas[index].UpdateFacesTransparency({false, false, false, false, false, false});
-		}
+		isTransparent = newType == Game::Datas::Blocks::BlockType::Air || newType == Game::Datas::Blocks::BlockType::Water;
+			this->_blocksDatas[index].UpdateFacesTransparency({isTransparent, isTransparent, isTransparent, isTransparent, isTransparent, isTransparent});
 		(void)isTransparent;
 		(void)needFullMeshRebuild;
-		// for (auto &face : this->_blocksDatas[index].GetFacesData())
-		// {
-		// 	this->AddFace(,face.faceDirection, localPos, newType, {1.f, 1.f, 1.f}, isTransparent);
-		// }
+
+		/*  */
+
+		for (auto &face : this->_blocksDatas[index].GetFacesData())
+		{
+			this->AddFace(,face.faceDirection, localPos, newType, {1.f, 1.f, 1.f}, isTransparent);
+		}
 	}
 
 	void VoxelChunck::FacesCulling(const Generation::Utils::ChunckCache &cache)
