@@ -24,6 +24,7 @@
 #include "Game/Datas/Biomes.hpp"
 
 #include "Front/Scenes/TexturesManager.hpp"
+// #include "Front/Rendering/SyncObjects.hpp"
 
 namespace Vox::Game::World::Chuncks
 {
@@ -41,6 +42,16 @@ namespace Vox::Game::World::Chuncks
 
 		indexCountOpaque = 0;
 		indexCountTransparent = 0;
+		this->onUpdate.AddCallBack(
+			[this](void)
+			{
+				auto nFrame = Front::Rendering::SyncObjects::GetInstance().GetNextFrame();
+				if (this->_needbufferUpdate[nFrame] == true)
+				{
+					this->RefreshBuffers();
+					this->_needbufferUpdate[nFrame].flip();
+				}
+			});
 	}
 
 	void VoxelChunck::AssignModel()
@@ -80,72 +91,6 @@ namespace Vox::Game::World::Chuncks
 
 		return clusterContent;
 	}
-
-	/*							if (it[0] > 0)
-							{
-								this->_blocksDatas[GetLocalIndex({static_cast<uint8_t>(it[0] - 1), it[1], it[2]})]
-									.UpdateFaceVisibility(true, Faces::RIGHT);
-							}
-							if (it[0] < CHUNCK_SIZE - 1)
-								this->_blocksDatas[GetLocalIndex({static_cast<uint8_t>(it[0] + 1), it[1], it[2]})]
-									.UpdateFaceVisibility(true, Faces::LEFT);
-							if (it[1] > 0)
-								this->_blocksDatas[GetLocalIndex({it[0], static_cast<uint8_t>(it[1] - 1), it[2]})]
-									.UpdateFaceVisibility(true, Faces::TOP);
-							if (it[1] < CHUNCK_SIZE - 1)
-								this->_blocksDatas[GetLocalIndex({it[0], static_cast<uint8_t>(it[1] + 1), it[2]})]
-									.UpdateFaceVisibility(true, Faces::BOT);
-							if (it[2] > 0)
-								this->_blocksDatas[GetLocalIndex({it[0], it[1], static_cast<uint8_t>(it[2] - 1)})]
-									.UpdateFaceVisibility(true, Faces::FRONT);
-							if (it[2] < CHUNCK_SIZE - 1)
-								this->_blocksDatas[GetLocalIndex({it[0], it[1], static_cast<uint8_t>(it[2] + 1)})]
-									.UpdateFaceVisibility(true, Faces::BACK);*/
-
-	/*if (it[0] == 0)
-							{
-								MGL::Vectors::Vector3<int> neighbor = {it[0] - 1, it[1], it[2]};
-								size_t neighborIndex = (neighbor[0] + Generation::Utils::GENERATION_BLEND_RADIUS) *
-														   Generation::Utils::CACHE_SIZE +
-													   (neighbor[2] + Generation::Utils::GENERATION_BLEND_RADIUS);
-								int neighborWorldY = this->_position[1] + neighbor[1];
-								uint8_t neighborColHeight = cache.heightMap[neighborIndex];
-								if (neighborWorldY > neighborColHeight)
-									this->_blocksDatas[mapIndex].UpdateFaceVisibility(true, Faces::LEFT);
-							}
-							else if (it[0] == CHUNCK_SIZE - 1)
-							{
-								MGL::Vectors::Vector3<int> neighbor = {it[0] + 1, it[1], it[2]};
-								size_t neighborIndex = (neighbor[0] + Generation::Utils::GENERATION_BLEND_RADIUS) *
-														   Generation::Utils::CACHE_SIZE +
-													   (neighbor[2] + Generation::Utils::GENERATION_BLEND_RADIUS);
-								int neighborWorldY = this->_position[1] + neighbor[1];
-								uint8_t neighborColHeight = cache.heightMap[neighborIndex];
-								if (neighborWorldY > neighborColHeight)
-									this->_blocksDatas[mapIndex].UpdateFaceVisibility(true, Faces::RIGHT);
-							}
-							if (it[2] == 0)
-							{
-								MGL::Vectors::Vector3<int> neighbor = {it[0], it[1], it[2] - 2};
-								size_t neighborIndex = (neighbor[0] + Generation::Utils::GENERATION_BLEND_RADIUS) *
-														   Generation::Utils::CACHE_SIZE +
-													   (neighbor[2] + Generation::Utils::GENERATION_BLEND_RADIUS);
-								int neighborWorldY = this->_position[1] + neighbor[1];
-								uint8_t neighborColHeight = cache.heightMap[neighborIndex];
-								if (neighborWorldY > neighborColHeight)
-									this->_blocksDatas[mapIndex].UpdateFaceVisibility(true, Faces::FRONT);
-							}
-							else if (it[2] == CHUNCK_SIZE - 1)
-							{
-								MGL::Vectors::Vector3<int> neighbor = {it[0], it[1], it[2] + 2};
-								size_t neighborIndex = (neighbor[0] + Generation::Utils::GENERATION_BLEND_RADIUS) *
-														   Generation::Utils::CACHE_SIZE +
-													   (neighbor[2] + Generation::Utils::GENERATION_BLEND_RADIUS);
-								int neighborWorldY = this->_position[1] + neighbor[1];
-								uint8_t neighborColHeight = cache.heightMap[neighborIndex];
-								if (neighborWorldY > neighborColHeight)
-									this->_blocksDatas[mapIndex].UpdateFaceVisibility(true, Faces::BACK);
-							}*/
 
 	void VoxelChunck::SetBlocksDatas(const Generation::Utils::ChunckCache &cache,
 									 std::bitset<CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE> &clusterContent)
@@ -190,25 +135,22 @@ namespace Vox::Game::World::Chuncks
 	}
 
 	void VoxelChunck::SetBlockDatas(const LocalVector &localPos, Vox::Game::Datas::Blocks::BlockType newType,
-									bool isTransparent, bool needFullMeshRebuild)
+									bool refreshMesh)
 	{
+		(void)refreshMesh;
 		size_t index = this->GetLocalIndex(localPos);
 		this->_blocksDatas[index].type = newType;
-		isTransparent =
+		bool isTransparent =
 			newType == Game::Datas::Blocks::BlockType::Air || newType == Game::Datas::Blocks::BlockType::Water;
 		this->_blocksDatas[index].UpdateFacesTransparency(
 			{isTransparent, isTransparent, isTransparent, isTransparent, isTransparent, isTransparent});
-		(void)needFullMeshRebuild;
 
 		const auto &tManagers = Vox::Front::Scenes::TexturesManager::GetInstance();
 		for (auto &face : this->_blocksDatas[index].GetFacesData())
 			this->AddFace((face.isTransparent ? tManagers.operator[]("A_Blocks_Transparent").GetTextureInfo()
 											  : tManagers.operator[]("A_Blocks").GetTextureInfo()),
 						  face.faceDirection, localPos, newType, {1.f, 1.f, 1.f}, isTransparent);
-		if (needFullMeshRebuild)
-		{
-			this->RefreshBuffers();
-		}
+		this->_needbufferUpdate.set();
 	}
 
 	void VoxelChunck::FacesCulling(const Generation::Utils::ChunckCache &cache)
@@ -294,93 +236,6 @@ namespace Vox::Game::World::Chuncks
 		return this->_blocksDatas[index].type;
 	}
 
-	// void VoxelChunck::BuildMesh(const std::vector<Game::Datas::Textures::TextureInfo> &textInfo,
-	// 							const std::vector<Game::Datas::Textures::TextureInfo> &transparenttextInfo,
-	// 							const Generation::Utils::ChunckCache &cache)
-	// {
-	// 	auto checkFace = [this, &textInfo, &cache](const LocalVector &it, int offsetX, int offsetY, int offsetZ,
-	// 											   Faces face, const Game::Datas::Blocks::BlockType &blockType,
-	// 											   const Vector3Float &color)
-	// 	{
-	// 		MGL::Vectors::Vector3<int> neighbor = {it[0] + offsetX, it[1] + offsetY, it[2] + offsetZ};
-
-	// 		if (neighbor[0] >= 0 && neighbor[0] < static_cast<int>(CHUNCK_SIZE) && neighbor[1] >= 0 &&
-	// 			neighbor[1] < static_cast<int>(CHUNCK_SIZE) && neighbor[2] >= 0 &&
-	// 			neighbor[2] < static_cast<int>(CHUNCK_SIZE))
-	// 		{
-	// 			uint16_t neighborIndex = GetLocalIndex(LocalVector(neighbor[0], neighbor[1], neighbor[2]));
-	// 			Vox::Game::Datas::Blocks::BlockType neightborType = this->_blocksDatas[neighborIndex].type;
-	// 			if (neightborType == Vox::Game::Datas::Blocks::BlockType::Air ||
-	// 				neightborType == Vox::Game::Datas::Blocks::BlockType::Water)
-	// 				this->AddFace(textInfo, face, it, blockType, color);
-	// 			return;
-	// 		}
-
-	// 		else
-	// 		{
-	// 			size_t neighborIndex =
-	// 				(neighbor[0] + Generation::Utils::GENERATION_BLEND_RADIUS) * Generation::Utils::CACHE_SIZE +
-	// 				(neighbor[2] + Generation::Utils::GENERATION_BLEND_RADIUS);
-	// 			int neighborWorldY = this->_position[1] + neighbor[1];
-	// 			uint8_t neighborColHeight = cache.heightMap[neighborIndex];
-
-	// 			if (neighborWorldY > neighborColHeight)
-	// 				this->AddFace(textInfo, face, it, blockType, color);
-	// 		}
-	// 	};
-
-	// 	auto checkFaceWater = [this, &transparenttextInfo](const LocalVector &it, int offsetX, int offsetY, int
-	// offsetZ, 													   Faces face, const Vector3Float &color)
-	// 	{
-	// 		MGL::Vectors::Vector3<int> neighbor = {it[0] + offsetX, it[1] + offsetY, it[2] + offsetZ};
-
-	// 		if (this->_position[1] + neighbor[1] > static_cast<int>(Generation::Utils::WATER_LEVEL))
-	// 		{
-	// 			this->AddFace(transparenttextInfo, face, it, Game::Datas::Blocks::BlockType::Water, color,
-	// true, 1.1);
-	// 		}
-	// 	};
-
-	// 	LocalVector it(0);
-	// 	for (it[0] = 0; it[0] < CHUNCK_SIZE; it[0]++)
-	// 	{
-	// 		for (it[2] = 0; it[2] < CHUNCK_SIZE; it[2]++)
-	// 		{
-	// 			size_t cacheIndex =
-	// 				(it[0] + Generation::Utils::GENERATION_BLEND_RADIUS) * Generation::Utils::CACHE_SIZE +
-	// 				(it[2] + Generation::Utils::GENERATION_BLEND_RADIUS);
-	// 			Game::Datas::Biomes::Biomes biome = cache.biome[cacheIndex];
-	// 			for (it[1] = 0; it[1] < CHUNCK_SIZE; it[1]++)
-	// 			{
-	// 				uint16_t mapIndex = GetLocalIndex(it);
-	// 				Game::Datas::Blocks::BlockType _type = this->_blocksDatas[mapIndex].type;
-	// 				if (_type == Vox::Game::Datas::Blocks::BlockType::Air)
-	// 					continue;
-	// 				else if (_type == Vox::Game::Datas::Blocks::BlockType::Water)
-	// 				{
-	// 					Vector3Float color = {1.0, 1.0, 1.0};
-	// 					Vector3Int biomeColor = Game::Datas::Biomes::biomesColors[biome];
-	// 					color = {static_cast<float>(biomeColor[0]) / 256.0f, static_cast<float>(biomeColor[1]) /
-	// 256.0f, 							 static_cast<float>(biomeColor[2]) / 256.0f};
-	// checkFaceWater(it, 0, 1, 0, Faces::TOP, color); 					continue;
-	// 				}
-	// 				Vector3Float color = {1.0, 1.0, 1.0};
-	// 				if (_type == Game::Datas::Blocks::BlockType::Grass)
-	// 				{
-	// 					Vector3Int biomeColor = Game::Datas::Biomes::biomesColors[biome];
-	// 					color = {static_cast<float>(biomeColor[0]) / 256.0f, static_cast<float>(biomeColor[1]) /
-	// 256.0f, 							 static_cast<float>(biomeColor[2]) / 256.0f};
-	// 				}
-	// 				checkFace(it, 0, 1, 0, Faces::TOP, _type, color);
-	// 				checkFace(it, -1, 0, 0, Faces::LEFT, _type, color);
-	// 				checkFace(it, 1, 0, 0, Faces::RIGHT, _type, color);
-	// 				checkFace(it, 0, 0, 1, Faces::FRONT, _type, color);
-	// 				checkFace(it, 0, 0, -1, Faces::BACK, _type, color);
-	// 			}
-	// 		}
-	// 	}
-	// }
-
 	void VoxelChunck::BuildMesh()
 	{
 		LocalVector it(0);
@@ -426,11 +281,13 @@ namespace Vox::Game::World::Chuncks
 					new dbuffer(2, indexOpaque.size() * sizeof(uint16_t), VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
 				this->B_VertexOpaque =
 					new dbuffer(2, vertexOpaque.size() * sizeof(Vertex), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
+				this->B_IndexOpaque->Create(indexOpaque.data());
+				this->B_VertexOpaque->Create(vertexOpaque.data());
 			}
 			else
 			{
 				this->B_IndexOpaque->Update(indexOpaque.data(), indexCountOpaque * sizeof(uint16_t));
-				this->B_VertexOpaque->Update(vertexOpaque.data(), vertexOpaque.size() * sizeof(Vertex));
+				this->B_VertexOpaque->Update(vertexOpaque.data(), vertexOpaque.size() * sizeof(vertexOpaque));
 			}
 		}
 		if (vertexTransparent.size() != 0)
@@ -440,14 +297,14 @@ namespace Vox::Game::World::Chuncks
 			{
 				this->B_IndexTransparent =
 					new dbuffer(2, indexTransparent.size() * sizeof(uint16_t), VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
-				this->B_IndexTransparent =
+				this->B_VertexTransparent =
 					new dbuffer(2, vertexTransparent.size() * sizeof(Vertex), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
 				this->B_IndexTransparent->Create(indexTransparent.data());
 				this->B_VertexTransparent->Create(vertexTransparent.data());
 			}
 			else
 			{
-				this->B_IndexTransparent->Update(indexTransparent.data(), indexCountOpaque * sizeof(uint16_t));
+				this->B_IndexTransparent->Update(indexTransparent.data(), indexCountTransparent * sizeof(uint16_t));
 				this->B_VertexTransparent->Update(vertexTransparent.data(), vertexTransparent.size() * sizeof(Vertex));
 			}
 		}

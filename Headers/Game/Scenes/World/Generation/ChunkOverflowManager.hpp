@@ -18,7 +18,7 @@ namespace Vox::Game::Generation
 
     struct ChunkOverflowBlock
     {
-        Vector3Int localCoord;
+        Vector3Int worldCoord;
         BlockType type;
     };
     
@@ -26,8 +26,9 @@ namespace Vox::Game::Generation
     class ChunkOverflowManager
     {
         public:
-            void AddBlock(const Vector2Int &clusterPos, ChunkOverflowBlock block);
-            std::vector<ChunkOverflowBlock> ExtractClusterBlocks(const Vector2Int &clusterPos);
+            void AddBlock(const Vector2Int &, ChunkOverflowBlock);
+            void AddBlocks(const Vector2Int &, std::vector<ChunkOverflowBlock>);
+            std::vector<ChunkOverflowBlock> ExtractClusterBlocks(const Vector2Int &);
             ChunkOverflowManager();
             ~ChunkOverflowManager() {};
     

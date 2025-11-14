@@ -1,8 +1,8 @@
 #include "Game/Scenes/World/WorldManager.hpp"
 
 #include "Front/Rendering/Pipelines/PipelinesManager.hpp"
-#include "Front/Rendering/Pipelines/TransparentVoxelPipeline.hpp"
 #include "Front/Rendering/Pipelines/SkyBoxPipeline.hpp"
+#include "Front/Rendering/Pipelines/TransparentVoxelPipeline.hpp"
 #include "Front/Rendering/Pipelines/VoxelPipeline.hpp"
 #include "Front/Rendering/SyncObjects.hpp"
 
@@ -44,8 +44,12 @@ namespace Vox::Game::World
 				this->CheckCreation();
 				this->_gManager->Update();
 				for (auto &_pair : this->_chuncks)
+				{
 					if (_pair.second)
+					{
 						_pair.second->Update();
+					}
+				}
 			});
 	}
 
@@ -172,10 +176,10 @@ namespace Vox::Game::World
 		if (chunck)
 			this->_chuncks[chunck->GetPosition()] = chunck;
 	}
-	
+
 	std::shared_ptr<Chuncks::ChunckCluster> WorldManager::GetCluster(Utils::Defines::ChunckCoord coord)
 	{
-		auto it = this->_chuncks.find(coord); 
+		auto it = this->_chuncks.find(coord);
 		if (it == this->_chuncks.end())
 			return nullptr;
 		return it->second;

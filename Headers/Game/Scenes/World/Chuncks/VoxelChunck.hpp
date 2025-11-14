@@ -41,6 +41,7 @@ namespace Vox::Game::World::Chuncks
 			friend class ChunckCluster;
 
 			using LocalVector = MGL::Vectors::Vector3<uint8_t>;
+			std::bitset<2> _needbufferUpdate;
 			VoxelChunck() = delete;
 			VoxelChunck(const Vector3Int &defaultPos = {0, 0, 0});
 			~VoxelChunck();
@@ -60,7 +61,6 @@ namespace Vox::Game::World::Chuncks
 
 
 		private:
-			bool _isMeshDirty = false;
 
 			std::array<Game::Datas::Blocks::BlockData, CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE> _blocksDatas;
 			std::vector<uint16_t> indexOpaque;
@@ -80,7 +80,7 @@ namespace Vox::Game::World::Chuncks
 				const uint8_t hMap[Generation::Utils::CACHE_SIZE * Generation::Utils::CACHE_SIZE]);
 
 			void SetBlocksDatas(const Generation::Utils::ChunckCache &cache, std::bitset<CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE> &clusterContent);
-			void SetBlockDatas(const LocalVector &localPos, Vox::Game::Datas::Blocks::BlockType newType, bool isTransparent, bool needFullMeshRebuild);
+			void SetBlockDatas(const LocalVector &, Vox::Game::Datas::Blocks::BlockType, bool = false);
 			void FacesCulling(const Generation::Utils::ChunckCache &cache);
 			Vox::Game::Datas::Blocks::BlockType GetBlockDatas(const LocalVector &localPos);
 

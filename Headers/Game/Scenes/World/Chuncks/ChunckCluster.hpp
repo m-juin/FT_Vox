@@ -29,6 +29,8 @@ namespace Vox::Game::World::Chuncks
 			void SpawnStructure(Game::Datas::Structures::StructuresType type, Vector3Int Pos);
 			void GetOverflowBlocks();
 
+			void UpdateClusterIfNeeded();
+
 		public:
 			uint16_t _bufferIndex;
 			uint16_t GetBuffer() const;
@@ -43,6 +45,7 @@ namespace Vox::Game::World::Chuncks
 			ChunckCoord GetPosition();
 
 			void SetBlock(MGL::Vectors::Vector3<uint8_t> localPos, Game::Datas::Blocks::BlockType type);
+			void SetBlocks(std::unordered_map<MGL::Vectors::Vector3<int>, Game::Datas::Blocks::BlockType, MGL::Vectors::Vector3Hash<int>> &, bool);
 
 			void BuildBuffers(const uint16_t &buffer);
 			void GenerateHeightMap(const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl,
