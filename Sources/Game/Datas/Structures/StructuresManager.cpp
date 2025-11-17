@@ -28,5 +28,6 @@ namespace Vox::Game::Datas::Structures
         const std::string Tpath = Game::GameManager::GetInstance().GetTexturePackPath();
         // std::pair<StructuresType, Structure> pair = {}
         this->_list.insert_or_assign(StructuresType::Oak_Tree1, Structure(Tpath + "Structures/Trees/Oak1.st"));
+        this->_list.insert_or_assign(StructuresType::Oak_Tree2, Structure(Tpath + "Structures/Trees/Oak2.st"));
     }
 }

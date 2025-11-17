@@ -147,9 +147,11 @@ namespace Vox::Game::World::Chuncks
 
 		const auto &tManagers = Vox::Front::Scenes::TexturesManager::GetInstance();
 		for (auto &face : this->_blocksDatas[index].GetFacesData())
+		{
 			this->AddFace((face.isTransparent ? tManagers.operator[]("A_Blocks_Transparent").GetTextureInfo()
 											  : tManagers.operator[]("A_Blocks").GetTextureInfo()),
 						  face.faceDirection, localPos, newType, {1.f, 1.f, 1.f}, isTransparent);
+		}
 		this->_needbufferUpdate.set();
 	}
 
@@ -252,9 +254,6 @@ namespace Vox::Game::World::Chuncks
 					if (data.type == Vox::Game::Datas::Blocks::BlockType::Air)
 						continue;
 					auto faces = data.GetFacesData();
-					// if (data.type != Vox::Game::Datas::Blocks::BlockType::Air &&
-					// 	data.type != Vox::Game::Datas::Blocks::BlockType::Water)
-					// 	std::cout << data.GetFacesData()[0].isVisible << std::endl;
 
 					for (auto face : faces)
 					{
@@ -287,7 +286,7 @@ namespace Vox::Game::World::Chuncks
 			else
 			{
 				this->B_IndexOpaque->Update(indexOpaque.data(), indexCountOpaque * sizeof(uint16_t));
-				this->B_VertexOpaque->Update(vertexOpaque.data(), vertexOpaque.size() * sizeof(vertexOpaque));
+				this->B_VertexOpaque->Update(vertexOpaque.data(), vertexOpaque.size() * sizeof(Vertex));
 			}
 		}
 		if (vertexTransparent.size() != 0)

@@ -5,7 +5,8 @@ namespace Vox::Game::Datas::Structures
 {
     enum class StructuresType
     {
-        Oak_Tree1 = 0
+        Oak_Tree1 = 0,
+        Oak_Tree2 = 0,
     };
 } // namespace Vox::Game::Datas::Structures
 

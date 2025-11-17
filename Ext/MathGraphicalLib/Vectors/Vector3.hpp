@@ -70,7 +70,7 @@ namespace MGL::Vectors
 
 	template <typename T> std::ostream &operator<<(std::ostream &os, const Vector3<T> &dt)
 	{
-		os << "Vector3(" << dt[0] << ", " << dt[1] << ", " << dt[2] << ")";
+		os << "Vector3(" << +dt[0] << ", " << +dt[1] << ", " << +dt[2] << ")";
 		return os;
 	}
 

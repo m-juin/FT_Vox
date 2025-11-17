@@ -159,7 +159,7 @@ namespace Vox::Game::World::Chuncks
 			if ((double)it->second >= 10 - biomeDensity / 10)
 				it->second = 0;
 			if (it->second == 0.0)
-				this->SpawnStructure(Game::Datas::Structures::StructuresType::Oak_Tree1,
+				this->SpawnStructure(Game::Datas::Structures::StructuresType::Oak_Tree2,
 									 {static_cast<uint8_t>(treePos[0]), static_cast<uint8_t>(worldHeight + 1),
 									  static_cast<uint8_t>(treePos[1])});
 		}
@@ -212,15 +212,13 @@ namespace Vox::Game::World::Chuncks
 						Vector3Int offset;
 						Vector3Int worldPos = {static_cast<int>((this->_clusterPos[0] * CHUNCK_SIZE) + oPos[0]),
 											   oPos[1],
-											   static_cast<int>((this->_clusterPos[2] * CHUNCK_SIZE) + oPos[2])};
+											   static_cast<int>((this->_clusterPos[1] * CHUNCK_SIZE) + oPos[2])};
 
 						Game::Generation::ChunkOverflowBlock block = {{static_cast<int>(worldPos[0]),
 																	   static_cast<int>(worldPos[1]),
 																	   static_cast<int>(worldPos[2])},
 																	  bType};
-						overflowContent[{static_cast<int>(worldPos[0] / CHUNCK_SIZE),
-										 static_cast<int>(worldPos[2] / CHUNCK_SIZE)}]
-							.push_back(block);
+						overflowContent[Game::Chuncks::Operations::WorldToCluster(worldPos)].push_back(block);
 						continue;
 					}
 					this->_clusterContent[chunckIndex]->SetBlockDatas({static_cast<uint8_t>(oPos[0]),
@@ -231,7 +229,9 @@ namespace Vox::Game::World::Chuncks
 			}
 		}
 		for (auto clusterPos : overflowContent)
+		{
 			oManager->AddBlocks(clusterPos.first, clusterPos.second);
+		}
 	}
 	void ChunckCluster::GetOverflowBlocks()
 	{
@@ -257,6 +257,9 @@ namespace Vox::Game::World::Chuncks
 		auto oManager = gManager.GetOverflowManager();
 		auto blocks = oManager->ExtractClusterBlocks(this->_clusterPos);
 
+		if (blocks.size() == 0)
+			return;
+
 		std::array<std::unordered_map<Vox::Game::Chuncks::Operations::ChunkCoord, Game::Datas::Blocks::BlockType,
 									  MGL::Vectors::Vector3Hash<uint8_t>>,
 				   WORLD_HEIGHT / CHUNCK_SIZE>
@@ -264,8 +267,7 @@ namespace Vox::Game::World::Chuncks
 		for (auto block : blocks)
 		{
 			auto chunckIndex = block.worldCoord[1] / CHUNCK_SIZE;
-			auto &map = localMap[chunckIndex];
-			map[Game::Chuncks::Operations::WorldToChunk(block.worldCoord)] = block.type;
+			localMap[chunckIndex][Game::Chuncks::Operations::WorldToChunk(block.worldCoord)] = block.type;
 		}
 		for (size_t cIndex = 0; cIndex < localMap.size(); cIndex++)
 		{
