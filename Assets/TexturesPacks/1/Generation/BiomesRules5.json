@@ -18,10 +18,7 @@
                 "SurfaceDistance": 9999
             }
         ],
-        "TreesData": {
-            "TreeChance": 100,
-            "TreeTypes": []
-        },
+        "TreeChance": 100.0,
         "WaterAffecter": true
     },
     "Beach": {
@@ -39,10 +36,7 @@
                 "SurfaceDistance": 9999
             }
         ],
-        "TreesData": {
-            "TreeChance": 0,
-            "TreeTypes": []
-        },
+        "TreeChance": 0.0,
         "WaterAffecter": true
     },
     "Birch_Forest": {
@@ -64,10 +58,7 @@
                 "SurfaceDistance": 9999
             }
         ],
-        "TreesData": {
-            "TreeChance": 100,
-            "TreeTypes": []
-        },
+        "TreeChance": 100.0,
         "WaterAffecter": true
     },
     "Cherry_Grove": {
@@ -89,10 +80,7 @@
                 "SurfaceDistance": 9999
             }
         ],
-        "TreesData": {
-            "TreeChance": 100,
-            "TreeTypes": []
-        },
+        "TreeChance": 100.0,
         "WaterAffecter": true
     },
     "Cold_Ocean": {
@@ -110,10 +98,7 @@
                 "SurfaceDistance": 9999
             }
         ],
-        "TreesData": {
-            "TreeChance": 0,
-            "TreeTypes": []
-        },
+        "TreeChance": 0.0,
         "WaterAffecter": true
     },
     "Dark_Forest": {
@@ -135,10 +120,7 @@
                 "SurfaceDistance": 9999
             }
         ],
-        "TreesData": {
-            "TreeChance": 100,
-            "TreeTypes": []
-        },
+        "TreeChance": 100.0,
         "WaterAffecter": true
     },
     "Deep_Cold_Ocean": {
@@ -156,10 +138,7 @@
                 "SurfaceDistance": 9999
             }
         ],
-        "TreesData": {
-            "TreeChance": 100,
-            "TreeTypes": []
-        },
+        "TreeChance": 100.0,
         "WaterAffecter": true
     },
     "Deep_Frozen_Ocean": {
@@ -177,10 +156,7 @@
                 "SurfaceDistance": 9999
             }
         ],
-        "TreesData": {
-            "TreeChance": 0,
-            "TreeTypes": []
-        },
+        "TreeChance": 0.0,
         "WaterAffecter": true
     },
     "Deep_Lukewarm_Ocean": {
@@ -198,10 +174,7 @@
                 "SurfaceDistance": 9999
             }
         ],
-        "TreesData": {
-            "TreeChance": 0,
-            "TreeTypes": []
-        },
+        "TreeChance": 0.0,
         "WaterAffecter": true
     },
     "Deep_Ocean": {
@@ -219,10 +192,7 @@
                 "SurfaceDistance": 9999
             }
         ],
-        "TreesData": {
-            "TreeChance": 0,
-            "TreeTypes": []
-        },
+        "TreeChance": 0.0,
         "WaterAffecter": true
     },
     "Desert": {
@@ -236,10 +206,7 @@
                 "SurfaceDistance": 9999
             }
         ],
-        "TreesData": {
-            "TreeChance": 30,
-            "TreeTypes": []
-        },
+        "TreeChance": 30.0,
         "WaterAffecter": true
     },
     "Flower_Forest": {
@@ -261,10 +228,7 @@
                 "SurfaceDistance": 9999
             }
         ],
-        "TreesData": {
-            "TreeChance": 0,
-            "TreeTypes": []
-        },
+        "TreeChance": 0.0,
         "WaterAffecter": true
     },
     "Forest": {
@@ -286,19 +250,7 @@
                 "SurfaceDistance": 9999
             }
         ],
-        "TreesData": {
-            "TreeChance": 100,
-            "TreeTypes": [
-                {
-                    "Type": "Oak_Tree1",
-                    "Percent": 80
-                },
-                {
-                    "Type": "Oak_Tree2",
-                    "Percent": 20
-                }
-            ]
-        },
+        "TreeChance": 100.0,
         "WaterAffecter": true
     },
     "Frozen_Ocean": {
@@ -316,10 +268,7 @@
                 "SurfaceDistance": 9999
             }
         ],
-        "TreesData": {
-            "TreeChance": 0,
-            "TreeTypes": []
-        },
+        "TreeChance": 0.0,
         "WaterAffecter": true
     },
     "Frozen_Peaks": {
@@ -333,10 +282,7 @@
                 "SurfaceDistance": 9999
             }
         ],
-        "TreesData": {
-            "TreeChance": 0,
-            "TreeTypes": []
-        },
+        "TreeChance": 0.0,
         "WaterAffecter": true
     },
     "Frozen_River": {
@@ -350,10 +296,7 @@
                 "SurfaceDistance": 9999
             }
         ],
-        "TreesData": {
-            "TreeChance": 0,
-            "TreeTypes": []
-        },
+        "TreeChance": 0.0,
         "WaterAffecter": true
     },
     "Grove": {
@@ -375,10 +318,7 @@
                 "SurfaceDistance": 9999
             }
         ],
-        "TreesData": {
-            "TreeChance": 100,
-            "TreeTypes": []
-        },
+        "TreeChance": 100.0,
         "WaterAffecter": true
     },
     "Jagged_Peaks": {
@@ -392,10 +332,7 @@
                 "SurfaceDistance": 9999
             }
         ],
-        "TreesData": {
-            "TreeChance": 0,
-            "TreeTypes": []
-        },
+        "TreeChance": 0.0,
         "WaterAffecter": true
     },
     "Jungle": {
@@ -417,10 +354,7 @@
                 "SurfaceDistance": 9999
             }
         ],
-        "TreesData": {
-            "TreeChance": 100,
-            "TreeTypes": []
-        },
+        "TreeChance": 100.0,
         "WaterAffecter": true
     },
     "Lukewarm_Ocean": {
@@ -438,10 +372,7 @@
                 "SurfaceDistance": 9999
             }
         ],
-        "TreesData": {
-            "TreeChance": 0,
-            "TreeTypes": []
-        },
+        "TreeChance": 0.0,
         "WaterAffecter": true
     },
     "Mangrove_Swamp": {
@@ -455,10 +386,7 @@
                 "SurfaceDistance": 9999
             }
         ],
-        "TreesData": {
-            "TreeChance": 100,
-            "TreeTypes": []
-        },
+        "TreeChance": 100.0,
         "WaterAffecter": true
     },
     "Meadow": {
@@ -480,10 +408,7 @@
                 "SurfaceDistance": 9999
             }
         ],
-        "TreesData": {
-            "TreeChance": 100,
-            "TreeTypes": []
-        },
+        "TreeChance": 100.0,
         "WaterAffecter": true
     },
     "Mushroom_Fields": {
@@ -505,10 +430,7 @@
                 "SurfaceDistance": 9999
             }
         ],
-        "TreesData": {
-            "TreeChance": 100,
-            "TreeTypes": []
-        },
+        "TreeChance": 100.0,
         "WaterAffecter": true
     },
     "Ocean": {
@@ -526,10 +448,7 @@
                 "SurfaceDistance": 9999
             }
         ],
-        "TreesData": {
-            "TreeChance": 0,
-            "TreeTypes": []
-        },
+        "TreeChance": 0.0,
         "WaterAffecter": true
     },
     "Old_Growth_Birch_Forest": {
@@ -551,10 +470,7 @@
                 "SurfaceDistance": 9999
             }
         ],
-        "TreesData": {
-            "TreeChance": 100,
-            "TreeTypes": []
-        },
+        "TreeChance": 100.0,
         "WaterAffecter": true
     },
     "Old_Growth_Pine_Taiga": {
@@ -576,10 +492,7 @@
                 "SurfaceDistance": 9999
             }
         ],
-        "TreesData": {
-            "TreeChance": 100,
-            "TreeTypes": []
-        },
+        "TreeChance": 100.0,
         "WaterAffecter": true
     },
     "Old_Growth_Spruce_Taiga": {
@@ -601,10 +514,7 @@
                 "SurfaceDistance": 9999
             }
         ],
-        "TreesData": {
-            "TreeChance": 100,
-            "TreeTypes": []
-        },
+        "TreeChance": 100.0,
         "WaterAffecter": true
     },
     "Plains": {
@@ -626,19 +536,7 @@
                 "SurfaceDistance": 9999
             }
         ],
-        "TreesData": {
-            "TreeChance": 10,
-            "TreeTypes": [
-                {
-                    "Type": "Oak_Tree1",
-                    "Percent": 90
-                },
-                {
-                    "Type": "Oak_Tree2",
-                    "Percent": 10
-                }
-            ]
-        },
+        "TreeChance": 10.0,
         "WaterAffecter": true
     },
     "River": {
@@ -652,10 +550,7 @@
                 "SurfaceDistance": 9999
             }
         ],
-        "TreesData": {
-            "TreeChance": 0,
-            "TreeTypes": []
-        },
+        "TreeChance": 0.0,
         "WaterAffecter": true
     },
     "Savanna": {
@@ -677,10 +572,7 @@
                 "SurfaceDistance": 9999
             }
         ],
-        "TreesData": {
-            "TreeChance": 30,
-            "TreeTypes": []
-        },
+        "TreeChance": 30.0,
         "WaterAffecter": true
     },
     "Savanna_Plateau": {
@@ -702,10 +594,7 @@
                 "SurfaceDistance": 9999
             }
         ],
-        "TreesData": {
-            "TreeChance": 30,
-            "TreeTypes": []
-        },
+        "TreeChance": 30.0,
         "WaterAffecter": true
     },
     "Snowy_Beach": {
@@ -719,10 +608,7 @@
                 "SurfaceDistance": 9999
             }
         ],
-        "TreesData": {
-            "TreeChance": 0,
-            "TreeTypes": []
-        },
+        "TreeChance": 0.0,
         "WaterAffecter": true
     },
     "Snowy_Plains": {
@@ -744,10 +630,7 @@
                 "SurfaceDistance": 9999
             }
         ],
-        "TreesData": {
-            "TreeChance": 30,
-            "TreeTypes": []
-        },
+        "TreeChance": 30.0,
         "WaterAffecter": true
     },
     "Snowy_Slopes": {
@@ -761,10 +644,7 @@
                 "SurfaceDistance": 9999
             }
         ],
-        "TreesData": {
-            "TreeChance": 0,
-            "TreeTypes": []
-        },
+        "TreeChance": 0.0,
         "WaterAffecter": true
     },
     "Snowy_Taiga": {
@@ -786,10 +666,7 @@
                 "SurfaceDistance": 9999
             }
         ],
-        "TreesData": {
-            "TreeChance": 100,
-            "TreeTypes": []
-        },
+        "TreeChance": 100.0,
         "WaterAffecter": true
     },
     "Sparse_Jungle": {
@@ -811,10 +688,7 @@
                 "SurfaceDistance": 9999
             }
         ],
-        "TreesData": {
-            "TreeChance": 12,
-            "TreeTypes": []
-        },
+        "TreeChance": 12.0,
         "WaterAffecter": true
     },
     "Stony_Peaks": {
@@ -828,10 +702,7 @@
                 "SurfaceDistance": 9999
             }
         ],
-        "TreesData": {
-            "TreeChance": 0,
-            "TreeTypes": []
-        },
+        "TreeChance": 0.0,
         "WaterAffecter": true
     },
     "Stony_Shore": {
@@ -845,10 +716,7 @@
                 "SurfaceDistance": 9999
             }
         ],
-        "TreesData": {
-            "TreeChance": 0,
-            "TreeTypes": []
-        },
+        "TreeChance": 0.0,
         "WaterAffecter": true
     },
     "Sunflower_Plains": {
@@ -870,10 +738,7 @@
                 "SurfaceDistance": 9999
             }
         ],
-        "TreesData": {
-            "TreeChance": 30,
-            "TreeTypes": []
-        },
+        "TreeChance": 30.0,
         "WaterAffecter": true
     },
     "Swamp": {
@@ -887,10 +752,7 @@
                 "SurfaceDistance": 9999
             }
         ],
-        "TreesData": {
-            "TreeChance": 100,
-            "TreeTypes": []
-        },
+        "TreeChance": 100.0,
         "WaterAffecter": true
     },
     "Taiga": {
@@ -912,10 +774,7 @@
                 "SurfaceDistance": 9999
             }
         ],
-        "TreesData": {
-            "TreeChance": 100,
-            "TreeTypes": []
-        },
+        "TreeChance": 100.0,
         "WaterAffecter": true
     },
     "Warm_Ocean": {
@@ -933,10 +792,7 @@
                 "SurfaceDistance": 9999
             }
         ],
-        "TreesData": {
-            "TreeChance": 0,
-            "TreeTypes": []
-        },
+        "TreeChance": 0.0,
         "WaterAffecter": true
     },
     "Windswept_Forest": {
@@ -958,10 +814,7 @@
                 "SurfaceDistance": 9999
             }
         ],
-        "TreesData": {
-            "TreeChance": 100,
-            "TreeTypes": []
-        },
+        "TreeChance": 100.0,
         "WaterAffecter": true
     },
     "Windswept_Gravelly_Hills": {
@@ -975,10 +828,7 @@
                 "SurfaceDistance": 9999
             }
         ],
-        "TreesData": {
-            "TreeChance": 30,
-            "TreeTypes": []
-        },
+        "TreeChance": 30.0,
         "WaterAffecter": true
     },
     "Windswept_Hills": {
@@ -992,10 +842,7 @@
                 "SurfaceDistance": 9999
             }
         ],
-        "TreesData": {
-            "TreeChance": 30,
-            "TreeTypes": []
-        },
+        "TreeChance": 30.0,
         "WaterAffecter": true
     },
     "Windswept_Savanna": {
@@ -1017,10 +864,7 @@
                 "SurfaceDistance": 9999
             }
         ],
-        "TreesData": {
-            "TreeChance": 30,
-            "TreeTypes": []
-        },
+        "TreeChance": 30.0,
         "WaterAffecter": true
     }
 }

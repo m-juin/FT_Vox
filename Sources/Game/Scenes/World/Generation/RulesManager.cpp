@@ -7,6 +7,33 @@
 
 namespace Vox::Game::Generation::Datas::Biomes
 {
+	std::vector<TreeRule> BuildTreeRules(JSONLib::JSONObject &involved)
+	{
+		std::cout << "here\n";
+		std::vector<TreeRule> ret;
+		for (auto item : involved["TreesData"]["TreeTypes"].As<JSONLib::JSONVector>())
+		{
+			auto dict = item.As<JSONLib::JSONObject>();
+
+			auto it = Game::Datas::Structures::StringToEnum.find(dict["Type"].As<std::string>());
+			if (it == Game::Datas::Structures::StringToEnum.end())
+				continue;
+
+			TreeRule rule(it->second, dict["Percent"].As<int>());
+			ret.push_back(rule);
+		}
+		return ret;
+	}
+
+	std::vector<SurfaceRule> BuildSurfaceRules(JSONLib::JSONObject &involved)
+	{
+		// JSONLib::Serializer::WriteDictToFD(std::cout, involved, 0, true);
+		std::vector<SurfaceRule> ret;
+		for (auto item : involved["SurfaceRules"].As<JSONLib::JSONVector>())
+			ret.push_back({static_cast<uint16_t>(item["SurfaceDistance"].As<int>()),
+						   static_cast<Game::Datas::Blocks::BlockType>(item["Block"].As<int>())});
+		return ret;
+	}
 
 	RulesManager::RulesManager()
 	{
@@ -16,16 +43,14 @@ namespace Vox::Game::Generation::Datas::Biomes
 		{
 			Biomes bi = biomesStringToEnum.at(pair.first);
 			JSONLib::JSONObject current = pair.second.As<JSONLib::JSONObject>();
-			std::vector<SurfaceRule> vList;
-			for (auto item : current["SurfaceRules"].As<JSONLib::JSONVector>())
-				vList.push_back(
-					{static_cast<uint16_t>(item["SurfaceDistance"].As<int>()), static_cast<Game::Datas::Blocks::BlockType>(item["Block"].As<int>())});
+			// std::vector<TreeRule> tList = BuildTreeRules(current);
 			std::pair<const Biomes, const SurfaceDecoration> paired = {
 				bi,
-				{vList,
+				{BuildSurfaceRules(current),
 				 HeightRule(current["HeightRule"]["Multipliyer"].As<double>(),
 							static_cast<double>(current["HeightRule"]["MinHeight"].As<int>())),
-				 current["WaterAffecter"].As<bool>(), current["TreeChance"].As<double>()}};
+				 current["WaterAffecter"].As<bool>(), current["TreesData"]["TreeChance"].As<int>(),
+				 BuildTreeRules(current)}};
 
 			this->decorationRule.insert(paired);
 		}
@@ -33,7 +58,7 @@ namespace Vox::Game::Generation::Datas::Biomes
 
 	Game::Datas::Blocks::BlockType RulesManager::GetBlockType(Biomes biome, int depth)
 	{
-        auto &biomesSurfaces = RulesManager::RulesManager::GetInstance().decorationRule;
+		auto &biomesSurfaces = RulesManager::RulesManager::GetInstance().decorationRule;
 		if (biomesSurfaces.find(biome) == biomesSurfaces.end())
 		{
 			return Game::Datas::Blocks::BlockType::Stone;
@@ -48,7 +73,7 @@ namespace Vox::Game::Generation::Datas::Biomes
 
 	float RulesManager::GetHeight(Biomes biome, const float &val)
 	{
-        auto &biomesSurfaces = RulesManager::RulesManager::GetInstance().decorationRule;
+		auto &biomesSurfaces = RulesManager::RulesManager::GetInstance().decorationRule;
 		if (biomesSurfaces.find(biome) == biomesSurfaces.end())
 			return val;
 		return biomesSurfaces.at(biome).heightRules.Apply(val);
@@ -56,10 +81,30 @@ namespace Vox::Game::Generation::Datas::Biomes
 
 	float RulesManager::GetTreeChance(Biomes biome)
 	{
-        auto &biomesSurfaces = RulesManager::RulesManager::GetInstance().decorationRule;
+		auto &biomesSurfaces = RulesManager::RulesManager::GetInstance().decorationRule;
 		if (biomesSurfaces.find(biome) == biomesSurfaces.end())
 			return 4.0;
 		return biomesSurfaces.at(biome).treeChance;
+	}
+	Game::Datas::Structures::StructuresType RulesManager::GetTreeType(Biomes biome, int randVal)
+	{
+		using Game::Datas::Structures::StructuresType;
+		auto &biomesSurfaces = RulesManager::RulesManager::GetInstance().decorationRule;
+		auto it = biomesSurfaces.find(biome);
+		if (it == biomesSurfaces.end() || it->second.treesRule.size() == 0)
+		{
+			return StructuresType::None;
+		}
+		std::pair<int, int> range(0, 0);
+		for (const auto &rule : it->second.treesRule)
+		{
+			range.second = range.first + rule.percent;
+			if (randVal < range.second)
+				return rule.type;
+			range.first = range.second;
+		}
+
+		return it->second.treesRule[0].type;
 	}
 
 } // namespace Vox::Game::Generation::Datas::Biomes

@@ -128,6 +128,9 @@ namespace Vox::Game::World::Chuncks
 
 	void ChunckCluster::GenerateTree(const Vox::Game::Generation::Utils::ChunckCache &cache, const uint32_t seed)
 	{
+		std::seed_seq seed_seq{seed, static_cast<uint32_t>(_clusterPos[0]), static_cast<uint32_t>(_clusterPos[1])};
+		thread_local std::mt19937 generator(seed_seq);
+		std::uniform_int_distribution<int> distribution(0, 100);
 		size_t regionSeed = Vox::World::Generation::Decorations::GetRegionnedSeed(seed, this->_clusterPos, 2);
 		auto trees =
 			Vox::World::Generation::Decorations::GetChunckDiskSampling(this->_clusterPos, regionSeed, 4.0, 2, 10);
@@ -159,9 +162,16 @@ namespace Vox::Game::World::Chuncks
 			if ((double)it->second >= 10 - biomeDensity / 10)
 				it->second = 0;
 			if (it->second == 0.0)
-				this->SpawnStructure(Game::Datas::Structures::StructuresType::Oak_Tree3,
+			{
+				int val = distribution(generator);
+				auto type = Vox::Game::Generation::Datas::Biomes::RulesManager::GetTreeType(biome, val);
+				std::cout << val << " | " << (int)type << std::endl;
+				if (type == Game::Datas::Structures::StructuresType::None)
+					continue;
+				this->SpawnStructure(type,
 									 {static_cast<uint8_t>(treePos[0]), static_cast<uint8_t>(worldHeight + 1),
 									  static_cast<uint8_t>(treePos[1])});
+			}
 		}
 	}
 

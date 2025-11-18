@@ -288,16 +288,7 @@
         ],
         "TreesData": {
             "TreeChance": 100,
-            "TreeTypes": [
-                {
-                    "Type": "Oak_Tree1",
-                    "Percent": 80
-                },
-                {
-                    "Type": "Oak_Tree2",
-                    "Percent": 20
-                }
-            ]
+            "TreeTypes": []
         },
         "WaterAffecter": true
     },
@@ -628,16 +619,7 @@
         ],
         "TreesData": {
             "TreeChance": 10,
-            "TreeTypes": [
-                {
-                    "Type": "Oak_Tree1",
-                    "Percent": 90
-                },
-                {
-                    "Type": "Oak_Tree2",
-                    "Percent": 10
-                }
-            ]
+            "TreeTypes": []
         },
         "WaterAffecter": true
     },

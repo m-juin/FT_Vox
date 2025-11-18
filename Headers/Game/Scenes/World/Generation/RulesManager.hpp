@@ -6,6 +6,12 @@
 #include "JsonLib/Struct.hpp"
 #include "Game/Datas/BiomesData/SurfaceDecoration.hpp"
 
+namespace Vox::Game::Datas::Structures
+{
+    enum class StructuresType;
+} // namespace Vox::Game::Datas::Structures
+
+
 namespace Vox::Game::Generation::Datas::Biomes
 {
     class RulesManager : public Vox::Utils::Singleton<RulesManager>
@@ -18,6 +24,7 @@ namespace Vox::Game::Generation::Datas::Biomes
             static Game::Datas::Blocks::BlockType GetBlockType(Biomes biome, int depth);
             static float GetHeight(Biomes biome, const float &val);
             static float GetTreeChance(Biomes biome);
+            static Game::Datas::Structures::StructuresType GetTreeType(Biomes biome, int randVal);
             std::unordered_map<const Biomes, const SurfaceDecoration> decorationRule;
         private:
             /* private */

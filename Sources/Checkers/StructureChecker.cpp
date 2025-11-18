@@ -12,8 +12,7 @@ using namespace Vox::Game::Datas::Structures;
 
 static const std::unordered_map<StructuresType, std::string> paths{
 	{StructuresType::Oak_Tree1, "Assets/TexturesPacks/1/Structures/Trees/Oak1.st"},
-	{StructuresType::Oak_Tree1, "Assets/TexturesPacks/1/Structures/Trees/Oak2.st"},
-	{StructuresType::Oak_Tree1, "Assets/TexturesPacks/1/Structures/Trees/Oak3.st"},
+	{StructuresType::Oak_Tree2, "Assets/TexturesPacks/1/Structures/Trees/Oak2.st"},
 };
 
 int main()

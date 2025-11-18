@@ -20,12 +20,13 @@ namespace Vox::Game::Generation::Datas::Biomes
 			const std::vector<SurfaceRule> surfaceRules;
 			const HeightRule heightRules;
 			const bool haveWater;
-			const double treeChance;
+			const int treeChance;
+			const std::vector<TreeRule> treesRule;
 
 			SurfaceDecoration(std::vector<SurfaceRule> surfaceRules_, HeightRule heightRules_, bool haveWater_,
-							  double treeChance_)
+							  int treeChance_, std::vector<TreeRule> treesRule_)
 				: surfaceRules(surfaceRules_), heightRules(heightRules_), haveWater(haveWater_),
-				  treeChance(treeChance_)
+				  treeChance(treeChance_), treesRule(treesRule_)
 			{
 			}
 	};

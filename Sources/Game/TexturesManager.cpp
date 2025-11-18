@@ -75,7 +75,6 @@ namespace Vox::Front::Scenes
 
 	int TexturesManager::AddDynamicImage(VkImageView &view)
 	{
-		std::cout << "here1\n";
 		int index = this->_avalaibleDynamicImages._Find_first();
 		if (index == Vox::Front::Utils::TexturesData::MAX_DYNAMIC_TEXTURES)
 			return -1;
