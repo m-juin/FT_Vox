@@ -3,8 +3,8 @@
 2, 0, 2
 ========
 0: Air
-1: Dirt
-2: Debug
+1: Oak_Log
+2: Oak_Leaves
 ========
 0 0 0 0 0
 0 0 0 0 0

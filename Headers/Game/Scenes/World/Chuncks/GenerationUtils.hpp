@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <algorithm>
+#include <sstream>
 #include "Game/Scenes/World/Chuncks/FacesData.hpp"
 #include "Game/Datas/TexturesData.hpp"
 
@@ -31,7 +32,9 @@ namespace Vox::Game::Generation::Utils
 		auto it = std::find_if(lst.begin(), lst.end(), [defaultKey](const Game::Datas::Textures::TextureInfo &info) { return defaultKey == info.key; });
 		if (it != lst.end())
 			return *it;
-		throw std::runtime_error("Face Texture not found!");
+		std::stringstream ss;
+		ss << "Texure : " << defaultKey << "not found." << std::endl;
+		throw std::runtime_error(ss.str());
 	}
 } // namespace Vox::Game::Generation::Utils
 

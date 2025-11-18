@@ -55,13 +55,17 @@ namespace Vox::Front::Scenes
 				{"Grass_Bot", T_Path + "Blocks/grass_bot.png"},
 				{"Sand", T_Path + "Blocks/sand.png"},
 				{"Gravel", T_Path + "Blocks/gravel.png"},
-				{"Water", T_Path + "Blocks/water.png", T_Path + "Blocks/Masks/mask_grass_uncolored_top.png"},
+				{"Oak_Log", T_Path + "Blocks/oak_log.png"},
+				{"Oak_Log_Top", T_Path + "Blocks/oak_log_top.png"},
+				{"Oak_Log_Bot", T_Path + "Blocks/oak_log_top.png"},
+				// {"Water", T_Path + "Blocks/water.png", T_Path + "Blocks/Masks/mask_grass_uncolored_top.png"},
 				{"Debug", T_Path + "Blocks/DEBUG/TMP_White_Debug.png"},
 			},
 			4);
 		this->_texturesMap["A_Blocks_Transparent"] = new Front::Utils::MaskedTexturesAtlas(
 			{
 				{"Water", T_Path + "Blocks/water.png", T_Path + "Blocks/Masks/mask_grass_uncolored_top.png"},
+				{"Oak_Leaves", T_Path + "Blocks/oak_leaves.png", T_Path + "Blocks/Masks/mask_grass_uncolored_top.png"},
 			},
 			4);
 

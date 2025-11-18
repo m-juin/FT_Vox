@@ -141,7 +141,7 @@ namespace Vox::Game::World::Chuncks
 		size_t index = this->GetLocalIndex(localPos);
 		this->_blocksDatas[index].type = newType;
 		bool isTransparent =
-			newType == Game::Datas::Blocks::BlockType::Air || newType == Game::Datas::Blocks::BlockType::Water;
+			newType == Game::Datas::Blocks::BlockType::Air || newType == Game::Datas::Blocks::BlockType::Water || newType == Game::Datas::Blocks::BlockType::Oak_Leaves;
 		this->_blocksDatas[index].UpdateFacesTransparency(
 			{isTransparent, isTransparent, isTransparent, isTransparent, isTransparent, isTransparent});
 
