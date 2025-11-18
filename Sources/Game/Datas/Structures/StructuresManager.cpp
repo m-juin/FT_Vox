@@ -29,5 +29,6 @@ namespace Vox::Game::Datas::Structures
         // std::pair<StructuresType, Structure> pair = {}
         this->_list.insert_or_assign(StructuresType::Oak_Tree1, Structure(Tpath + "Structures/Trees/Oak1.st"));
         this->_list.insert_or_assign(StructuresType::Oak_Tree2, Structure(Tpath + "Structures/Trees/Oak2.st"));
+        this->_list.insert_or_assign(StructuresType::Oak_Tree3, Structure(Tpath + "Structures/Trees/Oak3.st"));
     }
 }

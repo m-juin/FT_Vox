@@ -159,7 +159,7 @@ namespace Vox::Game::World::Chuncks
 			if ((double)it->second >= 10 - biomeDensity / 10)
 				it->second = 0;
 			if (it->second == 0.0)
-				this->SpawnStructure(Game::Datas::Structures::StructuresType::Oak_Tree2,
+				this->SpawnStructure(Game::Datas::Structures::StructuresType::Oak_Tree3,
 									 {static_cast<uint8_t>(treePos[0]), static_cast<uint8_t>(worldHeight + 1),
 									  static_cast<uint8_t>(treePos[1])});
 		}

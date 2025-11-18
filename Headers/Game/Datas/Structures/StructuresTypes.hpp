@@ -7,6 +7,7 @@ namespace Vox::Game::Datas::Structures
     {
         Oak_Tree1 = 0,
         Oak_Tree2 = 1,
+        Oak_Tree3 = 1,
     };
 } // namespace Vox::Game::Datas::Structures
 
