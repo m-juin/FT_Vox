@@ -19,7 +19,7 @@
             }
         ],
         "TreesData": {
-            "TreeChance": 100,
+            "TreeChance": 50,
             "TreeTypes": []
         },
         "WaterAffecter": true
@@ -65,7 +65,7 @@
             }
         ],
         "TreesData": {
-            "TreeChance": 100,
+            "TreeChance": 50,
             "TreeTypes": []
         },
         "WaterAffecter": true
@@ -90,7 +90,7 @@
             }
         ],
         "TreesData": {
-            "TreeChance": 100,
+            "TreeChance": 50,
             "TreeTypes": []
         },
         "WaterAffecter": true
@@ -136,7 +136,7 @@
             }
         ],
         "TreesData": {
-            "TreeChance": 100,
+            "TreeChance": 50,
             "TreeTypes": []
         },
         "WaterAffecter": true
@@ -157,7 +157,7 @@
             }
         ],
         "TreesData": {
-            "TreeChance": 100,
+            "TreeChance": 50,
             "TreeTypes": []
         },
         "WaterAffecter": true
@@ -287,7 +287,7 @@
             }
         ],
         "TreesData": {
-            "TreeChance": 100,
+            "TreeChance": 75,
             "TreeTypes": [
                 {
                     "Type": "Oak_Tree1",
@@ -376,7 +376,7 @@
             }
         ],
         "TreesData": {
-            "TreeChance": 100,
+            "TreeChance": 50,
             "TreeTypes": []
         },
         "WaterAffecter": true
@@ -418,7 +418,7 @@
             }
         ],
         "TreesData": {
-            "TreeChance": 100,
+            "TreeChance": 50,
             "TreeTypes": []
         },
         "WaterAffecter": true
@@ -456,7 +456,7 @@
             }
         ],
         "TreesData": {
-            "TreeChance": 100,
+            "TreeChance": 50,
             "TreeTypes": []
         },
         "WaterAffecter": true
@@ -481,7 +481,7 @@
             }
         ],
         "TreesData": {
-            "TreeChance": 100,
+            "TreeChance": 50,
             "TreeTypes": []
         },
         "WaterAffecter": true
@@ -506,7 +506,7 @@
             }
         ],
         "TreesData": {
-            "TreeChance": 100,
+            "TreeChance": 50,
             "TreeTypes": []
         },
         "WaterAffecter": true
@@ -552,7 +552,7 @@
             }
         ],
         "TreesData": {
-            "TreeChance": 100,
+            "TreeChance": 50,
             "TreeTypes": []
         },
         "WaterAffecter": true
@@ -577,7 +577,7 @@
             }
         ],
         "TreesData": {
-            "TreeChance": 100,
+            "TreeChance": 50,
             "TreeTypes": []
         },
         "WaterAffecter": true
@@ -602,7 +602,7 @@
             }
         ],
         "TreesData": {
-            "TreeChance": 100,
+            "TreeChance": 50,
             "TreeTypes": []
         },
         "WaterAffecter": true
@@ -787,7 +787,7 @@
             }
         ],
         "TreesData": {
-            "TreeChance": 100,
+            "TreeChance": 50,
             "TreeTypes": []
         },
         "WaterAffecter": true
@@ -888,7 +888,7 @@
             }
         ],
         "TreesData": {
-            "TreeChance": 100,
+            "TreeChance": 50,
             "TreeTypes": []
         },
         "WaterAffecter": true
@@ -913,7 +913,7 @@
             }
         ],
         "TreesData": {
-            "TreeChance": 100,
+            "TreeChance": 50,
             "TreeTypes": []
         },
         "WaterAffecter": true
@@ -959,7 +959,7 @@
             }
         ],
         "TreesData": {
-            "TreeChance": 100,
+            "TreeChance": 50,
             "TreeTypes": []
         },
         "WaterAffecter": true

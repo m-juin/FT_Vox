@@ -165,7 +165,6 @@ namespace Vox::Game::World::Chuncks
 			{
 				int val = distribution(generator);
 				auto type = Vox::Game::Generation::Datas::Biomes::RulesManager::GetTreeType(biome, val);
-				std::cout << val << " | " << (int)type << std::endl;
 				if (type == Game::Datas::Structures::StructuresType::None)
 					continue;
 				this->SpawnStructure(type,
