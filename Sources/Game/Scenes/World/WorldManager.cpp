@@ -102,13 +102,22 @@ namespace Vox::Game::World
 		this->_skyBox->Render();
 		Front::Rendering::Pipelines::PipelinesManager::GetInstance().BindPipeline("Voxel");
 		this->_camera.PushConstant(0);
+		std::pair<size_t, size_t> counters = {0, 0};
 		for (auto &_pair : this->_chuncks)
+		{
 			if (_pair.second)
-				_pair.second->Render(0);
+			{
+				auto pair2 = _pair.second->Render(0);
+				counters.first += pair2.first;
+				counters.second += pair2.second;
+			}
+		}
 		Front::Rendering::Pipelines::PipelinesManager::GetInstance().BindPipeline("Voxel_Transparent");
 		for (auto &_pair : this->_chuncks)
 			if (_pair.second)
 				_pair.second->Render(1);
+
+		// std::cout << "[DEBUG] Try : " << counters.first << " | " << "Effectives : " << counters.second << std::endl;
 	}
 
 	void WorldManager::CheckCreation()

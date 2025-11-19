@@ -37,7 +37,7 @@ namespace Vox::Game::World::Chuncks
 			Game::Generation::Utils::ChunckCache GenerateCache(
 				const uint32_t seed,
 				const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl);
-			void Render(uint8_t toRender);
+			std::pair<size_t, size_t> Render(uint8_t toRender);
 			void BuildClusterContent(const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl,
 									 const std::vector<Game::Datas::Textures::TextureInfo> &textInfo,
 									 const std::vector<Game::Datas::Textures::TextureInfo> &transparenttextInfo,

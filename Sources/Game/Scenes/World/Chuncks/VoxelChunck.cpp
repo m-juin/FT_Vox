@@ -31,6 +31,11 @@ namespace Vox::Game::World::Chuncks
 		: DynamicObject(Vector3Float(defaultPos[0] * static_cast<int>(Utils::Defines::CHUNCK_SIZE),
 									 defaultPos[1] * static_cast<int>(Utils::Defines::CHUNCK_SIZE),
 									 defaultPos[2] * static_cast<int>(Utils::Defines::CHUNCK_SIZE))),
+		  Front::Rendering::Frustrum::Colliders::BoxCollider(
+			  Vector3Float(defaultPos[0] * static_cast<int>(Utils::Defines::CHUNCK_SIZE),
+						   defaultPos[1] * static_cast<int>(Utils::Defines::CHUNCK_SIZE),
+						   defaultPos[2] * static_cast<int>(Utils::Defines::CHUNCK_SIZE)),
+			  {CHUNCK_SIZE, CHUNCK_SIZE, CHUNCK_SIZE}),
 		  _chunckPos(defaultPos)
 	{
 		this->B_IndexOpaque = nullptr;
@@ -41,6 +46,7 @@ namespace Vox::Game::World::Chuncks
 
 		indexCountOpaque = 0;
 		indexCountTransparent = 0;
+
 		this->onUpdate.AddCallBack(
 			[this](void)
 			{
@@ -139,8 +145,9 @@ namespace Vox::Game::World::Chuncks
 		(void)refreshMesh;
 		size_t index = this->GetLocalIndex(localPos);
 		this->_blocksDatas[index].type = newType;
-		bool isTransparent =
-			newType == Game::Datas::Blocks::BlockType::Air || newType == Game::Datas::Blocks::BlockType::Water || newType == Game::Datas::Blocks::BlockType::Oak_Leaves;
+		bool isTransparent = newType == Game::Datas::Blocks::BlockType::Air ||
+							 newType == Game::Datas::Blocks::BlockType::Water ||
+							 newType == Game::Datas::Blocks::BlockType::Oak_Leaves;
 		this->_blocksDatas[index].UpdateFacesTransparency(
 			{isTransparent, isTransparent, isTransparent, isTransparent, isTransparent, isTransparent});
 
@@ -326,12 +333,16 @@ namespace Vox::Game::World::Chuncks
 			((index / Utils::Defines::CHUNCK_SIZE) / Utils::Defines::CHUNCK_SIZE) % Utils::Defines::CHUNCK_SIZE);
 	}
 
-	void VoxelChunck::Render(uint8_t toRender)
+	bool VoxelChunck::Render(uint8_t toRender)
 	{
+		if (!this->IsOnFrustrum(Game::World::WorldManager::GetCamera().GetFrustrum()))
+		{
+			return false ;
+		}
 		using namespace Front::Rendering;
 		auto frame = SyncObjects::GetInstance().GetCurrentFrame();
 		if ((this->indexCountOpaque == 0 && this->indexCountTransparent == 0) || this->_isDirty[frame] == true)
-			return;
+			return true;
 		uint32_t dynamicOffset = this->_bufferIndex * Utils::Vulkan::GetAlignedChunckSize();
 
 		auto buffer = CommandsPool::GetInstance().GetBuffer(frame);
@@ -339,7 +350,7 @@ namespace Vox::Game::World::Chuncks
 		{
 			auto pipeline = Pipelines::PipelinesManager::GetInstance().operator[]<Pipelines::VoxelPipeline>("Voxel");
 			if (pipeline == nullptr)
-				return;
+				return true;
 			VkDeviceSize offset = {0};
 			vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->GetLayout(), 0, 1,
 									&pipeline->GetSet(frame), 1, &dynamicOffset);
@@ -352,7 +363,7 @@ namespace Vox::Game::World::Chuncks
 			auto pipeline = Pipelines::PipelinesManager::GetInstance().operator[]<Pipelines::TransparentVoxelPipeline>(
 				"Voxel_Transparent");
 			if (pipeline == nullptr)
-				return;
+				return true;
 			VkDeviceSize offset = {0};
 			vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->GetLayout(), 0, 1,
 									&pipeline->GetSet(frame), 1, &dynamicOffset);
@@ -360,6 +371,7 @@ namespace Vox::Game::World::Chuncks
 			vkCmdBindIndexBuffer(buffer, this->B_IndexTransparent->GetBuffer(frame), 0, VK_INDEX_TYPE_UINT16);
 			vkCmdDrawIndexed(buffer, indexCountTransparent, 1, 0, 0, 0);
 		}
+		return true;
 	}
 
 	uint16_t VoxelChunck::GetBuffer() const

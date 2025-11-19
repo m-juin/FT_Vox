@@ -15,37 +15,14 @@
 #include "Front/Rendering/Pipelines/PipelinesManager.hpp"
 #include "Front/Rendering/Pipelines/VoxelPipeline.hpp"
 
+#include "Front/Rendering/Frustrum/Frustrum.hpp"
+
 namespace Vox::Game::Scenes::World::Player
 {
 	struct CameraInfo
 	{
 			MGL::Matrix::Matrix4 projection;
 			MGL::Matrix::Matrix4 view;
-	};
-
-	struct Frustrum
-	{
-		struct FrustrumPlane
-		{
-			Vector3Float normal;
-			float distance;
-
-			FrustrumPlane(const Vector3Float &point, const Vector3Float &normal_)
-			{
-				normal = MGL::Vectors::Operations::Normalize(normal_);
-				distance = MGL::Vectors::Operations::Dot(normal, point);
-			}
-			FrustrumPlane() {};
-		};
-		
-		FrustrumPlane top;
-		FrustrumPlane bot;
-
-		FrustrumPlane right;
-		FrustrumPlane left;
-
-		FrustrumPlane far;
-		FrustrumPlane near;
 	};
 
 	using namespace Game::Utils::Defines;
@@ -61,6 +38,8 @@ namespace Vox::Game::Scenes::World::Player
 			void Move(const Vector3Float &axis);
 
 			Vector3Float GetPosition() const;
+
+			const Front::Rendering::Frustrum::Frustrum &GetFrustrum() {return this->_frustrum;}
 
 		private:
 
@@ -89,10 +68,10 @@ namespace Vox::Game::Scenes::World::Player
 			Vector3Float _worldUp = Vector3Float(0.0f, 1.0, 0.0f);
 			Vector3Float _target = Vector3Float(0.0f, 0.0f, -1.0f);
 
-			Frustrum _frustrum;
+			Front::Rendering::Frustrum::Frustrum _frustrum;
 
 			const float _fov = MGL::Utils::Radians(45.0f);
-			float _aspect = 1920 / 1080;
+			float _aspect = 1920.0f / 1080.0f;
 			float _near = 0.001f;
 			float _far = 1000.0f;
 	};

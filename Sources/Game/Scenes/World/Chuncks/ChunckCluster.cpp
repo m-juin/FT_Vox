@@ -64,15 +64,22 @@ namespace Vox::Game::World::Chuncks
 		return cacheSt;
 	}
 
-	void ChunckCluster::Render(uint8_t toRender)
+	std::pair<size_t, size_t> ChunckCluster::Render(uint8_t toRender)
 	{
+		size_t rendered = 0;
+		size_t tried = 0;
 		if (this->GetGenerationState() != Generation::E_GenerationState::End)
-			return;
+			return {0, 0};
 		for (auto ch : this->_clusterContent)
 		{
 			if (ch)
-				ch->Render(toRender);
+			{
+				if (ch->Render(toRender))
+					rendered++;
+				tried++;
+			}
 		}
+		return {tried, rendered};
 	}
 
 	void ChunckCluster::GenerateHeightMap(
@@ -166,9 +173,8 @@ namespace Vox::Game::World::Chuncks
 				auto type = Vox::Game::Generation::Datas::Biomes::RulesManager::GetTreeType(biome, val);
 				if (type == Game::Datas::Structures::StructuresType::None)
 					continue;
-				this->SpawnStructure(type,
-									 {static_cast<uint8_t>(treePos[0]), static_cast<uint8_t>(worldHeight + 1),
-									  static_cast<uint8_t>(treePos[1])});
+				this->SpawnStructure(type, {static_cast<uint8_t>(treePos[0]), static_cast<uint8_t>(worldHeight + 1),
+											static_cast<uint8_t>(treePos[1])});
 			}
 		}
 	}
