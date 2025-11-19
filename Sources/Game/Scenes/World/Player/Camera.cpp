@@ -57,15 +57,15 @@ namespace Vox::Game::Scenes::World::Player
 
 	void Camera::RebuildInfo()
 	{
-		float aspect = 1920.0f / 1080.0f;
 		this->_worldInfo.projection =
 			MGL::Matrix::Operations::LookAt(this->_position, this->_position + this->_front, this->_up);
 
 		this->_skyInfo.projection = this->_worldInfo.projection;
 		this->_worldInfo.view =
-			MGL::Matrix::Operations::Perspective(MGL::Utils::Radians(45.0f), aspect, 0.001f, 1000.0f);
+			MGL::Matrix::Operations::Perspective(this->_fov, this->_aspect, this->_near, this->_far);
 		this->_skyInfo.view = SkyboxView(this->_worldInfo.view);
 
+		this->CreateFrustrum();
 		this->_isDirty = false;
 	}
 
@@ -126,4 +126,20 @@ namespace Vox::Game::Scenes::World::Player
 	{
 		return this->_position;
 	}
+
+	void Camera::CreateFrustrum()
+	{
+		const float halfVSide = this->_far * tanf(this->_fov * .5f);
+		const float halfHSide = halfVSide * this->_aspect;
+		const MGL::Vectors::Vector3 frontMultFar = this->_front * this->_far;
+		Vector3Float calc = this->_position * this->_near;
+		calc *= this->_front;
+		this->_frustrum.near = {this->_front, calc};
+		this->_frustrum.far = { this->_position + frontMultFar, this->_front * -1.f };
+		this->_frustrum.right = {this->_position, MGL::Vectors::Operations::Cross(frontMultFar - this->_rightDir * halfHSide, this->_up)};
+		this->_frustrum.left = {this->_position, MGL::Vectors::Operations::Cross(this->_up, frontMultFar + this->_rightDir * halfHSide)};
+		this->_frustrum.top = {this->_position, MGL::Vectors::Operations::Cross(this->_rightDir, frontMultFar - this->_up * halfVSide)};
+		this->_frustrum.bot = {this->_position, MGL::Vectors::Operations::Cross(frontMultFar + this->_up * halfVSide, this->_rightDir)};
+	}
 } // namespace Vox::Game::Scenes::World::Player
+

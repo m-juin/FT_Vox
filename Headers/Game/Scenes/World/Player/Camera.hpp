@@ -23,6 +23,31 @@ namespace Vox::Game::Scenes::World::Player
 			MGL::Matrix::Matrix4 view;
 	};
 
+	struct Frustrum
+	{
+		struct FrustrumPlane
+		{
+			Vector3Float normal;
+			float distance;
+
+			FrustrumPlane(const Vector3Float &point, const Vector3Float &normal_)
+			{
+				normal = MGL::Vectors::Operations::Normalize(normal_);
+				distance = MGL::Vectors::Operations::Dot(normal, point);
+			}
+			FrustrumPlane() {};
+		};
+		
+		FrustrumPlane top;
+		FrustrumPlane bot;
+
+		FrustrumPlane right;
+		FrustrumPlane left;
+
+		FrustrumPlane far;
+		FrustrumPlane near;
+	};
+
 	using namespace Game::Utils::Defines;
 	class Camera : public Vox::Utils::AUpdatable
 	{
@@ -38,12 +63,16 @@ namespace Vox::Game::Scenes::World::Player
 			Vector3Float GetPosition() const;
 
 		private:
+
+			void CreateFrustrum();
+			void RebuildInfo();
+			void UpdateVectors();
+
 			void Rotate(const double &xOff, const double &yOff);
 			MGL::Matrix::Matrix4 SkyboxView(MGL::Matrix::Matrix4 &cameraView);
 
 			CameraInfo _worldInfo;
 			CameraInfo _skyInfo;
-			void RebuildInfo();
 			bool _isDirty;
 			Vector3Float _position;
 			Vector3Float _rotation;
@@ -60,8 +89,12 @@ namespace Vox::Game::Scenes::World::Player
 			Vector3Float _worldUp = Vector3Float(0.0f, 1.0, 0.0f);
 			Vector3Float _target = Vector3Float(0.0f, 0.0f, -1.0f);
 
-			void UpdateVectors();
-			/* private */
+			Frustrum _frustrum;
+
+			const float _fov = MGL::Utils::Radians(45.0f);
+			float _aspect = 1920 / 1080;
+			float _near = 0.001f;
+			float _far = 1000.0f;
 	};
 	
 
