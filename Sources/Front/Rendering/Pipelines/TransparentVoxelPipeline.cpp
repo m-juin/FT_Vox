@@ -12,8 +12,8 @@
 
 #include "Game/Scenes/World/Player/Camera.hpp"
 
-#include "Game/GameManager.hpp"
-
+// #include "Game/GameManager.hpp"
+#include "Front/Scenes/TexturesManager.hpp"
 #include "Front/Utils/TexturesData.hpp"
 
 #include "Front/Utils/MaskedTexturesAtlas.hpp"
@@ -73,7 +73,7 @@ namespace Vox::Front::Rendering::Pipelines
 		VkPipelineDepthStencilStateCreateInfo depthStencil{};
 		depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
 		depthStencil.depthTestEnable = VK_TRUE;
-		depthStencil.depthWriteEnable = VK_FALSE;
+		depthStencil.depthWriteEnable = VK_TRUE;
 		depthStencil.depthCompareOp = VK_COMPARE_OP_LESS;
 		depthStencil.depthBoundsTestEnable = VK_FALSE;
 		depthStencil.minDepthBounds = 0.0f;
@@ -102,9 +102,6 @@ namespace Vox::Front::Rendering::Pipelines
 		blendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
 		blendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
 		blendAttachment.colorBlendOp = VK_BLEND_OP_ADD;
-		blendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
-		blendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
-		blendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;
 		blendAttachment.colorWriteMask =
 			VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
 

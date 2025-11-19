@@ -20,7 +20,6 @@ namespace Vox::Front::Scenes
 		auto &dummy = Rendering::Images::DummyImage::GetInstance();
 		for (size_t i = 0; i < Vox::Front::Utils::TexturesData::MAX_DYNAMIC_TEXTURES; i++)
 			this->_dynamicImages[i] = dummy.GetView();
-
 		this->CreateMap(T_Path);
 		this->CreateDynamicSampler();
 	}
@@ -56,25 +55,26 @@ namespace Vox::Front::Scenes
 				{"Grass_Bot", T_Path + "Blocks/grass_bot.png"},
 				{"Sand", T_Path + "Blocks/sand.png"},
 				{"Gravel", T_Path + "Blocks/gravel.png"},
-				{"Water", T_Path + "Blocks/water.png", T_Path + "Blocks/Masks/mask_grass_uncolored_top.png"},
+				{"Oak_Log", T_Path + "Blocks/oak_log.png"},
+				{"Oak_Log_Top", T_Path + "Blocks/oak_log_top.png"},
+				{"Oak_Log_Bot", T_Path + "Blocks/oak_log_top.png"},
+				// {"Water", T_Path + "Blocks/water.png", T_Path + "Blocks/Masks/mask_grass_uncolored_top.png"},
+				{"Debug", T_Path + "Blocks/DEBUG/TMP_White_Debug.png"},
 			},
 			4);
 		this->_texturesMap["A_Blocks_Transparent"] = new Front::Utils::MaskedTexturesAtlas(
 			{
 				{"Water", T_Path + "Blocks/water.png", T_Path + "Blocks/Masks/mask_grass_uncolored_top.png"},
+				{"Oak_Leaves", T_Path + "Blocks/oak_leaves.png", T_Path + "Blocks/Masks/mask_grass_uncolored_top.png"},
 			},
 			4);
 
 		this->_fontImage = std::make_unique<Front::Rendering::Images::FontImage>(T_Path + "GUI/Fonts/Minecraft.ttf");
-		for (size_t i = 0; i < Vox::Front::Utils::TexturesData::MAX_DYNAMIC_TEXTURES; ++i)
-			std::cout << _dynamicImages[i] << std::endl;
-
 		this->_skyImage = std::make_unique<Game::World::Skybox::SkyTexture>(T_Path);
 	}
 
 	int TexturesManager::AddDynamicImage(VkImageView &view)
 	{
-		std::cout << "Image is added\n";
 		int index = this->_avalaibleDynamicImages._Find_first();
 		if (index == Vox::Front::Utils::TexturesData::MAX_DYNAMIC_TEXTURES)
 			return -1;
@@ -84,7 +84,10 @@ namespace Vox::Front::Scenes
 		auto pipeline = pipelineManager.operator[]<Rendering::Pipelines::StaticGUIPipeline>("StaticGUI");
 
 		if (pipeline == nullptr)
+		{
+			std::cout << "here2\n";
 			return index;
+		}
 		pipeline->UpdateSet(index);
 		return index;
 	}
@@ -121,6 +124,11 @@ namespace Vox::Front::Scenes
 		if (vkCreateSampler(Rendering::Device::GetInstance().GetLogicalDevice(), &samplerInfo, nullptr,
 							&this->_dynamicSampler) != VK_SUCCESS)
 			throw std::runtime_error("Failed to create texture sampler!");
+	}
+
+	const TexturesManager &TexturesManager::GetInstance()
+	{
+		return Game::GameManager::GetInstance().GetTexturesManager();
 	}
 
 } // namespace Vox::Front::Scenes

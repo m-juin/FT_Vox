@@ -18,7 +18,7 @@ namespace Vox::Game
 	}
 
 	void ThreadManager::EnQueue(
-		std::function<void(std::unordered_map<std::string, std::pair<const Spline::Spline, float>>, std::vector<Game::Utils::Textures::TextureInfo>,  std::vector<Game::Utils::Textures::TextureInfo>)> newTask)
+		std::function<void(std::unordered_map<std::string, std::pair<const Spline::Spline, float>>, std::vector<Game::Datas::Textures::TextureInfo>,  std::vector<Game::Datas::Textures::TextureInfo>)> newTask)
 	{
 		{
 			std::unique_lock lock(this->_queueMutex);
@@ -29,9 +29,9 @@ namespace Vox::Game
 
 	void ThreadManager::BuildPool(const Game::Generation::SplinesManager &sManager, const Front::Scenes::TexturesManager &tManager)
 	{
-		if (Vox::Game::Generation::Datas::Biomes::RulesManager::IsInit() == true)
-			Vox::Game::Generation::Datas::Biomes::RulesManager::Clean();
-		Vox::Game::Generation::Datas::Biomes::RulesManager::Init();
+		if (Generation::Datas::Biomes::RulesManager::IsInit() == true)
+			Generation::Datas::Biomes::RulesManager::Clean();
+		Generation::Datas::Biomes::RulesManager::Init();
 		if (this->_pool.empty() == false)
 		{
 			throw std::runtime_error("Trying to rebuild threadPool while previous one wasn't cleaned.");
@@ -51,7 +51,7 @@ namespace Vox::Game
 					this->print("[DEBUG] Thread ", std::this_thread::get_id(), " launched.");
 					while (1)
 					{
-						std::function<void(std::unordered_map<std::string, std::pair<const Spline::Spline, float>>, std::vector<Game::Utils::Textures::TextureInfo>, std::vector<Game::Utils::Textures::TextureInfo>)>
+						std::function<void(std::unordered_map<std::string, std::pair<const Spline::Spline, float>>, std::vector<Game::Datas::Textures::TextureInfo>, std::vector<Game::Datas::Textures::TextureInfo>)>
 							task;
 						{
 							std::unique_lock<std::mutex> lock(this->_queueMutex);
@@ -77,7 +77,7 @@ namespace Vox::Game
 		}
 		_cv.notify_all();
 
-		std::queue<std::function<void(std::unordered_map<std::string, std::pair<const Spline::Spline, float>>, std::vector<Game::Utils::Textures::TextureInfo>, std::vector<Game::Utils::Textures::TextureInfo>)>> empty;
+		std::queue<std::function<void(std::unordered_map<std::string, std::pair<const Spline::Spline, float>>, std::vector<Game::Datas::Textures::TextureInfo>, std::vector<Game::Datas::Textures::TextureInfo>)>> empty;
 		std::swap(this->_tasks, empty);
 		for (std::thread &thread : this->_pool)
 			thread.join();

@@ -69,11 +69,10 @@ namespace MGL::Matrix::Operations
 		float f = 1.0f / std::tan(fov / 2.0f);
 
 		Matrix4 m1;
-		// m1.SetIdentity();
 		m1(0, 0) = f / aspect;
-		m1(1, 1) = -f; // Inversion de Y pour Vulkan
+		m1(1, 1) = -f;
 
-		m1(2, 2) = far / (far - near); // Vulkan: z in [0, 1]
+		m1(2, 2) = far / (far - near);
 		m1(2, 3) = 1.0f;
 
 		m1(3, 2) = -(far * near) / (far - near);

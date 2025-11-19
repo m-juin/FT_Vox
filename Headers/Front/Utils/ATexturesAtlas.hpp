@@ -1,8 +1,7 @@
 #ifndef __ATEXTURESATLAS_HPP__
 #define __ATEXTURESATLAS_HPP__
 
-#include "Game/Utils/TexturesData.hpp"
-
+#include "Game/Datas/TexturesData.hpp"
 
 #include "Front/Rendering/Images/VulkanImage.hpp"
 
@@ -13,7 +12,7 @@
 
 namespace Vox::Front::Utils
 {
-	using TextureInfo = Game::Utils::Textures::TextureInfo;
+	using TextureInfo = Game::Datas::Textures::TextureInfo;
 	using namespace Vox::Front::Rendering::Images;
 
 	class ATexturesAtlas
@@ -40,7 +39,7 @@ namespace Vox::Front::Utils
 
 
 		public:
-			struct uvData
+			struct alignas(16) uvData
 			{
 					MGL::Vectors::Vector2<float> uvMin;
 					MGL::Vectors::Vector2<float> uvMax;

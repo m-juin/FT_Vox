@@ -22,7 +22,6 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 		_size[0] = MGL::Utils::findNextMultiple(size[0], 16.f);
 		_size[1] = MGL::Utils::findNextMultiple(size[1], 16.f);
 		this->_inputMask |= Game::Utils::Datas::InputMask::Mouse | Game::Utils::Datas::InputMask::KeyBoard;
-		// std::cout << size << "\n" << std::endl;
 		this->AddElement("IMG_BG",
 						 std::make_unique<Image>("Menu_Main", "Dirt", this->_pos, this->_size,
 												 Color(1.0f, 1.0f, 1.0f, 1.0f), Vox::Front::Interfaces::Elements::Vector2(16, 16)),
@@ -85,9 +84,6 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 			return;
 		this->_pos = newPos;
 		this->FindElement("IMG_BG")->elem->SetPos(this->_pos);
-		// this->FindElement("TXT_Test")->elem->SetPos({100, 100});
-		// this->FindElement("BTN_Test1")->elem->SetPos({400, 200});
-		// this->FindElement("BTN_Test")->elem->SetPos({600, 200});
 	}
 
 	void I_MenuMain::SetSize(const Vox::Front::Interfaces::Elements::Vector2 newSize)
@@ -97,7 +93,6 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 		_size[0] = MGL::Utils::findNextMultiple(newSize[0], 16.f);
 		_size[1] = MGL::Utils::findNextMultiple(newSize[1], 16.f);
 		this->FindElement("IMG_BG")->elem->SetSize(this->_size);
-		// this->FindElement("TXT_Test")->elem->SetSize({this->_size[0] - 200, this->_size[1] - 200});
 	}
 
 	void I_MenuMain::Render()

@@ -6,9 +6,8 @@
 
 #include "MathGraphicalLib/Vectors/Vector3.hpp"
 
-namespace Vox::Game::Generation::Datas::Biomes
+namespace Vox::Game::Datas::Biomes
 {
-
 	enum class Biomes
 	{
 		Frozen_Ocean = 0,

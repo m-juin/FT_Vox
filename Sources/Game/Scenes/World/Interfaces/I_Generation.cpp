@@ -21,6 +21,8 @@
 
 #include "Game/Scenes/World/Generation/BiomesPerlin.hpp"
 
+#include "Game/Scenes/World/Generation/Decorations/PoissonDiskSampling.hpp"
+
 namespace Vox::Game::Scenes::World::Interfaces
 {
 	using namespace Front::Interfaces::Elements;
@@ -209,10 +211,10 @@ namespace Vox::Game::Scenes::World::Interfaces
 			imgPM.defaultData.resize(400 * 400 * 4);
 			for (size_t i = 0; i < 400 * 400; ++i)
 			{
-				imgPM.defaultData[i * 4 + 0] = 255; // R
-				imgPM.defaultData[i * 4 + 1] = 255; // G
-				imgPM.defaultData[i * 4 + 2] = 255; // B
-				imgPM.defaultData[i * 4 + 3] = 255; // A
+				imgPM.defaultData[i * 4 + 0] = 255;
+				imgPM.defaultData[i * 4 + 1] = 255;
+				imgPM.defaultData[i * 4 + 2] = 255;
+				imgPM.defaultData[i * 4 + 3] = 255;
 			}
 			auto img = std::make_unique<DynamicImage>(imgPM);
 			this->AddElement("IMG_Biome", std::move(img), 2, false);
@@ -262,18 +264,31 @@ namespace Vox::Game::Scenes::World::Interfaces
 			ifPm.defaultValue = "0";
 			this->AddElement("IF_Map_IMG_Biomes", std::make_unique<InputField>(ifPm), 1, false);
 		}
-
+		static Vox::Game::Utils::Defines::ChunckCoord playerPos = {100, -100};
 		this->_mMinimap.Start();
 		this->onUpdate.AddCallBack(
 			[this]()
 			{
 				float scale = std::atof(this->GetElement<InputField>("IF_Scale_IMG_Biomes")->GetValue().c_str());
 				const uint8_t map = std::atoi(this->GetElement<InputField>("IF_Map_IMG_Biomes")->GetValue().c_str());
-				this->_mMinimap.RequestUpdate(
-					Game::World::WorldManager::GetInstance().GetCamera().GetPosition(),
-					Game::World::WorldManager::GetInstance().GetGenerationManager().GetSeed(), scale, map);
-				auto img = this->GetElement<DynamicImage>("IMG_Biome");
-				img->SetData(this->_mMinimap.GetLatestBuffer());
+				Vox::Game::Utils::Defines::ChunckCoord coord = Game::World::WorldManager::GetInstance().GetPlayerChunck();
+				if (map == 10 && coord != playerPos)
+				{
+					playerPos = coord;
+					auto seeded = MGL::Vectors::Vector2Hash<int>()(playerPos) + Game::World::WorldManager::GetInstance().GetGenerationManager().GetSeed();
+					auto imgData = Vox::World::Generation::Decorations::GenerateDiskImage(
+						seeded, 400);
+					auto img = this->GetElement<DynamicImage>("IMG_Biome");
+					img->SetData(imgData);
+				}
+				if (map != 10)
+				{
+					this->_mMinimap.RequestUpdate(
+						Game::World::WorldManager::GetInstance().GetCamera().GetPosition(),
+						Game::World::WorldManager::GetInstance().GetGenerationManager().GetSeed(), scale, map);
+					auto img = this->GetElement<DynamicImage>("IMG_Biome");
+					img->SetData(this->_mMinimap.GetLatestBuffer());
+				}
 			});
 
 		this->_enabled = false;

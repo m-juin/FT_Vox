@@ -5,23 +5,33 @@
 
 #include <unordered_map>
 #include <vector>
+#include <algorithm>
 
 #include "../Biomes.hpp"
 
 #include "MathGraphicalLib/Vectors/Vector3.hpp"
 
-// #include "Game/Scenes/World/Generation/RulesManager.hpp"
 
 namespace Vox::Game::Generation::Datas::Biomes
 {
+
 	struct SurfaceDecoration
 	{
 			const std::vector<SurfaceRule> surfaceRules;
 			const HeightRule heightRules;
-			// const MGL::Vectors::Vector3<float> grassColor;
 			const bool haveWater;
-			// const MGL::Vectors::Vector3<float> waterColor;
+			const int treeChance;
+			const std::vector<TreeRule> treesRule;
+
+			SurfaceDecoration(std::vector<SurfaceRule> surfaceRules_, HeightRule heightRules_, bool haveWater_,
+							  int treeChance_, std::vector<TreeRule> treesRule_)
+				: surfaceRules(surfaceRules_), heightRules(heightRules_), haveWater(haveWater_),
+				  treeChance(treeChance_), treesRule(treesRule_)
+			{
+			}
 	};
+
+	using Biomes = Game::Datas::Biomes::Biomes;
 
 	static const std::unordered_map<std::string, Biomes> biomesStringToEnum = {
 		{"Plains", Biomes::Plains},

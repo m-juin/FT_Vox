@@ -106,13 +106,11 @@ namespace Vox::Game::Scenes::World::Player
 
 	void Camera::HandleMouseMovement(const double &xOffSet, const double &yOffSet)
 	{
-		// std::cout << "[DEBUG] " << "Mouse xOff = " << xOffSet << " | yOff = " << yOffSet << std::endl;
 		this->Rotate(xOffSet, yOffSet);
 	}
 
 	void Camera::Move(const Vector3Float &axis)
 	{
-		// std::cout << "[DEBUG] " << "Camera shall move on axis = " << axis << std::endl;
 		if (axis[0] != 0)
 			this->_position += this->_rightDir * _cameraSpeed * axis[0];
 		else if (axis[1] != 0)

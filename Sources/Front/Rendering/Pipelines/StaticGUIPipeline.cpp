@@ -12,7 +12,7 @@
 
 #include "Front/Rendering/Images/FontImage.hpp"
 
-#include "Game/GameManager.hpp"
+#include "Front/Scenes/TexturesManager.hpp"
 
 #include "Front/Utils/TexturesData.hpp"
 
@@ -71,7 +71,7 @@ namespace Vox::Front::Rendering::Pipelines
 		VkPipelineDepthStencilStateCreateInfo depthStencil{};
 		depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
 		depthStencil.depthTestEnable = VK_FALSE;
-		depthStencil.depthWriteEnable = VK_TRUE;
+		depthStencil.depthWriteEnable = VK_FALSE;
 		depthStencil.depthCompareOp = VK_COMPARE_OP_NEVER;
 		depthStencil.depthBoundsTestEnable = VK_FALSE;
 		depthStencil.minDepthBounds = 0.0f;
@@ -99,11 +99,14 @@ namespace Vox::Front::Rendering::Pipelines
 		colorBlendAttachment.colorWriteMask =
 			VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
 		colorBlendAttachment.blendEnable = VK_TRUE;
+
 		colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
 		colorBlendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
 		colorBlendAttachment.colorBlendOp = VK_BLEND_OP_ADD;
+
+
 		colorBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
-		colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
+		colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
 		colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;
 
 		VkPipelineColorBlendStateCreateInfo colorBlending{};
@@ -187,8 +190,6 @@ namespace Vox::Front::Rendering::Pipelines
 		samplerLayoutBindings[2].pImmutableSamplers = nullptr;
 		samplerLayoutBindings[2].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 
-		// std::vector<VkDescriptorSetLayoutBinding> bindings = {samplerLayoutBinding};
-
 		VkDescriptorSetLayoutCreateInfo layoutInfo{};
 		layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
 		layoutInfo.bindingCount = static_cast<uint32_t>(samplerLayoutBindings.size());
@@ -234,8 +235,12 @@ namespace Vox::Front::Rendering::Pipelines
 			return;
 		}
 
+		std::cout << "\033[1;32m" << "[DEBUG] Dynamic descriptor set at " << index << " Updated" << "\033[0m"
+				  << std::endl;
+
 		_dynamicInfos[index].imageView = dynamicsTextures[index];
 		_dynamicInfos[index].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+		_dynamicInfos[index].sampler = Game::GameManager::GetInstance().GetTexturesManager().GetDynamicSampler();
 
 		VkWriteDescriptorSet write = {};
 		write.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
@@ -267,7 +272,6 @@ namespace Vox::Front::Rendering::Pipelines
 		fontInfo.imageView = fontAtlas.GetView();
 		fontInfo.sampler = fontAtlas.GetSampler();
 
-		// std::array<VkWriteDescriptorSet, 3> descriptorWrites{};
 		for (auto &desc : _descriptorWrites)
 			desc = {};
 		_descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
@@ -293,6 +297,7 @@ namespace Vox::Front::Rendering::Pipelines
 		{
 			_dynamicInfos[index].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 			_dynamicInfos[index].imageView = dynamicsTextures[index];
+			std::cout << dynamicsTextures[index] << std::endl;
 			_dynamicInfos[index].sampler = sampler;
 		}
 		_descriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;

@@ -12,7 +12,6 @@ layout(location = 0) out vec4 outColor;
 void main()
 {
 	vec4 color = texture(blocksTextureAtlas, fragVertCoord);
-	// color *= vec4(fragVertColor, 1.0);
 	vec4 maskColor = texture(blocksMaskAtlas, fragVertCoord);
 	if (maskColor.r != 0)
 		color = color * vec4(fragVertColor, 1.0);

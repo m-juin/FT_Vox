@@ -4,12 +4,16 @@
 #include <cstdint>
 #include <iostream>
 
+#include "../Blocks/BlocksType.hpp"
+
+#include "Game/Datas/Structures/StructuresTypes.hpp"
+
 namespace Vox::Game::Generation::Datas::Biomes
 {
     struct SurfaceRule
     {
         const uint16_t surfaceDist;
-        const std::string blockType;
+        const Game::Datas::Blocks::BlockType _type;
     };
     struct HeightRule
     {
@@ -22,6 +26,12 @@ namespace Vox::Game::Generation::Datas::Biomes
         // HeightRule() : heightMultiplayer(1.0f), minHeight(80) {};
         HeightRule(float heightMultiplayer_ = 1.0f, float minHeight_ = 80) : heightMultiplayer(heightMultiplayer_), minHeight(minHeight_) {};
         
+    };
+    struct TreeRule
+    {
+        const Game::Datas::Structures::StructuresType type;
+        const int percent;
+        TreeRule(Game::Datas::Structures::StructuresType type_, int percent_) : type(type_), percent(percent_) {};
     };
 } // namespace Vos::Game::Utils::Generation
 

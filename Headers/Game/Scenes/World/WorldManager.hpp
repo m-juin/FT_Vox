@@ -50,6 +50,8 @@ namespace Vox::Game::World
 			void Render();
 			void AddEndedChunck(std::shared_ptr<Chuncks::ChunckCluster> chunck);
 
+			std::shared_ptr<Chuncks::ChunckCluster> GetCluster(Utils::Defines::ChunckCoord coord);
+
 			size_t GetLoadedChunckData()
 			{
 				return this->_chuncks.size();

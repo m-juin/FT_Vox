@@ -10,7 +10,7 @@
 
 #include <iostream>
 
-#include "Game/Utils/TexturesData.hpp"
+#include "Game/Datas/TexturesData.hpp"
 
 namespace Spline
 {
@@ -49,7 +49,7 @@ namespace Vox::Game
 			ThreadManager(size_t maxThread);
 			~ThreadManager();
 
-			void EnQueue(std::function<void(std::unordered_map<std::string, std::pair<const Spline::Spline, float>>, std::vector<Game::Utils::Textures::TextureInfo>, std::vector<Game::Utils::Textures::TextureInfo>)> newTask);
+			void EnQueue(std::function<void(std::unordered_map<std::string, std::pair<const Spline::Spline, float>>, std::vector<Game::Datas::Textures::TextureInfo>, std::vector<Game::Datas::Textures::TextureInfo>)> newTask);
 			void RecreatePool();
 
 		private:
@@ -62,7 +62,7 @@ namespace Vox::Game
 			bool _stop = false;
 
 			std::vector<std::thread> _pool;
-			std::queue<std::function<void(std::unordered_map<std::string, std::pair<const Spline::Spline, float>>, std::vector<Game::Utils::Textures::TextureInfo>, std::vector<Game::Utils::Textures::TextureInfo>)>> _tasks;
+			std::queue<std::function<void(std::unordered_map<std::string, std::pair<const Spline::Spline, float>>, std::vector<Game::Datas::Textures::TextureInfo>, std::vector<Game::Datas::Textures::TextureInfo>)>> _tasks;
 			/* private */
 	};
 } // namespace Vox::Game

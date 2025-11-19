@@ -1,0 +1,870 @@
+{
+    "Bamboo_Jungle": {
+        "HeightRule": {
+            "MinHeight": 50,
+            "Multipliyer": 0.55
+        },
+        "SurfaceRules": [
+            {
+                "Block": 1,
+                "SurfaceDistance": 0
+            },
+            {
+                "Block": 0,
+                "SurfaceDistance": 3
+            },
+            {
+                "Block": 2,
+                "SurfaceDistance": 9999
+            }
+        ],
+        "TreeChance": 100.0,
+        "WaterAffecter": true
+    },
+    "Beach": {
+        "HeightRule": {
+            "MinHeight": 57,
+            "Multipliyer": 0.5
+        },
+        "SurfaceRules": [
+            {
+                "Block": 3,
+                "SurfaceDistance": 3
+            },
+            {
+                "Block": 2,
+                "SurfaceDistance": 9999
+            }
+        ],
+        "TreeChance": 0.0,
+        "WaterAffecter": true
+    },
+    "Birch_Forest": {
+        "HeightRule": {
+            "MinHeight": 50,
+            "Multipliyer": 0.55
+        },
+        "SurfaceRules": [
+            {
+                "Block": 1,
+                "SurfaceDistance": 0
+            },
+            {
+                "Block": 0,
+                "SurfaceDistance": 3
+            },
+            {
+                "Block": 2,
+                "SurfaceDistance": 9999
+            }
+        ],
+        "TreeChance": 100.0,
+        "WaterAffecter": true
+    },
+    "Cherry_Grove": {
+        "HeightRule": {
+            "MinHeight": 50,
+            "Multipliyer": 0.55
+        },
+        "SurfaceRules": [
+            {
+                "Block": 1,
+                "SurfaceDistance": 0
+            },
+            {
+                "Block": 0,
+                "SurfaceDistance": 3
+            },
+            {
+                "Block": 2,
+                "SurfaceDistance": 9999
+            }
+        ],
+        "TreeChance": 100.0,
+        "WaterAffecter": true
+    },
+    "Cold_Ocean": {
+        "HeightRule": {
+            "MinHeight": 30,
+            "Multipliyer": 0.6
+        },
+        "SurfaceRules": [
+            {
+                "Block": 4,
+                "SurfaceDistance": 5
+            },
+            {
+                "Block": 2,
+                "SurfaceDistance": 9999
+            }
+        ],
+        "TreeChance": 0.0,
+        "WaterAffecter": true
+    },
+    "Dark_Forest": {
+        "HeightRule": {
+            "MinHeight": 50,
+            "Multipliyer": 0.55
+        },
+        "SurfaceRules": [
+            {
+                "Block": 1,
+                "SurfaceDistance": 0
+            },
+            {
+                "Block": 0,
+                "SurfaceDistance": 3
+            },
+            {
+                "Block": 2,
+                "SurfaceDistance": 9999
+            }
+        ],
+        "TreeChance": 100.0,
+        "WaterAffecter": true
+    },
+    "Deep_Cold_Ocean": {
+        "HeightRule": {
+            "MinHeight": 20,
+            "Multipliyer": 0.6
+        },
+        "SurfaceRules": [
+            {
+                "Block": 4,
+                "SurfaceDistance": 5
+            },
+            {
+                "Block": 2,
+                "SurfaceDistance": 9999
+            }
+        ],
+        "TreeChance": 100.0,
+        "WaterAffecter": true
+    },
+    "Deep_Frozen_Ocean": {
+        "HeightRule": {
+            "MinHeight": 20,
+            "Multipliyer": 0.6
+        },
+        "SurfaceRules": [
+            {
+                "Block": 4,
+                "SurfaceDistance": 5
+            },
+            {
+                "Block": 2,
+                "SurfaceDistance": 9999
+            }
+        ],
+        "TreeChance": 0.0,
+        "WaterAffecter": true
+    },
+    "Deep_Lukewarm_Ocean": {
+        "HeightRule": {
+            "MinHeight": 20,
+            "Multipliyer": 0.6
+        },
+        "SurfaceRules": [
+            {
+                "Block": 4,
+                "SurfaceDistance": 5
+            },
+            {
+                "Block": 2,
+                "SurfaceDistance": 9999
+            }
+        ],
+        "TreeChance": 0.0,
+        "WaterAffecter": true
+    },
+    "Deep_Ocean": {
+        "HeightRule": {
+            "MinHeight": 20,
+            "Multipliyer": 0.6
+        },
+        "SurfaceRules": [
+            {
+                "Block": 4,
+                "SurfaceDistance": 5
+            },
+            {
+                "Block": 2,
+                "SurfaceDistance": 9999
+            }
+        ],
+        "TreeChance": 0.0,
+        "WaterAffecter": true
+    },
+    "Desert": {
+        "HeightRule": {
+            "MinHeight": 50,
+            "Multipliyer": 0.55
+        },
+        "SurfaceRules": [
+            {
+                "Block": 3,
+                "SurfaceDistance": 9999
+            }
+        ],
+        "TreeChance": 30.0,
+        "WaterAffecter": true
+    },
+    "Flower_Forest": {
+        "HeightRule": {
+            "MinHeight": 50,
+            "Multipliyer": 0.55
+        },
+        "SurfaceRules": [
+            {
+                "Block": 1,
+                "SurfaceDistance": 0
+            },
+            {
+                "Block": 0,
+                "SurfaceDistance": 3
+            },
+            {
+                "Block": 2,
+                "SurfaceDistance": 9999
+            }
+        ],
+        "TreeChance": 0.0,
+        "WaterAffecter": true
+    },
+    "Forest": {
+        "HeightRule": {
+            "MinHeight": 50,
+            "Multipliyer": 0.55
+        },
+        "SurfaceRules": [
+            {
+                "Block": 1,
+                "SurfaceDistance": 0
+            },
+            {
+                "Block": 0,
+                "SurfaceDistance": 3
+            },
+            {
+                "Block": 2,
+                "SurfaceDistance": 9999
+            }
+        ],
+        "TreeChance": 100.0,
+        "WaterAffecter": true
+    },
+    "Frozen_Ocean": {
+        "HeightRule": {
+            "MinHeight": 30,
+            "Multipliyer": 0.6
+        },
+        "SurfaceRules": [
+            {
+                "Block": 4,
+                "SurfaceDistance": 5
+            },
+            {
+                "Block": 2,
+                "SurfaceDistance": 9999
+            }
+        ],
+        "TreeChance": 0.0,
+        "WaterAffecter": true
+    },
+    "Frozen_Peaks": {
+        "HeightRule": {
+            "MinHeight": 100,
+            "Multipliyer": 0.7
+        },
+        "SurfaceRules": [
+            {
+                "Block": 2,
+                "SurfaceDistance": 9999
+            }
+        ],
+        "TreeChance": 0.0,
+        "WaterAffecter": true
+    },
+    "Frozen_River": {
+        "HeightRule": {
+            "MinHeight": 40,
+            "Multipliyer": 0.5
+        },
+        "SurfaceRules": [
+            {
+                "Block": 4,
+                "SurfaceDistance": 9999
+            }
+        ],
+        "TreeChance": 0.0,
+        "WaterAffecter": true
+    },
+    "Grove": {
+        "HeightRule": {
+            "MinHeight": 50,
+            "Multipliyer": 0.55
+        },
+        "SurfaceRules": [
+            {
+                "Block": 1,
+                "SurfaceDistance": 0
+            },
+            {
+                "Block": 0,
+                "SurfaceDistance": 3
+            },
+            {
+                "Block": 2,
+                "SurfaceDistance": 9999
+            }
+        ],
+        "TreeChance": 100.0,
+        "WaterAffecter": true
+    },
+    "Jagged_Peaks": {
+        "HeightRule": {
+            "MinHeight": 100,
+            "Multipliyer": 0.7
+        },
+        "SurfaceRules": [
+            {
+                "Block": 0,
+                "SurfaceDistance": 9999
+            }
+        ],
+        "TreeChance": 0.0,
+        "WaterAffecter": true
+    },
+    "Jungle": {
+        "HeightRule": {
+            "MinHeight": 50,
+            "Multipliyer": 0.55
+        },
+        "SurfaceRules": [
+            {
+                "Block": 1,
+                "SurfaceDistance": 0
+            },
+            {
+                "Block": 0,
+                "SurfaceDistance": 3
+            },
+            {
+                "Block": 2,
+                "SurfaceDistance": 9999
+            }
+        ],
+        "TreeChance": 100.0,
+        "WaterAffecter": true
+    },
+    "Lukewarm_Ocean": {
+        "HeightRule": {
+            "MinHeight": 30,
+            "Multipliyer": 0.6
+        },
+        "SurfaceRules": [
+            {
+                "Block": 4,
+                "SurfaceDistance": 5
+            },
+            {
+                "Block": 2,
+                "SurfaceDistance": 9999
+            }
+        ],
+        "TreeChance": 0.0,
+        "WaterAffecter": true
+    },
+    "Mangrove_Swamp": {
+        "HeightRule": {
+            "MinHeight": 50,
+            "Multipliyer": 0.55
+        },
+        "SurfaceRules": [
+            {
+                "Block": 2,
+                "SurfaceDistance": 9999
+            }
+        ],
+        "TreeChance": 100.0,
+        "WaterAffecter": true
+    },
+    "Meadow": {
+        "HeightRule": {
+            "MinHeight": 50,
+            "Multipliyer": 0.55
+        },
+        "SurfaceRules": [
+            {
+                "Block": 1,
+                "SurfaceDistance": 0
+            },
+            {
+                "Block": 0,
+                "SurfaceDistance": 3
+            },
+            {
+                "Block": 2,
+                "SurfaceDistance": 9999
+            }
+        ],
+        "TreeChance": 100.0,
+        "WaterAffecter": true
+    },
+    "Mushroom_Fields": {
+        "HeightRule": {
+            "MinHeight": 60,
+            "Multipliyer": 0.6
+        },
+        "SurfaceRules": [
+            {
+                "Block": 1,
+                "SurfaceDistance": 1
+            },
+            {
+                "Block": 0,
+                "SurfaceDistance": 3
+            },
+            {
+                "Block": 2,
+                "SurfaceDistance": 9999
+            }
+        ],
+        "TreeChance": 100.0,
+        "WaterAffecter": true
+    },
+    "Ocean": {
+        "HeightRule": {
+            "MinHeight": 30,
+            "Multipliyer": 0.6
+        },
+        "SurfaceRules": [
+            {
+                "Block": 4,
+                "SurfaceDistance": 5
+            },
+            {
+                "Block": 2,
+                "SurfaceDistance": 9999
+            }
+        ],
+        "TreeChance": 0.0,
+        "WaterAffecter": true
+    },
+    "Old_Growth_Birch_Forest": {
+        "HeightRule": {
+            "MinHeight": 50,
+            "Multipliyer": 0.55
+        },
+        "SurfaceRules": [
+            {
+                "Block": 1,
+                "SurfaceDistance": 0
+            },
+            {
+                "Block": 0,
+                "SurfaceDistance": 3
+            },
+            {
+                "Block": 2,
+                "SurfaceDistance": 9999
+            }
+        ],
+        "TreeChance": 100.0,
+        "WaterAffecter": true
+    },
+    "Old_Growth_Pine_Taiga": {
+        "HeightRule": {
+            "MinHeight": 50,
+            "Multipliyer": 0.55
+        },
+        "SurfaceRules": [
+            {
+                "Block": 1,
+                "SurfaceDistance": 0
+            },
+            {
+                "Block": 0,
+                "SurfaceDistance": 3
+            },
+            {
+                "Block": 2,
+                "SurfaceDistance": 9999
+            }
+        ],
+        "TreeChance": 100.0,
+        "WaterAffecter": true
+    },
+    "Old_Growth_Spruce_Taiga": {
+        "HeightRule": {
+            "MinHeight": 50,
+            "Multipliyer": 0.55
+        },
+        "SurfaceRules": [
+            {
+                "Block": 1,
+                "SurfaceDistance": 0
+            },
+            {
+                "Block": 0,
+                "SurfaceDistance": 3
+            },
+            {
+                "Block": 2,
+                "SurfaceDistance": 9999
+            }
+        ],
+        "TreeChance": 100.0,
+        "WaterAffecter": true
+    },
+    "Plains": {
+        "HeightRule": {
+            "MinHeight": 50,
+            "Multipliyer": 0.55
+        },
+        "SurfaceRules": [
+            {
+                "Block": 1,
+                "SurfaceDistance": 0
+            },
+            {
+                "Block": 0,
+                "SurfaceDistance": 3
+            },
+            {
+                "Block": 2,
+                "SurfaceDistance": 9999
+            }
+        ],
+        "TreeChance": 10.0,
+        "WaterAffecter": true
+    },
+    "River": {
+        "HeightRule": {
+            "MinHeight": 40,
+            "Multipliyer": 0.5
+        },
+        "SurfaceRules": [
+            {
+                "Block": 3,
+                "SurfaceDistance": 9999
+            }
+        ],
+        "TreeChance": 0.0,
+        "WaterAffecter": true
+    },
+    "Savanna": {
+        "HeightRule": {
+            "MinHeight": 50,
+            "Multipliyer": 0.55
+        },
+        "SurfaceRules": [
+            {
+                "Block": 1,
+                "SurfaceDistance": 0
+            },
+            {
+                "Block": 0,
+                "SurfaceDistance": 3
+            },
+            {
+                "Block": 2,
+                "SurfaceDistance": 9999
+            }
+        ],
+        "TreeChance": 30.0,
+        "WaterAffecter": true
+    },
+    "Savanna_Plateau": {
+        "HeightRule": {
+            "MinHeight": 60,
+            "Multipliyer": 0.6
+        },
+        "SurfaceRules": [
+            {
+                "Block": 1,
+                "SurfaceDistance": 0
+            },
+            {
+                "Block": 0,
+                "SurfaceDistance": 3
+            },
+            {
+                "Block": 2,
+                "SurfaceDistance": 9999
+            }
+        ],
+        "TreeChance": 30.0,
+        "WaterAffecter": true
+    },
+    "Snowy_Beach": {
+        "HeightRule": {
+            "MinHeight": 57,
+            "Multipliyer": 0.5
+        },
+        "SurfaceRules": [
+            {
+                "Block": 2,
+                "SurfaceDistance": 9999
+            }
+        ],
+        "TreeChance": 0.0,
+        "WaterAffecter": true
+    },
+    "Snowy_Plains": {
+        "HeightRule": {
+            "MinHeight": 50,
+            "Multipliyer": 0.55
+        },
+        "SurfaceRules": [
+            {
+                "Block": 1,
+                "SurfaceDistance": 0
+            },
+            {
+                "Block": 0,
+                "SurfaceDistance": 3
+            },
+            {
+                "Block": 2,
+                "SurfaceDistance": 9999
+            }
+        ],
+        "TreeChance": 30.0,
+        "WaterAffecter": true
+    },
+    "Snowy_Slopes": {
+        "HeightRule": {
+            "MinHeight": 80,
+            "Multipliyer": 0.6
+        },
+        "SurfaceRules": [
+            {
+                "Block": 2,
+                "SurfaceDistance": 9999
+            }
+        ],
+        "TreeChance": 0.0,
+        "WaterAffecter": true
+    },
+    "Snowy_Taiga": {
+        "HeightRule": {
+            "MinHeight": 50,
+            "Multipliyer": 0.55
+        },
+        "SurfaceRules": [
+            {
+                "Block": 1,
+                "SurfaceDistance": 0
+            },
+            {
+                "Block": 0,
+                "SurfaceDistance": 3
+            },
+            {
+                "Block": 2,
+                "SurfaceDistance": 9999
+            }
+        ],
+        "TreeChance": 100.0,
+        "WaterAffecter": true
+    },
+    "Sparse_Jungle": {
+        "HeightRule": {
+            "MinHeight": 50,
+            "Multipliyer": 0.55
+        },
+        "SurfaceRules": [
+            {
+                "Block": 1,
+                "SurfaceDistance": 0
+            },
+            {
+                "Block": 0,
+                "SurfaceDistance": 3
+            },
+            {
+                "Block": 2,
+                "SurfaceDistance": 9999
+            }
+        ],
+        "TreeChance": 12.0,
+        "WaterAffecter": true
+    },
+    "Stony_Peaks": {
+        "HeightRule": {
+            "MinHeight": 100,
+            "Multipliyer": 0.7
+        },
+        "SurfaceRules": [
+            {
+                "Block": 2,
+                "SurfaceDistance": 9999
+            }
+        ],
+        "TreeChance": 0.0,
+        "WaterAffecter": true
+    },
+    "Stony_Shore": {
+        "HeightRule": {
+            "MinHeight": 57,
+            "Multipliyer": 0.5
+        },
+        "SurfaceRules": [
+            {
+                "Block": 2,
+                "SurfaceDistance": 9999
+            }
+        ],
+        "TreeChance": 0.0,
+        "WaterAffecter": true
+    },
+    "Sunflower_Plains": {
+        "HeightRule": {
+            "MinHeight": 50,
+            "Multipliyer": 0.55
+        },
+        "SurfaceRules": [
+            {
+                "Block": 1,
+                "SurfaceDistance": 0
+            },
+            {
+                "Block": 0,
+                "SurfaceDistance": 3
+            },
+            {
+                "Block": 2,
+                "SurfaceDistance": 9999
+            }
+        ],
+        "TreeChance": 30.0,
+        "WaterAffecter": true
+    },
+    "Swamp": {
+        "HeightRule": {
+            "MinHeight": 50,
+            "Multipliyer": 0.55
+        },
+        "SurfaceRules": [
+            {
+                "Block": 2,
+                "SurfaceDistance": 9999
+            }
+        ],
+        "TreeChance": 100.0,
+        "WaterAffecter": true
+    },
+    "Taiga": {
+        "HeightRule": {
+            "MinHeight": 50,
+            "Multipliyer": 0.55
+        },
+        "SurfaceRules": [
+            {
+                "Block": 1,
+                "SurfaceDistance": 0
+            },
+            {
+                "Block": 0,
+                "SurfaceDistance": 3
+            },
+            {
+                "Block": 2,
+                "SurfaceDistance": 9999
+            }
+        ],
+        "TreeChance": 100.0,
+        "WaterAffecter": true
+    },
+    "Warm_Ocean": {
+        "HeightRule": {
+            "MinHeight": 30,
+            "Multipliyer": 0.6
+        },
+        "SurfaceRules": [
+            {
+                "Block": 4,
+                "SurfaceDistance": 5
+            },
+            {
+                "Block": 2,
+                "SurfaceDistance": 9999
+            }
+        ],
+        "TreeChance": 0.0,
+        "WaterAffecter": true
+    },
+    "Windswept_Forest": {
+        "HeightRule": {
+            "MinHeight": 50,
+            "Multipliyer": 0.55
+        },
+        "SurfaceRules": [
+            {
+                "Block": 1,
+                "SurfaceDistance": 0
+            },
+            {
+                "Block": 0,
+                "SurfaceDistance": 3
+            },
+            {
+                "Block": 2,
+                "SurfaceDistance": 9999
+            }
+        ],
+        "TreeChance": 100.0,
+        "WaterAffecter": true
+    },
+    "Windswept_Gravelly_Hills": {
+        "HeightRule": {
+            "MinHeight": 100,
+            "Multipliyer": 0.7
+        },
+        "SurfaceRules": [
+            {
+                "Block": 2,
+                "SurfaceDistance": 9999
+            }
+        ],
+        "TreeChance": 30.0,
+        "WaterAffecter": true
+    },
+    "Windswept_Hills": {
+        "HeightRule": {
+            "MinHeight": 100,
+            "Multipliyer": 0.7
+        },
+        "SurfaceRules": [
+            {
+                "Block": 2,
+                "SurfaceDistance": 9999
+            }
+        ],
+        "TreeChance": 30.0,
+        "WaterAffecter": true
+    },
+    "Windswept_Savanna": {
+        "HeightRule": {
+            "MinHeight": 50,
+            "Multipliyer": 0.55
+        },
+        "SurfaceRules": [
+            {
+                "Block": 1,
+                "SurfaceDistance": 0
+            },
+            {
+                "Block": 0,
+                "SurfaceDistance": 3
+            },
+            {
+                "Block": 2,
+                "SurfaceDistance": 9999
+            }
+        ],
+        "TreeChance": 30.0,
+        "WaterAffecter": true
+    }
+}

@@ -2,7 +2,16 @@
 
 #include "Game/Scenes/World/Generation/PerlinInterpretation.hpp"
 
+#include "Game/Scenes/World/Generation/GenerationManager.hpp"
 #include "Game/Scenes/World/Generation/PerlinUtils.hpp"
+#include "Game/Scenes/World/WorldManager.hpp"
+
+#include "Game/Scenes/World/Generation/Decorations/PoissonDiskSampling.hpp"
+
+#include "Game/Datas/Structures/StructuresManager.hpp"
+
+#include "Game/Scenes/World/Chuncks/Operations.hpp"
+#include "Game/Scenes/World/Generation/ChunkOverflowManager.hpp"
 
 namespace Vox::Game::World::Chuncks
 {
@@ -18,8 +27,6 @@ namespace Vox::Game::World::Chuncks
 
 		int baseX = static_cast<int>(this->_clusterPos[0] * CHUNCK_SIZE);
 		int baseZ = static_cast<int>(this->_clusterPos[1] * CHUNCK_SIZE);
-
-		// bool needPrint = this->_clusterPos[0] >= -45 && this->_clusterPos[0] <= -43 && this->_clusterPos[1] >= 19 && this->_clusterPos[1] <= 21;
 
 		for (int x = -Game::Generation::Utils::GENERATION_BLEND_RADIUS;
 			 x < static_cast<int>(CHUNCK_SIZE) + Game::Generation::Utils::GENERATION_BLEND_RADIUS; x++)
@@ -62,8 +69,11 @@ namespace Vox::Game::World::Chuncks
 		if (this->GetGenerationState() != Generation::E_GenerationState::End)
 			return;
 		for (auto ch : this->_clusterContent)
+		{
+			// std::cout << ch << std::endl;
 			if (ch)
 				ch->Render(toRender);
+		}
 	}
 
 	void ChunckCluster::GenerateHeightMap(
@@ -84,12 +94,13 @@ namespace Vox::Game::World::Chuncks
 
 	void ChunckCluster::BuildClusterContent(
 		const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl,
-		const std::vector<Game::Utils::Textures::TextureInfo> &textInfo, const std::vector<Game::Utils::Textures::TextureInfo> &transparenttextInfo, const uint32_t seed)
+		const std::vector<Game::Datas::Textures::TextureInfo> &textInfo,
+		const std::vector<Game::Datas::Textures::TextureInfo> &transparenttextInfo, const uint32_t seed)
 	{
+		(void)textInfo;
+		(void)transparenttextInfo;
 		this->ChangeGenerationState(Generation::E_GenerationState::Mesh);
 
-		// uint8_t hMap[CHUNCK_SIZE * CHUNCK_SIZE];
-		// GenerateHeightMap(spl, seed, hMap);
 		auto st = GenerateCache(seed, spl);
 
 		int chunksPerCluster = WORLD_HEIGHT / CHUNCK_SIZE;
@@ -99,15 +110,224 @@ namespace Vox::Game::World::Chuncks
 				return;
 			this->_clusterContent[y] = new VoxelChunck(Vector3Int(this->_clusterPos[0], y, this->_clusterPos[1]));
 
-			this->_clusterContent[y]->BuildVoxelObject(spl, textInfo, transparenttextInfo, st, seed);
+			this->_clusterContent[y]->BuildVoxelObject(st, seed);
 		}
+		if (this->IsGenerationCancelled())
+			return;
+		for (int y = chunksPerCluster - 1; y >= 0; y--)
+		{
+			if (this->IsGenerationCancelled())
+				return;
+			this->_clusterContent[y]->BuildMesh();
+		}
+		if (this->IsGenerationCancelled())
+			return;
+		this->GenerateClusterDecoration(st, spl, seed);
 		this->ChangeGenerationState(Generation::E_GenerationState::WaitingBuffer);
+	}
+
+	void ChunckCluster::GenerateTree(const Vox::Game::Generation::Utils::ChunckCache &cache, const uint32_t seed)
+	{
+		std::seed_seq seed_seq{seed, static_cast<uint32_t>(_clusterPos[0]), static_cast<uint32_t>(_clusterPos[1])};
+		thread_local std::mt19937 generator(seed_seq);
+		std::uniform_int_distribution<int> distribution(0, 100);
+		size_t regionSeed = Vox::World::Generation::Decorations::GetRegionnedSeed(seed, this->_clusterPos, 2);
+		auto trees =
+			Vox::World::Generation::Decorations::GetChunckDiskSampling(this->_clusterPos, regionSeed, 4.0, 2, 10);
+		std::map<Game::Datas::Biomes::Biomes, uint8_t> counters;
+		for (auto treePos : trees)
+		{
+			int localX = treePos[0];
+			int localZ = treePos[1];
+
+			int cacheX = localX + Game::Generation::Utils::GENERATION_BLEND_RADIUS;
+			int cacheZ = localZ + Game::Generation::Utils::GENERATION_BLEND_RADIUS;
+
+			size_t arrayIndex = cacheX * Game::Generation::Utils::CACHE_SIZE + cacheZ;
+			auto biome = cache.biome[arrayIndex];
+			auto biomeDensity = Vox::Game::Generation::Datas::Biomes::RulesManager::GetTreeChance(biome);
+			if (biomeDensity == 0)
+				continue;
+			size_t worldHeight = cache.heightMap[arrayIndex];
+			if (worldHeight < Generation::Utils::WATER_LEVEL)
+				continue;
+			auto it = counters.find(biome);
+			if (it == counters.end())
+			{
+				counters[biome] = 1;
+				it = counters.find(biome);
+			}
+			else
+				it->second += 1;
+			if ((double)it->second >= 10 - biomeDensity / 10)
+				it->second = 0;
+			if (it->second == 0.0)
+			{
+				int val = distribution(generator);
+				auto type = Vox::Game::Generation::Datas::Biomes::RulesManager::GetTreeType(biome, val);
+				if (type == Game::Datas::Structures::StructuresType::None)
+					continue;
+				this->SpawnStructure(type,
+									 {static_cast<uint8_t>(treePos[0]), static_cast<uint8_t>(worldHeight + 1),
+									  static_cast<uint8_t>(treePos[1])});
+			}
+		}
+	}
+
+	void ChunckCluster::GenerateClusterDecoration(
+		const Vox::Game::Generation::Utils::ChunckCache &cache,
+		const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl, const uint32_t seed)
+	{
+		(void)spl;
+		(void)cache;
+		(void)seed;
+		GenerateTree(cache, seed);
+		GetOverflowBlocks();
+	}
+
+	void ChunckCluster::SpawnStructure(Game::Datas::Structures::StructuresType type, Vector3Int pos)
+	{
+		auto &gManager = Game::World::WorldManager::GetInstance().GetGenerationManager();
+
+		auto s = gManager.GetStructuresManager()->GetStructure(type);
+		auto oManager = gManager.GetOverflowManager();
+
+		auto content = s.GetContent();
+		Vector3Int sSize = {static_cast<int>(s._structureSize[0]), static_cast<int>(s._structureSize[1]),
+							static_cast<int>(s._structureSize[2])};
+
+		MGL::Vectors::Vector3<int> sPos{};
+		std::unordered_map<Vox::Game::Generation::Vector2Int, std::vector<Game::Generation::ChunkOverflowBlock>,
+						   MGL::Vectors::Vector2Hash<int>>
+			overflowContent;
+		for (sPos[0] = 0; sPos[0] < sSize[0]; sPos[0]++)
+		{
+			for (sPos[1] = 0; sPos[1] < sSize[1]; sPos[1]++)
+			{
+				for (sPos[2] = 0; sPos[2] < sSize[2]; sPos[2]++)
+				{
+					auto bType = content[s.GetLocalIndex(sPos)];
+					Vector3Int oPos = {static_cast<int>(sPos[0] - s._anchorPoint[0] + pos[0]),
+									   static_cast<int>(sPos[1] - s._anchorPoint[1] + pos[1]),
+									   static_cast<int>(sPos[2] - s._anchorPoint[2] + pos[2])};
+					if (bType == Game::Datas::Blocks::BlockType::Air)
+						continue;
+					auto chunckIndex = oPos[1] / CHUNCK_SIZE;
+					float localHeight = oPos[1] % CHUNCK_SIZE;
+
+					if (oPos[0] < 0 || oPos[0] >= static_cast<int>(CHUNCK_SIZE) || oPos[2] < 0 ||
+						static_cast<int>(oPos[2] >= static_cast<int>(CHUNCK_SIZE)))
+					{
+						Vector3Int offset;
+						Vector3Int worldPos = {static_cast<int>((this->_clusterPos[0] * CHUNCK_SIZE) + oPos[0]),
+											   oPos[1],
+											   static_cast<int>((this->_clusterPos[1] * CHUNCK_SIZE) + oPos[2])};
+
+						Game::Generation::ChunkOverflowBlock block = {{static_cast<int>(worldPos[0]),
+																	   static_cast<int>(worldPos[1]),
+																	   static_cast<int>(worldPos[2])},
+																	  bType};
+						overflowContent[Game::Chuncks::Operations::WorldToCluster(worldPos)].push_back(block);
+						continue;
+					}
+					this->_clusterContent[chunckIndex]->SetBlockDatas({static_cast<uint8_t>(oPos[0]),
+																	   static_cast<uint8_t>(localHeight),
+																	   static_cast<uint8_t>(oPos[2])},
+																	  bType, false);
+				}
+			}
+		}
+		for (auto clusterPos : overflowContent)
+		{
+			oManager->AddBlocks(clusterPos.first, clusterPos.second);
+		}
+	}
+	void ChunckCluster::GetOverflowBlocks()
+	{
+		auto &gManager = Game::World::WorldManager::GetInstance().GetGenerationManager();
+
+		auto oManager = gManager.GetOverflowManager();
+		auto blocks = oManager->ExtractClusterBlocks(this->_clusterPos);
+		for (auto block : blocks)
+		{
+			auto chunckIndex = block.worldCoord[1] / CHUNCK_SIZE;
+			// float localHeight = block.worldCoord[1] % CHUNCK_SIZE;
+			const Vox::Game::World::Chuncks::VoxelChunck::LocalVector localPos =
+				Game::Chuncks::Operations::WorldToChunk(block.worldCoord);
+			if (this->_clusterContent[chunckIndex]->GetBlockDatas(localPos) != Vox::Game::Datas::Blocks::BlockType::Air)
+				continue;
+			this->_clusterContent[chunckIndex]->SetBlockDatas(localPos, block.type, false);
+		}
+	}
+
+	void ChunckCluster::UpdateClusterIfNeeded()
+	{
+		auto &gManager = Game::World::WorldManager::GetInstance().GetGenerationManager();
+		auto oManager = gManager.GetOverflowManager();
+		auto blocks = oManager->ExtractClusterBlocks(this->_clusterPos);
+
+		if (blocks.size() == 0)
+			return;
+
+		std::array<std::unordered_map<Vox::Game::Chuncks::Operations::ChunkCoord, Game::Datas::Blocks::BlockType,
+									  MGL::Vectors::Vector3Hash<uint8_t>>,
+				   WORLD_HEIGHT / CHUNCK_SIZE>
+			localMap;
+		for (auto block : blocks)
+		{
+			auto chunckIndex = block.worldCoord[1] / CHUNCK_SIZE;
+			localMap[chunckIndex][Game::Chuncks::Operations::WorldToChunk(block.worldCoord)] = block.type;
+		}
+		for (size_t cIndex = 0; cIndex < localMap.size(); cIndex++)
+		{
+			auto array = localMap[cIndex];
+			for (size_t bIndex = 0; bIndex < array.size(); bIndex++)
+			{
+				std::unordered_map<MGL::Vectors::Vector3<uint8_t>, Game::Datas::Blocks::BlockType,
+								   MGL::Vectors::Vector3Hash<uint8_t>>::iterator it = array.begin();
+				std::advance(it, bIndex);
+				this->_clusterContent[cIndex]->SetBlockDatas(it->first, it->second, bIndex == array.size() - 1);
+			}
+		}
 	}
 
 	ChunckCoord ChunckCluster::GetPosition()
 	{
 		return this->_clusterPos;
 	}
+
+	void ChunckCluster::SetBlock(MGL::Vectors::Vector3<uint8_t> localPos, Game::Datas::Blocks::BlockType type)
+	{
+		// auto chunckIndex = localPos[1] / CHUNCK_SIZE;
+		// uint8_t localHeight = localPos[1] % CHUNCK_SIZE;
+
+		// this->_clusterContent[chunckIndex]->SetBlockDatas({localPos[0], localHeight, localPos[2] }, type);
+		(void)localPos;
+		(void)type;
+	}
+
+	// void ChunckCluster::SetBlocks(std::unordered_map<MGL::Vectors::Vector3<int>, Game::Datas::Blocks::BlockType,
+	// MGL::Vectors::Vector3Hash<int>> &datas, bool IsLocal)
+	// {
+	// 	(void)IsLocal;
+	// 	std::array<std::unordered_map<Vox::Game::Chuncks::Operations::ChunkCoord, Game::Datas::Blocks::BlockType,
+	// MGL::Vectors::Vector3Hash<uint8_t>>, WORLD_HEIGHT / CHUNCK_SIZE> localMap; 	for (auto &blockdata : datas)
+	// 	{
+	// 		auto chunckIndex = blockdata.first[1] / CHUNCK_SIZE;
+	// 		auto &map = localMap[chunckIndex];
+	// 		map[Game::Chuncks::Operations::WorldToChunk(blockdata.first)] = blockdata.second;
+	// 	}
+	// 	for (size_t cIndex = 0; cIndex < localMap.size(); cIndex++)
+	// 	{
+	// 		auto array = localMap[cIndex];
+	// 		for (size_t bIndex = 0; bIndex < array.size(); bIndex++)
+	// 		{
+	// 			std::unordered_map<MGL::Vectors::Vector3<uint8_t>, Game::Datas::Blocks::BlockType,
+	// MGL::Vectors::Vector3Hash<uint8_t>>::iterator it = array.begin(); 			std::advance(it, bIndex);
+	// 			this->_clusterContent[cIndex]->SetBlockDatas(it->first, it->second, bIndex == array.size() - 1);
+	// 		}
+	// 	}
+	// }
 
 	void ChunckCluster::BuildBuffers(const uint16_t &buffer)
 	{
@@ -130,9 +350,17 @@ namespace Vox::Game::World::Chuncks
 		this->onUpdate.AddCallBack(
 			[this]()
 			{
+				if (this->GetGenerationState() != Vox::Game::Generation::E_GenerationState::End)
+					return;
+				this->UpdateClusterIfNeeded();
 				for (auto ch : this->_clusterContent)
+				{
 					if (ch)
+					{
+						// std::cout << ch << std::endl;
 						ch->Update();
+					}
+				}
 			});
 		this->_currentState = Generation::E_GenerationState::WaitingThread;
 	}

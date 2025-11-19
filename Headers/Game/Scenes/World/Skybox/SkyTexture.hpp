@@ -20,9 +20,6 @@ namespace Vox::Game::World::Skybox
 			void CreateSampler() override;
 			std::pair<std::array<unsigned char*, 6>, VkDeviceSize> LoadTextures(const std::string &path);
 			std::pair<VkBuffer, VkDeviceMemory> CreateStagingBuffer(std::array<unsigned char*, 6>, VkDeviceSize);
-			// void BuildAtlas(const std::string &path);
-			// void BuildAtlas(const std::string &path);
-			// void BuildImages(std::unique_ptr<unsigned char[]> mainData, VkDeviceSize mainSize);
 			/* private */
 	};
 

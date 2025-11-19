@@ -20,9 +20,6 @@
 
 using namespace Vox::Front;
 
-// Front::Window *win;
-// Front::Rendering::VulkanManager *vkManager;
-
 #include "Front/Utils/TexturesAtlas.hpp"
 
 void CleanUp()
@@ -48,16 +45,18 @@ int main()
 	Rendering::VulkanManager::Init();
 	Window::GetInstance().SetupSurface();
 
-	Rendering::Device::Init(Rendering::VulkanManager::GetInstance().GetVkInstance(), Window::GetInstance().GetSurface());
+	Rendering::Device::Init(Rendering::VulkanManager::GetInstance().GetVkInstance(),
+							Window::GetInstance().GetSurface());
 
 	Rendering::Device &device = Rendering::Device::GetInstance();
 
 	Rendering::SwapChain::Init();
 	Rendering::DescriptorPool::Init();
 	Rendering::Pipelines::PipelinesManager::Init();
-	Rendering::VulkanManager::GetInstance().SetDepthImage(
-		new Rendering::Images::DepthImage());
-	Rendering::SwapChain::GetInstance().CreateFrameBuffer(Rendering::Pipelines::PipelinesManager::GetInstance().GetRenderPass(), Rendering::VulkanManager::GetInstance().GetDepthImage()->GetView());
+	Rendering::VulkanManager::GetInstance().SetDepthImage(new Rendering::Images::DepthImage());
+	Rendering::SwapChain::GetInstance().CreateFrameBuffer(
+		Rendering::Pipelines::PipelinesManager::GetInstance().GetRenderPass(),
+		Rendering::VulkanManager::GetInstance().GetDepthImage()->GetView());
 	Rendering::CommandsPool::Init(Window::GetInstance().GetSurface());
 	Rendering::SyncObjects::Init();
 
@@ -67,12 +66,12 @@ int main()
 
 	pool.CreateCommandBuffer();
 
-	Interfaces::InterfacesManager::Init();
 	Vox::Game::GameManager::Init();
+	Interfaces::InterfacesManager::Init();
 
 	auto &gm = Vox::Game::GameManager::GetInstance();
-	gm.InitGame();
 	Rendering::Pipelines::PipelinesManager::GetInstance().CreatePipelines();
+	gm.InitGame();
 
 	while (!glfwWindowShouldClose(Window::GetInstance().GetWindow()))
 	{
@@ -81,9 +80,8 @@ int main()
 		vkWaitForFences(device.GetLogicalDevice(), 1, &fence, VK_TRUE, UINT64_MAX);
 
 		uint32_t imageIndex = 0;
-		VkResult result = vkAcquireNextImageKHR(
-			device.GetLogicalDevice(), swap.GetVulkanInstance(), UINT64_MAX,
-			sync.GetCurrentImageSemaphore(), VK_NULL_HANDLE, &imageIndex);
+		VkResult result = vkAcquireNextImageKHR(device.GetLogicalDevice(), swap.GetVulkanInstance(), UINT64_MAX,
+												sync.GetCurrentImageSemaphore(), VK_NULL_HANDLE, &imageIndex);
 		if (result == VK_ERROR_OUT_OF_DATE_KHR)
 		{
 			swap.RecreateSwapChain();
@@ -134,9 +132,7 @@ int main()
 
 		if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR) // || FrameBufferResized
 		{
-			// this->ChangeFBStatus(false);
 			swap.RecreateSwapChain();
-			// SwapChain::GetInstance().Recreate(PipelinesManager::GetInstance().GetRenderPass());
 		}
 		else if (result != VK_SUCCESS)
 			throw std::runtime_error("Failed to present swap chain image!");

@@ -31,7 +31,7 @@ namespace Vox::Front::Interfaces
 		{
 			delete pair.second;
 		}
-		this->_content.clear(); // <-- essentiel
+		this->_content.clear();
 	}
 
 	void InterfacesManager::RegisterInterface(const std::string &key, AInterface *inte)
@@ -169,6 +169,5 @@ namespace Vox::Front::Interfaces
 
 	InterfacesManager::~InterfacesManager()
 	{
-		// this->ResetInterfacesList();
 	}
 } // namespace Vox::Front::Interfaces

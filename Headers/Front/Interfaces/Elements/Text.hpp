@@ -53,7 +53,6 @@ namespace Vox::Front::Interfaces::Elements
 
 		private:
 			size_t _indexCount = 0;
-			// Front::Utils::TexturesAtlas::TexturesAtlas::uvData _uvMappingData;
 			std::vector<Vertex> _vertex;
 			dbuffer *B_Vertex = nullptr;
 			dbuffer *B_Index = nullptr;

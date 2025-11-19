@@ -6,19 +6,22 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Grass",
+                "Block": 1,
                 "SurfaceDistance": 0
             },
             {
-                "Block": "Dirt",
+                "Block": 0,
                 "SurfaceDistance": 3
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
-        "TreeDensity": 0,
+        "TreesData": {
+            "TreeChance": 50,
+            "TreeTypes": []
+        },
         "WaterAffecter": true
     },
     "Beach": {
@@ -28,15 +31,18 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Sand",
+                "Block": 3,
                 "SurfaceDistance": 3
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
-        "TreeDensity": 0,
+        "TreesData": {
+            "TreeChance": 0,
+            "TreeTypes": []
+        },
         "WaterAffecter": true
     },
     "Birch_Forest": {
@@ -46,19 +52,22 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Grass",
+                "Block": 1,
                 "SurfaceDistance": 0
             },
             {
-                "Block": "Dirt",
+                "Block": 0,
                 "SurfaceDistance": 3
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
-        "TreeDensity": 0,
+        "TreesData": {
+            "TreeChance": 50,
+            "TreeTypes": []
+        },
         "WaterAffecter": true
     },
     "Cherry_Grove": {
@@ -68,19 +77,22 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Grass",
+                "Block": 1,
                 "SurfaceDistance": 0
             },
             {
-                "Block": "Dirt",
+                "Block": 0,
                 "SurfaceDistance": 3
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
-        "TreeDensity": 0,
+        "TreesData": {
+            "TreeChance": 50,
+            "TreeTypes": []
+        },
         "WaterAffecter": true
     },
     "Cold_Ocean": {
@@ -90,15 +102,18 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Gravel",
+                "Block": 4,
                 "SurfaceDistance": 5
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
-        "TreeDensity": 0,
+        "TreesData": {
+            "TreeChance": 0,
+            "TreeTypes": []
+        },
         "WaterAffecter": true
     },
     "Dark_Forest": {
@@ -108,19 +123,22 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Grass",
+                "Block": 1,
                 "SurfaceDistance": 0
             },
             {
-                "Block": "Dirt",
+                "Block": 0,
                 "SurfaceDistance": 3
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
-        "TreeDensity": 0,
+        "TreesData": {
+            "TreeChance": 50,
+            "TreeTypes": []
+        },
         "WaterAffecter": true
     },
     "Deep_Cold_Ocean": {
@@ -130,15 +148,18 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Gravel",
+                "Block": 4,
                 "SurfaceDistance": 5
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
-        "TreeDensity": 0,
+        "TreesData": {
+            "TreeChance": 50,
+            "TreeTypes": []
+        },
         "WaterAffecter": true
     },
     "Deep_Frozen_Ocean": {
@@ -148,15 +169,18 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Gravel",
+                "Block": 4,
                 "SurfaceDistance": 5
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
-        "TreeDensity": 0,
+        "TreesData": {
+            "TreeChance": 0,
+            "TreeTypes": []
+        },
         "WaterAffecter": true
     },
     "Deep_Lukewarm_Ocean": {
@@ -166,15 +190,18 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Gravel",
+                "Block": 4,
                 "SurfaceDistance": 5
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
-        "TreeDensity": 0,
+        "TreesData": {
+            "TreeChance": 0,
+            "TreeTypes": []
+        },
         "WaterAffecter": true
     },
     "Deep_Ocean": {
@@ -184,15 +211,18 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Gravel",
+                "Block": 4,
                 "SurfaceDistance": 5
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
-        "TreeDensity": 0,
+        "TreesData": {
+            "TreeChance": 0,
+            "TreeTypes": []
+        },
         "WaterAffecter": true
     },
     "Desert": {
@@ -202,11 +232,14 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Sand",
+                "Block": 3,
                 "SurfaceDistance": 9999
             }
         ],
-        "TreeDensity": 0,
+        "TreesData": {
+            "TreeChance": 30,
+            "TreeTypes": []
+        },
         "WaterAffecter": true
     },
     "Flower_Forest": {
@@ -216,19 +249,22 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Grass",
+                "Block": 1,
                 "SurfaceDistance": 0
             },
             {
-                "Block": "Dirt",
+                "Block": 0,
                 "SurfaceDistance": 3
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
-        "TreeDensity": 0,
+        "TreesData": {
+            "TreeChance": 0,
+            "TreeTypes": []
+        },
         "WaterAffecter": true
     },
     "Forest": {
@@ -238,19 +274,31 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Grass",
+                "Block": 1,
                 "SurfaceDistance": 0
             },
             {
-                "Block": "Dirt",
+                "Block": 0,
                 "SurfaceDistance": 3
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
-        "TreeDensity": 0,
+        "TreesData": {
+            "TreeChance": 75,
+            "TreeTypes": [
+                {
+                    "Type": "Oak_Tree1",
+                    "Percent": 80
+                },
+                {
+                    "Type": "Oak_Tree2",
+                    "Percent": 20
+                }
+            ]
+        },
         "WaterAffecter": true
     },
     "Frozen_Ocean": {
@@ -260,15 +308,18 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Gravel",
+                "Block": 4,
                 "SurfaceDistance": 5
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
-        "TreeDensity": 0,
+        "TreesData": {
+            "TreeChance": 0,
+            "TreeTypes": []
+        },
         "WaterAffecter": true
     },
     "Frozen_Peaks": {
@@ -278,11 +329,14 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
-        "TreeDensity": 0,
+        "TreesData": {
+            "TreeChance": 0,
+            "TreeTypes": []
+        },
         "WaterAffecter": true
     },
     "Frozen_River": {
@@ -292,11 +346,14 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Gravel",
+                "Block": 4,
                 "SurfaceDistance": 9999
             }
         ],
-        "TreeDensity": 0,
+        "TreesData": {
+            "TreeChance": 0,
+            "TreeTypes": []
+        },
         "WaterAffecter": true
     },
     "Grove": {
@@ -306,19 +363,22 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Grass",
+                "Block": 1,
                 "SurfaceDistance": 0
             },
             {
-                "Block": "Dirt",
+                "Block": 0,
                 "SurfaceDistance": 3
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
-        "TreeDensity": 0,
+        "TreesData": {
+            "TreeChance": 50,
+            "TreeTypes": []
+        },
         "WaterAffecter": true
     },
     "Jagged_Peaks": {
@@ -328,11 +388,14 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Dirt",
+                "Block": 0,
                 "SurfaceDistance": 9999
             }
         ],
-        "TreeDensity": 0,
+        "TreesData": {
+            "TreeChance": 0,
+            "TreeTypes": []
+        },
         "WaterAffecter": true
     },
     "Jungle": {
@@ -342,19 +405,22 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Grass",
+                "Block": 1,
                 "SurfaceDistance": 0
             },
             {
-                "Block": "Dirt",
+                "Block": 0,
                 "SurfaceDistance": 3
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
-        "TreeDensity": 0,
+        "TreesData": {
+            "TreeChance": 50,
+            "TreeTypes": []
+        },
         "WaterAffecter": true
     },
     "Lukewarm_Ocean": {
@@ -364,15 +430,18 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Gravel",
+                "Block": 4,
                 "SurfaceDistance": 5
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
-        "TreeDensity": 0,
+        "TreesData": {
+            "TreeChance": 0,
+            "TreeTypes": []
+        },
         "WaterAffecter": true
     },
     "Mangrove_Swamp": {
@@ -382,11 +451,14 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
-        "TreeDensity": 0,
+        "TreesData": {
+            "TreeChance": 50,
+            "TreeTypes": []
+        },
         "WaterAffecter": true
     },
     "Meadow": {
@@ -396,19 +468,22 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Grass",
+                "Block": 1,
                 "SurfaceDistance": 0
             },
             {
-                "Block": "Dirt",
+                "Block": 0,
                 "SurfaceDistance": 3
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
-        "TreeDensity": 0,
+        "TreesData": {
+            "TreeChance": 50,
+            "TreeTypes": []
+        },
         "WaterAffecter": true
     },
     "Mushroom_Fields": {
@@ -418,19 +493,22 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Grass",
+                "Block": 1,
                 "SurfaceDistance": 1
             },
             {
-                "Block": "Dirt",
+                "Block": 0,
                 "SurfaceDistance": 3
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
-        "TreeDensity": 0,
+        "TreesData": {
+            "TreeChance": 50,
+            "TreeTypes": []
+        },
         "WaterAffecter": true
     },
     "Ocean": {
@@ -440,15 +518,18 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Gravel",
+                "Block": 4,
                 "SurfaceDistance": 5
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
-        "TreeDensity": 0,
+        "TreesData": {
+            "TreeChance": 0,
+            "TreeTypes": []
+        },
         "WaterAffecter": true
     },
     "Old_Growth_Birch_Forest": {
@@ -458,19 +539,22 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Grass",
+                "Block": 1,
                 "SurfaceDistance": 0
             },
             {
-                "Block": "Dirt",
+                "Block": 0,
                 "SurfaceDistance": 3
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
-        "TreeDensity": 0,
+        "TreesData": {
+            "TreeChance": 50,
+            "TreeTypes": []
+        },
         "WaterAffecter": true
     },
     "Old_Growth_Pine_Taiga": {
@@ -480,19 +564,22 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Grass",
+                "Block": 1,
                 "SurfaceDistance": 0
             },
             {
-                "Block": "Dirt",
+                "Block": 0,
                 "SurfaceDistance": 3
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
-        "TreeDensity": 0,
+        "TreesData": {
+            "TreeChance": 50,
+            "TreeTypes": []
+        },
         "WaterAffecter": true
     },
     "Old_Growth_Spruce_Taiga": {
@@ -502,19 +589,22 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Grass",
+                "Block": 1,
                 "SurfaceDistance": 0
             },
             {
-                "Block": "Dirt",
+                "Block": 0,
                 "SurfaceDistance": 3
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
-        "TreeDensity": 0,
+        "TreesData": {
+            "TreeChance": 50,
+            "TreeTypes": []
+        },
         "WaterAffecter": true
     },
     "Plains": {
@@ -524,19 +614,31 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Grass",
+                "Block": 1,
                 "SurfaceDistance": 0
             },
             {
-                "Block": "Dirt",
+                "Block": 0,
                 "SurfaceDistance": 3
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
-        "TreeDensity": 0,
+        "TreesData": {
+            "TreeChance": 10,
+            "TreeTypes": [
+                {
+                    "Type": "Oak_Tree1",
+                    "Percent": 90
+                },
+                {
+                    "Type": "Oak_Tree2",
+                    "Percent": 10
+                }
+            ]
+        },
         "WaterAffecter": true
     },
     "River": {
@@ -546,11 +648,14 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Sand",
+                "Block": 3,
                 "SurfaceDistance": 9999
             }
         ],
-        "TreeDensity": 0,
+        "TreesData": {
+            "TreeChance": 0,
+            "TreeTypes": []
+        },
         "WaterAffecter": true
     },
     "Savanna": {
@@ -560,19 +665,22 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Grass",
+                "Block": 1,
                 "SurfaceDistance": 0
             },
             {
-                "Block": "Dirt",
+                "Block": 0,
                 "SurfaceDistance": 3
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
-        "TreeDensity": 0,
+        "TreesData": {
+            "TreeChance": 30,
+            "TreeTypes": []
+        },
         "WaterAffecter": true
     },
     "Savanna_Plateau": {
@@ -582,19 +690,22 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Grass",
+                "Block": 1,
                 "SurfaceDistance": 0
             },
             {
-                "Block": "Dirt",
+                "Block": 0,
                 "SurfaceDistance": 3
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
-        "TreeDensity": 0,
+        "TreesData": {
+            "TreeChance": 30,
+            "TreeTypes": []
+        },
         "WaterAffecter": true
     },
     "Snowy_Beach": {
@@ -604,11 +715,14 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
-        "TreeDensity": 0,
+        "TreesData": {
+            "TreeChance": 0,
+            "TreeTypes": []
+        },
         "WaterAffecter": true
     },
     "Snowy_Plains": {
@@ -618,19 +732,22 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Grass",
+                "Block": 1,
                 "SurfaceDistance": 0
             },
             {
-                "Block": "Dirt",
+                "Block": 0,
                 "SurfaceDistance": 3
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
-        "TreeDensity": 0,
+        "TreesData": {
+            "TreeChance": 30,
+            "TreeTypes": []
+        },
         "WaterAffecter": true
     },
     "Snowy_Slopes": {
@@ -640,11 +757,14 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
-        "TreeDensity": 0,
+        "TreesData": {
+            "TreeChance": 0,
+            "TreeTypes": []
+        },
         "WaterAffecter": true
     },
     "Snowy_Taiga": {
@@ -654,19 +774,22 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Grass",
+                "Block": 1,
                 "SurfaceDistance": 0
             },
             {
-                "Block": "Dirt",
+                "Block": 0,
                 "SurfaceDistance": 3
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
-        "TreeDensity": 0,
+        "TreesData": {
+            "TreeChance": 50,
+            "TreeTypes": []
+        },
         "WaterAffecter": true
     },
     "Sparse_Jungle": {
@@ -676,19 +799,22 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Grass",
+                "Block": 1,
                 "SurfaceDistance": 0
             },
             {
-                "Block": "Dirt",
+                "Block": 0,
                 "SurfaceDistance": 3
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
-        "TreeDensity": 0,
+        "TreesData": {
+            "TreeChance": 12,
+            "TreeTypes": []
+        },
         "WaterAffecter": true
     },
     "Stony_Peaks": {
@@ -698,11 +824,14 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
-        "TreeDensity": 0,
+        "TreesData": {
+            "TreeChance": 0,
+            "TreeTypes": []
+        },
         "WaterAffecter": true
     },
     "Stony_Shore": {
@@ -712,11 +841,14 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
-        "TreeDensity": 0,
+        "TreesData": {
+            "TreeChance": 0,
+            "TreeTypes": []
+        },
         "WaterAffecter": true
     },
     "Sunflower_Plains": {
@@ -726,19 +858,22 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Grass",
+                "Block": 1,
                 "SurfaceDistance": 0
             },
             {
-                "Block": "Dirt",
+                "Block": 0,
                 "SurfaceDistance": 3
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
-        "TreeDensity": 0,
+        "TreesData": {
+            "TreeChance": 30,
+            "TreeTypes": []
+        },
         "WaterAffecter": true
     },
     "Swamp": {
@@ -748,11 +883,14 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
-        "TreeDensity": 0,
+        "TreesData": {
+            "TreeChance": 50,
+            "TreeTypes": []
+        },
         "WaterAffecter": true
     },
     "Taiga": {
@@ -762,19 +900,22 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Grass",
+                "Block": 1,
                 "SurfaceDistance": 0
             },
             {
-                "Block": "Dirt",
+                "Block": 0,
                 "SurfaceDistance": 3
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
-        "TreeDensity": 0,
+        "TreesData": {
+            "TreeChance": 50,
+            "TreeTypes": []
+        },
         "WaterAffecter": true
     },
     "Warm_Ocean": {
@@ -784,15 +925,18 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Gravel",
+                "Block": 4,
                 "SurfaceDistance": 5
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
-        "TreeDensity": 0,
+        "TreesData": {
+            "TreeChance": 0,
+            "TreeTypes": []
+        },
         "WaterAffecter": true
     },
     "Windswept_Forest": {
@@ -802,19 +946,22 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Grass",
+                "Block": 1,
                 "SurfaceDistance": 0
             },
             {
-                "Block": "Dirt",
+                "Block": 0,
                 "SurfaceDistance": 3
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
-        "TreeDensity": 0,
+        "TreesData": {
+            "TreeChance": 50,
+            "TreeTypes": []
+        },
         "WaterAffecter": true
     },
     "Windswept_Gravelly_Hills": {
@@ -824,11 +971,14 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
-        "TreeDensity": 0,
+        "TreesData": {
+            "TreeChance": 30,
+            "TreeTypes": []
+        },
         "WaterAffecter": true
     },
     "Windswept_Hills": {
@@ -838,11 +988,14 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
-        "TreeDensity": 0,
+        "TreesData": {
+            "TreeChance": 30,
+            "TreeTypes": []
+        },
         "WaterAffecter": true
     },
     "Windswept_Savanna": {
@@ -852,19 +1005,22 @@
         },
         "SurfaceRules": [
             {
-                "Block": "Grass",
+                "Block": 1,
                 "SurfaceDistance": 0
             },
             {
-                "Block": "Dirt",
+                "Block": 0,
                 "SurfaceDistance": 3
             },
             {
-                "Block": "Stone",
+                "Block": 2,
                 "SurfaceDistance": 9999
             }
         ],
-        "TreeDensity": 0,
+        "TreesData": {
+            "TreeChance": 30,
+            "TreeTypes": []
+        },
         "WaterAffecter": true
     }
 }

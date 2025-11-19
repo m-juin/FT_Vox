@@ -12,7 +12,7 @@
 
 #include "Game/Scenes/World/Player/Camera.hpp"
 
-#include "Game/GameManager.hpp"
+#include "Front/Scenes/TexturesManager.hpp"
 
 #include "Front/Utils/TexturesData.hpp"
 

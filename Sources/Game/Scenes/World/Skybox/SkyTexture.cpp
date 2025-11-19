@@ -44,36 +44,6 @@ namespace Vox::Game::World::Skybox
 
 	SkyTexture::~SkyTexture() {}
 
-	// SkyTexture::SkyTexture() : Front::Utils::ATexturesAtlas(4)
-	// {
-	// 	int imgWidth, imgHeight, imgChannels;
-	// 	auto path = Game::GameManager::GetInstance().GetTexturePackPath();
-	// 	path = path + "Skybox/";
-
-	// 	for (const char *texture : textureList)
-	// 	{
-	// 		int imgWidth, imgHeight, imgChannels;
-	// 		const std::string currentPath = path + texture;
-	// 		unsigned char *imgData =
-	// 			stbi_load(currentPath.c_str(), &imgWidth, &imgHeight, &imgChannels, this->_textureChannels);
-	// 		if (imgData != nullptr)
-	// 		{
-	// 			if (imgData != nullptr)
-	// 			{
-	// 				this->_textureWidth = imgWidth;
-	// 				this->_textureHeight = imgHeight;
-	// 			}
-	// 			else
-	// 				throw std::runtime_error("[Error] Invalid skybox texture in texture pack.");
-	// 		}
-	// 	}
-	// 	this->BuildAtlas(path);
-	// 	// unsigned char *imgData =
-	// 	// 	stbi_load(path.c_str(), &imgWidth, &imgHeight, &imgChannels, 4);
-	// }
-
-	// SkyTexture::~SkyTexture() {}
-
 	void SkyTexture::CheckSBValidity(const std::string &path)
 	{
 		for (const char *texture : textureList)
@@ -82,8 +52,6 @@ namespace Vox::Game::World::Skybox
 			const std::string currentPath = path + texture + ".png";
 			std::cout << currentPath << std::endl;
 			stbi_uc *imgData = stbi_load(currentPath.c_str(), &imgWidth, &imgHeight, &imgChannels, 4);
-			// std::cout << "imgWidth: " << imgWidth << " | imgHeight: " << imgHeight << " | channel: " << imgChannels
-			// << std::endl << currentPath << std::endl;
 			if (imgData != nullptr)
 			{
 				std::cout << "I-I\n";
@@ -91,11 +59,6 @@ namespace Vox::Game::World::Skybox
 				this->_height = imgHeight;
 				stbi_image_free(imgData);
 			}
-			// else
-			// {
-			// 	std::cout << "throw Called" << std::endl;
-			// 	throw std::runtime_error("[Error] Invalid skybox texture in texture pack.");
-			// }
 		}
 	}
 
@@ -214,10 +177,6 @@ namespace Vox::Game::World::Skybox
 					delete[] ret[j];
 			}
 
-			// std::copy(std::begin(ret[count]))
-
-			// std::copy(&imgData, &imgData + size, ret[count]);
-
 			ret[count] = new unsigned char[size];
 			memcpy(ret[count], imgData, static_cast<size_t>(size));
 			stbi_image_free(imgData);
@@ -249,92 +208,4 @@ namespace Vox::Game::World::Skybox
 
 		return {stagingBuffer, stagingBufferMemory};
 	}
-
-	// void SkyTexture::BuildAtlas(const std::string &path)
-	// {
-	// 	using TextureInfo = Game::Utils::Textures::TextureInfo;
-	// 	using namespace Vox::Front::Rendering::Images;
-
-	// 	this->_textureInfos.reserve(textureList.size());
-
-	// 	size_t atlasSize = (_textureWidth * _textureHeight * _textureChannels) * nextPowerOfTwo(textureList.size());
-
-	// 	std::unique_ptr<unsigned char[]> atlasData(new unsigned char[atlasSize]);
-	// 	std::fill(atlasData.get(), atlasData.get() + atlasSize, 255);
-
-	// 	size_t width = _textureWidth * this->_atlasWidth;
-	// 	size_t height = _textureHeight * this->_atlasHeight;
-
-	// 	this->_mainAtlas = std::make_unique<Front::Rendering::Images::VulkanImage>(width, height);
-
-	// 	for (size_t y = 0; y < this->_atlasHeight; y++)
-	// 	{
-	// 		for (size_t x = 0; x < this->_atlasWidth; x++)
-	// 		{
-	// 			size_t index = y * this->_atlasWidth + x;
-	// 			if (index >= textureList.size())
-	// 				continue;
-	// 			auto data = textureList[index];
-	// 			const std::string currentPath = path + data;
-	// 			// const std::string &key = data.key;
-	// 			continue;
-	// 			size_t atlasPosY = y * this->_textureHeight;
-	// 			size_t atlasPosX = x * this->_textureWidth;
-
-	// 			TextureInfo info{
-	// 				data,
-	// 				static_cast<float>(x * _textureWidth) / width,
-	// 				static_cast<float>(y * _textureHeight) / height,
-	// 				static_cast<float>(_textureWidth) / width,
-	// 				static_cast<float>(_textureHeight) / height,
-	// 			};
-	// 			this->_textureInfos.push_back(info);
-
-	// 			unsigned char *imgData = this->LoadSingleTexture(currentPath, this->_textureChannels);
-	// 			for (size_t yTex = 0; yTex < this->_textureHeight; yTex++)
-	// 			{
-	// 				size_t srcPos = (yTex * this->_textureWidth * this->_textureChannels);
-	// 				size_t dstPos =
-	// 					((atlasPosY + yTex) * (_atlasWidth * this->_textureWidth * this->_textureChannels)) +
-	// 					(atlasPosX * _textureChannels);
-	// 				std::copy(imgData + srcPos, imgData + srcPos + (this->_textureChannels * _textureWidth),
-	// 						  atlasData.get() + dstPos);
-	// 			}
-	// 			stbi_image_free(imgData);
-	// 		}
-	// 	}
-	// 	this->BuildImages(std::move(atlasData), atlasSize);
-	// }
-
-	// void SkyTexture::BuildImages(std::unique_ptr<unsigned char[]> mainData, VkDeviceSize mainSize)
-	// {
-	// 	VkBuffer stagingBuffer;
-	// 	VkDeviceMemory stagingBufferMemory;
-	// 	Front::Rendering::Utils::Buffers::Utils::CreateBuffer(
-	// 		Front::Rendering::Device::GetInstance().GetLogicalDevice(),
-	// 		Front::Rendering::Device::GetInstance().GetPhysicalDevice(), mainSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-	// 		VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer,
-	// 		stagingBufferMemory);
-
-	// 	void *data;
-	// 	vkMapMemory(Front::Rendering::Device::GetInstance().GetLogicalDevice(), stagingBufferMemory, 0, mainSize, 0,
-	// 				&data);
-	// 	memcpy(data, mainData.get(), static_cast<size_t>(mainSize));
-	// 	vkUnmapMemory(Front::Rendering::Device::GetInstance().GetLogicalDevice(), stagingBufferMemory);
-
-	// 	auto size = this->_mainAtlas->GetSize();
-	// 	this->_mainAtlas->CreateImage(
-	// 		VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL,
-	// 		VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT,
-	// 		VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, static_cast<uint32_t>(floor(log2(std::max(size[0], size[1]))) + 1));
-	// 	this->_mainAtlas->TransitionImageLayout(VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
-	// 	this->_mainAtlas->CopyBufferToImage(stagingBuffer);
-	// 	this->_mainAtlas->GenerateMipMap();
-
-	// 	vkDestroyBuffer(Front::Rendering::Device::GetInstance().GetLogicalDevice(), stagingBuffer, nullptr);
-	// 	vkFreeMemory(Front::Rendering::Device::GetInstance().GetLogicalDevice(), stagingBufferMemory, nullptr);
-
-	// 	this->_mainAtlas->CreateView(VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT);
-	// 	this->_mainAtlas->CreateSampler();
-	// }
 } // namespace Vox::Game::World::Skybox

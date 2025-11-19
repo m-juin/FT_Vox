@@ -22,15 +22,12 @@ namespace Vox::Game::Scenes::Menu::Interfaces::Elements
 		BTNpm.hoverBGColor = {0., 0., 0., 0.2f};
 
 		auto button = std::make_unique<Buttons::ColoredButton>(BTNpm);
-		// button->ChangeEnableState(false);
 		this->AddElement("IMG_BG_Block", std::move(button), 0);
 
 		this->AddElement("IMG_BG",
 						 std::make_unique<Image>("Menu_Main", "Dirt", this->_pos, this->_size,
 												 Color(0.6f, 0.6f, 0.6f, 1.0f), Vector2(4, 4)),
 						 1);
-
-		// std::cout << st.sd << std::endl;
 
 		{ // TXT_Confirm + TXT_WN
 			Text::Vox_Text_Constructor ElemSt{};
@@ -56,9 +53,6 @@ namespace Vox::Game::Scenes::Menu::Interfaces::Elements
 			pm.atlas = "Menu_Main";
 			pm.atlasKey = "Button";
 			pm.hoverTXTColor = {1.0, 1.0, 1.0, 1.0};
-			// pm.disabledBGColor = {1.0, 0.0, 0.0, 1.0};
-			// pm.bgColor = {0.0, 1.0, 0.0, 1.0};
-			// pm.hoverBGColor = {0.0, 0.0, 1.0, 1.0};
 			pm.onHoverAtlas = "Menu_Main";
 			pm.onHoverAtlasKey = "Button_Hover";
 			pm.disabledTXTColor = {0.5, 0.5, 0.5, 1.0};

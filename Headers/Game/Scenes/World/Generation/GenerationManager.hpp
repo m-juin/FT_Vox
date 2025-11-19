@@ -6,6 +6,8 @@
 #include <list>
 
 #include "Game/Scenes/World/Utils/Defines.hpp"
+#include "./ChunkOverflowManager.hpp"
+#include "Game/Datas/Structures/StructuresManager.hpp"
 
 namespace Vox::Game::World::Chuncks
 {
@@ -27,13 +29,16 @@ namespace Vox::Game::Generation
 			size_t GetWaitingData() const;
 
 			uint64_t GetSeed() const {return this->_seed;} ;
+			const Game::Datas::Structures::StructuresManager *GetStructuresManager() {return this->_sManager.get();} ;
+			Game::Generation::ChunkOverflowManager *GetOverflowManager() {return this->_oManager.get();} ;
 			bool UpdateSeed(uint64_t newSeed);
 			bool GetThreadRefreshState() {return this->_needThreadRefresh;};
 
 			void FlagPool();
 
 		private:
-
+			std::unique_ptr<Game::Generation::ChunkOverflowManager> _oManager;
+			std::unique_ptr<Game::Datas::Structures::StructuresManager> _sManager;
 			void CheckForPoolRebuild();
 			bool _needThreadRefresh = false;
 			uint64_t _seed; 

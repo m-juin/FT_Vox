@@ -13,6 +13,8 @@ namespace Vox::Game::Generation
 {
 	GenerationManager::GenerationManager(const uint64_t seed) : _seed(seed)
 	{
+		this->_oManager = std::make_unique<Generation::ChunkOverflowManager>();
+		this->_sManager = std::make_unique<Game::Datas::Structures::StructuresManager>();
 		this->onUpdate.AddCallBack([this]() { this->UpdateGeneration(); });
 		this->onUpdate.AddCallBack([this]() { this->CheckForPoolRebuild();});
 	}
@@ -33,7 +35,7 @@ namespace Vox::Game::Generation
 
 		auto seed = this->_seed;
 		Game::GameManager::GetInstance().GetThreadManager().EnQueue(
-			[ch, seed](std::unordered_map<std::string, std::pair<const Spline::Spline, float>> spl, std::vector<Game::Utils::Textures::TextureInfo> textInfo, std::vector<Game::Utils::Textures::TextureInfo> transparent) { ch->BuildClusterContent(spl, textInfo, transparent, seed);});
+			[ch, seed](std::unordered_map<std::string, std::pair<const Spline::Spline, float>> spl, std::vector<Game::Datas::Textures::TextureInfo> textInfo, std::vector<Game::Datas::Textures::TextureInfo> transparent) { ch->BuildClusterContent(spl, textInfo, transparent, seed);});
 	}
 
 	size_t GenerationManager::GetWaitingData() const

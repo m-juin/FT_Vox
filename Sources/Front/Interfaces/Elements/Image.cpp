@@ -8,7 +8,7 @@
 
 #include "Front/Interfaces/Utils/Maths.hpp"
 
-#include "Game/GameManager.hpp"
+#include "Front/Scenes/TexturesManager.hpp"
 #include "Game/Scenes/Menu/Sc_Menu.hpp"
 
 namespace Vox::Front::Interfaces::Elements
@@ -25,7 +25,6 @@ namespace Vox::Front::Interfaces::Elements
 			new dbuffer(1, 6 * sizeof(uint16_t), VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT);
 
 		B_Vertices->Create(&this->_vertex);
-		// std::cout <<"creation2" << std::endl;
 		uint16_t *indices = new uint16_t[6]{0, 1, 2, 2, 3, 0};
 
 		B_Indices->Create(indices);
@@ -57,8 +56,6 @@ namespace Vox::Front::Interfaces::Elements
 
 	void Image::ResetVertex()
 	{
-
-		// this->CleanBuffers(0);
 
 		const Vector2 screenSize(Rendering::SwapChain::GetInstance().GetExtent().width,
 								 Rendering::SwapChain::GetInstance().GetExtent().height);
@@ -126,7 +123,6 @@ namespace Vox::Front::Interfaces::Elements
 		this->_pos = newPos;
 		const Vector2 screenSize(Rendering::SwapChain::GetInstance().GetExtent().width,
 								 Rendering::SwapChain::GetInstance().GetExtent().height);
-		// this->ResetVertex();
 		this->_vertex[0].position = PointPixelToVulkan(this->_pos, screenSize);
 		this->_vertex[1].position = PointPixelToVulkan({this->_pos[0] + this->_size[0], this->_pos[1]}, screenSize);
 		this->_vertex[2].position =

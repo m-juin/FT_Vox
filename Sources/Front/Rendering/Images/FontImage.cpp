@@ -86,7 +86,7 @@ namespace Vox::Front::Rendering::Images
 			if (FT_Load_Char(face, c, FT_LOAD_RENDER))
 				continue;
 
-			_atlasSize[0] += face->glyph->bitmap.width + 1; // espace entre glyphes
+			_atlasSize[0] += face->glyph->bitmap.width + 1;
 			_atlasSize[1] = std::max(_atlasSize[1], (size_t)face->glyph->bitmap.rows);
 		}
 

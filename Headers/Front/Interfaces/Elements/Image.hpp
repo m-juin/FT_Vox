@@ -31,7 +31,6 @@ namespace Vox::Front::Interfaces::Elements
 
 			Front::Utils::TexturesAtlas::TexturesAtlas::uvData _uvMappingData;
 		public:
-			// Image(Vector2 pos = {0, 0}, Vector2 size = {100, 50});
 			Image(std::string atlas = "", std::string key = "", Vector2 pos = {0, 0}, Vector2 size = {100, 50}, Color colorMod = {1.0, 1.0, 1.0, 1.0}, Vector2 textureRepeat = {1, 1});
 			~Image();
 

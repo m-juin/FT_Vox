@@ -70,8 +70,6 @@ namespace Vox::Front::Interfaces::Elements::Bases
 			return;
 		_clickConsummed = true;
 		this->onClickCallbacks.Notify(button, action);
-		// this->currentlyHovered = false;
-		// this->OnHoverLeave();
 	}
 
 	inline void AClickable::OnHoverLeave()

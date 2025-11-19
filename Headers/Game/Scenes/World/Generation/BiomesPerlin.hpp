@@ -3,11 +3,11 @@
 
 #include "./Perlin.hpp"
 #include "Spline/Spline.hpp"
-#include "Game/Utils/Datas/Biomes.hpp"
+#include "Game/Datas/Biomes.hpp"
 
 namespace Vox::Game::Generation::Perlins
 {
-	using namespace Datas::Biomes;
+	using namespace Game::Datas::Biomes;
 
 	static float GetErosionValueAt(float x, float y, uint32_t seed)
 	{
@@ -467,13 +467,11 @@ namespace Vox::Game::Generation::Perlins
 	inline std::vector<uint8_t> GenerateBiomeImage(MGL::Vectors::Vector2<int> center, uint32_t seed, uint16_t imgSize,
 												   float scale)
 	{
-		// std::cout << "scale = " << scale << std::endl;
 		std::vector<uint8_t> dataArray;
 		dataArray.resize(imgSize * imgSize * 4);
 		uint16_t halfSize = imgSize / 2;
 
 		MGL::Vectors::Vector2<int> effectivePos = center;
-		std::cout << center << std::endl;
 		for (int x = -halfSize; x < halfSize; x++)
 		{
 			effectivePos[0] = center[0] + (x * scale);
@@ -498,7 +496,6 @@ namespace Vox::Game::Generation::Perlins
 	inline void GenerateBiomeImage(std::vector<uint8_t> &target, MGL::Vectors::Vector2<int> center, uint32_t seed,
 								   uint16_t imgSize, float scale)
 	{
-		// std::cout << "scale = " << scale << std::endl;
 		uint16_t halfSize = imgSize / 2;
 
 		MGL::Vectors::Vector2<int> effectivePos = center;

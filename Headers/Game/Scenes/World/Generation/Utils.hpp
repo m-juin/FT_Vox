@@ -5,7 +5,7 @@
 
 #include <random>
 
-#include "Game/Utils/Datas/Biomes.hpp"
+#include "Game/Datas/Biomes.hpp"
 #include "Game/Scenes/World/Utils/Defines.hpp"
 
 namespace Vox::Game::Generation::Utils
@@ -26,7 +26,7 @@ namespace Vox::Game::Generation::Utils
 			float erosion[CACHE_SIZE * CACHE_SIZE];
 			float peaks[CACHE_SIZE * CACHE_SIZE];
 			uint8_t heightMap[CACHE_SIZE * CACHE_SIZE];
-			Game::Generation::Datas::Biomes::Biomes biome[CACHE_SIZE * CACHE_SIZE];
+			Game::Datas::Biomes::Biomes biome[CACHE_SIZE * CACHE_SIZE];
 	};
 
 } // namespace Vox::Game::Generation::Utils

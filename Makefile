@@ -37,8 +37,11 @@ Deps := $(JSONLib) $(STB_OBJS) $(Shaders) $(FTP_INSTALL_DIR)
 all: $(OBJS) $(EXECUTABLE)
 
 sanitize: CXXFLAGS += -fsanitize=address
-sanitize: clean
-sanitize: all
+sanitize: clean all
+
+debug: CXXFLAGS += -DDEBUG_WORLD
+debug: all
+	./$(EXECUTABLE)
 
 $(OBJS_DIRS):
 	@mkdir -p $@
@@ -53,13 +56,19 @@ $(EXECUTABLE): $(OBJS)
 	@$(CXX) $(CXXFLAGS) $(OBJS) -o $@ $(Libs)
 	@printf '$(ERASE_LINE)\033[1;32mCompilation ended\033[0m\n'
 
-checkers:
+checkers: $(OBJS)
 	@printf '\033[1;33mRunning all Checkers tests...\033[0m\n'
 	@mkdir -p $(OBJS_ROOT)
 	@for file in $(call rwildcard,$(SRCS_ROOT)/Checkers,*.cpp); do \
 		name=$$(basename "$$file" .cpp); \
 		echo "Compiling test $$name..."; \
-		$(CXX) $(CXXFLAGS) "$$file" -o "$(OBJS_ROOT)/$$name" $(Libs) || { echo "Compilation failed for $$name"; exit 1; }; \
+		CHECKER_OBJS=""; \
+		for obj in $(OBJS); do \
+			if [ "$$obj" != "$(OBJS_ROOT)/Vox.o" ]; then \
+				CHECKER_OBJS="$$CHECKER_OBJS $$obj"; \
+			fi; \
+		done; \
+		$(CXX) $(CXXFLAGS) $$CHECKER_OBJS "$$file" -o "$(OBJS_ROOT)/$$name" $(Libs) || { echo "Compilation failed for $$name"; exit 1; }; \
 		echo "Running test $$name..."; \
 		"$(OBJS_ROOT)/$$name" || { echo "Test failed for $$name"; exit 1; }; \
 		rm -f "$(OBJS_ROOT)/$$name"; \

@@ -1,8 +1,8 @@
 #include "Game/Scenes/World/WorldManager.hpp"
 
 #include "Front/Rendering/Pipelines/PipelinesManager.hpp"
-#include "Front/Rendering/Pipelines/TransparentVoxelPipeline.hpp"
 #include "Front/Rendering/Pipelines/SkyBoxPipeline.hpp"
+#include "Front/Rendering/Pipelines/TransparentVoxelPipeline.hpp"
 #include "Front/Rendering/Pipelines/VoxelPipeline.hpp"
 #include "Front/Rendering/SyncObjects.hpp"
 
@@ -44,8 +44,12 @@ namespace Vox::Game::World
 				this->CheckCreation();
 				this->_gManager->Update();
 				for (auto &_pair : this->_chuncks)
+				{
 					if (_pair.second)
+					{
 						_pair.second->Update();
+					}
+				}
 			});
 	}
 
@@ -132,9 +136,7 @@ namespace Vox::Game::World
 	{
 		for (auto cluster : this->_chuncks)
 		{
-			// const auto it = this->_chuncks.find(pos);
 			const uint16_t index = cluster.second->GetBuffer();
-			// this->_chuncks.erase(it);
 			this->_bManager->ReleaseBuffer(index);
 		}
 		this->_chuncks.clear();
@@ -145,11 +147,9 @@ namespace Vox::Game::World
 		std::vector<Utils::Defines::ChunckCoord> toDelete;
 		for (auto _pair : this->_chuncks)
 		{
-			// std::cout << _pair.first << std::endl;
 			if (MGL::Vectors::Dist(_pair.first, _playerChunck) >= Utils::Defines::SQUARE_RENDER_DISTANCE)
 				toDelete.push_back(_pair.first);
 		}
-		// std::cout << std::endl;
 		for (auto pos : toDelete)
 		{
 			const auto it = this->_chuncks.find(pos);
@@ -175,6 +175,14 @@ namespace Vox::Game::World
 	{
 		if (chunck)
 			this->_chuncks[chunck->GetPosition()] = chunck;
+	}
+
+	std::shared_ptr<Chuncks::ChunckCluster> WorldManager::GetCluster(Utils::Defines::ChunckCoord coord)
+	{
+		auto it = this->_chuncks.find(coord);
+		if (it == this->_chuncks.end())
+			return nullptr;
+		return it->second;
 	}
 
 } // namespace Vox::Game::World

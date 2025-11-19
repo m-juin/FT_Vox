@@ -13,8 +13,6 @@ namespace Vox::Game::Scenes::Menu::Interfaces
     
 			void SetPos(const Vox::Front::Interfaces::Elements::Vector2 newPos) override;
 			void SetSize(const Vox::Front::Interfaces::Elements::Vector2 newSize) override;
-            // void OnHover() override {};
-            // void OnHoverLeave() override {};
             void Render() override;
 
         private:
