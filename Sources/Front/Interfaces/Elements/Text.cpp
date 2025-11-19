@@ -6,7 +6,6 @@
 #include "Front/Rendering/Pipelines/PipelinesManager.hpp"
 #include "Front/Rendering/Pipelines/StaticGUIPipeline.hpp"
 
-// #include "Game/GameManager.hpp"
 #include "Front/Scenes/TexturesManager.hpp"
 
 namespace Vox::Front::Interfaces::Elements

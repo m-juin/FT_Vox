@@ -40,7 +40,6 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 			params.onHoverAtlas = "Menu_Main";
 			params.onHoverAtlasKey = "Button_Hover";
 			params.textScale = 0.8f;
-			//
 			this->AddElement("BTN_Worlds", std::make_unique<Buttons::TexturedButton>(params), 1);
 
 			params.content = "Options";

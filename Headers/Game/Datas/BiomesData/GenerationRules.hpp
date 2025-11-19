@@ -23,7 +23,6 @@ namespace Vox::Game::Generation::Datas::Biomes
         {
             return val * heightMultiplayer + minHeight;
         }
-        // HeightRule() : heightMultiplayer(1.0f), minHeight(80) {};
         HeightRule(float heightMultiplayer_ = 1.0f, float minHeight_ = 80) : heightMultiplayer(heightMultiplayer_), minHeight(minHeight_) {};
         
     };

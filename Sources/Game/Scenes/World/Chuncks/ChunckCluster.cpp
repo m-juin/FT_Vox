@@ -70,7 +70,6 @@ namespace Vox::Game::World::Chuncks
 			return;
 		for (auto ch : this->_clusterContent)
 		{
-			// std::cout << ch << std::endl;
 			if (ch)
 				ch->Render(toRender);
 		}
@@ -251,7 +250,6 @@ namespace Vox::Game::World::Chuncks
 		for (auto block : blocks)
 		{
 			auto chunckIndex = block.worldCoord[1] / CHUNCK_SIZE;
-			// float localHeight = block.worldCoord[1] % CHUNCK_SIZE;
 			const Vox::Game::World::Chuncks::VoxelChunck::LocalVector localPos =
 				Game::Chuncks::Operations::WorldToChunk(block.worldCoord);
 			if (this->_clusterContent[chunckIndex]->GetBlockDatas(localPos) != Vox::Game::Datas::Blocks::BlockType::Air)
@@ -298,36 +296,9 @@ namespace Vox::Game::World::Chuncks
 
 	void ChunckCluster::SetBlock(MGL::Vectors::Vector3<uint8_t> localPos, Game::Datas::Blocks::BlockType type)
 	{
-		// auto chunckIndex = localPos[1] / CHUNCK_SIZE;
-		// uint8_t localHeight = localPos[1] % CHUNCK_SIZE;
-
-		// this->_clusterContent[chunckIndex]->SetBlockDatas({localPos[0], localHeight, localPos[2] }, type);
 		(void)localPos;
 		(void)type;
 	}
-
-	// void ChunckCluster::SetBlocks(std::unordered_map<MGL::Vectors::Vector3<int>, Game::Datas::Blocks::BlockType,
-	// MGL::Vectors::Vector3Hash<int>> &datas, bool IsLocal)
-	// {
-	// 	(void)IsLocal;
-	// 	std::array<std::unordered_map<Vox::Game::Chuncks::Operations::ChunkCoord, Game::Datas::Blocks::BlockType,
-	// MGL::Vectors::Vector3Hash<uint8_t>>, WORLD_HEIGHT / CHUNCK_SIZE> localMap; 	for (auto &blockdata : datas)
-	// 	{
-	// 		auto chunckIndex = blockdata.first[1] / CHUNCK_SIZE;
-	// 		auto &map = localMap[chunckIndex];
-	// 		map[Game::Chuncks::Operations::WorldToChunk(blockdata.first)] = blockdata.second;
-	// 	}
-	// 	for (size_t cIndex = 0; cIndex < localMap.size(); cIndex++)
-	// 	{
-	// 		auto array = localMap[cIndex];
-	// 		for (size_t bIndex = 0; bIndex < array.size(); bIndex++)
-	// 		{
-	// 			std::unordered_map<MGL::Vectors::Vector3<uint8_t>, Game::Datas::Blocks::BlockType,
-	// MGL::Vectors::Vector3Hash<uint8_t>>::iterator it = array.begin(); 			std::advance(it, bIndex);
-	// 			this->_clusterContent[cIndex]->SetBlockDatas(it->first, it->second, bIndex == array.size() - 1);
-	// 		}
-	// 	}
-	// }
 
 	void ChunckCluster::BuildBuffers(const uint16_t &buffer)
 	{
@@ -357,7 +328,6 @@ namespace Vox::Game::World::Chuncks
 				{
 					if (ch)
 					{
-						// std::cout << ch << std::endl;
 						ch->Update();
 					}
 				}

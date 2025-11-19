@@ -27,7 +27,6 @@ namespace Vox::Game::Generation::Datas::Biomes
 
 	std::vector<SurfaceRule> BuildSurfaceRules(JSONLib::JSONObject &involved)
 	{
-		// JSONLib::Serializer::WriteDictToFD(std::cout, involved, 0, true);
 		std::vector<SurfaceRule> ret;
 		for (auto item : involved["SurfaceRules"].As<JSONLib::JSONVector>())
 			ret.push_back({static_cast<uint16_t>(item["SurfaceDistance"].As<int>()),
@@ -43,7 +42,6 @@ namespace Vox::Game::Generation::Datas::Biomes
 		{
 			Biomes bi = biomesStringToEnum.at(pair.first);
 			JSONLib::JSONObject current = pair.second.As<JSONLib::JSONObject>();
-			// std::vector<TreeRule> tList = BuildTreeRules(current);
 			std::pair<const Biomes, const SurfaceDecoration> paired = {
 				bi,
 				{BuildSurfaceRules(current),

@@ -16,7 +16,6 @@ namespace Vox::Front::Rendering::Utils::Vertex
 			Vector3Float vertPos;
 
 			SkyBoxVertex(Vector3Float vertPos_) : vertPos(vertPos_) {};
-			// VoxelVertex() : vertPos(Vector3Float(0.0f)), vertColor(Vector3Float(1.0f)) {};
 
 			bool operator==(const SkyBoxVertex &v1)
 			{

@@ -24,7 +24,6 @@
 #include "Game/Datas/Biomes.hpp"
 
 #include "Front/Scenes/TexturesManager.hpp"
-// #include "Front/Rendering/SyncObjects.hpp"
 
 namespace Vox::Game::World::Chuncks
 {

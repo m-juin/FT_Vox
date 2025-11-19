@@ -68,10 +68,6 @@ namespace Vox::Front::Rendering::Utils::Buffers
 			else
 				std::memset(_mappedMemories[i], 0, this->_size);
 		}
-
-		// size_t nextFrame = 0;
-		// if (this->_memories.size() != 1)
-		// 	nextFrame = SyncObjects::GetInstance().GetNextFrame();
 	}
 
 	void DynamicBuffer::Update(void *newData, VkDeviceSize newDataSize)

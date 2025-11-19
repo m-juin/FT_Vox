@@ -25,7 +25,6 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 			Elements::WorldDataDisplayer *GetSelectedWorld() {return this->_selectedWorld;};
 
 			void WorldDeletionCheck();
-			// void SetSelectedWorld();
 
 		private:
 			Elements::WorldDataDisplayer *_selectedWorld = nullptr;

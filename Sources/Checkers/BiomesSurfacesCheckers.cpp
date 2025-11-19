@@ -23,17 +23,6 @@ int main()
             std::string stringed = ss.str();
             if (stringed == "UNKNOWN")
                 continue;
-			std::cout << MAGENTA << std::left << std::setw(30) << b1
-					  << LWHITE << std::setw(5) << ":";
-			// if (biomesSurfaces.find(b1) == biomesSurfaces.end())
-			// {
-			// 	std::cout << LRED << "ERROR";
-			// 	error = true;
-			// }
-			// else
-			// {
-				std::cout << GREEN << "OK";
-			// }
 			std::cout << std::endl;
 		}
 		catch (std::runtime_error)

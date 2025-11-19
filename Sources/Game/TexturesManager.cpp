@@ -58,7 +58,6 @@ namespace Vox::Front::Scenes
 				{"Oak_Log", T_Path + "Blocks/oak_log.png"},
 				{"Oak_Log_Top", T_Path + "Blocks/oak_log_top.png"},
 				{"Oak_Log_Bot", T_Path + "Blocks/oak_log_top.png"},
-				// {"Water", T_Path + "Blocks/water.png", T_Path + "Blocks/Masks/mask_grass_uncolored_top.png"},
 				{"Debug", T_Path + "Blocks/DEBUG/TMP_White_Debug.png"},
 			},
 			4);

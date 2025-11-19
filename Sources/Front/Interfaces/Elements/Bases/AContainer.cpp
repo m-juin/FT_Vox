@@ -26,7 +26,6 @@ namespace Vox::Front::Interfaces::Elements::Bases
 		if (it == _content.end())
 			return false;
 
-		// Suppression de l'élément
 		_content.erase(it);
 
 		onElementRemove.Notify();

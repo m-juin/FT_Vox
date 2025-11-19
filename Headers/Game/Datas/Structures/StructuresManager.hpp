@@ -17,8 +17,6 @@ namespace Vox::Game::Datas::Structures
             StructuresManager();
             ~StructuresManager();
     
-            // const std::unordered_map<MGL::Vectors::Vector3<uint8_t>, Blocks::BlockType, MGL::Vectors::Vector3Hash<uint8_t>> &GetStructBlocks(StructuresType _type) const;
-
             const Structure &GetStructure(StructuresType type) const {return this->_list.at(type);};
 
         private:

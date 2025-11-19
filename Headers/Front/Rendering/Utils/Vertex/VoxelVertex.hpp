@@ -21,7 +21,6 @@ namespace Vox::Front::Rendering::Utils::Vertex
 			uint8_t isColorAffected;
 
 			VoxelVertex(Vector3Float vertPos_, Vector3Float vertColor_, Vector2Float vertCoord_, uint8_t isColorAffected_ = 0) : vertPos(vertPos_), vertColor(vertColor_), vertCoord(vertCoord_), isColorAffected(isColorAffected_) {};
-			// VoxelVertex() : vertPos(Vector3Float(0.0f)), vertColor(Vector3Float(1.0f)) {};
 
 			bool operator==(const VoxelVertex &v1)
 			{

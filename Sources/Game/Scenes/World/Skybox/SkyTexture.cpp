@@ -32,11 +32,9 @@ namespace Vox::Game::World::Skybox
 		auto val = this->LoadTextures(path);
 		auto buffer = this->CreateStagingBuffer(val.first, val.second);
 		this->TransitionImageLayout(VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
-		//
 		this->CopyBufferToImage(buffer.first);
 		vkDestroyBuffer(Front::Rendering::Device::GetInstance().GetLogicalDevice(), buffer.first, nullptr);
 		vkFreeMemory(Front::Rendering::Device::GetInstance().GetLogicalDevice(), buffer.second, nullptr);
-		//
 		this->CreateView(VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT, VK_IMAGE_VIEW_TYPE_CUBE);
 		this->CreateSampler();
 		this->TransitionImageLayout(VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);

@@ -9,7 +9,6 @@
 
 #include "Game/Datas/TexturesData.hpp"
 #include "Game/Scenes/World/Generation/SplinesManager.hpp"
-// #include "Front/Scenes/TexturesManager.hpp"
 
 #include "Scenes/Menu/SavesData.hpp"
 
@@ -52,7 +51,6 @@ namespace Vox::Game
 
             Scenes::Menu::Saves::WorldData GetSaveData() {return this->_wd;}
             void SetSaveData(Scenes::Menu::Saves::WorldData wd) {this->_wd = wd;}
-        // Front::Rendering::Images::FontImage &GetFont() {return *this->_fontImage;};
 
         private:
             Scenes::Menu::Saves::WorldData _wd;
