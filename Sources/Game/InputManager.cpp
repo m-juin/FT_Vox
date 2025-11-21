@@ -25,17 +25,20 @@ namespace Vox::Game
 
 	bool InputManager::HandleNonTargetInput(const int &button, const int &action)
 	{
-		if (button != this->_inputMap[E_InputAction::I_F3] && button != this->_inputMap[E_InputAction::I_Generation])
+		if (button != this->_inputMap[E_InputAction::I_F3] && button != this->_inputMap[E_InputAction::I_Generation] &&
+			button != this->_inputMap[E_InputAction::D_Frustum])
 			return false;
 		if (action != GLFW_RELEASE)
 			return true;
-		E_InputAction inputAction =
-			button == this->_inputMap[E_InputAction::I_F3] ? E_InputAction::I_F3 : E_InputAction::I_Generation;
+		E_InputAction inputAction = button == this->_inputMap[E_InputAction::I_F3] ? E_InputAction::I_F3
+									: button == this->_inputMap[E_InputAction::I_Generation]
+										? E_InputAction::I_Generation
+										: E_InputAction::D_Frustum;
 		Game::GameManager::GetInstance().GetSceneManager().GetCurrentScene().HandleInputAction(inputAction);
 		return true;
 	}
-	
-	InputManager& InputManager::GetInstance()
+
+	InputManager &InputManager::GetInstance()
 	{
 		return Game::GameManager::GetInstance().GetInputManager();
 	}
@@ -130,6 +133,8 @@ namespace Vox::Game
 
 		this->_inputMap[E_InputAction::I_F3] = GLFW_KEY_F3;
 		this->_inputMap[E_InputAction::I_Generation] = GLFW_KEY_F4;
+
+		this->_inputMap[E_InputAction::D_Frustum] = GLFW_KEY_F9;
 	}
 
 	void InputManager::SetInputTarget(E_InputTarget newTarget)
@@ -152,7 +157,7 @@ namespace Vox::Game
 	{
 		if (newMask == this->_inputMask)
 			return;
-		std::cout << "New Mask = " << +newMask << std::endl; 
+		std::cout << "New Mask = " << +newMask << std::endl;
 		this->_inputMask = newMask;
 		auto win = Front::Window::GetInstance().GetWindow();
 		if ((newMask & Game::Utils::Datas::InputMask::Mouse) != 00000000)

@@ -24,7 +24,7 @@
 
 #include "./BlockData.hpp"
 
-#include "Front/Rendering/Frustrum/BoxCollider.hpp"
+#include "Front/Rendering/Frustum/BoxCollider.hpp"
 
 namespace Vox::Game::Scenes::World::Player
 {
@@ -37,7 +37,7 @@ namespace Vox::Game::World::Chuncks
 
 	class ChunckCluster;
 
-	class VoxelChunck : public Models::DynamicObject, public Front::Rendering::Frustrum::Colliders::BoxCollider
+	class VoxelChunck : public Models::DynamicObject, public Front::Rendering::Frustum::Colliders::BoxCollider
 	{
 		public:
 			struct ChunckUniform

@@ -7,6 +7,8 @@
 #include "Game/Scenes/World/Interfaces/I_F3.hpp"
 #include "Game/Scenes/World/Interfaces/I_Generation.hpp"
 
+#include "Game/Scenes/World/WorldManager.hpp"
+
 namespace Vox::Game::Scenes::World
 {
 	void Sc_World::Load()
@@ -70,6 +72,8 @@ namespace Vox::Game::Scenes::World
 			}
 			break;
 
+		case Game::Utils::Datas::E_InputAction::D_Frustum:
+			Game::World::WorldManager::GetCamera().ChangeDebug();
 		default:
 			break;
 		}

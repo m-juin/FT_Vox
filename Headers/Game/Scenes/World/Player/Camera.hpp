@@ -15,7 +15,9 @@
 #include "Front/Rendering/Pipelines/PipelinesManager.hpp"
 #include "Front/Rendering/Pipelines/VoxelPipeline.hpp"
 
-#include "Front/Rendering/Frustrum/Frustrum.hpp"
+#include "Front/Rendering/Frustum/Frustum.hpp"
+
+#include "Front/Rendering/Utils/Buffers/StaticBuffer.hpp"
 
 namespace Vox::Game::Scenes::World::Player
 {
@@ -39,13 +41,19 @@ namespace Vox::Game::Scenes::World::Player
 
 			Vector3Float GetPosition() const;
 
-			const Front::Rendering::Frustrum::Frustrum &GetFrustrum() {return this->_frustrum;}
+			const Front::Rendering::Frustum::Frustum &GetFrustum() {return this->_frustum;}
+
+			void ChangeDebug();
+			void RenderFrustum();
 
 		private:
+			void DebugFrustum();
+			std::unique_ptr<Front::Rendering::Utils::Buffers::StaticBuffer> _frustumBuffer;
 
-			void CreateFrustrum();
+			void CreateFrustum();
 			void RebuildInfo();
 			void UpdateVectors();
+
 
 			void Rotate(const double &xOff, const double &yOff);
 			MGL::Matrix::Matrix4 SkyboxView(MGL::Matrix::Matrix4 &cameraView);
@@ -68,12 +76,16 @@ namespace Vox::Game::Scenes::World::Player
 			Vector3Float _worldUp = Vector3Float(0.0f, 1.0, 0.0f);
 			Vector3Float _target = Vector3Float(0.0f, 0.0f, -1.0f);
 
-			Front::Rendering::Frustrum::Frustrum _frustrum;
+			Front::Rendering::Frustum::Frustum _frustum;
 
 			const float _fov = MGL::Utils::Radians(45.0f);
 			float _aspect = 1920.0f / 1080.0f;
-			float _near = 0.001f;
-			float _far = 1000.0f;
+			float _near = 0.1f;
+			float _far = 100.0f;
+
+			std::vector<Front::Rendering::Utils::Vertex::VoxelVertex> _debugVertex;
+			void CreateDebugBuffer();
+			bool _shallDrawDebug = false;
 	};
 	
 

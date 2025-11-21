@@ -2,8 +2,17 @@
 #include "Game/Scenes/World/Player/Camera.hpp"
 #include "Front/Rendering/Pipelines/SkyBoxPipeline.hpp"
 
-#include "Front/Rendering/Frustrum/BoxCollider.hpp"
-#include "Front/Rendering/Frustrum/Frustrum.hpp"
+#include "Front/Rendering/Frustum/BoxCollider.hpp"
+#include "Front/Rendering/Frustum/Frustum.hpp"
+
+#include "Front/Rendering/Utils/Vertex/VoxelVertex.hpp"
+
+#include "Front/Rendering/CommandsPool.hpp"
+#include "Front/Rendering/Pipelines/PipelinesManager.hpp"
+#include "Front/Rendering/Pipelines/VoxelPipeline.hpp"
+#include "Front/Rendering/SyncObjects.hpp"
+
+#include <cassert>
 
 namespace Vox::Game::Scenes::World::Player
 {
@@ -59,6 +68,15 @@ namespace Vox::Game::Scenes::World::Player
 		return skyView;
 	}
 
+	void Camera::CreateDebugBuffer()
+	{
+		if (this->_debugVertex.empty())
+			return;
+		this->_frustumBuffer = std::make_unique<Front::Rendering::Utils::Buffers::StaticBuffer>(
+			1, this->_debugVertex.size() * sizeof(Front::Rendering::Utils::Vertex::VoxelVertex),
+			VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
+		this->_frustumBuffer->Create(this->_debugVertex.data());
+	}
 	void Camera::RebuildInfo()
 	{
 		this->_worldInfo.projection =
@@ -69,7 +87,7 @@ namespace Vox::Game::Scenes::World::Player
 			MGL::Matrix::Operations::Perspective(this->_fov, this->_aspect, this->_near, this->_far);
 		this->_skyInfo.view = SkyboxView(this->_worldInfo.view);
 
-		this->CreateFrustrum();
+		this->CreateFrustum();
 		this->_isDirty = false;
 	}
 
@@ -101,11 +119,30 @@ namespace Vox::Game::Scenes::World::Player
 		front[1] = sin(MGL::Utils::Radians(this->_pitch));										  // Y
 		front[2] = sin(MGL::Utils::Radians(this->_yaw)) * cos(MGL::Utils::Radians(this->_pitch)); // Z
 
-		this->_front = Normalize(front);
+		this->_front = MGL::Vectors::Operations::Normalize(front);
 
-		this->_rightDir = Normalize(Cross(this->_front, this->_worldUp));
-		this->_up = Normalize(Cross(this->_rightDir, this->_front));
+		this->_rightDir =
+			MGL::Vectors::Operations::Normalize(MGL::Vectors::Operations::Cross(this->_front, this->_worldUp));
+		this->_up = MGL::Vectors::Operations::Normalize(MGL::Vectors::Operations::Cross(this->_rightDir, this->_front));
 		this->_isDirty = true;
+	}
+
+	void Camera::RenderFrustum()
+	{
+		if (this->_shallDrawDebug == false || this->_frustumBuffer == nullptr)
+			return;
+		using namespace Front::Rendering;
+		auto pipeline = Pipelines::PipelinesManager::GetInstance().operator[]<Pipelines::VoxelPipeline>("Voxel");
+		if (pipeline == nullptr)
+			return;
+		auto frame = SyncObjects::GetInstance().GetCurrentFrame();
+		VkDeviceSize offset = {0};
+		uint32_t dynamicOffset = 0;
+		auto buffer = CommandsPool::GetInstance().GetBuffer(frame);
+		vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->GetLayout(), 0, 1,
+								&pipeline->GetSet(frame), 1, &dynamicOffset);
+		vkCmdBindVertexBuffers(buffer, 0, 1, &this->_frustumBuffer->GetBuffer(0), &offset);
+		vkCmdDraw(buffer, this->_debugVertex.size(), 1, 0, 0);
 	}
 
 	void Camera::HandleMouseMovement(const double &xOffSet, const double &yOffSet)
@@ -131,80 +168,70 @@ namespace Vox::Game::Scenes::World::Player
 		return this->_position;
 	}
 
-	void Camera::CreateFrustrum()
+	void Camera::ChangeDebug()
 	{
-		const float halfVSide = this->_far * tanf(this->_fov * .5f);
-		const float halfHSide = halfVSide * this->_aspect;
-		const MGL::Vectors::Vector3 frontMultFar = this->_front * this->_far;
+		if (this->_shallDrawDebug == false)
+			this->CreateDebugBuffer();
+		this->_shallDrawDebug = !this->_shallDrawDebug;
+	}
 
-		// NEAR PLANE - CORRIGÉ
-		this->_frustrum.near = {this->_position + this->_front * this->_near, this->_front};
+	void Camera::CreateFrustum()
+	{
+		using namespace Front::Rendering::Frustum;
+		using namespace MGL::Vectors::Operations;
 
-		// FAR PLANE - CORRIGÉ
-		this->_frustrum.far = {this->_position + frontMultFar, this->_front * -1.f};
+		MGL::Matrix::Matrix4 vp = this->_skyInfo.projection * this->_skyInfo.view;
+		this->_frustum = Frustum::ExtractFrustum(vp);
 
-		// PLANS LATÉRAUX - CORRIGÉS (utiliser des points sur les plans, pas la position caméra)
-		const MGL::Vectors::Vector3 farCenter = this->_position + frontMultFar;
+		auto corners = this->_frustum.GetFrustumCorners();
+		this->_debugVertex = {// Near plane
+							  {corners.ntl, {1.0, 1.0, 1.0}, {1.0, 1.0}, 0},
+							  {corners.ntr, {1.0, 1.0, 1.0}, {1.0, 1.0}, 0},
+							  {corners.ntr, {1.0, 1.0, 1.0}, {1.0, 1.0}, 0},
+							  {corners.nbr, {1.0, 1.0, 1.0}, {1.0, 1.0}, 0},
+							  {corners.nbr, {1.0, 1.0, 1.0}, {1.0, 1.0}, 0},
+							  {corners.nbl, {1.0, 1.0, 1.0}, {1.0, 1.0}, 0},
+							  {corners.nbl, {1.0, 1.0, 1.0}, {1.0, 1.0}, 0},
+							  {corners.ntl, {1.0, 1.0, 1.0}, {1.0, 1.0}, 0},
 
-		// RIGHT PLANE
-		// TOP et BOTTOM simplifiés
-		this->_frustrum.top = {farCenter + this->_up * halfVSide, this->_up};
-		this->_frustrum.bot = {farCenter - this->_up * halfVSide, this->_up * -1.f};
+							  // Far plane
+							  {corners.ftl, {1.0, 1.0, 1.0}, {1.0, 1.0}, 0},
+							  {corners.ftr, {1.0, 1.0, 1.0}, {1.0, 1.0}, 0},
+							  {corners.ftr, {1.0, 1.0, 1.0}, {1.0, 1.0}, 0},
+							  {corners.fbr, {1.0, 1.0, 1.0}, {1.0, 1.0}, 0},
+							  {corners.fbr, {1.0, 1.0, 1.0}, {1.0, 1.0}, 0},
+							  {corners.fbl, {1.0, 1.0, 1.0}, {1.0, 1.0}, 0},
+							  {corners.fbl, {1.0, 1.0, 1.0}, {1.0, 1.0}, 0},
+							  {corners.ftl, {1.0, 1.0, 1.0}, {1.0, 1.0}, 0},
 
-		// Gardez RIGHT/LEFT comme avant
-		MGL::Vectors::Vector3 rightNormal =
-			MGL::Vectors::Operations::Cross(this->_up, frontMultFar + this->_rightDir * halfHSide);
-		rightNormal = MGL::Vectors::Operations::Normalize(rightNormal);
-		this->_frustrum.right = {farCenter + this->_rightDir * halfHSide, rightNormal};
+							  // Connections
+							  {corners.ntl, {1.0, 1.0, 1.0}, {1.0, 1.0}, 0},
+							  {corners.ftl, {1.0, 1.0, 1.0}, {1.0, 1.0}, 0},
+							  {corners.ntr, {1.0, 1.0, 1.0}, {1.0, 1.0}, 0},
+							  {corners.ftr, {1.0, 1.0, 1.0}, {1.0, 1.0}, 0},
+							  {corners.nbl, {1.0, 1.0, 1.0}, {1.0, 1.0}, 0},
+							  {corners.fbl, {1.0, 1.0, 1.0}, {1.0, 1.0}, 0},
+							  {corners.nbr, {1.0, 1.0, 1.0}, {1.0, 1.0}, 0},
+							  {corners.fbr, {1.0, 1.0, 1.0}, {1.0, 1.0}, 0}};
+		for (auto &c : _debugVertex)
+		{
+			MGL::Vectors::Vector4<float> op =  this->_worldInfo.view * MGL::Vectors::Vector4<float>(c.vertPos[0], c.vertPos[1], c.vertPos[2], 1.f);
+			c.vertPos = {op[0], op[1], op[2]};
+		}
+	}
+	void Camera::DebugFrustum()
+	{
+		// // Vérifier les normales
+		// for (auto &plane :
+		// 	 {&_Frustum.near, &_Frustum.far, &_Frustum.right, &_Frustum.left, &_Frustum.top, &_Frustum.bot})
+		// {
+		// 	float length = MGL::Vectors::Operations::Length(plane->normal);
+		// 	assert(std::abs(length - 1.0f) < 0.001f);
+		// }
 
-		MGL::Vectors::Vector3 leftNormal =
-			MGL::Vectors::Operations::Cross(frontMultFar - this->_rightDir * halfHSide, this->_up);
-		leftNormal = MGL::Vectors::Operations::Normalize(leftNormal);
-		this->_frustrum.left = {farCenter - this->_rightDir * halfHSide, leftNormal};
-
-		// Front::Rendering::Frustrum::Colliders::BoxCollider testAABB(this->_position - Vector3Float(8, 8, 8),
-		// 															Vector3Float(16, 16, 16));
-
-		// std::cout << "=== FRUSTUM NORMALS ===" << std::endl;
-		// std::cout << "Near: " << this->_frustrum.near.normal << std::endl;
-		// std::cout << "Far: " << this->_frustrum.far.normal << std::endl;
-		// std::cout << "Right: " << this->_frustrum.right.normal << std::endl;
-		// std::cout << "Left: " << this->_frustrum.left.normal << std::endl;
-		// std::cout << "Top: " << this->_frustrum.top.normal << std::endl;
-		// std::cout << "Bottom: " << this->_frustrum.bot.normal << std::endl;
-		// std::cout << "=== TEST AABB AT CAMERA ===" << std::endl;
-		// std::cout << "AABB min: " << testAABB.origin << " max: " << testAABB.max << std::endl;
-
-		// // 2. Test plan par plan
-		// bool near = testAABB.IsOnForwardPlane(this->_frustrum.near);
-		// bool far = testAABB.IsOnForwardPlane(this->_frustrum.far);
-		// bool right = testAABB.IsOnForwardPlane(this->_frustrum.right);
-		// bool left = testAABB.IsOnForwardPlane(this->_frustrum.left);
-		// bool top = testAABB.IsOnForwardPlane(this->_frustrum.top);
-		// bool bottom = testAABB.IsOnForwardPlane(this->_frustrum.bot);
-
-		// std::cout << "Plan results:" << std::endl;
-		// std::cout << "Near: " << near << " Far: " << far << std::endl;
-		// std::cout << "Right: " << right << " Left: " << left << std::endl;
-		// std::cout << "Top: " << top << " Bottom: " << bottom << std::endl;
-		// std::cout << "ALL: " << (near && far && right && left && top && bottom) << std::endl;
-		// std::cout << "=== CAMERA VECTORS DEBUG ===" << std::endl;
-		// std::cout << "Front: " << this->_front << std::endl;
-		// std::cout << "Right: " << this->_rightDir << std::endl;
-		// std::cout << "Up: " << this->_up << std::endl;
-		// std::cout << "WorldUp: " << this->_worldUp << std::endl;
-
-		// // Test d'orthogonalité
-		// float dotFU = MGL::Vectors::Operations::Dot(this->_front, this->_up);
-		// float dotFR = MGL::Vectors::Operations::Dot(this->_front, this->_rightDir);
-		// float dotRU = MGL::Vectors::Operations::Dot(this->_rightDir, this->_up);
-
-		// std::cout << "Front·Up: " << dotFU << " (devrait être ~0)" << std::endl;
-		// std::cout << "Front·Right: " << dotFR << " (devrait être ~0)" << std::endl;
-		// std::cout << "Right·Up: " << dotRU << " (devrait être ~0)" << std::endl;
-
-		// // Test du système de coordonnées
-		// MGL::Vectors::Vector3 testCross = MGL::Vectors::Operations::Cross(this->_rightDir, this->_up);
-		// std::cout << "Right × Up: " << testCross << " (devrait être ≈ Front)" << std::endl;
+		// // Vérifier les distances
+		// Vector3Float cameraPos = this->_position;
+		// assert(_Frustum.near.distance >= 0);
+		// assert(_Frustum.far.distance <= 0);
 	}
 } // namespace Vox::Game::Scenes::World::Player

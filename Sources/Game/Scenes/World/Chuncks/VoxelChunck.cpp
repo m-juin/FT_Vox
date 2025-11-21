@@ -31,7 +31,7 @@ namespace Vox::Game::World::Chuncks
 		: DynamicObject(Vector3Float(defaultPos[0] * static_cast<int>(Utils::Defines::CHUNCK_SIZE),
 									 defaultPos[1] * static_cast<int>(Utils::Defines::CHUNCK_SIZE),
 									 defaultPos[2] * static_cast<int>(Utils::Defines::CHUNCK_SIZE))),
-		  Front::Rendering::Frustrum::Colliders::BoxCollider(
+		  Front::Rendering::Frustum::Colliders::BoxCollider(
 			  Vector3Float(defaultPos[0] * static_cast<int>(Utils::Defines::CHUNCK_SIZE),
 						   defaultPos[1] * static_cast<int>(Utils::Defines::CHUNCK_SIZE),
 						   defaultPos[2] * static_cast<int>(Utils::Defines::CHUNCK_SIZE)),
@@ -335,7 +335,7 @@ namespace Vox::Game::World::Chuncks
 
 	bool VoxelChunck::Render(uint8_t toRender)
 	{
-		if (!this->IsOnFrustrum(Game::World::WorldManager::GetCamera().GetFrustrum()))
+		if (!this->IsOnFrustum(Game::World::WorldManager::GetCamera().GetFrustum()))
 		{
 			return false ;
 		}

@@ -60,19 +60,19 @@ namespace MGL::Matrix
 				return result;
 			}
 
-			inline Vectors::Vector4<float> operator*(const Vectors::Vector4<float> &v) const
-			{
-				Vectors::Vector4<float> result;
-				for (size_t i = 0; i < 4; i++)
-				{
-					result[i] = 0.0f;
-					for (size_t j = 0; j < 4; j++)
-					{
-						result[i] += (*this)(i, j) * v[j];
-					}
-				}
-				return result;
-			}
+			// inline Vectors::Vector4<float> operator*(const Vectors::Vector4<float> &v) const
+			// {
+			// 	Vectors::Vector4<float> result;
+			// 	for (size_t i = 0; i < 4; i++)
+			// 	{
+			// 		result[i] = 0.0f;
+			// 		for (size_t j = 0; j < 4; j++)
+			// 		{
+			// 			result[i] += (*this)(i, j) * v[j];
+			// 		}
+			// 	}
+			// 	return result;
+			// }
 
 		private:
 			float m[16];
