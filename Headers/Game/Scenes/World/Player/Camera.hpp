@@ -43,12 +43,7 @@ namespace Vox::Game::Scenes::World::Player
 
 			const Front::Rendering::Frustum::Frustum &GetFrustum() {return this->_frustum;}
 
-			void ChangeDebug();
-			void RenderFrustum();
-
 		private:
-			void DebugFrustum();
-			std::unique_ptr<Front::Rendering::Utils::Buffers::StaticBuffer> _frustumBuffer;
 
 			void CreateFrustum();
 			void RebuildInfo();
@@ -83,9 +78,6 @@ namespace Vox::Game::Scenes::World::Player
 			float _near = 0.1f;
 			float _far = 100.0f;
 
-			std::vector<Front::Rendering::Utils::Vertex::VoxelVertex> _debugVertex;
-			void CreateDebugBuffer();
-			bool _shallDrawDebug = false;
 	};
 	
 

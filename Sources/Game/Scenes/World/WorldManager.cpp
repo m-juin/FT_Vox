@@ -116,7 +116,6 @@ namespace Vox::Game::World
 		for (auto &_pair : this->_chuncks)
 			if (_pair.second)
 				_pair.second->Render(1);
-		this->_camera.RenderFrustum();
 
 		std::cout << "[DEBUG] Try : " << counters.first << " | " << "Effectives : " << counters.second << std::endl;
 	}

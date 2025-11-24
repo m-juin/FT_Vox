@@ -71,9 +71,6 @@ namespace Vox::Game::Scenes::World
 				return true;
 			}
 			break;
-
-		case Game::Utils::Datas::E_InputAction::D_Frustum:
-			Game::World::WorldManager::GetCamera().ChangeDebug();
 		default:
 			break;
 		}

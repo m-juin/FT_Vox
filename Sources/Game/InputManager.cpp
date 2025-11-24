@@ -25,15 +25,12 @@ namespace Vox::Game
 
 	bool InputManager::HandleNonTargetInput(const int &button, const int &action)
 	{
-		if (button != this->_inputMap[E_InputAction::I_F3] && button != this->_inputMap[E_InputAction::I_Generation] &&
-			button != this->_inputMap[E_InputAction::D_Frustum])
+		if (button != this->_inputMap[E_InputAction::I_F3] && button != this->_inputMap[E_InputAction::I_Generation])
 			return false;
 		if (action != GLFW_RELEASE)
 			return true;
 		E_InputAction inputAction = button == this->_inputMap[E_InputAction::I_F3] ? E_InputAction::I_F3
-									: button == this->_inputMap[E_InputAction::I_Generation]
-										? E_InputAction::I_Generation
-										: E_InputAction::D_Frustum;
+									: E_InputAction::I_Generation;
 		Game::GameManager::GetInstance().GetSceneManager().GetCurrentScene().HandleInputAction(inputAction);
 		return true;
 	}
@@ -133,8 +130,6 @@ namespace Vox::Game
 
 		this->_inputMap[E_InputAction::I_F3] = GLFW_KEY_F3;
 		this->_inputMap[E_InputAction::I_Generation] = GLFW_KEY_F4;
-
-		this->_inputMap[E_InputAction::D_Frustum] = GLFW_KEY_F9;
 	}
 
 	void InputManager::SetInputTarget(E_InputTarget newTarget)

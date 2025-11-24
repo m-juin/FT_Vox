@@ -16,7 +16,6 @@
 
 namespace Vox::Game::Scenes::World::Player
 {
-
 	void Camera::PushConstant(int target)
 	{
 		using namespace Front::Rendering;
@@ -68,15 +67,6 @@ namespace Vox::Game::Scenes::World::Player
 		return skyView;
 	}
 
-	void Camera::CreateDebugBuffer()
-	{
-		if (this->_debugVertex.empty())
-			return;
-		this->_frustumBuffer = std::make_unique<Front::Rendering::Utils::Buffers::StaticBuffer>(
-			1, this->_debugVertex.size() * sizeof(Front::Rendering::Utils::Vertex::VoxelVertex),
-			VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
-		this->_frustumBuffer->Create(this->_debugVertex.data());
-	}
 	void Camera::RebuildInfo()
 	{
 		this->_worldInfo.projection =
@@ -127,24 +117,6 @@ namespace Vox::Game::Scenes::World::Player
 		this->_isDirty = true;
 	}
 
-	void Camera::RenderFrustum()
-	{
-		if (this->_shallDrawDebug == false || this->_frustumBuffer == nullptr)
-			return;
-		using namespace Front::Rendering;
-		auto pipeline = Pipelines::PipelinesManager::GetInstance().operator[]<Pipelines::VoxelPipeline>("Voxel");
-		if (pipeline == nullptr)
-			return;
-		auto frame = SyncObjects::GetInstance().GetCurrentFrame();
-		VkDeviceSize offset = {0};
-		uint32_t dynamicOffset = 0;
-		auto buffer = CommandsPool::GetInstance().GetBuffer(frame);
-		vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->GetLayout(), 0, 1,
-								&pipeline->GetSet(frame), 1, &dynamicOffset);
-		vkCmdBindVertexBuffers(buffer, 0, 1, &this->_frustumBuffer->GetBuffer(0), &offset);
-		vkCmdDraw(buffer, this->_debugVertex.size(), 1, 0, 0);
-	}
-
 	void Camera::HandleMouseMovement(const double &xOffSet, const double &yOffSet)
 	{
 		this->Rotate(xOffSet, yOffSet);
@@ -168,13 +140,6 @@ namespace Vox::Game::Scenes::World::Player
 		return this->_position;
 	}
 
-	void Camera::ChangeDebug()
-	{
-		if (this->_shallDrawDebug == false)
-			this->CreateDebugBuffer();
-		this->_shallDrawDebug = !this->_shallDrawDebug;
-	}
-
 	void Camera::CreateFrustum()
 	{
 		using namespace Front::Rendering::Frustum;
@@ -183,55 +148,5 @@ namespace Vox::Game::Scenes::World::Player
 		MGL::Matrix::Matrix4 vp = this->_skyInfo.projection * this->_skyInfo.view;
 		this->_frustum = Frustum::ExtractFrustum(vp);
 
-		auto corners = this->_frustum.GetFrustumCorners();
-		this->_debugVertex = {// Near plane
-							  {corners.ntl, {1.0, 1.0, 1.0}, {1.0, 1.0}, 0},
-							  {corners.ntr, {1.0, 1.0, 1.0}, {1.0, 1.0}, 0},
-							  {corners.ntr, {1.0, 1.0, 1.0}, {1.0, 1.0}, 0},
-							  {corners.nbr, {1.0, 1.0, 1.0}, {1.0, 1.0}, 0},
-							  {corners.nbr, {1.0, 1.0, 1.0}, {1.0, 1.0}, 0},
-							  {corners.nbl, {1.0, 1.0, 1.0}, {1.0, 1.0}, 0},
-							  {corners.nbl, {1.0, 1.0, 1.0}, {1.0, 1.0}, 0},
-							  {corners.ntl, {1.0, 1.0, 1.0}, {1.0, 1.0}, 0},
-
-							  // Far plane
-							  {corners.ftl, {1.0, 1.0, 1.0}, {1.0, 1.0}, 0},
-							  {corners.ftr, {1.0, 1.0, 1.0}, {1.0, 1.0}, 0},
-							  {corners.ftr, {1.0, 1.0, 1.0}, {1.0, 1.0}, 0},
-							  {corners.fbr, {1.0, 1.0, 1.0}, {1.0, 1.0}, 0},
-							  {corners.fbr, {1.0, 1.0, 1.0}, {1.0, 1.0}, 0},
-							  {corners.fbl, {1.0, 1.0, 1.0}, {1.0, 1.0}, 0},
-							  {corners.fbl, {1.0, 1.0, 1.0}, {1.0, 1.0}, 0},
-							  {corners.ftl, {1.0, 1.0, 1.0}, {1.0, 1.0}, 0},
-
-							  // Connections
-							  {corners.ntl, {1.0, 1.0, 1.0}, {1.0, 1.0}, 0},
-							  {corners.ftl, {1.0, 1.0, 1.0}, {1.0, 1.0}, 0},
-							  {corners.ntr, {1.0, 1.0, 1.0}, {1.0, 1.0}, 0},
-							  {corners.ftr, {1.0, 1.0, 1.0}, {1.0, 1.0}, 0},
-							  {corners.nbl, {1.0, 1.0, 1.0}, {1.0, 1.0}, 0},
-							  {corners.fbl, {1.0, 1.0, 1.0}, {1.0, 1.0}, 0},
-							  {corners.nbr, {1.0, 1.0, 1.0}, {1.0, 1.0}, 0},
-							  {corners.fbr, {1.0, 1.0, 1.0}, {1.0, 1.0}, 0}};
-		for (auto &c : _debugVertex)
-		{
-			MGL::Vectors::Vector4<float> op =  this->_worldInfo.view * MGL::Vectors::Vector4<float>(c.vertPos[0], c.vertPos[1], c.vertPos[2], 1.f);
-			c.vertPos = {op[0], op[1], op[2]};
-		}
-	}
-	void Camera::DebugFrustum()
-	{
-		// // Vérifier les normales
-		// for (auto &plane :
-		// 	 {&_Frustum.near, &_Frustum.far, &_Frustum.right, &_Frustum.left, &_Frustum.top, &_Frustum.bot})
-		// {
-		// 	float length = MGL::Vectors::Operations::Length(plane->normal);
-		// 	assert(std::abs(length - 1.0f) < 0.001f);
-		// }
-
-		// // Vérifier les distances
-		// Vector3Float cameraPos = this->_position;
-		// assert(_Frustum.near.distance >= 0);
-		// assert(_Frustum.far.distance <= 0);
 	}
 } // namespace Vox::Game::Scenes::World::Player

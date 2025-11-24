@@ -14,8 +14,6 @@ namespace Vox::Game::Utils::Datas
 
 		I_F3 = 50,
 		I_Generation = 51,
-
-		D_Frustum = 61,
 	};
 } // namespace Vox::Game::Utils::Datas
 
