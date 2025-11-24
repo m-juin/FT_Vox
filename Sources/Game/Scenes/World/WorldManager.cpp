@@ -119,7 +119,7 @@ namespace Vox::Game::World
 			if (_pair.second)
 				_pair.second->Render(1);
 
-		LoggerLib::LogDebug(" Try : ", counters.first, " | ", "Effectives : ", counters.second);
+		LoggerLib::LogDebug("Try : ", counters.first, " | ", "Effectives : ", counters.second);
 	}
 
 	void WorldManager::CheckCreation()

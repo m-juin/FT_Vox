@@ -317,6 +317,9 @@ namespace Vox::Game::World::Chuncks
 
 	void VoxelChunck::BuildBufferObject(const uint16_t &buffer)
 	{
+
+		if (this->IsOnFrustum(Game::World::WorldManager::GetCamera().GetFrustum()) == false)
+			return ;
 		this->_bufferIndex = buffer;
 		this->RefreshBuffers();
 	}

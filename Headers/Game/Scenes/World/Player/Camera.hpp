@@ -41,7 +41,7 @@ namespace Vox::Game::Scenes::World::Player
 
 			Vector3Float GetPosition() const;
 
-			const Front::Rendering::Frustum::Frustum &GetFrustum() {return this->_frustum;}
+			const Front::Rendering::Frustum::Frustum &GetFrustum() {return this->_viewingfrustum;}
 
 		private:
 
@@ -71,12 +71,12 @@ namespace Vox::Game::Scenes::World::Player
 			Vector3Float _worldUp = Vector3Float(0.0f, 1.0, 0.0f);
 			Vector3Float _target = Vector3Float(0.0f, 0.0f, -1.0f);
 
-			Front::Rendering::Frustum::Frustum _frustum;
+			Front::Rendering::Frustum::Frustum _viewingfrustum;
 
 			const float _fov = MGL::Utils::Radians(45.0f);
 			float _aspect = 1920.0f / 1080.0f;
 			float _near = 0.1f;
-			float _far = 100.0f;
+			float _far = 1000.0f;
 
 	};
 	
