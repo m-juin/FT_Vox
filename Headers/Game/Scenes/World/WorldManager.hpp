@@ -81,6 +81,9 @@ namespace Vox::Game::World
 
 			const Utils::Defines::ChunckCoord & GetPlayerChunck() {return this->_playerChunck;};
 
+			void ReleaseChunkBuffer(const size_t &bufferIndex);
+			size_t RequestChunkBuffer();
+
 		private:
 			void CheckCreation();
 			void CheckDeletion();

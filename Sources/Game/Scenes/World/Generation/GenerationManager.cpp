@@ -73,7 +73,6 @@ namespace Vox::Game::Generation
 		if (_needThreadRefresh)
 			return ;
 		auto &wm = World::WorldManager::GetInstance();
-		auto &bm = wm.GetBufferManager();
 		std::list<std::shared_ptr<World::Chuncks::ChunckCluster>> toDeleteCluster;
 		std::list<std::shared_ptr<World::Chuncks::ChunckCluster>> endedCluster;
 		for (auto ch : this->_waitingChuncks)
@@ -101,13 +100,10 @@ namespace Vox::Game::Generation
 		}
 		for (auto ch : endedCluster)
 		{
-			auto buffer = bm.ReserveBuffer();
-			if (buffer < Vox::Game::Utils::Defines::CHUNCK_BUFFER_AMOUNT)
-			{
-				ch->BuildBuffers(buffer);
+				ch->BuildBuffers();
+
 				this->_waitingChuncks.erase(std::find(this->_waitingChuncks.begin(), this->_waitingChuncks.end(), ch));
 				wm.AddEndedChunck(ch);
-			}
 		}
 	}
 } // namespace Vox::Game::Generation

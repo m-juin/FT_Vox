@@ -41,7 +41,7 @@ namespace Vox::Game::Generation
 			}
 
 		private:
-			std::bitset<Vox::Game::Utils::Defines::CHUNCK_BUFFER_AMOUNT> _avalaibleBuffers;
+			std::bitset<Vox::Game::Utils::Defines::CHUNCK_AMOUNT> _avalaibleBuffers;
 			/* private */
 	};
 } // namespace Vox::Game::Generation

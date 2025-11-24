@@ -152,7 +152,17 @@ namespace Vox::Game::World
 		}
 		this->_chuncks.clear();
 	}
+	
+	void WorldManager::ReleaseChunkBuffer(const size_t &bufferIndex)
+	{
+		this->_bManager->ReleaseBuffer(bufferIndex);
+	}
 
+	size_t WorldManager::RequestChunkBuffer()
+	{
+		return this->_bManager->ReserveBuffer();
+		return this->_bManager->ReserveBuffer();
+	}
 	void WorldManager::CheckDeletion()
 	{
 		std::vector<Utils::Defines::ChunckCoord> toDelete;

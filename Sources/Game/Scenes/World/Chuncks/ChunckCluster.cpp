@@ -306,17 +306,16 @@ namespace Vox::Game::World::Chuncks
 		(void)type;
 	}
 
-	void ChunckCluster::BuildBuffers(const uint16_t &buffer)
+	void ChunckCluster::BuildBuffers()
 	{
-		this->_bufferIndex = buffer;
 		int chunksPerCluster = WORLD_HEIGHT / CHUNCK_SIZE;
 		for (int y = chunksPerCluster - 1; y >= 0; y--)
 		{
-			int localIndex = chunksPerCluster - 1 - y;
-			int globalIndex = _bufferIndex * chunksPerCluster + localIndex;
+			// int localIndex = chunksPerCluster - 1 - y;
+			// int globalIndex = _bufferIndex * chunksPerCluster + localIndex;
 			auto ch = this->_clusterContent[y];
 			if (ch)
-				ch->BuildBufferObject(globalIndex);
+				ch->BuildBufferObject();
 		}
 		this->_currentState = Generation::E_GenerationState::End;
 	}

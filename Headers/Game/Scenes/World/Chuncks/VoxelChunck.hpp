@@ -55,7 +55,7 @@ namespace Vox::Game::World::Chuncks
 
 			bool Render(uint8_t toRender);
 			void BuildVoxelObject(const Generation::Utils::ChunckCache &cache, const uint32_t &seed);
-			void BuildBufferObject(const uint16_t &buffer);
+			void BuildBufferObject();
 
 			Vector3Int GetChunckPosition()
 			{
@@ -98,6 +98,7 @@ namespace Vox::Game::World::Chuncks
 			dbuffer *B_VertexTransparent = nullptr;
 			dbuffer *B_IndexTransparent = nullptr;
 			void RefreshBuffers();
+			void DeleteBuffers();
 
 			/* private */
 	};

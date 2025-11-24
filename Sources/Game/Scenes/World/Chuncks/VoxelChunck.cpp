@@ -314,14 +314,38 @@ namespace Vox::Game::World::Chuncks
 			}
 		}
 	}
+	
+	void VoxelChunck::DeleteBuffers()
+	{
+		if (this->B_IndexOpaque)
+			delete this->B_IndexOpaque;
+		if (this->B_VertexOpaque)
+			delete this->B_VertexOpaque;
+		if (this->B_VertexTransparent)
+			delete this->B_VertexTransparent;
+		if (this->B_IndexTransparent)
+			delete this->B_IndexTransparent;
+	}
 
-	void VoxelChunck::BuildBufferObject(const uint16_t &buffer)
+	void VoxelChunck::BuildBufferObject()
 	{
 
-		if (this->IsOnFrustum(Game::World::WorldManager::GetCamera().GetFrustum()) == false)
+		if (this->isVisible == false && (this->B_IndexOpaque != nullptr || this->B_IndexTransparent != nullptr))
+		{
+			if (this->_bufferIndex >= Utils::Defines::CHUNCK_AMOUNT)
+				return ;
+			
+			World::WorldManager::GetInstance().ReleaseChunkBuffer(this->_bufferIndex);
+			this->DeleteBuffers();
 			return ;
-		this->_bufferIndex = buffer;
-		this->RefreshBuffers();
+		}
+		else if (this->isVisible == true && (this->B_IndexOpaque == nullptr && this->B_IndexTransparent == nullptr))
+		{
+			this->_bufferIndex = World::WorldManager::GetInstance().RequestChunkBuffer();
+			if (this->_bufferIndex >= Utils::Defines::CHUNCK_AMOUNT)
+				return ;
+			this->RefreshBuffers();
+		}
 	}
 
 	size_t VoxelChunck::GetLocalIndex(const LocalVector &vec)
@@ -432,13 +456,6 @@ namespace Vox::Game::World::Chuncks
 
 	VoxelChunck::~VoxelChunck()
 	{
-		if (this->B_IndexOpaque)
-			delete this->B_IndexOpaque;
-		if (this->B_VertexOpaque)
-			delete this->B_VertexOpaque;
-		if (this->B_VertexTransparent)
-			delete this->B_VertexTransparent;
-		if (this->B_IndexTransparent)
-			delete this->B_IndexTransparent;
+		this->DeleteBuffers();
 	}
 } // namespace Vox::Game::World::Chuncks

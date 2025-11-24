@@ -47,7 +47,7 @@ namespace Vox::Game::World::Chuncks
 			void SetBlock(MGL::Vectors::Vector3<uint8_t> localPos, Game::Datas::Blocks::BlockType type);
 			void SetBlocks(std::unordered_map<MGL::Vectors::Vector3<int>, Game::Datas::Blocks::BlockType, MGL::Vectors::Vector3Hash<int>> &, bool);
 
-			void BuildBuffers(const uint16_t &buffer);
+			void BuildBuffers();
 			void GenerateHeightMap(const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl,
 								   const uint32_t seed, uint8_t hMap[CHUNCK_SIZE * CHUNCK_SIZE]);
 
