@@ -27,7 +27,7 @@ namespace Vox::Game::Generation
 
 			inline void ReleaseBuffer(const uint32_t &index)
 			{
-				if (index >= Vox::Game::Utils::Defines::CHUNCK_BUFFER_AMOUNT)
+				if (index >= Vox::Game::Utils::Defines::CHUNCK_AMOUNT)
 				{
 					LoggerLib::LogWarning("Buffer index ", index, " too big.");
 					return;

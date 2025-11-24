@@ -161,7 +161,6 @@ namespace Vox::Game::World
 	size_t WorldManager::RequestChunkBuffer()
 	{
 		return this->_bManager->ReserveBuffer();
-		return this->_bManager->ReserveBuffer();
 	}
 	void WorldManager::CheckDeletion()
 	{

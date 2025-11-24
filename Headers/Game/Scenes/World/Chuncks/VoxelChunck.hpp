@@ -55,7 +55,7 @@ namespace Vox::Game::World::Chuncks
 
 			bool Render(uint8_t toRender);
 			void BuildVoxelObject(const Generation::Utils::ChunckCache &cache, const uint32_t &seed);
-			void BuildBufferObject();
+			void UpdateBufferObject();
 
 			Vector3Int GetChunckPosition()
 			{
@@ -81,7 +81,7 @@ namespace Vox::Game::World::Chuncks
 			void AddFace(const std::vector<Game::Datas::Textures::TextureInfo> &textInfo, const Faces &face,
 						 const LocalVector &facePos, const Game::Datas::Blocks::BlockType &blockType,
 						 const Vector3Float &faceColor = {1.0, 1.0, 1.0}, bool target = 0, float faceOffsef = 1.0);
-			void AssignModel() override;
+			bool AssignModel() override;
 			std::bitset<CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE> BuildContent(
 				const uint8_t hMap[Generation::Utils::CACHE_SIZE * Generation::Utils::CACHE_SIZE]);
 
@@ -99,6 +99,8 @@ namespace Vox::Game::World::Chuncks
 			dbuffer *B_IndexTransparent = nullptr;
 			void RefreshBuffers();
 			void DeleteBuffers();
+
+			void  UpdateVisibility();
 
 			/* private */
 	};

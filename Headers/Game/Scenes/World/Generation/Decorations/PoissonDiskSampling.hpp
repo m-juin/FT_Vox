@@ -173,8 +173,6 @@ inline std::vector<Vector2> GetChunckDiskSampling(
 
 		MGL::Vectors::Vector2<size_t> vImgSize = {imgSize, imgSize};
 
-
-		size_t pixelCount = 0;
 		for (auto treePos : tree)
 		{
 			for (int x = -1; x <= 1; x++)
@@ -189,7 +187,6 @@ inline std::vector<Vector2> GetChunckDiskSampling(
 						PutPixel(img, vImgSize,
 								 {static_cast<size_t>(effectiveCoord[0]), static_cast<size_t>(effectiveCoord[1])},
 								 false, {255, 0, 0});
-						pixelCount += 1;
 					}
 				}
 			}

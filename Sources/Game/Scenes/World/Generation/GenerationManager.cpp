@@ -100,7 +100,7 @@ namespace Vox::Game::Generation
 		}
 		for (auto ch : endedCluster)
 		{
-				ch->BuildBuffers();
+				// ch->BuildBuffers();
 
 				this->_waitingChuncks.erase(std::find(this->_waitingChuncks.begin(), this->_waitingChuncks.end(), ch));
 				wm.AddEndedChunck(ch);

@@ -38,6 +38,7 @@ namespace Vox::Game::World::Chuncks
 			  {CHUNCK_SIZE, CHUNCK_SIZE, CHUNCK_SIZE}),
 		  _chunckPos(defaultPos)
 	{
+		this->_bufferIndex = CHUNCK_AMOUNT;
 		this->B_IndexOpaque = nullptr;
 		this->B_VertexOpaque = nullptr;
 
@@ -50,7 +51,9 @@ namespace Vox::Game::World::Chuncks
 		this->onUpdate.AddCallBack(
 			[this](void)
 			{
+				this->UpdateVisibility();
 				auto nFrame = Front::Rendering::SyncObjects::GetInstance().GetNextFrame();
+				UpdateBufferObject();
 				if (this->_needbufferUpdate[nFrame] == true)
 				{
 					this->RefreshBuffers();
@@ -59,10 +62,13 @@ namespace Vox::Game::World::Chuncks
 			});
 	}
 
-	void VoxelChunck::AssignModel()
+	bool VoxelChunck::AssignModel()
 	{
+		if (this->_bufferIndex >= Utils::Defines::CHUNCK_AMOUNT)
+			return false;
 		auto &wm = WorldManager::GetInstance();
 		wm.UpdateBuffer(this->_bufferIndex, {this->GetModel()});
+		return true;
 	}
 
 	void VoxelChunck::BuildVoxelObject(const Generation::Utils::ChunckCache &cache, const uint32_t &seed)
@@ -314,36 +320,59 @@ namespace Vox::Game::World::Chuncks
 			}
 		}
 	}
-	
+
 	void VoxelChunck::DeleteBuffers()
 	{
 		if (this->B_IndexOpaque)
+		{
 			delete this->B_IndexOpaque;
+			this->B_IndexOpaque = nullptr;
+		}
 		if (this->B_VertexOpaque)
+		{
 			delete this->B_VertexOpaque;
+			this->B_VertexOpaque = nullptr;
+		}
 		if (this->B_VertexTransparent)
+		{
 			delete this->B_VertexTransparent;
+			this->B_VertexTransparent = nullptr;
+		}
 		if (this->B_IndexTransparent)
+		{
 			delete this->B_IndexTransparent;
+			this->B_IndexTransparent = nullptr;
+		}
 	}
 
-	void VoxelChunck::BuildBufferObject()
+	void VoxelChunck::UpdateVisibility()
 	{
+		this->isVisible = this->IsOnFrustum(Game::World::WorldManager::GetCamera().GetFrustum());
+	}
 
+	void VoxelChunck::UpdateBufferObject()
+	{
+		// LoggerLib::LogDebug("Visibility: ", this->isVisible, " | BOpaque: ", this->B_IndexOpaque, " | BTransparent:
+		// ",  this->B_IndexTransparent);
 		if (this->isVisible == false && (this->B_IndexOpaque != nullptr || this->B_IndexTransparent != nullptr))
 		{
 			if (this->_bufferIndex >= Utils::Defines::CHUNCK_AMOUNT)
-				return ;
-			
+				return;
+
 			World::WorldManager::GetInstance().ReleaseChunkBuffer(this->_bufferIndex);
 			this->DeleteBuffers();
-			return ;
+			this->_bufferIndex = Utils::Defines::CHUNCK_AMOUNT;
+			return;
 		}
 		else if (this->isVisible == true && (this->B_IndexOpaque == nullptr && this->B_IndexTransparent == nullptr))
 		{
-			this->_bufferIndex = World::WorldManager::GetInstance().RequestChunkBuffer();
 			if (this->_bufferIndex >= Utils::Defines::CHUNCK_AMOUNT)
-				return ;
+				this->_bufferIndex = World::WorldManager::GetInstance().RequestChunkBuffer();
+			if (this->_bufferIndex >= Utils::Defines::CHUNCK_AMOUNT)
+				return;
+			// LoggerLib::LogDebug("Trying To Refresh Buffer");
+			this->_isDirty[0] = true;
+			this->_isDirty[1] = true;
 			this->RefreshBuffers();
 		}
 	}
@@ -362,13 +391,12 @@ namespace Vox::Game::World::Chuncks
 
 	bool VoxelChunck::Render(uint8_t toRender)
 	{
-		if (!this->IsOnFrustum(Game::World::WorldManager::GetCamera().GetFrustum()))
-		{
-			return false ;
-		}
+		if (this->isVisible == false)
+			return false;
 		using namespace Front::Rendering;
 		auto frame = SyncObjects::GetInstance().GetCurrentFrame();
-		if ((this->indexCountOpaque == 0 && this->indexCountTransparent == 0) || this->_isDirty[frame] == true)
+		if ((this->B_IndexOpaque == nullptr && this->B_IndexTransparent == nullptr) || this->_isDirty[frame] == true ||
+			this->_bufferIndex == Utils::Defines::CHUNCK_AMOUNT)
 			return true;
 		uint32_t dynamicOffset = this->_bufferIndex * Utils::Vulkan::GetAlignedChunckSize();
 
@@ -379,6 +407,7 @@ namespace Vox::Game::World::Chuncks
 			if (pipeline == nullptr)
 				return true;
 			VkDeviceSize offset = {0};
+			LoggerLib::LogDebug("Rendering opaque buffer at ", this->_bufferIndex);
 			vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->GetLayout(), 0, 1,
 									&pipeline->GetSet(frame), 1, &dynamicOffset);
 			vkCmdBindVertexBuffers(buffer, 0, 1, &this->B_VertexOpaque->GetBuffer(frame), &offset);
@@ -392,6 +421,7 @@ namespace Vox::Game::World::Chuncks
 			if (pipeline == nullptr)
 				return true;
 			VkDeviceSize offset = {0};
+			LoggerLib::LogDebug("Rendering transparent buffer at ", this->_bufferIndex);
 			vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->GetLayout(), 0, 1,
 									&pipeline->GetSet(frame), 1, &dynamicOffset);
 			vkCmdBindVertexBuffers(buffer, 0, 1, &this->B_VertexTransparent->GetBuffer(frame), &offset);

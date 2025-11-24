@@ -68,8 +68,8 @@ namespace Vox::Game::World::Chuncks
 	{
 		size_t rendered = 0;
 		size_t tried = 0;
-		if (this->GetGenerationState() != Generation::E_GenerationState::End)
-			return {0, 0};
+		// if (this->GetGenerationState() != Generation::E_GenerationState::End)
+		// 	return {0, 0};
 		for (auto ch : this->_clusterContent)
 		{
 			if (ch)
@@ -315,7 +315,7 @@ namespace Vox::Game::World::Chuncks
 			// int globalIndex = _bufferIndex * chunksPerCluster + localIndex;
 			auto ch = this->_clusterContent[y];
 			if (ch)
-				ch->BuildBufferObject();
+				ch->UpdateBufferObject();
 		}
 		this->_currentState = Generation::E_GenerationState::End;
 	}
@@ -326,8 +326,8 @@ namespace Vox::Game::World::Chuncks
 		this->onUpdate.AddCallBack(
 			[this]()
 			{
-				if (this->GetGenerationState() != Vox::Game::Generation::E_GenerationState::End)
-					return;
+				// if (this->GetGenerationState() != Vox::Game::Generation::E_GenerationState::End)
+				// 	return;
 				this->UpdateClusterIfNeeded();
 				for (auto ch : this->_clusterContent)
 				{

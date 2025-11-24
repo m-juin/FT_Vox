@@ -19,7 +19,7 @@ namespace Vox::Game::Models
             DynamicObject(Vector3Float defaultPos = {0.0f, 0.0f, 0.0f}, Vector3Float defaultRot = {0.0f, 0.0f, 0.0f}, uint32_t updateDelay = 1);
             virtual ~DynamicObject();
     
-            virtual void AssignModel() = 0;
+            virtual bool AssignModel() = 0;
             Matrix GetModel();
 
             void SetPos(Vector3Float newPos);

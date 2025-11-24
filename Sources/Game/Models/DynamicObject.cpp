@@ -16,7 +16,9 @@ namespace Vox::Game::Models
 				auto frame = Front::Rendering::SyncObjects::GetInstance().GetNextFrame();
 				if (this->_isDirty[frame] == false)
 					return;
-				this->AssignModel();
+				bool assign = this->AssignModel();
+				if (assign == false)
+					return ;
 				this->_isDirty[frame] = false;
 			});
 	}
