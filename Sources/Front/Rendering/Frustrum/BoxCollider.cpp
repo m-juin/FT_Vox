@@ -1,5 +1,7 @@
 #include "Front/Rendering/Frustum/BoxCollider.hpp"
 
+#include <cstdint>
+
 namespace Vox::Front::Rendering::Frustum::Colliders
 {
 	BoxCollider::BoxCollider(Frustum::Vector3Float origin_, Frustum::Vector3Float size)
