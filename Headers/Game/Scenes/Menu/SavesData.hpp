@@ -13,6 +13,8 @@
 
 #include "Game/Scenes/World/Generation/Utils.hpp"
 
+#include "LoggerLib/UtilityFunctions.hpp"
+
 namespace Vox::Game::Scenes::Menu::Saves
 {
 	constexpr const char *WorldsFolder = "./WorldsData";
@@ -56,18 +58,20 @@ namespace Vox::Game::Scenes::Menu::Saves
 		return os;
 	}
 
-	inline std::pair<std::string, std::string> LineParser(const std::string &ligne)
+	inline std::pair<std::string, std::string> LineParser(const std::string &line)
 	{
-		size_t sepPos = ligne.find(':');
+		size_t sepPos = line.find(':');
 
 		if (sepPos == std::string::npos)
-			throw std::invalid_argument("Bad Format");
+		{
+			throw std::invalid_argument("Invalid line in save.");
+		}
 
-		std::string key = ligne.substr(0, sepPos);
+		std::string key = line.substr(0, sepPos);
 		key.erase(0, key.find_first_not_of(" \'\"\t,"));
 		key.erase(key.find_last_not_of(" \'\"\t,") + 1);
 
-		std::string val = ligne.substr(sepPos + 1);
+		std::string val = line.substr(sepPos + 1);
 		val.erase(0, val.find_first_not_of(" \'\"\t,"));
 		val.erase(val.find_last_not_of(" \'\"\t,") + 1);
 
@@ -97,7 +101,7 @@ namespace Vox::Game::Scenes::Menu::Saves
 			}
 			catch (const std::runtime_error &e)
 			{
-				std::cout << e.what() << std::endl;
+				LoggerLib::LogError(e.what());
 				continue;
 			}
 		}
@@ -107,8 +111,6 @@ namespace Vox::Game::Scenes::Menu::Saves
 			{
 				return WorldData("", "", "");
 			}
-
-			std::cout << key << " | " << map[key] << std::endl;
 		}
 
 		return WorldData(map["FolderPath"], map["SaveName"], map["seed"]);
@@ -120,7 +122,6 @@ namespace Vox::Game::Scenes::Menu::Saves
 		if (std::filesystem::exists(path) == false)
 			return;
 		std::filesystem::path saveFile(path / dt.folderPath);
-		std::cout << dt.folderPath << std::endl;
 		if (std::filesystem::exists(saveFile / "SaveData.json"))
 			std::filesystem::remove_all(saveFile);
 	}

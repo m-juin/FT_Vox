@@ -10,6 +10,8 @@
 
 #include "Game/ThreadManager.hpp"
 
+#include "LoggerLib/UtilityFunctions.hpp"
+
 namespace Vox::Game::World
 {
 	WorldManager::WorldManager(const Scenes::Menu::Saves::WorldData &wd)
@@ -117,7 +119,7 @@ namespace Vox::Game::World
 			if (_pair.second)
 				_pair.second->Render(1);
 
-		std::cout << "[DEBUG] Try : " << counters.first << " | " << "Effectives : " << counters.second << std::endl;
+		LoggerLib::LogDebug(" Try : ", counters.first, " | ", "Effectives : ", counters.second);
 	}
 
 	void WorldManager::CheckCreation()

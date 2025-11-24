@@ -5,6 +5,8 @@
 
 #include "Game/Scenes/World/Utils/Defines.hpp"
 
+#include "LoggerLib/UtilityFunctions.hpp"
+
 namespace Vox::Game::Generation
 {
 	class BufferManager
@@ -27,12 +29,12 @@ namespace Vox::Game::Generation
 			{
 				if (index >= Vox::Game::Utils::Defines::CHUNCK_BUFFER_AMOUNT)
 				{
-					std::cerr << "[WARNING] " << "Buffer index " << index << " too large.";
+					LoggerLib::LogWarning("Buffer index ", index, " too big.");
 					return;
 				}
 				else if (_avalaibleBuffers._Unchecked_test(index) == true)
 				{
-					std::cerr << "[WARNING] " << "Buffer at index " << index << " already released.";
+					LoggerLib::LogWarning("Buffer at index ", index, " already released.");
 					return;
 				}
                 _avalaibleBuffers._Unchecked_set(index, true);

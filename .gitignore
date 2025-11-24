@@ -8,6 +8,7 @@ Shaders/*
 Ext/stb/*
 Ext/freeType/**
 Ext/JsonLib/**
+Ext/LoggerLib/**
 WorldsData/**
 .idea/*
 CMakeLists.txt

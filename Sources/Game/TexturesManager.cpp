@@ -84,7 +84,6 @@ namespace Vox::Front::Scenes
 
 		if (pipeline == nullptr)
 		{
-			std::cout << "here2\n";
 			return index;
 		}
 		pipeline->UpdateSet(index);

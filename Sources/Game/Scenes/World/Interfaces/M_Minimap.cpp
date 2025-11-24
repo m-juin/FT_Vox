@@ -4,6 +4,8 @@
 
 #include "Game/Scenes/World/Generation/BiomesPerlin.hpp"
 
+#include "LoggerLib/UtilityFunctions.hpp"
+
 namespace Vox::Game::Scenes::World::Interfaces
 {
 	M_Minimap::M_Minimap(MGL::Vectors::Vector2<size_t> imgSize) : _imgSize(imgSize)
@@ -21,7 +23,7 @@ namespace Vox::Game::Scenes::World::Interfaces
 	{
 		if (this->_running == true)
 		{
-			std::cerr << "[WARNING] " << "Trying to start minimap thread who is already started." << std::endl;
+			LoggerLib::LogWarning("Trying to start minimap thread who is already started.");
 			return;
 		}
 		this->_running = true;
@@ -32,7 +34,7 @@ namespace Vox::Game::Scenes::World::Interfaces
 	{
 		if (this->_running == false)
 		{
-			std::cerr << "[WARNING] " << "Trying to stop minimap thread who is already stopped." << std::endl;
+			LoggerLib::LogWarning("Trying to stop minimap thread who is already stopped.");
 			return;
 		}
 		this->_running = false;

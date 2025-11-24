@@ -9,7 +9,6 @@ namespace Vox::Game::Generation::Datas::Biomes
 {
 	std::vector<TreeRule> BuildTreeRules(JSONLib::JSONObject &involved)
 	{
-		std::cout << "here\n";
 		std::vector<TreeRule> ret;
 		for (auto item : involved["TreesData"]["TreeTypes"].As<JSONLib::JSONVector>())
 		{

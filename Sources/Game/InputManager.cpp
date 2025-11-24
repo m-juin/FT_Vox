@@ -152,7 +152,6 @@ namespace Vox::Game
 	{
 		if (newMask == this->_inputMask)
 			return;
-		std::cout << "New Mask = " << +newMask << std::endl;
 		this->_inputMask = newMask;
 		auto win = Front::Window::GetInstance().GetWindow();
 		if ((newMask & Game::Utils::Datas::InputMask::Mouse) != 00000000)

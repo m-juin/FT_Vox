@@ -5,6 +5,8 @@
 
 #include <algorithm>
 
+#include "LoggerLib/UtilityFunctions.hpp"
+
 namespace Vox::Front::Utils
 {
 	ATexturesAtlas::ATexturesAtlas(const uint32_t texturesChannels)
@@ -32,12 +34,11 @@ namespace Vox::Front::Utils
 			data = stbi_load(path.c_str(), &imgWidth, &imgHeight, &imgChannels, expectedChannel);
 			if (data == nullptr)
 			{
-				std::cerr << "[WARNING] Failed to load image \"" << path << "\". Using default color." << std::endl;
+				LoggerLib::LogWarning("Failed to load image \"", path, "\". Using default color.");
 			}
 			else if ((size_t)imgWidth != this->_textureWidth || (size_t)imgHeight != this->_textureHeight)
 			{
-				std::cout << "[WARNING] Invalid image format \"" << path << "\". Wrong size or channels, skipping."
-						  << std::endl;
+				LoggerLib::LogWarning("Invalid image format \"", path, "\". Wrong size or channels, skipping.");
 				stbi_image_free(data);
 				data = nullptr;
 			}

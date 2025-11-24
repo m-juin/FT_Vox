@@ -173,7 +173,6 @@ inline std::vector<Vector2> GetChunckDiskSampling(
 
 		MGL::Vectors::Vector2<size_t> vImgSize = {imgSize, imgSize};
 
-		std::cout << tree.size() << std::endl;
 
 		size_t pixelCount = 0;
 		for (auto treePos : tree)
@@ -195,7 +194,7 @@ inline std::vector<Vector2> GetChunckDiskSampling(
 				}
 			}
 		}
-		std::cout << "[DEBUG] Pixelcount = " << pixelCount << std::endl;
+
 		return img;
 	}
 } // namespace Vox::World::Generation::Decorations

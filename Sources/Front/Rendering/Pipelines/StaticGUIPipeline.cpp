@@ -16,6 +16,8 @@
 
 #include "Front/Utils/TexturesData.hpp"
 
+#include "LoggerLib/UtilityFunctions.hpp"	
+
 namespace Vox::Front::Rendering::Pipelines
 {
 	StaticGUIPipeline::StaticGUIPipeline() : APipeline()
@@ -224,19 +226,19 @@ namespace Vox::Front::Rendering::Pipelines
 			return;
 		if (index >= _dynamicInfos.size())
 		{
-			std::cerr << "UpdateSet index out of range: " << index << std::endl;
+			LoggerLib::LogError("UpdateSet index out of range: ", index, ".");
 			return;
 		}
 
 		const auto &dynamicsTextures = Game::GameManager::GetInstance().GetTexturesManager().GetDynamics();
 		if (index >= dynamicsTextures.size())
 		{
-			std::cerr << "Dynamics textures too small\n";
+			LoggerLib::LogError("Dynamics textures too small.");
 			return;
 		}
 
-		std::cout << "\033[1;32m" << "[DEBUG] Dynamic descriptor set at " << index << " Updated" << "\033[0m"
-				  << std::endl;
+		
+		LoggerLib::LogInfo("Dynamic descriptor set at ", index, " updated.");
 
 		_dynamicInfos[index].imageView = dynamicsTextures[index];
 		_dynamicInfos[index].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
@@ -297,7 +299,6 @@ namespace Vox::Front::Rendering::Pipelines
 		{
 			_dynamicInfos[index].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 			_dynamicInfos[index].imageView = dynamicsTextures[index];
-			std::cout << dynamicsTextures[index] << std::endl;
 			_dynamicInfos[index].sampler = sampler;
 		}
 		_descriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;

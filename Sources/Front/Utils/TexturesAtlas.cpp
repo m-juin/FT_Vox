@@ -7,6 +7,8 @@
 #include "Front/Rendering/Device.hpp"
 #include "Front/Rendering/Utils/Buffers/Utils.hpp"
 
+#include "LoggerLib/UtilityFunctions.hpp"
+
 namespace Vox::Front::Utils
 {
 	TexturesAtlas::TexturesAtlas(const std::vector<TexturesDatas> &&datas, uint32_t mainChannelCount)
@@ -19,7 +21,7 @@ namespace Vox::Front::Utils
 			throw std::runtime_error("Invalid masked atlas textures list!");
 		else if (size == 1)
 		{
-			std::cout << "[WARNING] Atlas built with only one texture." << std::endl;
+			LoggerLib::LogWarning("Atlas built with only one texture.");
 			this->_atlasWidth = 1;
 			this->_atlasHeight = 1;
 		}

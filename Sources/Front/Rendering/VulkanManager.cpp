@@ -8,6 +8,8 @@
 
 #include <GLFW/glfw3.h>
 
+#include "LoggerLib/UtilityFunctions.hpp"
+
 namespace Vox::Front::Rendering
 {
 	void VulkanManager::SetDepthImage(Images::DepthImage *image)
@@ -37,7 +39,8 @@ namespace Vox::Front::Rendering
 		(void)messageSeverity;
 		(void)messageType;
 		(void)pUserData;
-		std::cerr << "Validation layer: " << pCallbackData->pMessage << std::endl;
+
+		LoggerLib::LogDebug("Validation layer: ", pCallbackData->pMessage);
 
 		return VK_FALSE;
 	}

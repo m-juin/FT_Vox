@@ -29,8 +29,9 @@ include Shaders.mk
 include stb.mk
 include JSONLib.mk
 include FreeType.mk
+include Logger.mk
 
-Deps := $(JSONLib) $(STB_OBJS) $(Shaders) $(FTP_INSTALL_DIR)
+Deps := $(JSONLib) $(STB_OBJS) $(Shaders) $(FTP_INSTALL_DIR) logger_dl
 
 .PHONY: all $(EXECUTABLE) clean fclean checkers
 

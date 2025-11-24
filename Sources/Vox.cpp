@@ -18,6 +18,8 @@
 
 #include <GLFW/glfw3.h>
 
+#include "LoggerLib/UtilityFunctions.hpp"
+
 using namespace Vox::Front;
 
 #include "Front/Utils/TexturesAtlas.hpp"
@@ -41,6 +43,8 @@ void CleanUp()
 
 int main()
 {
+	LoggerLib::Logger::InitLogger(LoggerLib::LogLevel::DEBUG, std::cout, {true, true, false});
+
 	Window::Init(1920, 1080);
 	Rendering::VulkanManager::Init();
 	Window::GetInstance().SetupSurface();

@@ -18,6 +18,8 @@
 
 #include "Game/Scenes/World/Skybox/SkyTexture.hpp"
 
+#include "LoggerLib/UtilityFunctions.hpp"
+
 namespace Vox::Front::Rendering::Pipelines
 {
 	SkyBoxPipeline::SkyBoxPipeline()
@@ -150,7 +152,7 @@ namespace Vox::Front::Rendering::Pipelines
 		pipelineInfo.pDynamicState = &dynamicState;
 		pipelineInfo.layout = this->_layout;
 		pipelineInfo.renderPass = PipelinesManager::GetInstance().GetRenderPass();
-		;
+
 		pipelineInfo.subpass = 0;
 		pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
@@ -207,7 +209,7 @@ namespace Vox::Front::Rendering::Pipelines
 		if (vkAllocateDescriptorSets(Device::GetInstance().GetLogicalDevice(), &allocInfo, this->_set.data()) !=
 			VK_SUCCESS)
 			throw std::runtime_error("Failed to allocate descriptor sets!");
-		std::cout << "\033[1;31m" << "[WARNING] Skybox set is Created." << std::endl << "\033[0m"; 
+		LoggerLib::LogInfo("Skybox set is Created.");
 	}
 
 	void SkyBoxPipeline::CreateSetLayout()

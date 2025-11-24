@@ -47,7 +47,6 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 
 			if (wd.folderPath == "")
 			{
-				std::cout << saveFile << std::endl;
 				continue;
 			}
 			lst.push_back(wd);

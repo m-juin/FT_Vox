@@ -23,7 +23,6 @@ namespace Vox::Game::World::Skybox
 		path = path + "Skybox/";
 
 		this->CheckSBValidity(path);
-		std::cout << this->_width << std::endl;
 
 		this->_layerCount = 6;
 		this->CreateImage(VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL,
@@ -48,11 +47,9 @@ namespace Vox::Game::World::Skybox
 		{
 			int imgWidth, imgHeight, imgChannels;
 			const std::string currentPath = path + texture + ".png";
-			std::cout << currentPath << std::endl;
 			stbi_uc *imgData = stbi_load(currentPath.c_str(), &imgWidth, &imgHeight, &imgChannels, 4);
 			if (imgData != nullptr)
 			{
-				std::cout << "I-I\n";
 				this->_width = imgWidth;
 				this->_height = imgHeight;
 				stbi_image_free(imgData);
