@@ -1,5 +1,5 @@
 LOGGER_URL := https://github.com/m-juin/LoggerLib/archive/refs/tags/
-LOGGER_VERSION := 1.0.2
+LOGGER_VERSION := 1.1.0
 LOGGER_TMP_FOLDER := Temp/LoggerLib
 LOGGER_TARGET_FOLDER := Ext/LoggerLib
 
