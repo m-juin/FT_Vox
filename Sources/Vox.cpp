@@ -43,7 +43,7 @@ void CleanUp()
 
 int main()
 {
-	LoggerLib::Logger::InitLogger(LoggerLib::LogLevel::DEBUG, std::cout, {true, true, false, true});
+	LoggerLib::Logger::InitLogger(LoggerLib::LogLevel::NONE, std::cout, {true, true, false, true});
 
 	Window::Init(1920, 1080);
 	Rendering::VulkanManager::Init();

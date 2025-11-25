@@ -32,8 +32,6 @@ namespace Vox::Game::World::Chuncks
 			void UpdateClusterIfNeeded();
 
 		public:
-			uint16_t _bufferIndex;
-			uint16_t GetBuffer() const;
 			Game::Generation::Utils::ChunckCache GenerateCache(
 				const uint32_t seed,
 				const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl);

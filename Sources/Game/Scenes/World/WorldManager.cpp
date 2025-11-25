@@ -145,17 +145,18 @@ namespace Vox::Game::World
 
 	void WorldManager::RequestChunckRefresh()
 	{
-		for (auto cluster : this->_chuncks)
-		{
-			const uint16_t index = cluster.second->GetBuffer();
-			this->_bManager->ReleaseBuffer(index);
-		}
+		// for (auto cluster : this->_chuncks)
+		// {
+			// const uint16_t index = cluster.second->GetBuffer();
+			// this->_bManager->ReleaseBuffer(index);
+		// }
 		this->_chuncks.clear();
 	}
 	
 	void WorldManager::ReleaseChunkBuffer(const size_t &bufferIndex)
 	{
-		this->_bManager->ReleaseBuffer(bufferIndex);
+		if (bufferIndex < Utils::Defines::CHUNCK_AMOUNT)
+			this->_bManager->ReleaseBuffer(bufferIndex);
 	}
 
 	size_t WorldManager::RequestChunkBuffer()
@@ -173,9 +174,9 @@ namespace Vox::Game::World
 		for (auto pos : toDelete)
 		{
 			const auto it = this->_chuncks.find(pos);
-			const uint16_t index = it->second->GetBuffer();
+			// const uint16_t index = it->second->GetBuffer();
+			// this->_bManager->ReleaseBuffer(index);
 			this->_chuncks.erase(it);
-			this->_bManager->ReleaseBuffer(index);
 		}
 	}
 

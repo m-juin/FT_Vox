@@ -147,6 +147,5 @@ namespace Vox::Game::Scenes::World::Player
 
 		MGL::Matrix::Matrix4 vp = this->_skyInfo.projection * this->_skyInfo.view;
 		this->_viewingfrustum = Frustum::ExtractFrustum(vp);
-
 	}
 } // namespace Vox::Game::Scenes::World::Player
