@@ -20,7 +20,7 @@ OBJS_DIRS := $(sort $(dir $(OBJS)))
 
 UNAME := $(shell uname)
 ifeq ($(UNAME), Linux)
-    Libs := -lglfw -lvulkan -LExt/freeType/lib -lfreetype
+    Libs := -lglfw -lvulkan -LExt/freeType/lib -lfreetype -LExt/Tracy/lib -lTracyClient
 else
     Libs := -lglfw3 -lvulkan-1 -LExt/freeType/lib -lfreetype
 endif

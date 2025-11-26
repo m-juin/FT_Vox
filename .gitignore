@@ -9,6 +9,7 @@ Ext/stb/*
 Ext/freeType/**
 Ext/JsonLib/**
 Ext/LoggerLib/**
+Ext/Tracy/**
 WorldsData/**
 .idea/*
 CMakeLists.txt

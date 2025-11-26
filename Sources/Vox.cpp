@@ -24,8 +24,11 @@ using namespace Vox::Front;
 
 #include "Front/Utils/TexturesAtlas.hpp"
 
+#include "Utils/TracyUtils.hpp"
+
 void CleanUp()
 {
+	Vox::TracyUtils::cleanupVulkanTracy();
 	Vox::Game::GameManager::Clean();
 	Interfaces::InterfacesManager::Clean();
 
@@ -75,10 +78,15 @@ int main()
 
 	auto &gm = Vox::Game::GameManager::GetInstance();
 	Rendering::Pipelines::PipelinesManager::GetInstance().CreatePipelines();
+	Vox::TracyUtils::initVulkanTracy(device.GetLogicalDevice(), device.GetPhysicalDevice(),
+									 Rendering::SwapChain::GetInstance().GetGraphicQueue(),
+									 Rendering::CommandsPool::GetInstance().GetBuffer(0));
 	gm.InitGame();
 
 	while (!glfwWindowShouldClose(Window::GetInstance().GetWindow()))
 	{
+		// ZoneScoped;
+		ZoneScoped;
 		VkFence fence = sync.GetCurrentFence();
 		uint32_t currentFrame = sync.GetCurrentFrame();
 		vkWaitForFences(device.GetLogicalDevice(), 1, &fence, VK_TRUE, UINT64_MAX);
@@ -96,10 +104,17 @@ int main()
 			throw std::runtime_error("Failed to acquire swap chain image!");
 
 		vkResetFences(device.GetLogicalDevice(), 1, &fence);
+		// TracyVkZone(Vox::TracyUtils::g_tracyVkContext, Rendering::CommandsPool::GetInstance().GetBuffer(0),
+		// "Drawing");
 		gm.Update();
 		pool.ResetBuffer(currentFrame);
 		pool.BeginRecord(imageIndex, currentFrame);
+
+		TracyVkZone(Vox::TracyUtils::g_tracyVkContext, Rendering::CommandsPool::GetInstance().GetBuffer(currentFrame),
+					"Vulkan Render Pass");
 		gm.Render();
+		TracyVkCollect(Vox::TracyUtils::g_tracyVkContext, Rendering::CommandsPool::GetInstance().GetBuffer(currentFrame));
+		FrameMark; // Marque la fin de la frame
 		pool.EndRecord(currentFrame);
 
 		VkSubmitInfo submitInfo{};
