@@ -5,9 +5,9 @@ ARCHIVE_NAME = $(FOLD_NAME).tar.xz
 FTP_INSTALL_DIR = $(PWD)/Ext/freeType
 ERASE_LINE = \033[2K\r
 
-.PHONY: all FTP_Clean DL_FreeType
+.PHONY: FTP_install FTP_Clean DL_FreeType
 
-all: $(FTP_INSTALL_DIR)
+FTP_install: $(FTP_INSTALL_DIR)
 
 $(FTP_INSTALL_DIR):
 	@printf '$(ERASE_LINE)\033[1;32mInstalling FreeType...\n\033[1;30m'

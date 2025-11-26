@@ -10,7 +10,7 @@ GLFW_LIB = $(LIB_DIR)/libglfw3.a
 
 ERASE_LINE = \033[2K\r
 
-.PHONY: all deps glfw clean download_glfw
+.PHONY: deps glfw clean download_glfw
 
 glfw: $(GLFW_LIB)
 	@printf '$(ERASE_LINE)\033[37;1mGLFW compilation finished successfully.'

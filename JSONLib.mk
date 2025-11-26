@@ -6,8 +6,6 @@ ARCHIVE_PATH = Temp/JsonLib.tar.gz
 
 .PHONY: JsonLib_Clean
 
-all: $(JSONLib)
-
 $(JSONLib):
 	@printf '$(ERASE_LINE)\033[1;32mRetrieving the JsonLib...\n\033[1;30m'
 	@mkdir -p Temp/JsonLib

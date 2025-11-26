@@ -1,5 +1,6 @@
 EXECUTABLE := FT_Vox
 
+
 CXX := clang++
 HDRS_ROOT := Headers
 SRCS_ROOT := Sources
@@ -30,25 +31,30 @@ include stb.mk
 include JSONLib.mk
 include FreeType.mk
 include Logger.mk
+include Tracy.mk
 
-Deps := $(JSONLib) $(STB_OBJS) $(Shaders) $(FTP_INSTALL_DIR) logger_dl
+Deps := $(JSONLib) $(STB_OBJS) cpl_shader FTP_install logger_dl
 
-.PHONY: all $(EXECUTABLE) clean fclean checkers
+.PHONY: $(EXECUTABLE) clean fclean checkers
 
-all: $(OBJS) $(EXECUTABLE)
+all: $(EXECUTABLE)
 
 sanitize: CXXFLAGS += -fsanitize=address
 sanitize: clean all
 
 debug: CXXFLAGS += -DDEBUG_WORLD
-debug: all
+debug: $(EXECUTABLE)
 	./$(EXECUTABLE)
+
+deps: $(Deps)
+
+$(OBJS): $(Deps)
 
 $(OBJS_DIRS):
 	@mkdir -p $@
 	@printf '$(ERASE_LINE)\033[1;37mObject folder created at "$(OBJS_ROOT)"\033[0m\n'
 
-$(OBJS_ROOT)/%.o: $(SRCS_ROOT)/%.cpp $(HDRS) | $(OBJS_DIRS) $(Deps)
+$(OBJS_ROOT)/%.o: $(SRCS_ROOT)/%.cpp $(HDRS) | $(OBJS_DIRS)
 	@printf '$(ERASE_LINE)\033[1;37mCompiling \033[1;35m$<\033[1;37m into \033[1;35m$@\033[0m\n'
 	@$(CXX) $(CXXFLAGS) -c $< -o $@
 
@@ -85,3 +91,15 @@ fclean: clean cleanShaders STB_clean FTP_Clean JsonLib_Clean
 	@printf '$(ERASE_LINE)\033[1;36mCleaning project executable...\033[0m\n'
 	@rm -rf $(EXECUTABLE)
 	@printf '$(ERASE_LINE)\033[1;32mProject cleaned.\033[0m\n'
+
+$(TRACY_EXECUTABLE): CXXFLAGS += -DTRACY_ENABLE
+$(TRACY_EXECUTABLE): CXXFLAGS += -DDEBUG_WORLD
+$(TRACY_EXECUTABLE): tracy_lib_bld
+$(TRACY_EXECUTABLE): Libs += -LExt/Tracy/lib -lTracyClient -lws2_32 -ldbghelp -lpsapi -liphlpapi -luserenv -lbcrypt
+$(TRACY_EXECUTABLE): $(OBJS)
+	@printf '$(ERASE_LINE)\033[1;37mLinking Tracy executable \033[1;35m$(TRACY_EXECUTABLE)\033[0m\n'
+	@$(CXX) $(CXXFLAGS) $(OBJS) -o $@ $(Libs)
+	@printf '$(ERASE_LINE)\033[1;32mTracy compilation ended\033[0m\n'
+
+tracy_enabled: $(TRACY_EXECUTABLE)
+	./$(TRACY_EXECUTABLE)

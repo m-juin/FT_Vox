@@ -24,11 +24,15 @@ using namespace Vox::Front;
 
 #include "Front/Utils/TexturesAtlas.hpp"
 
+#ifdef TRACY_ENABLE
 #include "Utils/TracyUtils.hpp"
+#endif
 
 void CleanUp()
 {
+#ifdef TRACY_ENABLE
 	Vox::TracyUtils::cleanupVulkanTracy();
+#endif
 	Vox::Game::GameManager::Clean();
 	Interfaces::InterfacesManager::Clean();
 
@@ -78,15 +82,19 @@ int main()
 
 	auto &gm = Vox::Game::GameManager::GetInstance();
 	Rendering::Pipelines::PipelinesManager::GetInstance().CreatePipelines();
+#ifdef TRACY_ENABLE
 	Vox::TracyUtils::initVulkanTracy(device.GetLogicalDevice(), device.GetPhysicalDevice(),
 									 Rendering::SwapChain::GetInstance().GetGraphicQueue(),
 									 Rendering::CommandsPool::GetInstance().GetBuffer(0));
+#endif
 	gm.InitGame();
 
 	while (!glfwWindowShouldClose(Window::GetInstance().GetWindow()))
 	{
 		// ZoneScoped;
+#ifdef TRACY_ENABLE
 		ZoneScoped;
+#endif
 		VkFence fence = sync.GetCurrentFence();
 		uint32_t currentFrame = sync.GetCurrentFrame();
 		vkWaitForFences(device.GetLogicalDevice(), 1, &fence, VK_TRUE, UINT64_MAX);
@@ -110,11 +118,16 @@ int main()
 		pool.ResetBuffer(currentFrame);
 		pool.BeginRecord(imageIndex, currentFrame);
 
+#ifdef TRACY_ENABLE
 		TracyVkZone(Vox::TracyUtils::g_tracyVkContext, Rendering::CommandsPool::GetInstance().GetBuffer(currentFrame),
 					"Vulkan Render Pass");
+#endif
 		gm.Render();
-		TracyVkCollect(Vox::TracyUtils::g_tracyVkContext, Rendering::CommandsPool::GetInstance().GetBuffer(currentFrame));
+#ifdef TRACY_ENABLE
+		TracyVkCollect(Vox::TracyUtils::g_tracyVkContext,
+					   Rendering::CommandsPool::GetInstance().GetBuffer(currentFrame));
 		FrameMark; // Marque la fin de la frame
+#endif
 		pool.EndRecord(currentFrame);
 
 		VkSubmitInfo submitInfo{};

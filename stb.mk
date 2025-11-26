@@ -8,9 +8,7 @@ STB_OBJS = $(patsubst %, $(TARGET)stb_%.h, $(FILES))
 
 ERASE_LINE = \033[2K\r
 
-.PHONY: all STB_clean STB_download
-
-all: $(STB_OBJS)
+.PHONY: STB_clean STB_download
 
 $(TARGET):
 	@mkdir -p $@;

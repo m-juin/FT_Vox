@@ -1,8 +1,10 @@
 #ifndef __TRACYUTILS_HPP__
 #define __TRACYUTILS_HPP__
 
-#define TRACY_ENABLE
-#include "Tracy/include/tracy/tracy/TracyVulkan.hpp"
+#ifdef TRACY_ENABLE
+
+
+#include "Tracy/include/tracy/TracyVulkan.hpp"
 
 #include <vulkan/vulkan.h>
 
@@ -24,6 +26,6 @@ namespace Vox::TracyUtils
 		}
 	}
 
-
 } // namespace Vox::TracyUtils
+#endif
 #endif // __TRACYUTILS_HPP__

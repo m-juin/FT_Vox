@@ -7,9 +7,7 @@ NPROC := $(shell nproc 2>/dev/null || echo 4)
 
 DOWNLOADER:= curl -L
 
-.PHONY: all logger_dl logger_clean
-
-all: logger_dl
+.PHONY: logger_dl logger_clean
 
 logger_dl: $(LOGGER_TARGET_FOLDER)
 
