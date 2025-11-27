@@ -46,15 +46,11 @@ debug: CXXFLAGS += -DDEBUG_WORLD
 debug: $(EXECUTABLE)
 	./$(EXECUTABLE)
 
-deps: $(Deps)
-
-$(OBJS): $(Deps)
-
 $(OBJS_DIRS):
 	@mkdir -p $@
 	@printf '$(ERASE_LINE)\033[1;37mObject folder created at "$(OBJS_ROOT)"\033[0m\n'
 
-$(OBJS_ROOT)/%.o: $(SRCS_ROOT)/%.cpp $(HDRS) | $(OBJS_DIRS)
+$(OBJS_ROOT)/%.o: $(SRCS_ROOT)/%.cpp $(HDRS) | $(OBJS_DIRS) $(Deps)
 	@printf '$(ERASE_LINE)\033[1;37mCompiling \033[1;35m$<\033[1;37m into \033[1;35m$@\033[0m\n'
 	@$(CXX) $(CXXFLAGS) -c $< -o $@
 
