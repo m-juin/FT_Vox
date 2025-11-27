@@ -92,9 +92,9 @@ int main()
 	while (!glfwWindowShouldClose(Window::GetInstance().GetWindow()))
 	{
 		// ZoneScoped;
-#ifdef TRACY_ENABLE
-		ZoneScoped;
-#endif
+// #ifdef TRACY_ENABLE
+// 		ZoneScoped;
+// #endif
 		VkFence fence = sync.GetCurrentFence();
 		uint32_t currentFrame = sync.GetCurrentFrame();
 		vkWaitForFences(device.GetLogicalDevice(), 1, &fence, VK_TRUE, UINT64_MAX);
@@ -112,20 +112,20 @@ int main()
 			throw std::runtime_error("Failed to acquire swap chain image!");
 
 		vkResetFences(device.GetLogicalDevice(), 1, &fence);
-		// TracyVkZone(Vox::TracyUtils::g_tracyVkContext, Rendering::CommandsPool::GetInstance().GetBuffer(0),
+		// TracyVkZone(Vox::TracyUtils::g_tracyVkContext, Rendering::CommandsPool::GetInstance().GetBuffer(currentFrame),
 		// "Drawing");
 		gm.Update();
 		pool.ResetBuffer(currentFrame);
 		pool.BeginRecord(imageIndex, currentFrame);
 
-#ifdef TRACY_ENABLE
-		TracyVkZone(Vox::TracyUtils::g_tracyVkContext, Rendering::CommandsPool::GetInstance().GetBuffer(currentFrame),
-					"Vulkan Render Pass");
-#endif
+// #ifdef TRACY_ENABLE
+// 		TracyVkZone(Vox::TracyUtils::g_tracyVkContext, Rendering::CommandsPool::GetInstance().GetBuffer(currentFrame),
+// 					"Vulkan Render Pass");
+// #endif
 		gm.Render();
 #ifdef TRACY_ENABLE
-		TracyVkCollect(Vox::TracyUtils::g_tracyVkContext,
-					   Rendering::CommandsPool::GetInstance().GetBuffer(currentFrame));
+// 		TracyVkCollect(Vox::TracyUtils::g_tracyVkContext,
+// 					   Rendering::CommandsPool::GetInstance().GetBuffer(currentFrame));
 		FrameMark; // Marque la fin de la frame
 #endif
 		pool.EndRecord(currentFrame);

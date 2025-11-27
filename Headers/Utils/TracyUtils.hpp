@@ -3,7 +3,6 @@
 
 #ifdef TRACY_ENABLE
 
-
 #include "Tracy/include/tracy/TracyVulkan.hpp"
 
 #include <vulkan/vulkan.h>
@@ -12,13 +11,13 @@ namespace Vox::TracyUtils
 {
 	static TracyVkCtx g_tracyVkContext = nullptr;
 
-	static void initVulkanTracy(VkDevice &device, VkPhysicalDevice &physicalDevice, VkQueue &queue,
+	static inline void initVulkanTracy(VkDevice &device, VkPhysicalDevice &physicalDevice, VkQueue &queue,
 								VkCommandBuffer &vkCMDBuffer)
 	{
 		g_tracyVkContext = TracyVkContext(physicalDevice, device, queue, vkCMDBuffer);
 	}
 
-	static void cleanupVulkanTracy()
+	static inline void cleanupVulkanTracy()
 	{
 		if (g_tracyVkContext)
 		{

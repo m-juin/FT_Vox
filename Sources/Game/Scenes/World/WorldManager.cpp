@@ -1,16 +1,18 @@
 #include "Game/Scenes/World/WorldManager.hpp"
 
+#include "Front/Rendering/CommandsPool.hpp"
 #include "Front/Rendering/Pipelines/PipelinesManager.hpp"
 #include "Front/Rendering/Pipelines/SkyBoxPipeline.hpp"
 #include "Front/Rendering/Pipelines/TransparentVoxelPipeline.hpp"
 #include "Front/Rendering/Pipelines/VoxelPipeline.hpp"
 #include "Front/Rendering/SyncObjects.hpp"
-
 #include <cstring>
 
 #include "Game/ThreadManager.hpp"
 
 #include "LoggerLib/UtilityFunctions.hpp"
+
+#include "Utils/TracyUtils.hpp"
 
 namespace Vox::Game::World
 {
@@ -91,6 +93,13 @@ namespace Vox::Game::World
 
 	void WorldManager::UpdateBuffer(const size_t &index, const Chuncks::VoxelChunck::ChunckUniform &uniform)
 	{
+#ifdef TRACY_ENABLE
+		auto buffer = Front::Rendering::CommandsPool::GetInstance().GetBuffer(
+			Front::Rendering::SyncObjects::GetInstance().GetCurrentFrame());
+		TracyVkZone(Vox::TracyUtils::g_tracyVkContext, buffer, "Drawing");
+		ZoneScoped;
+#endif
+
 		auto frame = Vox::Front::Rendering::SyncObjects::GetInstance().GetNextFrame();
 		this->_chunckBuffer.UpdateAtOffset(frame, index * Utils::Vulkan::GetAlignedChunckSize(), (void *)&uniform,
 										   sizeof(Chuncks::VoxelChunck::ChunckUniform));
@@ -147,12 +156,12 @@ namespace Vox::Game::World
 	{
 		// for (auto cluster : this->_chuncks)
 		// {
-			// const uint16_t index = cluster.second->GetBuffer();
-			// this->_bManager->ReleaseBuffer(index);
+		// const uint16_t index = cluster.second->GetBuffer();
+		// this->_bManager->ReleaseBuffer(index);
 		// }
 		this->_chuncks.clear();
 	}
-	
+
 	void WorldManager::ReleaseChunkBuffer(const size_t &bufferIndex)
 	{
 		if (bufferIndex < Utils::Defines::CHUNCK_AMOUNT)
