@@ -26,7 +26,7 @@ namespace Vox::Front::Rendering
 		glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
 		std::vector<const char *> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
 
-		extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+		// extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 
 		return extensions;
 	}
@@ -112,6 +112,9 @@ namespace Vox::Front::Rendering
 
 		createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
 		createInfo.ppEnabledLayerNames = validationLayers.data();
+
+		createInfo.enabledLayerCount = 0;
+		createInfo.ppEnabledLayerNames = nullptr;
 
 		PopulateDebugMessengerCreateInfo(debugCreateInfo);
 		createInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT *)&debugCreateInfo;

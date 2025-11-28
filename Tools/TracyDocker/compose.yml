@@ -1,0 +1,18 @@
+services:
+  tracy:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: tracy:1.0
+    container_name: tracy_docker
+    restart: unless-stopped
+    tty: true
+    environment:
+      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1
+      # - CC=/usr/bin/clang-19
+      # - CXX=/usr/bin/clang++-19
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ${HOME}/.Xauthority:/root/.Xauthority:rw
+    network_mode: host

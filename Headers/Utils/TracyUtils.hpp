@@ -4,26 +4,31 @@
 #ifdef TRACY_ENABLE
 
 #include "Tracy/include/tracy/TracyVulkan.hpp"
-
 #include <vulkan/vulkan.h>
 
 namespace Vox::TracyUtils
 {
-	static TracyVkCtx g_tracyVkContext = nullptr;
+    // Fonction pour obtenir la référence unique
+    inline TracyVkCtx& GetTracyContext() {
+        static TracyVkCtx context = nullptr;
+        return context;
+    }
 
-	static inline void initVulkanTracy(VkDevice &device, VkPhysicalDevice &physicalDevice, VkQueue &queue,
-								VkCommandBuffer &vkCMDBuffer)
-	{
-		g_tracyVkContext = TracyVkContext(physicalDevice, device, queue, vkCMDBuffer);
-	}
+    inline void initVulkanTracy(VkDevice &device, VkPhysicalDevice &physicalDevice, VkQueue &queue,
+                                VkCommandBuffer &vkCMDBuffer)
+    {
+        GetTracyContext() = TracyVkContext(physicalDevice, device, queue, vkCMDBuffer);
+    }
 
-	static inline void cleanupVulkanTracy()
-	{
-		if (g_tracyVkContext)
-		{
-			TracyVkDestroy(g_tracyVkContext);
-		}
-	}
+    inline void cleanupVulkanTracy()
+    {
+        auto& context = GetTracyContext();
+        if (context)
+        {
+            TracyVkDestroy(context);
+            context = nullptr;
+        }
+    }
 
 } // namespace Vox::TracyUtils
 #endif

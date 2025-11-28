@@ -36,6 +36,14 @@ $(SHADER_ROOT)/%/Shader.frag.spv: $(SHADER_SRCS_ROOT)/Shaders/%/Shader.frag
 
 ERASE_LINE = \033[2K\r
 
+debug_deps:
+	@echo "Deps = $(Deps)"
+	@echo "JSONLib = $(JSONLib)"
+	@echo "STB_OBJS = $(STB_OBJS)"
+	@echo "Shaders_Target = $(Shaders_Target)"
+	@echo "FTP_install = $(FTP_install)"
+	@echo "logger_dl = $(logger_dl)"
+
 cleanShaders:
 	@printf '$(ERASE_LINE)\033[1;31mCleaning shaders.\033[1;30m'
 	@rm -rf $(SHADER_ROOT) $(STAMP_FILE)

@@ -1,5 +1,6 @@
-EXECUTABLE := FT_Vox
+.DEFAULT_GOAL := all
 
+EXECUTABLE := FT_Vox
 
 CXX := clang++
 HDRS_ROOT := Headers
@@ -21,9 +22,11 @@ OBJS_DIRS := $(sort $(dir $(OBJS)))
 
 UNAME := $(shell uname)
 ifeq ($(UNAME), Linux)
-    Libs := -lglfw -lvulkan -LExt/freeType/lib -lfreetype -LExt/Tracy/lib -lTracyClient
+    Libs := -lglfw -lvulkan -LExt/freeType/lib -lfreetype
+	TRACY_EXECUTABLE := $(EXECUTABLE)_Tracy
 else
     Libs := -lglfw3 -lvulkan-1 -LExt/freeType/lib -lfreetype
+	TRACY_EXECUTABLE := $(EXECUTABLE)_Tracy.exe
 endif
 
 include Shaders.mk
@@ -88,10 +91,12 @@ fclean: clean cleanShaders STB_clean FTP_Clean JsonLib_Clean
 	@rm -rf $(EXECUTABLE)
 	@printf '$(ERASE_LINE)\033[1;32mProject cleaned.\033[0m\n'
 
+
 $(TRACY_EXECUTABLE): CXXFLAGS += -DTRACY_ENABLE
-$(TRACY_EXECUTABLE): CXXFLAGS += -DDEBUG_WORLD
+# $(TRACY_EXECUTABLE): CXXFLAGS += -DDEBUG_WORLD
+$(TRACY_EXECUTABLE): CXXFLAGS += -fsanitize=address
 $(TRACY_EXECUTABLE): tracy_lib_bld
-$(TRACY_EXECUTABLE): Libs += -LExt/Tracy/lib -lTracyClient -lws2_32 -ldbghelp -lpsapi -liphlpapi -luserenv -lbcrypt
+$(TRACY_EXECUTABLE): Libs += -LExt/Tracy/lib -lTracyClient
 $(TRACY_EXECUTABLE): $(OBJS)
 	@printf '$(ERASE_LINE)\033[1;37mLinking Tracy executable \033[1;35m$(TRACY_EXECUTABLE)\033[0m\n'
 	@$(CXX) $(CXXFLAGS) $(OBJS) -o $@ $(Libs)

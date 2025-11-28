@@ -94,9 +94,9 @@ namespace Vox::Game::World
 	void WorldManager::UpdateBuffer(const size_t &index, const Chuncks::VoxelChunck::ChunckUniform &uniform)
 	{
 #ifdef TRACY_ENABLE
-		auto buffer = Front::Rendering::CommandsPool::GetInstance().GetBuffer(
-			Front::Rendering::SyncObjects::GetInstance().GetCurrentFrame());
-		TracyVkZone(Vox::TracyUtils::g_tracyVkContext, buffer, "Drawing");
+		// auto buffer = Front::Rendering::CommandsPool::GetInstance().GetBuffer(
+		// 	Front::Rendering::SyncObjects::GetInstance().GetCurrentFrame());
+		// TracyVkZone(Vox::TracyUtils::GetTracyContext(), buffer, "Drawing");
 		ZoneScoped;
 #endif
 
