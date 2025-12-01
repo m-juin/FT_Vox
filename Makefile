@@ -29,6 +29,8 @@ else
 	TRACY_EXECUTABLE := $(EXECUTABLE)_Tracy.exe
 endif
 
+MAKEFILE_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
+
 include Shaders.mk
 include stb.mk
 include JSONLib.mk

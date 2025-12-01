@@ -17,3 +17,7 @@ ENV CC=/usr/bin/clang-19
 ENV CXX=/usr/bin/clang++-19
 RUN cmake -B profiler/build -S profiler -DCMAKE_BUILD_TYPE=Release -DTRACY_WAYLAND=OFF -DLEGACY=ON
 RUN make -C profiler/build -j$(nproc)
+
+EXPOSE 8086
+
+# CMD ["/start-tracy.sh"]

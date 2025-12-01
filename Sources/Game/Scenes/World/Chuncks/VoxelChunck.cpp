@@ -412,7 +412,7 @@ namespace Vox::Game::World::Chuncks
 			if (pipeline == nullptr)
 				return true;
 			VkDeviceSize offset = {0};
-			// LoggerLib::LogDebug("Rendering opaque buffer at ", this->_bufferIndex);
+			LoggerLib::LogDebug("Rendering opaque buffer at ", this->_bufferIndex);
 			vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->GetLayout(), 0, 1,
 									&pipeline->GetSet(frame), 1, &dynamicOffset);
 			vkCmdBindVertexBuffers(buffer, 0, 1, &this->B_VertexOpaque->GetBuffer(frame), &offset);
@@ -426,7 +426,7 @@ namespace Vox::Game::World::Chuncks
 			if (pipeline == nullptr)
 				return true;
 			VkDeviceSize offset = {0};
-			// LoggerLib::LogDebug("Rendering transparent buffer at ", this->_bufferIndex);
+			LoggerLib::LogDebug("Rendering transparent buffer at ", this->_bufferIndex);
 			vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->GetLayout(), 0, 1,
 									&pipeline->GetSet(frame), 1, &dynamicOffset);
 			vkCmdBindVertexBuffers(buffer, 0, 1, &this->B_VertexTransparent->GetBuffer(frame), &offset);

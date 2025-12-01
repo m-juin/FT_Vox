@@ -2,13 +2,13 @@
 #define __TRACYUTILS_HPP__
 
 #ifdef TRACY_ENABLE
-
 #include "Tracy/include/tracy/TracyVulkan.hpp"
 #include <vulkan/vulkan.h>
 
+#include "LoggerLib/UtilityFunctions.hpp"
+
 namespace Vox::TracyUtils
 {
-    // Fonction pour obtenir la référence unique
     inline TracyVkCtx& GetTracyContext() {
         static TracyVkCtx context = nullptr;
         return context;
@@ -18,6 +18,7 @@ namespace Vox::TracyUtils
                                 VkCommandBuffer &vkCMDBuffer)
     {
         GetTracyContext() = TracyVkContext(physicalDevice, device, queue, vkCMDBuffer);
+        LoggerLib::LogInfo("Tracy context initialized.");
     }
 
     inline void cleanupVulkanTracy()
@@ -27,6 +28,7 @@ namespace Vox::TracyUtils
         {
             TracyVkDestroy(context);
             context = nullptr;
+             LoggerLib::LogInfo("Tracy context cleaned.");
         }
     }
 

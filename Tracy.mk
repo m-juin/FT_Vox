@@ -53,6 +53,12 @@ $(TRACY_LIB_TARGET): $(TRACY_CMAKE_CACHE)
 	cp $(TRACY_SOURCE)/build/libTracyClient.a $(TRACY_TARGET)/lib/
 	cp -r $(TRACY_SOURCE)/public/* $(TRACY_TARGET)/include/
 
+tracy_profiler_bld:
+	docker compose -f $(MAKEFILE_DIR)Tools/TracyDocker/compose up --build
+
+launch_profiler:
+	docker exec -it tracy_docker /home/Tracy/tracy/profiler/build/tracy-profiler
+
 tracy_lib_bld: $(TRACY_LIB_TARGET)
 
 tracy: tracy_lib_bld
