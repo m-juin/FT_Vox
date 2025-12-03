@@ -10,6 +10,8 @@
 
 #include "Front/Scenes/TexturesManager.hpp"
 
+#include "Utils/TracyUtils.hpp"
+
 namespace Vox::Game
 {
 	void GameManager::Render()
@@ -25,20 +27,32 @@ namespace Vox::Game
 		onUpdate.AddCallBack(
 			[this]()
 			{
-				this->_iManager.HandlePerFrameInput();
-				if (this->_scManager.GetCurrentScene().GetName() == "World")
-					World::WorldManager::GetInstance().Update();
-				Vox::Front::Interfaces::InterfacesManager::GetInstance().Update();
+				{
+#ifdef TRACY_ENABLE
+					ZoneScopedNC("Handle Per Frame Input", tracy::Color::BlueViolet);
+#endif
+					this->_iManager.HandlePerFrameInput();
+				}
+				{
+#ifdef TRACY_ENABLE
+					ZoneScopedNC("WorldManager Update", tracy::Color::Violet);
+#endif
+					if (this->_scManager.GetCurrentScene().GetName() == "World")
+						World::WorldManager::GetInstance().Update();
+				}
+				{
+#ifdef TRACY_ENABLE
+					ZoneScopedNC("Interface Update", tracy::Color::DarkBlue);
+#endif
+					Vox::Front::Interfaces::InterfacesManager::GetInstance().Update();
+				}
 			});
 	}
 
 	void GameManager::InitGame()
 	{
 #ifdef DEBUG_WORLD
-		Game::GameManager::GetInstance().SetSaveData({
-			"1",
-			"1", "1"
-		});
+		Game::GameManager::GetInstance().SetSaveData({"1", "1", "1"});
 		Game::GameManager::GetInstance().GetSceneManager().LoadScene("World");
 		this->_scManager.ProcessSceneChange();
 #else

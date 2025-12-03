@@ -96,7 +96,7 @@ fclean: clean cleanShaders STB_clean FTP_Clean JsonLib_Clean
 
 $(TRACY_EXECUTABLE): CXXFLAGS += -DTRACY_ENABLE
 # $(TRACY_EXECUTABLE): CXXFLAGS += -DDEBUG_WORLD
-$(TRACY_EXECUTABLE): CXXFLAGS += -fsanitize=address
+# $(TRACY_EXECUTABLE): CXXFLAGS += -fsanitize=address
 $(TRACY_EXECUTABLE): tracy_lib_bld
 $(TRACY_EXECUTABLE): Libs += -LExt/Tracy/lib -lTracyClient
 $(TRACY_EXECUTABLE): $(OBJS)

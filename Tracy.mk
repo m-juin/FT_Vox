@@ -54,9 +54,12 @@ $(TRACY_LIB_TARGET): $(TRACY_CMAKE_CACHE)
 	cp -r $(TRACY_SOURCE)/public/* $(TRACY_TARGET)/include/
 
 tracy_profiler_bld:
-	docker compose -f $(MAKEFILE_DIR)Tools/TracyDocker/compose up --build
+	export HOST_IP=$$(hostname -I | awk '{print $$1}') && \
+	docker compose -f $(MAKEFILE_DIR)Tools/TracyDocker/compose.yml up --build
 
 launch_profiler:
+	export HOST_IP=$$(hostname -I | awk '{print $$1}') && \
+	printf "\033[1;37mConnect to host at address:\033[1;35m $$HOST_IP\033[0m\n"
 	docker exec -it tracy_docker /home/Tracy/tracy/profiler/build/tracy-profiler
 
 tracy_lib_bld: $(TRACY_LIB_TARGET)

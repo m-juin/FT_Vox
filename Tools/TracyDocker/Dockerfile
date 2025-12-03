@@ -20,4 +20,10 @@ RUN make -C profiler/build -j$(nproc)
 
 EXPOSE 8086
 
+RUN echo '#!/bin/bash' > /showIp.sh
+RUN echo 'printf "\033[1;37mConnect to host at address:\033[1;35m $HOST_IP\033[0m\n"' >> /showIp.sh
+RUN chmod +x /showIp.sh
+
+CMD ["/bin/bash", "-c", "/showIp.sh && tail -f /dev/null"]
+
 # CMD ["/start-tracy.sh"]

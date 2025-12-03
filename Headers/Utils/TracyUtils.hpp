@@ -3,6 +3,7 @@
 
 #ifdef TRACY_ENABLE
 #include "Tracy/include/tracy/TracyVulkan.hpp"
+#include "Tracy/include/common/TracyColor.hpp"
 #include <vulkan/vulkan.h>
 
 #include "LoggerLib/UtilityFunctions.hpp"
@@ -28,7 +29,7 @@ namespace Vox::TracyUtils
         {
             TracyVkDestroy(context);
             context = nullptr;
-             LoggerLib::LogInfo("Tracy context cleaned.");
+            LoggerLib::LogInfo("Tracy context cleaned.");
         }
     }
 

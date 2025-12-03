@@ -91,34 +91,51 @@ int main()
 
 	while (!glfwWindowShouldClose(Window::GetInstance().GetWindow()))
 	{
-		// ZoneScoped;
-// #ifdef TRACY_ENABLE
-// 		ZoneScoped;
-// #endif
+#ifdef TRACY_ENABLE
+		ZoneScopedNC("RenderLoop", tracy::Color::Aqua);
+#endif
 		VkFence fence = sync.GetCurrentFence();
 		uint32_t currentFrame = sync.GetCurrentFrame();
-		vkWaitForFences(device.GetLogicalDevice(), 1, &fence, VK_TRUE, UINT64_MAX);
-
-		uint32_t imageIndex = 0;
-		VkResult result = vkAcquireNextImageKHR(device.GetLogicalDevice(), swap.GetVulkanInstance(), UINT64_MAX,
-												sync.GetCurrentImageSemaphore(), VK_NULL_HANDLE, &imageIndex);
-		if (result == VK_ERROR_OUT_OF_DATE_KHR)
 		{
-			swap.RecreateSwapChain();
-			sync.GoToNextFrame();
-			continue;
+#ifdef TRACY_ENABLE
+			ZoneScopedNC("Waiting Fence", tracy::Color::Green1);
+#endif
+			vkWaitForFences(device.GetLogicalDevice(), 1, &fence, VK_TRUE, UINT64_MAX);
 		}
-		else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)
-			throw std::runtime_error("Failed to acquire swap chain image!");
-
-		vkResetFences(device.GetLogicalDevice(), 1, &fence);
-		gm.Update();
+		uint32_t imageIndex = 0;
+		{
+#ifdef TRACY_ENABLE
+			ZoneScopedNC("Acquire next image KHR", tracy::Color::Yellow1);
+#endif
+			VkResult result = vkAcquireNextImageKHR(device.GetLogicalDevice(), swap.GetVulkanInstance(), UINT64_MAX,
+													sync.GetCurrentImageSemaphore(), VK_NULL_HANDLE, &imageIndex);
+			if (result == VK_ERROR_OUT_OF_DATE_KHR)
+			{
+#ifdef TRACY_ENABLE
+				FrameMarkNamed("End Frame on rebuild Swapchain"); // Marque la fin de la frame
+#endif
+				swap.RecreateSwapChain();
+				sync.GoToNextFrame();
+				continue;
+			}
+			else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)
+				throw std::runtime_error("Failed to acquire swap chain image!");
+		}
+		{
+#ifdef TRACY_ENABLE
+			ZoneScopedNC("Frame Reset", tracy::Color::Orange1);
+#endif
+			vkResetFences(device.GetLogicalDevice(), 1, &fence);
+		}
+		{
+#ifdef TRACY_ENABLE
+			ZoneScopedNC("Update GameManager", tracy::Color::Green1);
+#endif
+			gm.Update();
+		}
 		pool.ResetBuffer(currentFrame);
 		pool.BeginRecord(imageIndex, currentFrame);
 		gm.Render();
-#ifdef TRACY_ENABLE
-		FrameMark; // Marque la fin de la frame
-#endif
 		pool.EndRecord(currentFrame);
 
 		VkSubmitInfo submitInfo{};
@@ -151,7 +168,7 @@ int main()
 
 		presentInfo.pImageIndices = &imageIndex;
 
-		result = vkQueuePresentKHR(swap.GetPresentQueue(), &presentInfo);
+		VkResult result = vkQueuePresentKHR(swap.GetPresentQueue(), &presentInfo);
 
 		if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR) // || FrameBufferResized
 		{
@@ -163,6 +180,9 @@ int main()
 		sync.GoToNextFrame();
 		glfwPollEvents();
 		gm.GetSceneManager().ProcessSceneChange();
+#ifdef TRACY_ENABLE
+		FrameMark; // Marque la fin de la frame
+#endif
 	}
 	vkDeviceWaitIdle(device.GetLogicalDevice());
 
