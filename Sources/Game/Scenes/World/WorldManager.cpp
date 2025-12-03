@@ -46,12 +46,28 @@ namespace Vox::Game::World
 				this->_gManager->SetPlayerPos(this->_playerChunck);
 				this->CheckDeletion();
 				this->CheckCreation();
-				this->_gManager->Update();
-				for (auto &_pair : this->_chuncks)
 				{
-					if (_pair.second)
+#ifdef TRACY_ENABLE
+					ZoneScopedNC("Generation Manager Update", tracy::Color::Green1);
+#endif
+					this->_gManager->Update();
+				}
+				{
+#ifdef TRACY_ENABLE
+					ZoneScopedNC("Chunck cluster Update", tracy::Color::Green1);
+#endif
+					for (auto &_pair : this->_chuncks)
 					{
-						_pair.second->Update();
+						if (_pair.second)
+						{
+#ifdef TRACY_ENABLE
+							std::stringstream ss;
+							ss << _pair.first;
+							ZoneScopedNC("Single Update Cluster", tracy::Color::White);
+							ZoneText(ss.str().c_str(), ss.str().size());
+#endif
+							_pair.second->Update();
+						}
 					}
 				}
 			});
@@ -94,9 +110,6 @@ namespace Vox::Game::World
 	void WorldManager::UpdateBuffer(const size_t &index, const Chuncks::VoxelChunck::ChunckUniform &uniform)
 	{
 #ifdef TRACY_ENABLE
-		// auto buffer = Front::Rendering::CommandsPool::GetInstance().GetBuffer(
-		// 	Front::Rendering::SyncObjects::GetInstance().GetCurrentFrame());
-		// TracyVkZone(Vox::TracyUtils::GetTracyContext(), buffer, "Drawing");
 		ZoneScoped;
 #endif
 
@@ -133,6 +146,9 @@ namespace Vox::Game::World
 
 	void WorldManager::CheckCreation()
 	{
+#ifdef TRACY_ENABLE
+		ZoneScopedNC("Chekc Chunk Creation Update", tracy::Color::Purple1);
+#endif
 		Utils::Defines::ChunckCoord effectiveCoord;
 		for (int x = -Utils::Defines::RENDER_DISTANCE; x < Utils::Defines::RENDER_DISTANCE; x++)
 		{
@@ -174,6 +190,9 @@ namespace Vox::Game::World
 	}
 	void WorldManager::CheckDeletion()
 	{
+#ifdef TRACY_ENABLE
+		ZoneScopedNC("Check Chunck Deletion", tracy::Color::Aquamarine);
+#endif
 		std::vector<Utils::Defines::ChunckCoord> toDelete;
 		for (auto _pair : this->_chuncks)
 		{
@@ -191,6 +210,9 @@ namespace Vox::Game::World
 
 	void WorldManager::UpdatePlayerPos()
 	{
+#ifdef TRACY_ENABLE
+		ZoneScopedNC("Update Player Pos Update", tracy::Color::VioletRed);
+#endif
 		auto playerPos = _camera.GetPosition();
 		const Utils::Defines::ChunckCoord playerCoord =
 			Utils::Defines::ChunckCoord(std::floor(playerPos[0] / Utils::Defines::CHUNCK_SIZE),

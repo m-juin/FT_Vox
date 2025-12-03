@@ -13,6 +13,8 @@
 #include "Game/Scenes/World/Chuncks/Operations.hpp"
 #include "Game/Scenes/World/Generation/ChunkOverflowManager.hpp"
 
+#include "Utils/TracyUtils.hpp"
+
 namespace Vox::Game::World::Chuncks
 {
 
@@ -324,11 +326,23 @@ namespace Vox::Game::World::Chuncks
 			{
 				// if (this->GetGenerationState() != Vox::Game::Generation::E_GenerationState::End)
 				// 	return;
-				this->UpdateClusterIfNeeded();
+
+				{
+#ifdef TRACY_ENABLE
+					ZoneScopedNC("Update cluster if Needed", tracy::Color::Yellow1);
+#endif
+					this->UpdateClusterIfNeeded();
+				}
+
 				for (auto ch : this->_clusterContent)
 				{
 					if (ch)
 					{
+#ifdef TRACY_ENABLE
+						ZoneScopedNC("Chunk Update", tracy::Color::Green1);
+						// auto chunkY = ;
+						ZoneValue(ch->GetChunckPosition()[1]);
+#endif
 						ch->Update();
 					}
 				}
