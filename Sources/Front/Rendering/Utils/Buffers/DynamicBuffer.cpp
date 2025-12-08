@@ -18,13 +18,22 @@ namespace Vox::Front::Rendering::Utils::Buffers
 
 	DynamicBuffer::~DynamicBuffer()
 	{
+		if (this->_buffers.size() == 0)
+			return ;
 		vkQueueWaitIdle(SwapChain::GetInstance().GetGraphicQueue());
+		CleanUp();
+
+	}
+
+	void DynamicBuffer::CleanUp()
+	{
 		VkDevice &device = Device::GetInstance().GetLogicalDevice();
 		for (size_t i = 0; i < _buffers.size(); i++)
 		{
 			vkDestroyBuffer(device, _buffers[i], nullptr);
 			vkFreeMemory(device, _memories[i], nullptr);
 		}
+		this->_buffers.clear();
 	}
 
 	void DynamicBuffer::Create(void *initialData)

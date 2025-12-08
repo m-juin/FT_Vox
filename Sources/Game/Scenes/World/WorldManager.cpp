@@ -14,6 +14,8 @@
 
 #include "Utils/TracyUtils.hpp"
 
+#include "Game/Scenes/World/Generation/BuffersCleanupManager.hpp"
+
 namespace Vox::Game::World
 {
 	WorldManager::WorldManager(const Scenes::Menu::Saves::WorldData &wd)
@@ -71,7 +73,11 @@ namespace Vox::Game::World
 					}
 				}
 			});
-	}
+	
+			this->onLateUpdate.AddCallBack([this](){
+				this->_gManager->GetCleanupManager()->ProcessFrameCleanup();
+			});
+		}
 
 	WorldManager::~WorldManager() {}
 

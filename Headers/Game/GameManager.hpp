@@ -3,6 +3,7 @@
 
 #include "Utils/Singleton.hpp"
 #include "Utils/AUpdatable.hpp"
+#include "Utils/ALateUpdatable.hpp"
 
 #include "Front/Scenes/ScenesManager.hpp"
 #include "Game/InputManager.hpp"
@@ -26,7 +27,7 @@ namespace Vox::Game
     } // namespace Generation
     
     class ThreadManager;
-    class GameManager : public Vox::Utils::Singleton<GameManager>, public Vox::Utils::AUpdatable
+    class GameManager : public Vox::Utils::Singleton<GameManager>, public Vox::Utils::AUpdatable, public Vox::Utils::ALateUpdatable
     {
         friend class Vox::Utils::Singleton<GameManager>;
 

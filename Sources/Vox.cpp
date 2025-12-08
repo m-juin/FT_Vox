@@ -137,6 +137,7 @@ int main()
 		pool.BeginRecord(imageIndex, currentFrame);
 		gm.Render();
 		pool.EndRecord(currentFrame);
+		gm.LateUpdate();
 
 		VkSubmitInfo submitInfo{};
 		submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;

@@ -19,6 +19,7 @@
 #include "Game/Scenes/World/Skybox/SkyBox.hpp"
 
 #include "Utils/AUpdatable.hpp"
+#include "Utils/ALateUpdatable.hpp"
 
 #include "./Generation/BufferManager.hpp"
 #include "./Generation/GenerationManager.hpp"
@@ -30,7 +31,7 @@ namespace Vox::Game::Scenes::World
 
 namespace Vox::Game::World
 {
-	class WorldManager : public virtual Vox::Utils::AUpdatable
+	class WorldManager : public virtual Vox::Utils::AUpdatable,public virtual Vox::Utils::ALateUpdatable
 	{
 		public:
 			WorldManager() = delete;

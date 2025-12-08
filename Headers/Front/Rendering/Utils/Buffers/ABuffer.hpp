@@ -17,6 +17,7 @@ namespace Vox::Front::Rendering::Utils::Buffers
 
             virtual void Create(void *initialData) = 0;
             virtual void Update(void *newData, VkDeviceSize newDataSize) = 0;
+            virtual void CleanUp() = 0;
 
             VkBuffer &GetBuffer(size_t frame) {return _buffers[frame];};
 

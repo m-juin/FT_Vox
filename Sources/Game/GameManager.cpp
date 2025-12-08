@@ -47,6 +47,12 @@ namespace Vox::Game
 					Vox::Front::Interfaces::InterfacesManager::GetInstance().Update();
 				}
 			});
+
+		onLateUpdate.AddCallBack([this](){
+			auto &sc = this->_scManager.GetCurrentScene();
+			if (sc.GetName() == "World")
+				static_cast<Scenes::World::Sc_World *>(&sc)->GetWorldManager().LateUpdate();
+		});
 	}
 
 	void GameManager::InitGame()

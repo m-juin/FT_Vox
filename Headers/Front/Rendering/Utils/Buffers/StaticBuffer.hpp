@@ -13,7 +13,7 @@ namespace Vox::Front::Rendering::Utils::Buffers
     
             void Create(void *initialData) override;
             void Update(void *newData, VkDeviceSize newDataSize) override;
-
+            void CleanUp() override {};
         private:
             /* private */
     

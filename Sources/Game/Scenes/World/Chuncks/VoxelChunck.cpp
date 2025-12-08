@@ -24,6 +24,10 @@
 #include "Game/Datas/Biomes.hpp"
 
 #include "Front/Scenes/TexturesManager.hpp"
+#include "Utils/TracyUtils.hpp"
+
+#include "Game/Scenes/World/Generation/BuffersCleanupManager.hpp"
+
 
 namespace Vox::Game::World::Chuncks
 {
@@ -323,42 +327,70 @@ namespace Vox::Game::World::Chuncks
 
 	void VoxelChunck::DeleteBuffers()
 	{
+		auto cM = World::WorldManager::GetInstance().GetGenerationManager().GetCleanupManager();
+#ifdef TRACY_ENABLE
+		ZoneScopedNC("Buffers Deletion", tracy::Color::Red);
+#endif
 		if (this->B_IndexOpaque)
 		{
-			delete this->B_IndexOpaque;
+			cM->RequestCleanup(this->B_IndexOpaque);
+#ifdef TRACY_ENABLE
+		ZoneScopedNC("B indexOpaque", tracy::Color::Red1);
+#endif
 			this->B_IndexOpaque = nullptr;
 		}
 		if (this->B_VertexOpaque)
 		{
-			delete this->B_VertexOpaque;
+#ifdef TRACY_ENABLE
+		ZoneScopedNC("B vertexOpaque", tracy::Color::Red2);
+#endif
+			cM->RequestCleanup(this->B_VertexOpaque);
 			this->B_VertexOpaque = nullptr;
 		}
 		if (this->B_VertexTransparent)
 		{
-			delete this->B_VertexTransparent;
+#ifdef TRACY_ENABLE
+		ZoneScopedNC("B VertexTrans", tracy::Color::Red3);
+#endif
+			cM->RequestCleanup(this->B_VertexTransparent);
 			this->B_VertexTransparent = nullptr;
 		}
 		if (this->B_IndexTransparent)
 		{
-			delete this->B_IndexTransparent;
+#ifdef TRACY_ENABLE
+		ZoneScopedNC("B indexTrans", tracy::Color::Red4);
+#endif
+			cM->RequestCleanup(this->B_IndexTransparent);
 			this->B_IndexTransparent = nullptr;
 		}
 	}
 
 	void VoxelChunck::UpdateVisibility()
 	{
+#ifdef TRACY_ENABLE
+		ZoneScopedNC("Chunk visibility update", tracy::Color::SeaGreen3);
+#endif
 		this->isVisible = this->IsOnFrustum(Game::World::WorldManager::GetCamera().GetFrustum());
 	}
 
 	void VoxelChunck::UpdateBufferObject()
 	{
+#ifdef TRACY_ENABLE
+		ZoneScopedNC("Buffer Object update", tracy::Color::Green4);
+#endif
 		if (this->isVisible == false && (this->B_IndexOpaque != nullptr || this->B_IndexTransparent != nullptr))
 		{
+#ifdef TRACY_ENABLE
+			ZoneScopedNC("buffer Deletion", tracy::Color::Green2);
+#endif
 			if (this->_bufferIndex < Utils::Defines::CHUNCK_AMOUNT)
 			{
 				World::WorldManager::GetInstance().ReleaseChunkBuffer(this->_bufferIndex);
 				this->_isDirty[0] = false;
 				this->_isDirty[1] = false;
+#ifdef TRACY_ENABLE
+				ZoneScopedNC("release buffer", tracy::Color::SkyBlue1);
+#endif
 			}
 			this->_bufferIndex = Utils::Defines::CHUNCK_AMOUNT;
 			this->DeleteBuffers();
@@ -366,13 +398,20 @@ namespace Vox::Game::World::Chuncks
 		}
 		else if (this->isVisible == true && (this->B_IndexOpaque == nullptr && this->B_IndexTransparent == nullptr))
 		{
+#ifdef TRACY_ENABLE
+			ZoneScopedNC("refresh buffer", tracy::Color::SkyBlue2);
+#endif
 			if (this->_bufferIndex >= Utils::Defines::CHUNCK_AMOUNT)
+			{
+#ifdef TRACY_ENABLE
+				ZoneScopedNC("Request buffer", tracy::Color::SkyBlue1);
+#endif
 				this->_bufferIndex = World::WorldManager::GetInstance().RequestChunkBuffer();
+			}
 			if (this->_bufferIndex >= Utils::Defines::CHUNCK_AMOUNT)
 			{
 				if (this->_bufferIndex > Utils::Defines::CHUNCK_AMOUNT)
 					LoggerLib::LogDebug("Trying To Refresh Buffer but too big: ", this->_bufferIndex);
-
 				return;
 			}
 			// LoggerLib::LogDebug("Trying To Refresh Buffer");
