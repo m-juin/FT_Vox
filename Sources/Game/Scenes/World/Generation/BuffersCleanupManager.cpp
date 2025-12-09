@@ -2,6 +2,7 @@
 
 #include "Front/Rendering/Device.hpp"
 #include "Front/Rendering/SyncObjects.hpp"
+#include "Utils/TracyUtils.hpp"
 
 #include <algorithm>
 
@@ -23,6 +24,7 @@ namespace Vox::World::Generation
         });
         if (it == this->toDelete.end())
 		    this->toDelete.push_back({buffer});
+		LoggerLib::LogDebug("Adding Buffer Memory To Delete: ", this->toDelete.size());
 	}
 
 	void BuffersCleanupManager::ProcessFrameCleanup()
@@ -41,5 +43,6 @@ namespace Vox::World::Generation
 				it++;
 			}
 		}
+		LoggerLib::LogDebug("Buffer Memory To Delete: ", this->toDelete.size());
 	}
 } // namespace Vox::World::Generation

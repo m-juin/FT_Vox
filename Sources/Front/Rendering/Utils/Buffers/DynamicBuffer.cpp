@@ -5,6 +5,7 @@
 #include "Front/Rendering/SwapChain.hpp"
 #include "Front/Rendering/SyncObjects.hpp"
 
+#include "Utils/TracyUtils.hpp"
 #include <cstring>
 
 namespace Vox::Front::Rendering::Utils::Buffers
@@ -19,10 +20,9 @@ namespace Vox::Front::Rendering::Utils::Buffers
 	DynamicBuffer::~DynamicBuffer()
 	{
 		if (this->_buffers.size() == 0)
-			return ;
+			return;
 		vkQueueWaitIdle(SwapChain::GetInstance().GetGraphicQueue());
 		CleanUp();
-
 	}
 
 	void DynamicBuffer::CleanUp()
@@ -38,6 +38,7 @@ namespace Vox::Front::Rendering::Utils::Buffers
 
 	void DynamicBuffer::Create(void *initialData)
 	{
+		ZoneScopedNC("dBuffer creation", tracy::Color::LawnGreen);
 		Device &device = Device::GetInstance();
 
 		VkBufferCreateInfo bufferInfo = {};
@@ -48,6 +49,7 @@ namespace Vox::Front::Rendering::Utils::Buffers
 
 		for (auto &buffer : _buffers)
 		{
+			ZoneScopedNC("object creation ", tracy::Color::LawnGreen);
 			if (vkCreateBuffer(device.GetLogicalDevice(), &bufferInfo, nullptr, &buffer) != VK_SUCCESS)
 			{
 				throw std::runtime_error("Échec de la création du tampon dynamique");
@@ -66,16 +68,29 @@ namespace Vox::Front::Rendering::Utils::Buffers
 
 		for (size_t i = 0; i < _buffers.size(); i++)
 		{
-			if (vkAllocateMemory(device.GetLogicalDevice(), &allocInfo, nullptr, &_memories[i]) != VK_SUCCESS)
+			ZoneScopedNC("dBuffer memory set ", tracy::Color::GreenYellow);
 			{
-				throw std::runtime_error("Échec de l'allocation de mémoire");
+				ZoneScopedNC("dBuffer memory allocation ", tracy::Color::GreenYellow);
+				if (vkAllocateMemory(device.GetLogicalDevice(), &allocInfo, nullptr, &_memories[i]) != VK_SUCCESS)
+				{
+					throw std::runtime_error("Échec de l'allocation de mémoire");
+				}
 			}
-			vkBindBufferMemory(device.GetLogicalDevice(), _buffers[i], _memories[i], 0);
-			vkMapMemory(device.GetLogicalDevice(), _memories[i], 0, _size, 0, &_mappedMemories[i]);
-			if (initialData)
-				std::memcpy(_mappedMemories[i], initialData, this->_size);
-			else
-				std::memset(_mappedMemories[i], 0, this->_size);
+			{
+				ZoneScopedNC("dBuffer memory binding ", tracy::Color::GreenYellow);
+				vkBindBufferMemory(device.GetLogicalDevice(), _buffers[i], _memories[i], 0);
+			}
+			{
+				ZoneScopedNC("dBuffer memory mapping ", tracy::Color::GreenYellow);
+				vkMapMemory(device.GetLogicalDevice(), _memories[i], 0, _size, 0, &_mappedMemories[i]);
+			}
+			{
+				ZoneScopedNC("dBuffer memory data copy ", tracy::Color::GreenYellow);
+				if (initialData)
+					std::memcpy(_mappedMemories[i], initialData, this->_size);
+				else
+					std::memset(_mappedMemories[i], 0, this->_size);
+			}
 		}
 	}
 
