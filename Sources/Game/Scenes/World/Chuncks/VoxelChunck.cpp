@@ -28,7 +28,6 @@
 
 #include "Game/Scenes/World/Generation/BuffersCleanupManager.hpp"
 
-
 namespace Vox::Game::World::Chuncks
 {
 	VoxelChunck::VoxelChunck(const Vector3Int &defaultPos)
@@ -287,13 +286,17 @@ namespace Vox::Game::World::Chuncks
 
 	void VoxelChunck::RefreshBuffers()
 	{
+#ifdef TRACY_ENABLE
 		ZoneScopedNC("Refresh buffers", tracy::Color::AliceBlue);
+#endif
 		if (vertexOpaque.size() != 0)
 		{
 			this->indexCountOpaque = indexOpaque.size();
 			if (this->B_IndexOpaque == nullptr)
 			{
+#ifdef TRACY_ENABLE
 				ZoneScopedNC("Create opaque buffer", tracy::Color::AliceBlue);
+#endif
 				this->B_IndexOpaque =
 					new dbuffer(2, indexOpaque.size() * sizeof(uint16_t), VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
 				this->B_VertexOpaque =
@@ -303,7 +306,9 @@ namespace Vox::Game::World::Chuncks
 			}
 			else
 			{
+#ifdef TRACY_ENABLE
 				ZoneScopedNC("Update opaque buffer", tracy::Color::AliceBlue);
+#endif
 				this->B_IndexOpaque->Update(indexOpaque.data(), indexCountOpaque * sizeof(uint16_t));
 				this->B_VertexOpaque->Update(vertexOpaque.data(), vertexOpaque.size() * sizeof(Vertex));
 			}
@@ -313,7 +318,9 @@ namespace Vox::Game::World::Chuncks
 			this->indexCountTransparent = indexTransparent.size();
 			if (this->B_IndexTransparent == nullptr)
 			{
+#ifdef TRACY_ENABLE
 				ZoneScopedNC("Create transparent buffer", tracy::Color::AliceBlue);
+#endif
 				this->B_IndexTransparent =
 					new dbuffer(2, indexTransparent.size() * sizeof(uint16_t), VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
 				this->B_VertexTransparent =
@@ -323,7 +330,9 @@ namespace Vox::Game::World::Chuncks
 			}
 			else
 			{
+#ifdef TRACY_ENABLE
 				ZoneScopedNC("update transparent buffer", tracy::Color::AliceBlue);
+#endif
 				this->B_IndexTransparent->Update(indexTransparent.data(), indexCountTransparent * sizeof(uint16_t));
 				this->B_VertexTransparent->Update(vertexTransparent.data(), vertexTransparent.size() * sizeof(Vertex));
 			}
@@ -340,14 +349,14 @@ namespace Vox::Game::World::Chuncks
 		{
 			cM->RequestCleanup(this->B_IndexOpaque);
 #ifdef TRACY_ENABLE
-		ZoneScopedNC("B indexOpaque", tracy::Color::Red1);
+			ZoneScopedNC("B indexOpaque", tracy::Color::Red1);
 #endif
 			this->B_IndexOpaque = nullptr;
 		}
 		if (this->B_VertexOpaque)
 		{
 #ifdef TRACY_ENABLE
-		ZoneScopedNC("B vertexOpaque", tracy::Color::Red2);
+			ZoneScopedNC("B vertexOpaque", tracy::Color::Red2);
 #endif
 			cM->RequestCleanup(this->B_VertexOpaque);
 			this->B_VertexOpaque = nullptr;
@@ -355,7 +364,7 @@ namespace Vox::Game::World::Chuncks
 		if (this->B_VertexTransparent)
 		{
 #ifdef TRACY_ENABLE
-		ZoneScopedNC("B VertexTrans", tracy::Color::Red3);
+			ZoneScopedNC("B VertexTrans", tracy::Color::Red3);
 #endif
 			cM->RequestCleanup(this->B_VertexTransparent);
 			this->B_VertexTransparent = nullptr;
@@ -363,7 +372,7 @@ namespace Vox::Game::World::Chuncks
 		if (this->B_IndexTransparent)
 		{
 #ifdef TRACY_ENABLE
-		ZoneScopedNC("B indexTrans", tracy::Color::Red4);
+			ZoneScopedNC("B indexTrans", tracy::Color::Red4);
 #endif
 			cM->RequestCleanup(this->B_IndexTransparent);
 			this->B_IndexTransparent = nullptr;
