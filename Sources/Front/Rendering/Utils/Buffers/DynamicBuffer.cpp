@@ -159,7 +159,10 @@ namespace Vox::Front::Rendering::Utils::Buffers
 			}
 		}
 
-		std::memcpy(_mappedMemories[nextFrame], newData, newDataSize);
+		for (size_t i = 0; i < _mappedMemories.size(); i++)
+		{
+			std::memcpy(_mappedMemories[i], newData, newDataSize);
+		}
 	}
 
 	void DynamicBuffer::UpdateAtOffset(size_t frameIndex, size_t offset, void *newData, VkDeviceSize dataSize)
@@ -172,4 +175,11 @@ namespace Vox::Front::Rendering::Utils::Buffers
 		std::memcpy(reinterpret_cast<char *>(_mappedMemories[frameIndex]) + offset, newData, dataSize);
 	}
 
+	void DynamicBuffer::Clear()
+	{
+		for (size_t i = 0; i < _mappedMemories.size(); i++)
+		{
+			std::memset(_mappedMemories[i], 0, _size);
+		}
+	}
 } // namespace Vox::Front::Rendering::Utils::Buffers

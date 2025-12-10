@@ -26,6 +26,7 @@
 #include "Front/Scenes/TexturesManager.hpp"
 #include "Utils/TracyUtils.hpp"
 
+#include "Game/Scenes/World/Generation/BufferMemoryManager.hpp"
 #include "Game/Scenes/World/Generation/BuffersCleanupManager.hpp"
 
 namespace Vox::Game::World::Chuncks
@@ -42,11 +43,11 @@ namespace Vox::Game::World::Chuncks
 		  _chunckPos(defaultPos)
 	{
 		this->_bufferIndex = CHUNCK_AMOUNT;
-		this->B_IndexOpaque = nullptr;
-		this->B_VertexOpaque = nullptr;
+		this->_mIndexOpaque = nullptr;
+		this->_mIndexTransparent = nullptr;
 
-		this->B_VertexTransparent = nullptr;
-		this->B_IndexTransparent = nullptr;
+		this->_mVertOpaque = nullptr;
+		this->_mVertTransparent = nullptr;
 
 		indexCountOpaque = 0;
 		indexCountTransparent = 0;
@@ -60,7 +61,7 @@ namespace Vox::Game::World::Chuncks
 				if (this->_needbufferUpdate[nFrame] == true)
 				{
 					this->RefreshBuffers();
-					this->_needbufferUpdate[nFrame].flip();
+					// this->_needbufferUpdate[nFrame].flip();
 				}
 			});
 	}
@@ -286,140 +287,129 @@ namespace Vox::Game::World::Chuncks
 
 	void VoxelChunck::RefreshBuffers()
 	{
-#ifdef TRACY_ENABLE
-		ZoneScopedNC("Refresh buffers", tracy::Color::AliceBlue);
-#endif
+		auto mManager = Game::World::WorldManager::GetInstance().GetGenerationManager().GetMemoryManager();
 		if (vertexOpaque.size() != 0)
 		{
+			auto prev = this->indexCountOpaque;
 			this->indexCountOpaque = indexOpaque.size();
-			if (this->B_IndexOpaque == nullptr)
+			if (prev != 0 && prev != this->indexCountOpaque)
 			{
-#ifdef TRACY_ENABLE
-				ZoneScopedNC("Create opaque buffer", tracy::Color::AliceBlue);
-#endif
-				this->B_IndexOpaque =
-					new dbuffer(2, indexOpaque.size() * sizeof(uint16_t), VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
-				this->B_VertexOpaque =
-					new dbuffer(2, vertexOpaque.size() * sizeof(Vertex), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
-				this->B_IndexOpaque->Create(indexOpaque.data());
-				this->B_VertexOpaque->Create(vertexOpaque.data());
+				LoggerLib::LogError("Should Not Happen");
 			}
-			else
+			if (this->_mIndexOpaque == nullptr)
 			{
-#ifdef TRACY_ENABLE
-				ZoneScopedNC("Update opaque buffer", tracy::Color::AliceBlue);
-#endif
-				this->B_IndexOpaque->Update(indexOpaque.data(), indexCountOpaque * sizeof(uint16_t));
-				this->B_VertexOpaque->Update(vertexOpaque.data(), vertexOpaque.size() * sizeof(Vertex));
+				this->_mIndexOpaque =
+					mManager->GetBufferOfSize(indexOpaque.size() * sizeof(uint16_t), VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
+				if (this->_mIndexOpaque == nullptr)
+					return;
+				this->_mVertOpaque =
+					mManager->GetBufferOfSize(vertexOpaque.size() * sizeof(Vertex), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
+				if (this->_mVertOpaque == nullptr)
+				{
+					mManager->ReleaseBuffer(this->_mIndexOpaque);
+					this->_mIndexOpaque = nullptr;
+				}
+			}
+			{
+				if (this->_mIndexOpaque != nullptr)
+				{
+					this->_mIndexOpaque->buffer->Update(indexOpaque.data(), indexCountOpaque * sizeof(uint16_t));
+					this->_mVertOpaque->buffer->Update(vertexOpaque.data(), vertexOpaque.size() * sizeof(Vertex));
+				}
 			}
 		}
 		if (vertexTransparent.size() != 0)
 		{
 			this->indexCountTransparent = indexTransparent.size();
-			if (this->B_IndexTransparent == nullptr)
+			if (this->_mIndexTransparent == nullptr)
 			{
-#ifdef TRACY_ENABLE
-				ZoneScopedNC("Create transparent buffer", tracy::Color::AliceBlue);
-#endif
-				this->B_IndexTransparent =
-					new dbuffer(2, indexTransparent.size() * sizeof(uint16_t), VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
-				this->B_VertexTransparent =
-					new dbuffer(2, vertexTransparent.size() * sizeof(Vertex), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
-				this->B_IndexTransparent->Create(indexTransparent.data());
-				this->B_VertexTransparent->Create(vertexTransparent.data());
+				this->_mIndexTransparent = mManager->GetBufferOfSize(indexTransparent.size() * sizeof(uint16_t),
+																	 VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
+				if (this->_mIndexTransparent == nullptr)
+					return;
+				this->_mVertTransparent = mManager->GetBufferOfSize(vertexTransparent.size() * sizeof(Vertex),
+																	VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
+				if (this->_mVertTransparent == nullptr)
+				{
+					mManager->ReleaseBuffer(this->_mIndexTransparent);
+					this->_mIndexTransparent = nullptr;
+					if (this->_mIndexOpaque != nullptr)
+					{
+						mManager->ReleaseBuffer(this->_mIndexOpaque);
+						_mIndexOpaque = nullptr;
+					}
+					if (this->_mVertOpaque != nullptr)
+					{
+						mManager->ReleaseBuffer(this->_mVertOpaque);
+						_mVertOpaque = nullptr;
+					}
+					return ;
+				}
 			}
-			else
 			{
-#ifdef TRACY_ENABLE
-				ZoneScopedNC("update transparent buffer", tracy::Color::AliceBlue);
-#endif
-				this->B_IndexTransparent->Update(indexTransparent.data(), indexCountTransparent * sizeof(uint16_t));
-				this->B_VertexTransparent->Update(vertexTransparent.data(), vertexTransparent.size() * sizeof(Vertex));
+				if (this->_mIndexTransparent != nullptr)
+				{
+					this->_mIndexTransparent->buffer->Update(indexTransparent.data(), indexCountTransparent * sizeof(uint16_t));
+					this->_mVertTransparent->buffer->Update(vertexTransparent.data(), vertexTransparent.size() * sizeof(Vertex));
+				}
 			}
 		}
+		_needbufferUpdate.flip();
 	}
 
 	void VoxelChunck::DeleteBuffers()
 	{
-		auto cM = World::WorldManager::GetInstance().GetGenerationManager().GetCleanupManager();
-#ifdef TRACY_ENABLE
-		ZoneScopedNC("Buffers Deletion", tracy::Color::Red);
-#endif
-		if (this->B_IndexOpaque)
+		auto mManager = World::WorldManager::GetInstance().GetGenerationManager().GetMemoryManager();
+
+		if (this->_mIndexOpaque != nullptr)
 		{
-			cM->RequestCleanup(this->B_IndexOpaque);
-#ifdef TRACY_ENABLE
-			ZoneScopedNC("B indexOpaque", tracy::Color::Red1);
-#endif
-			this->B_IndexOpaque = nullptr;
+			auto ptr = this->_mIndexOpaque;
+			this->_mIndexOpaque = nullptr;
+			mManager->ReleaseBuffer(ptr);
 		}
-		if (this->B_VertexOpaque)
+		if (this->_mVertOpaque != nullptr)
 		{
-#ifdef TRACY_ENABLE
-			ZoneScopedNC("B vertexOpaque", tracy::Color::Red2);
-#endif
-			cM->RequestCleanup(this->B_VertexOpaque);
-			this->B_VertexOpaque = nullptr;
+			auto ptr = this->_mVertOpaque;
+			this->_mVertOpaque = nullptr;
+			mManager->ReleaseBuffer(ptr);
 		}
-		if (this->B_VertexTransparent)
+		if (this->_mIndexTransparent != nullptr)
 		{
-#ifdef TRACY_ENABLE
-			ZoneScopedNC("B VertexTrans", tracy::Color::Red3);
-#endif
-			cM->RequestCleanup(this->B_VertexTransparent);
-			this->B_VertexTransparent = nullptr;
+			auto ptr = this->_mIndexTransparent;
+			this->_mIndexTransparent = nullptr;
+			mManager->ReleaseBuffer(ptr);
 		}
-		if (this->B_IndexTransparent)
+		if (this->_mVertTransparent)
 		{
-#ifdef TRACY_ENABLE
-			ZoneScopedNC("B indexTrans", tracy::Color::Red4);
-#endif
-			cM->RequestCleanup(this->B_IndexTransparent);
-			this->B_IndexTransparent = nullptr;
+			auto ptr = this->_mVertTransparent;
+			this->_mVertTransparent = nullptr;
+			mManager->ReleaseBuffer(ptr);
 		}
 	}
 
 	void VoxelChunck::UpdateVisibility()
 	{
-#ifdef TRACY_ENABLE
-		ZoneScopedNC("Chunk visibility update", tracy::Color::SeaGreen3);
-#endif
 		this->isVisible = this->IsOnFrustum(Game::World::WorldManager::GetCamera().GetFrustum());
 	}
 
 	void VoxelChunck::UpdateBufferObject()
 	{
-#ifdef TRACY_ENABLE
-		ZoneScopedNC("Buffer Object update", tracy::Color::Green4);
-#endif
-		if (this->isVisible == false && (this->B_IndexOpaque != nullptr || this->B_IndexTransparent != nullptr))
+		if (this->isVisible == false && (this->_mIndexOpaque != nullptr || this->_mIndexTransparent != nullptr))
 		{
-#ifdef TRACY_ENABLE
-			ZoneScopedNC("buffer Deletion", tracy::Color::Green2);
-#endif
 			if (this->_bufferIndex < Utils::Defines::CHUNCK_AMOUNT)
 			{
 				World::WorldManager::GetInstance().ReleaseChunkBuffer(this->_bufferIndex);
 				this->_isDirty[0] = false;
 				this->_isDirty[1] = false;
-#ifdef TRACY_ENABLE
-				ZoneScopedNC("release buffer", tracy::Color::SkyBlue1);
-#endif
 			}
 			this->_bufferIndex = Utils::Defines::CHUNCK_AMOUNT;
 			this->DeleteBuffers();
 			return;
 		}
-		else if (this->isVisible == true && (this->B_IndexOpaque == nullptr && this->B_IndexTransparent == nullptr))
+		else if (this->isVisible == true && (this->_mIndexOpaque == nullptr && this->_mIndexTransparent == nullptr))
 		{
-#ifdef TRACY_ENABLE
-			ZoneScopedNC("refresh buffer", tracy::Color::SkyBlue2);
-#endif
 			if (this->_bufferIndex >= Utils::Defines::CHUNCK_AMOUNT)
 			{
-#ifdef TRACY_ENABLE
-				ZoneScopedNC("Request buffer", tracy::Color::SkyBlue1);
-#endif
 				this->_bufferIndex = World::WorldManager::GetInstance().RequestChunkBuffer();
 			}
 			if (this->_bufferIndex >= Utils::Defines::CHUNCK_AMOUNT)
@@ -453,7 +443,7 @@ namespace Vox::Game::World::Chuncks
 			return false;
 		using namespace Front::Rendering;
 		auto frame = SyncObjects::GetInstance().GetCurrentFrame();
-		if ((this->B_IndexOpaque == nullptr && this->B_IndexTransparent == nullptr) || this->_isDirty[frame] == true ||
+		if ((this->_mIndexOpaque == nullptr && this->_mIndexTransparent == nullptr) || this->_isDirty[frame] == true ||
 			this->_bufferIndex == Utils::Defines::CHUNCK_AMOUNT)
 			return true;
 		uint32_t dynamicOffset = this->_bufferIndex * Utils::Vulkan::GetAlignedChunckSize();
@@ -468,8 +458,8 @@ namespace Vox::Game::World::Chuncks
 			// LoggerLib::LogDebug("Rendering opaque buffer at ", this->_bufferIndex);
 			vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->GetLayout(), 0, 1,
 									&pipeline->GetSet(frame), 1, &dynamicOffset);
-			vkCmdBindVertexBuffers(buffer, 0, 1, &this->B_VertexOpaque->GetBuffer(frame), &offset);
-			vkCmdBindIndexBuffer(buffer, this->B_IndexOpaque->GetBuffer(frame), 0, VK_INDEX_TYPE_UINT16);
+			vkCmdBindVertexBuffers(buffer, 0, 1, &this->_mVertOpaque->buffer->GetBuffer(frame), &offset);
+			vkCmdBindIndexBuffer(buffer, this->_mIndexOpaque->buffer->GetBuffer(frame), 0, VK_INDEX_TYPE_UINT16);
 			vkCmdDrawIndexed(buffer, indexCountOpaque, 1, 0, 0, 0);
 		}
 		else if (toRender == 1 && this->indexCountTransparent != 0)
@@ -482,8 +472,8 @@ namespace Vox::Game::World::Chuncks
 			// LoggerLib::LogDebug("Rendering transparent buffer at ", this->_bufferIndex);
 			vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->GetLayout(), 0, 1,
 									&pipeline->GetSet(frame), 1, &dynamicOffset);
-			vkCmdBindVertexBuffers(buffer, 0, 1, &this->B_VertexTransparent->GetBuffer(frame), &offset);
-			vkCmdBindIndexBuffer(buffer, this->B_IndexTransparent->GetBuffer(frame), 0, VK_INDEX_TYPE_UINT16);
+			vkCmdBindVertexBuffers(buffer, 0, 1, &this->_mVertTransparent->buffer->GetBuffer(frame), &offset);
+			vkCmdBindIndexBuffer(buffer, this->_mIndexTransparent->buffer->GetBuffer(frame), 0, VK_INDEX_TYPE_UINT16);
 			vkCmdDrawIndexed(buffer, indexCountTransparent, 1, 0, 0, 0);
 		}
 		return true;

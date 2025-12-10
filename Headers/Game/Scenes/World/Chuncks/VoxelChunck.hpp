@@ -2,29 +2,20 @@
 #define __VOXELCHUNCK_HPP__
 
 #include "MathGraphicalLib/Matrix/Matrix4.hpp"
-
 #include "Game/Scenes/World/Utils/Defines.hpp"
-
 #include "./E_GenerationState.hpp"
 #include "Game/Models/DynamicObject.hpp"
-
 #include <unordered_map>
-
 #include "Game/Scenes/World/Generation/ThreadObject.hpp"
-
 #include "./FacesData.hpp"
-
 #include "Spline/Spline.hpp"
-
 #include <bitset>
-
 #include "Game/Datas/TexturesData.hpp"
-
 #include "Game/Scenes/World/Generation/Utils.hpp"
-
 #include "./BlockData.hpp"
-
 #include "Front/Rendering/Frustum/BoxCollider.hpp"
+
+#include "Game/Scenes/World/Generation/BufferMemoryManager.hpp"
 
 namespace Vox::Game::Scenes::World::Player
 {
@@ -93,10 +84,14 @@ namespace Vox::Game::World::Chuncks
 
 			void BuildMesh();
 			size_t _bufferIndex;
-			dbuffer *B_VertexOpaque = nullptr;
-			dbuffer *B_IndexOpaque = nullptr;
-			dbuffer *B_VertexTransparent = nullptr;
-			dbuffer *B_IndexTransparent = nullptr;
+			std::shared_ptr<Game::Rendering::BufferMemory> _mVertOpaque;
+			std::shared_ptr<Game::Rendering::BufferMemory> _mIndexOpaque;
+			std::shared_ptr<Game::Rendering::BufferMemory> _mVertTransparent;
+			std::shared_ptr<Game::Rendering::BufferMemory> _mIndexTransparent;
+			// dbuffer *B_VertexOpaque = nullptr;
+			// dbuffer *B_IndexOpaque = nullptr;
+			// dbuffer *B_VertexTransparent = nullptr;
+			// dbuffer *B_IndexTransparent = nullptr;
 			void RefreshBuffers();
 			void DeleteBuffers();
 

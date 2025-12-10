@@ -74,9 +74,9 @@ namespace Vox::Game::World
 				}
 			});
 	
-			this->onLateUpdate.AddCallBack([this](){
-				this->_gManager->GetCleanupManager()->ProcessFrameCleanup();
-			});
+			// this->onLateUpdate.AddCallBack([this](){
+			// 	// this->_gManager->GetCleanupManager()->ProcessFrameCleanup();
+			// });
 		}
 
 	WorldManager::~WorldManager() {}

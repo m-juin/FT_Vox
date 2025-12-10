@@ -15,7 +15,8 @@ namespace Vox::Game::Generation
 	{
 		this->_oManager = std::make_unique<Generation::ChunkOverflowManager>();
 		this->_sManager = std::make_unique<Game::Datas::Structures::StructuresManager>();
-		this->_cleanupManager = std::make_unique<Vox::World::Generation::BuffersCleanupManager>();
+		// this->_cleanupManager = std::make_unique<Vox::World::Generation::BuffersCleanupManager>();
+		this->_mManager = std::make_unique<Vox::Game::Rendering::BufferMemoryManager>();
 		this->onUpdate.AddCallBack([this]() { this->UpdateGeneration(); });
 		this->onUpdate.AddCallBack([this]() { this->CheckForPoolRebuild();});
 	}
