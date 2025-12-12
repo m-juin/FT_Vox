@@ -88,14 +88,12 @@ namespace Vox::Game::World::Chuncks
 			std::shared_ptr<Game::Rendering::BufferMemory> _mIndexOpaque;
 			std::shared_ptr<Game::Rendering::BufferMemory> _mVertTransparent;
 			std::shared_ptr<Game::Rendering::BufferMemory> _mIndexTransparent;
-			// dbuffer *B_VertexOpaque = nullptr;
-			// dbuffer *B_IndexOpaque = nullptr;
-			// dbuffer *B_VertexTransparent = nullptr;
-			// dbuffer *B_IndexTransparent = nullptr;
 			void RefreshBuffers();
 			void DeleteBuffers();
 
 			void  UpdateVisibility();
+
+			void EnsureBuffer();
 
 			/* private */
 	};

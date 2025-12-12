@@ -8,6 +8,8 @@
 #include <unordered_map>
 #include <vector>
 
+#include "Utils/ALateUpdatable.hpp"
+
 namespace Vox::Game::Rendering
 {
 	using dbuffer = Front::Rendering::Utils::Buffers::DynamicBuffer;
@@ -22,17 +24,19 @@ namespace Vox::Game::Rendering
 			std::unique_ptr<dbuffer> buffer;
 			VkDeviceSize bufferSize;
 			const VkBufferUsageFlagBits usage;
+			uint8_t toRefreshFrame;
 			BufferMemory(std::unique_ptr<dbuffer> buf, VkDeviceSize size, VkBufferUsageFlagBits use)
 				: buffer(std::move(buf)), bufferSize(size), usage(use)
 			{
 			}
 	};
 
-	class BufferMemoryManager
+	class BufferMemoryManager : public virtual Vox::Utils::ALateUpdatable
 	{
 		private:
 			std::vector<std::shared_ptr<BufferMemory>> bufferPool;
 			std::vector<std::shared_ptr<BufferMemory>> freePool;
+			std::vector<std::shared_ptr<BufferMemory>> toDeletePool;
 			VkDeviceSize GetNextSize(VkDeviceSize);
 
 			std::vector<std::shared_ptr<BufferMemory>>::iterator FindAvalaibleMemory(VkDeviceSize,

@@ -6,6 +6,8 @@
 
 #include <algorithm>
 
+#include "LoggerLib/UtilityFunctions.hpp"
+
 namespace Vox::World::Generation
 {
 	BuffersCleanupManager::BuffersCleanupDatas::BuffersCleanupDatas(
@@ -24,7 +26,7 @@ namespace Vox::World::Generation
         });
         if (it == this->toDelete.end())
 		    this->toDelete.push_back({buffer});
-		LoggerLib::LogDebug("Adding Buffer Memory To Delete: ", this->toDelete.size());
+		// LoggerLib::LogDebug("Adding Buffer Memory To Delete: ", this->toDelete.size());
 	}
 
 	void BuffersCleanupManager::ProcessFrameCleanup()
@@ -43,6 +45,6 @@ namespace Vox::World::Generation
 				it++;
 			}
 		}
-		LoggerLib::LogDebug("Buffer Memory To Delete: ", this->toDelete.size());
+		// LoggerLib::LogDebug("Buffer Memory To Delete: ", this->toDelete.size());
 	}
 } // namespace Vox::World::Generation

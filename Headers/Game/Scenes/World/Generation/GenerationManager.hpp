@@ -2,6 +2,7 @@
 #define __GENERATIONMANAGER_HPP__
 
 #include "Utils/AUpdatable.hpp"
+#include "Utils/ALateUpdatable.hpp"
 #include <memory>
 #include <list>
 
@@ -22,7 +23,7 @@ namespace Vox::Game::World::Chuncks
 } // namespace Vox::Game::World::Chuncks
 namespace Vox::Game::Generation
 {
-	class GenerationManager : public virtual Vox::Utils::AUpdatable
+	class GenerationManager : public virtual Vox::Utils::AUpdatable, public virtual Vox::Utils::ALateUpdatable
 	{
 		public:
 			GenerationManager(const uint64_t seed);

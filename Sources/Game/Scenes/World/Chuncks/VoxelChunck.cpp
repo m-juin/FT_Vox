@@ -287,71 +287,27 @@ namespace Vox::Game::World::Chuncks
 
 	void VoxelChunck::RefreshBuffers()
 	{
-		auto mManager = Game::World::WorldManager::GetInstance().GetGenerationManager().GetMemoryManager();
+		this->EnsureBuffer();
+		// LoggerLib::LogInfo(this->_mIndexOpaque, " | ", this->_mVertOpaque, " | ", this->_mIndexTransparent, " | ", this->_mVertTransparent);
 		if (vertexOpaque.size() != 0)
 		{
-			auto prev = this->indexCountOpaque;
-			this->indexCountOpaque = indexOpaque.size();
-			if (prev != 0 && prev != this->indexCountOpaque)
+			if (this->_mIndexOpaque != nullptr)
 			{
-				LoggerLib::LogError("Should Not Happen");
-			}
-			if (this->_mIndexOpaque == nullptr)
-			{
-				this->_mIndexOpaque =
-					mManager->GetBufferOfSize(indexOpaque.size() * sizeof(uint16_t), VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
-				if (this->_mIndexOpaque == nullptr)
-					return;
-				this->_mVertOpaque =
-					mManager->GetBufferOfSize(vertexOpaque.size() * sizeof(Vertex), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
-				if (this->_mVertOpaque == nullptr)
-				{
-					mManager->ReleaseBuffer(this->_mIndexOpaque);
-					this->_mIndexOpaque = nullptr;
-				}
-			}
-			{
-				if (this->_mIndexOpaque != nullptr)
-				{
-					this->_mIndexOpaque->buffer->Update(indexOpaque.data(), indexCountOpaque * sizeof(uint16_t));
-					this->_mVertOpaque->buffer->Update(vertexOpaque.data(), vertexOpaque.size() * sizeof(Vertex));
-				}
+				// LoggerLib::LogInfo("Opaque Update, ", indexCountOpaque * sizeof(uint16_t), " | ",
+								//    vertexOpaque.size() * sizeof(Vertex), "\n\t", this->_mIndexOpaque->bufferSize, " | ",
+								//    this->_mVertOpaque->bufferSize);
+				this->_mIndexOpaque->buffer->Update(indexOpaque.data(), indexCountOpaque * sizeof(uint16_t));
+				this->_mVertOpaque->buffer->Update(vertexOpaque.data(), vertexOpaque.size() * sizeof(Vertex));
 			}
 		}
 		if (vertexTransparent.size() != 0)
 		{
-			this->indexCountTransparent = indexTransparent.size();
-			if (this->_mIndexTransparent == nullptr)
+			if (this->_mIndexTransparent != nullptr)
 			{
-				this->_mIndexTransparent = mManager->GetBufferOfSize(indexTransparent.size() * sizeof(uint16_t),
-																	 VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
-				if (this->_mIndexTransparent == nullptr)
-					return;
-				this->_mVertTransparent = mManager->GetBufferOfSize(vertexTransparent.size() * sizeof(Vertex),
-																	VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
-				if (this->_mVertTransparent == nullptr)
-				{
-					mManager->ReleaseBuffer(this->_mIndexTransparent);
-					this->_mIndexTransparent = nullptr;
-					if (this->_mIndexOpaque != nullptr)
-					{
-						mManager->ReleaseBuffer(this->_mIndexOpaque);
-						_mIndexOpaque = nullptr;
-					}
-					if (this->_mVertOpaque != nullptr)
-					{
-						mManager->ReleaseBuffer(this->_mVertOpaque);
-						_mVertOpaque = nullptr;
-					}
-					return ;
-				}
-			}
-			{
-				if (this->_mIndexTransparent != nullptr)
-				{
-					this->_mIndexTransparent->buffer->Update(indexTransparent.data(), indexCountTransparent * sizeof(uint16_t));
-					this->_mVertTransparent->buffer->Update(vertexTransparent.data(), vertexTransparent.size() * sizeof(Vertex));
-				}
+				this->_mIndexTransparent->buffer->Update(indexTransparent.data(),
+														 indexCountTransparent * sizeof(uint16_t));
+				this->_mVertTransparent->buffer->Update(vertexTransparent.data(),
+														vertexTransparent.size() * sizeof(Vertex));
 			}
 		}
 		_needbufferUpdate.flip();
@@ -392,6 +348,72 @@ namespace Vox::Game::World::Chuncks
 		this->isVisible = this->IsOnFrustum(Game::World::WorldManager::GetCamera().GetFrustum());
 	}
 
+	void VoxelChunck::EnsureBuffer()
+	{
+		auto mManager = Game::World::WorldManager::GetInstance().GetGenerationManager().GetMemoryManager();
+		if (vertexOpaque.size() != 0)
+		{
+			this->indexCountOpaque = indexOpaque.size();
+			size_t indexMemorySize = indexCountOpaque * sizeof(uint16_t);
+			size_t vertMemorySize = vertexOpaque.size() * sizeof(Vertex);
+			if (this->_mIndexOpaque != nullptr && indexMemorySize > this->_mIndexOpaque->bufferSize)
+			{
+				auto ptr = this->_mIndexOpaque;
+				this->_mIndexOpaque = nullptr;
+				mManager->ReleaseBuffer(ptr);
+			}
+			if (this->_mVertOpaque != nullptr && vertMemorySize > this->_mVertOpaque->bufferSize)
+			{
+				auto ptr = this->_mVertOpaque;
+				this->_mVertOpaque = nullptr;
+				mManager->ReleaseBuffer(ptr);
+			}
+			if (_mIndexOpaque == nullptr)
+				this->_mIndexOpaque = mManager->GetBufferOfSize(indexMemorySize, VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
+			if (_mIndexOpaque == nullptr)
+				return;
+			if (this->_mVertOpaque == nullptr)
+				this->_mVertOpaque = mManager->GetBufferOfSize(vertMemorySize, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
+			if (this->_mVertOpaque == nullptr)
+			{
+				mManager->ReleaseBuffer(this->_mIndexOpaque);
+				this->_mIndexOpaque = nullptr;
+				return;
+			}
+		}
+
+		if (vertexTransparent.size() != 0)
+		{
+			this->indexCountTransparent = indexTransparent.size();
+			size_t indexMemorySize = indexCountTransparent * sizeof(uint16_t);
+			size_t vertMemorySize = vertexTransparent.size() * sizeof(Vertex);
+			if (this->_mIndexTransparent != nullptr && indexMemorySize > this->_mIndexTransparent->bufferSize)
+			{
+				auto ptr = this->_mIndexTransparent;
+				this->_mIndexTransparent = nullptr;
+				mManager->ReleaseBuffer(ptr);
+			}
+			if (this->_mVertTransparent != nullptr && vertMemorySize > this->_mVertTransparent->bufferSize)
+			{
+				auto ptr = this->_mVertTransparent;
+				this->_mVertTransparent = nullptr;
+				mManager->ReleaseBuffer(ptr);
+			}
+			if (_mIndexTransparent == nullptr)
+				this->_mIndexTransparent = mManager->GetBufferOfSize(indexMemorySize, VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
+			if (_mIndexTransparent == nullptr)
+				return;
+			if (this->_mVertTransparent == nullptr)
+				this->_mVertTransparent = mManager->GetBufferOfSize(vertMemorySize, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
+			if (this->_mVertTransparent == nullptr)
+			{
+				mManager->ReleaseBuffer(this->_mIndexTransparent);
+				this->_mIndexTransparent = nullptr;
+				return;
+			}
+		}
+	}
+
 	void VoxelChunck::UpdateBufferObject()
 	{
 		if (this->isVisible == false && (this->_mIndexOpaque != nullptr || this->_mIndexTransparent != nullptr))
@@ -399,6 +421,7 @@ namespace Vox::Game::World::Chuncks
 			if (this->_bufferIndex < Utils::Defines::CHUNCK_AMOUNT)
 			{
 				World::WorldManager::GetInstance().ReleaseChunkBuffer(this->_bufferIndex);
+				// this->_bufferIndex = CHUNCK_BUFFER_AMOUNT;
 				this->_isDirty[0] = false;
 				this->_isDirty[1] = false;
 			}
@@ -415,10 +438,9 @@ namespace Vox::Game::World::Chuncks
 			if (this->_bufferIndex >= Utils::Defines::CHUNCK_AMOUNT)
 			{
 				if (this->_bufferIndex > Utils::Defines::CHUNCK_AMOUNT)
-					LoggerLib::LogDebug("Trying To Refresh Buffer but too big: ", this->_bufferIndex);
+					// LoggerLib::LogDebug("Trying To Refresh Buffer but too big: ", this->_bufferIndex);
 				return;
 			}
-			// LoggerLib::LogDebug("Trying To Refresh Buffer");
 			this->RefreshBuffers();
 			this->_isDirty[0] = true;
 			this->_isDirty[1] = true;
@@ -455,7 +477,7 @@ namespace Vox::Game::World::Chuncks
 			if (pipeline == nullptr)
 				return true;
 			VkDeviceSize offset = {0};
-			// LoggerLib::LogDebug("Rendering opaque buffer at ", this->_bufferIndex);
+			// // LoggerLib::LogDebug("Rendering opaque buffer at ", this->_bufferIndex);
 			vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->GetLayout(), 0, 1,
 									&pipeline->GetSet(frame), 1, &dynamicOffset);
 			vkCmdBindVertexBuffers(buffer, 0, 1, &this->_mVertOpaque->buffer->GetBuffer(frame), &offset);
@@ -469,7 +491,7 @@ namespace Vox::Game::World::Chuncks
 			if (pipeline == nullptr)
 				return true;
 			VkDeviceSize offset = {0};
-			// LoggerLib::LogDebug("Rendering transparent buffer at ", this->_bufferIndex);
+			// // LoggerLib::LogDebug("Rendering transparent buffer at ", this->_bufferIndex);
 			vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->GetLayout(), 0, 1,
 									&pipeline->GetSet(frame), 1, &dynamicOffset);
 			vkCmdBindVertexBuffers(buffer, 0, 1, &this->_mVertTransparent->buffer->GetBuffer(frame), &offset);

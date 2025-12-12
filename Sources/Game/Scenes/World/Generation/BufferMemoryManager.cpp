@@ -21,13 +21,13 @@ namespace Vox::Game::Rendering
 	std::vector<std::shared_ptr<BufferMemory>>::iterator BufferMemoryManager::FindAvalaibleMemory(
 		VkDeviceSize requiredSize, VkBufferUsageFlagBits usage)
 	{
-		// LoggerLib::LogDebug("Searching buffer: requiredSize=", requiredSize, ", usage=", static_cast<int>(usage));
-		// LoggerLib::LogDebug("FreePool has ", freePool.size(), " buffers");
+		// // LoggerLib::LogDebug("Searching buffer: requiredSize=", requiredSize, ", usage=", static_cast<int>(usage));
+		// // LoggerLib::LogDebug("FreePool has ", freePool.size(), " buffers");
 
 		// size_t count = 0;
 		// for (const auto &memory : freePool)
 		// {
-		// 	LoggerLib::LogDebug("  Buffer ", count++, ": size=", memory->bufferSize,
+		// 	// LoggerLib::LogDebug("  Buffer ", count++, ": size=", memory->bufferSize,
 		// 						", usage=", static_cast<int>(memory->usage), ", match size? ",
 		// 						(memory->bufferSize >= requiredSize ? "YES" : "NO"), ", match usage? ",
 		// 						(memory->usage == usage ? "YES" : "NO"));
@@ -39,7 +39,7 @@ namespace Vox::Game::Rendering
 
 		if (it != this->freePool.end())
 		{
-			LoggerLib::LogDebug("FOUND buffer at index ", std::distance(freePool.begin(), it));
+			// LoggerLib::LogDebug("FOUND buffer at index ", std::distance(freePool.begin(), it));
 			return it;
 		}
 
@@ -63,7 +63,7 @@ namespace Vox::Game::Rendering
 	std::shared_ptr<BufferMemory> BufferMemoryManager::GetBufferOfSize(VkDeviceSize requiredSize,
 																	   VkBufferUsageFlagBits usage)
 	{
-		LoggerLib::LogDebug("FreeBuffer Size = ", this->freePool.size());
+		// LoggerLib::LogDebug("FreeBuffer Size = ", this->freePool.size());
 		VkDeviceSize bufferSize = GetNextSize(requiredSize);
 		LoggerLib::LogInfo("For memory of size ", requiredSize, " find closest memory size of ", bufferSize);
 
@@ -76,7 +76,6 @@ namespace Vox::Game::Rendering
 
 		if (it == this->freePool.end())
 		{
-			// LoggerLib::LogDebug("here");
 			return nullptr;
 		}
 
@@ -86,11 +85,34 @@ namespace Vox::Game::Rendering
 
 	void BufferMemoryManager::ReleaseBuffer(std::shared_ptr<BufferMemory> memory)
 	{
-		memory->buffer->Clear();
-		this->freePool.push_back(memory);
+		// memory->buffer->Clear();
+		// this->freePool.push_back(memory);
+		memory->toRefreshFrame = 2;
+		this->toDeletePool.push_back(memory);
 	}
 
-	BufferMemoryManager::BufferMemoryManager() {}
+	BufferMemoryManager::BufferMemoryManager()
+	{
+		this->onLateUpdate.AddCallBack(
+			[this]()
+			{
+				for (auto it = this->toDeletePool.begin(); it != this->toDeletePool.end();)
+				{
+					if ((*it)->toRefreshFrame == 0)
+					{
+						this->toDeletePool.erase(it);
+						(*it)->buffer->Clear();
+						this->freePool.push_back((*it));
+					}
+					else
+					{
+						(*it)->toRefreshFrame -= 1;
+						++it;
+					}
+				}
+				// this->toDeletePool.clear();
+			});
+	}
 
 	BufferMemoryManager::~BufferMemoryManager() {}
 } // namespace Vox::Game::Rendering

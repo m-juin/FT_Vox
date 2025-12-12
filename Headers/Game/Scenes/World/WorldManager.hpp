@@ -31,7 +31,7 @@ namespace Vox::Game::Scenes::World
 
 namespace Vox::Game::World
 {
-	class WorldManager : public virtual Vox::Utils::AUpdatable,public virtual Vox::Utils::ALateUpdatable
+	class WorldManager : public virtual Vox::Utils::AUpdatable, public virtual Vox::Utils::ALateUpdatable
 	{
 		public:
 			WorldManager() = delete;

@@ -6,6 +6,7 @@
 #include "Front/Rendering/SyncObjects.hpp"
 
 #include "Utils/TracyUtils.hpp"
+#include "LoggerLib/UtilityFunctions.hpp"
 #include <cstring>
 
 namespace Vox::Front::Rendering::Utils::Buffers
@@ -118,6 +119,8 @@ namespace Vox::Front::Rendering::Utils::Buffers
 		{
 			VkDevice device = Device::GetInstance().GetLogicalDevice();
 			vkDeviceWaitIdle(Device::GetInstance().GetLogicalDevice());
+			LoggerLib::LogError("Should never Happen, destroyingBuffer"); 
+
 			for (size_t i = 0; i < _buffers.size(); i++)
 			{
 				vkDestroyBuffer(device, _buffers[i], nullptr);
@@ -158,11 +161,8 @@ namespace Vox::Front::Rendering::Utils::Buffers
 				vkMapMemory(device, _memories[i], 0, _size, 0, &_mappedMemories[i]);
 			}
 		}
+			std::memcpy(_mappedMemories[nextFrame], newData, newDataSize);
 
-		for (size_t i = 0; i < _mappedMemories.size(); i++)
-		{
-			std::memcpy(_mappedMemories[i], newData, newDataSize);
-		}
 	}
 
 	void DynamicBuffer::UpdateAtOffset(size_t frameIndex, size_t offset, void *newData, VkDeviceSize dataSize)

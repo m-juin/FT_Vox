@@ -74,9 +74,10 @@ namespace Vox::Game::World
 				}
 			});
 	
-			// this->onLateUpdate.AddCallBack([this](){
-			// 	// this->_gManager->GetCleanupManager()->ProcessFrameCleanup();
-			// });
+			this->onLateUpdate.AddCallBack([this](){
+				// this->_gManager->GetCleanupManager()->ProcessFrameCleanup();
+				this->_gManager->LateUpdate();
+			});
 		}
 
 	WorldManager::~WorldManager() {}
@@ -147,7 +148,7 @@ namespace Vox::Game::World
 			if (_pair.second)
 				_pair.second->Render(1);
 
-		LoggerLib::LogDebug("Try : ", counters.first, " | ", "Effectives : ", counters.second);
+		// // LoggerLib::LogDebug("Try : ", counters.first, " | ", "Effectives : ", counters.second);
 	}
 
 	void WorldManager::CheckCreation()

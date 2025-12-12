@@ -19,6 +19,7 @@ namespace Vox::Game::Generation
 		this->_mManager = std::make_unique<Vox::Game::Rendering::BufferMemoryManager>();
 		this->onUpdate.AddCallBack([this]() { this->UpdateGeneration(); });
 		this->onUpdate.AddCallBack([this]() { this->CheckForPoolRebuild();});
+		this->onLateUpdate.AddCallBack([this](){this->_mManager->LateUpdate();});
 	}
 
 	bool GenerationManager::IsChunckPresent(const Vox::Game::Utils::Defines::ChunckCoord &coord)
