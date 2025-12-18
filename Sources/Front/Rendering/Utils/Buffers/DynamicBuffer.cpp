@@ -5,8 +5,8 @@
 #include "Front/Rendering/SwapChain.hpp"
 #include "Front/Rendering/SyncObjects.hpp"
 
-#include "Utils/TracyUtils.hpp"
 #include "LoggerLib/UtilityFunctions.hpp"
+#include "Utils/TracyUtils.hpp"
 #include <cstring>
 
 namespace Vox::Front::Rendering::Utils::Buffers
@@ -119,7 +119,7 @@ namespace Vox::Front::Rendering::Utils::Buffers
 		{
 			VkDevice device = Device::GetInstance().GetLogicalDevice();
 			vkDeviceWaitIdle(Device::GetInstance().GetLogicalDevice());
-			LoggerLib::LogError("Should never Happen, destroyingBuffer"); 
+			LoggerLib::LogError("Should never Happen, destroyingBuffer");
 
 			for (size_t i = 0; i < _buffers.size(); i++)
 			{
@@ -161,8 +161,7 @@ namespace Vox::Front::Rendering::Utils::Buffers
 				vkMapMemory(device, _memories[i], 0, _size, 0, &_mappedMemories[i]);
 			}
 		}
-			std::memcpy(_mappedMemories[nextFrame], newData, newDataSize);
-
+		std::memcpy(_mappedMemories[nextFrame], newData, newDataSize);
 	}
 
 	void DynamicBuffer::UpdateAtOffset(size_t frameIndex, size_t offset, void *newData, VkDeviceSize dataSize)

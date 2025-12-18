@@ -288,14 +288,15 @@ namespace Vox::Game::World::Chuncks
 	void VoxelChunck::RefreshBuffers()
 	{
 		this->EnsureBuffer();
-		// LoggerLib::LogInfo(this->_mIndexOpaque, " | ", this->_mVertOpaque, " | ", this->_mIndexTransparent, " | ", this->_mVertTransparent);
+		// LoggerLib::LogInfo(this->_mIndexOpaque, " | ", this->_mVertOpaque, " | ", this->_mIndexTransparent, " | ",
+		// this->_mVertTransparent);
 		if (vertexOpaque.size() != 0)
 		{
 			if (this->_mIndexOpaque != nullptr)
 			{
 				// LoggerLib::LogInfo("Opaque Update, ", indexCountOpaque * sizeof(uint16_t), " | ",
-								//    vertexOpaque.size() * sizeof(Vertex), "\n\t", this->_mIndexOpaque->bufferSize, " | ",
-								//    this->_mVertOpaque->bufferSize);
+				//    vertexOpaque.size() * sizeof(Vertex), "\n\t", this->_mIndexOpaque->bufferSize, " | ",
+				//    this->_mVertOpaque->bufferSize);
 				this->_mIndexOpaque->buffer->Update(indexOpaque.data(), indexCountOpaque * sizeof(uint16_t));
 				this->_mVertOpaque->buffer->Update(vertexOpaque.data(), vertexOpaque.size() * sizeof(Vertex));
 			}
@@ -310,7 +311,8 @@ namespace Vox::Game::World::Chuncks
 														vertexTransparent.size() * sizeof(Vertex));
 			}
 		}
-		_needbufferUpdate.flip();
+		_needbufferUpdate[Vox::Front::Rendering::SyncObjects::GetInstance().GetNextFrame()] = false;
+		// _needbufferUpdate.flip();
 	}
 
 	void VoxelChunck::DeleteBuffers()
@@ -361,6 +363,7 @@ namespace Vox::Game::World::Chuncks
 				auto ptr = this->_mIndexOpaque;
 				this->_mIndexOpaque = nullptr;
 				mManager->ReleaseBuffer(ptr);
+				this->_needbufferUpdate[Front::Rendering::SyncObjects::GetInstance().GetCurrentFrame()] = true;
 			}
 			if (this->_mVertOpaque != nullptr && vertMemorySize > this->_mVertOpaque->bufferSize)
 			{
@@ -378,6 +381,7 @@ namespace Vox::Game::World::Chuncks
 			{
 				mManager->ReleaseBuffer(this->_mIndexOpaque);
 				this->_mIndexOpaque = nullptr;
+				this->_needbufferUpdate.set();
 				return;
 			}
 		}
@@ -392,6 +396,7 @@ namespace Vox::Game::World::Chuncks
 				auto ptr = this->_mIndexTransparent;
 				this->_mIndexTransparent = nullptr;
 				mManager->ReleaseBuffer(ptr);
+				this->_needbufferUpdate[Front::Rendering::SyncObjects::GetInstance().GetCurrentFrame()] = true;
 			}
 			if (this->_mVertTransparent != nullptr && vertMemorySize > this->_mVertTransparent->bufferSize)
 			{
@@ -409,6 +414,7 @@ namespace Vox::Game::World::Chuncks
 			{
 				mManager->ReleaseBuffer(this->_mIndexTransparent);
 				this->_mIndexTransparent = nullptr;
+				this->_needbufferUpdate.set();
 				return;
 			}
 		}
@@ -437,8 +443,8 @@ namespace Vox::Game::World::Chuncks
 			}
 			if (this->_bufferIndex >= Utils::Defines::CHUNCK_AMOUNT)
 			{
-				if (this->_bufferIndex > Utils::Defines::CHUNCK_AMOUNT)
-					// LoggerLib::LogDebug("Trying To Refresh Buffer but too big: ", this->_bufferIndex);
+				// if (this->_bufferIndex > Utils::Defines::CHUNCK_AMOUNT)
+				LoggerLib::LogDebug("Trying To Refresh Buffer but too big: ", this->_bufferIndex);
 				return;
 			}
 			this->RefreshBuffers();
