@@ -43,11 +43,6 @@ namespace Vox::Game::World::Chuncks
 		  _chunckPos(defaultPos)
 	{
 		this->_bufferIndex = CHUNCK_AMOUNT;
-		this->_mIndexOpaque = nullptr;
-		this->_mIndexTransparent = nullptr;
-
-		this->_mVertOpaque = nullptr;
-		this->_mVertTransparent = nullptr;
 
 		indexCountOpaque = 0;
 		indexCountTransparent = 0;
@@ -56,13 +51,8 @@ namespace Vox::Game::World::Chuncks
 			[this](void)
 			{
 				this->UpdateVisibility();
-				auto nFrame = Front::Rendering::SyncObjects::GetInstance().GetNextFrame();
+				// auto nFrame = Front::Rendering::SyncObjects::GetInstance().GetNextFrame();
 				UpdateBufferObject();
-				if (this->_needbufferUpdate[nFrame] == true)
-				{
-					this->RefreshBuffers();
-					// this->_needbufferUpdate[nFrame].flip();
-				}
 			});
 	}
 
@@ -168,7 +158,6 @@ namespace Vox::Game::World::Chuncks
 											  : tManagers.operator[]("A_Blocks").GetTextureInfo()),
 						  face.faceDirection, localPos, newType, {1.f, 1.f, 1.f}, isTransparent);
 		}
-		this->_needbufferUpdate.set();
 	}
 
 	void VoxelChunck::FacesCulling(const Generation::Utils::ChunckCache &cache)
@@ -285,157 +274,25 @@ namespace Vox::Game::World::Chuncks
 		}
 	}
 
-	void VoxelChunck::RefreshBuffers()
-	{
-		this->EnsureBuffer();
-		// LoggerLib::LogInfo(this->_mIndexOpaque, " | ", this->_mVertOpaque, " | ", this->_mIndexTransparent, " | ",
-		// this->_mVertTransparent);
-		if (vertexOpaque.size() != 0)
-		{
-			if (this->_mIndexOpaque != nullptr)
-			{
-				// LoggerLib::LogInfo("Opaque Update, ", indexCountOpaque * sizeof(uint16_t), " | ",
-				//    vertexOpaque.size() * sizeof(Vertex), "\n\t", this->_mIndexOpaque->bufferSize, " | ",
-				//    this->_mVertOpaque->bufferSize);
-				this->_mIndexOpaque->buffer->Update(indexOpaque.data(), indexCountOpaque * sizeof(uint16_t));
-				this->_mVertOpaque->buffer->Update(vertexOpaque.data(), vertexOpaque.size() * sizeof(Vertex));
-			}
-		}
-		if (vertexTransparent.size() != 0)
-		{
-			if (this->_mIndexTransparent != nullptr)
-			{
-				this->_mIndexTransparent->buffer->Update(indexTransparent.data(),
-														 indexCountTransparent * sizeof(uint16_t));
-				this->_mVertTransparent->buffer->Update(vertexTransparent.data(),
-														vertexTransparent.size() * sizeof(Vertex));
-			}
-		}
-		_needbufferUpdate[Vox::Front::Rendering::SyncObjects::GetInstance().GetNextFrame()] = false;
-		// _needbufferUpdate.flip();
-	}
-
-	void VoxelChunck::DeleteBuffers()
-	{
-		auto mManager = World::WorldManager::GetInstance().GetGenerationManager().GetMemoryManager();
-
-		if (this->_mIndexOpaque != nullptr)
-		{
-			auto ptr = this->_mIndexOpaque;
-			this->_mIndexOpaque = nullptr;
-			mManager->ReleaseBuffer(ptr);
-		}
-		if (this->_mVertOpaque != nullptr)
-		{
-			auto ptr = this->_mVertOpaque;
-			this->_mVertOpaque = nullptr;
-			mManager->ReleaseBuffer(ptr);
-		}
-		if (this->_mIndexTransparent != nullptr)
-		{
-			auto ptr = this->_mIndexTransparent;
-			this->_mIndexTransparent = nullptr;
-			mManager->ReleaseBuffer(ptr);
-		}
-		if (this->_mVertTransparent)
-		{
-			auto ptr = this->_mVertTransparent;
-			this->_mVertTransparent = nullptr;
-			mManager->ReleaseBuffer(ptr);
-		}
-	}
-
 	void VoxelChunck::UpdateVisibility()
 	{
 		this->isVisible = this->IsOnFrustum(Game::World::WorldManager::GetCamera().GetFrustum());
 	}
 
-	void VoxelChunck::EnsureBuffer()
-	{
-		auto mManager = Game::World::WorldManager::GetInstance().GetGenerationManager().GetMemoryManager();
-		if (vertexOpaque.size() != 0)
-		{
-			this->indexCountOpaque = indexOpaque.size();
-			size_t indexMemorySize = indexCountOpaque * sizeof(uint16_t);
-			size_t vertMemorySize = vertexOpaque.size() * sizeof(Vertex);
-			if (this->_mIndexOpaque != nullptr && indexMemorySize > this->_mIndexOpaque->bufferSize)
-			{
-				auto ptr = this->_mIndexOpaque;
-				this->_mIndexOpaque = nullptr;
-				mManager->ReleaseBuffer(ptr);
-				this->_needbufferUpdate[Front::Rendering::SyncObjects::GetInstance().GetCurrentFrame()] = true;
-			}
-			if (this->_mVertOpaque != nullptr && vertMemorySize > this->_mVertOpaque->bufferSize)
-			{
-				auto ptr = this->_mVertOpaque;
-				this->_mVertOpaque = nullptr;
-				mManager->ReleaseBuffer(ptr);
-			}
-			if (_mIndexOpaque == nullptr)
-				this->_mIndexOpaque = mManager->GetBufferOfSize(indexMemorySize, VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
-			if (_mIndexOpaque == nullptr)
-				return;
-			if (this->_mVertOpaque == nullptr)
-				this->_mVertOpaque = mManager->GetBufferOfSize(vertMemorySize, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
-			if (this->_mVertOpaque == nullptr)
-			{
-				mManager->ReleaseBuffer(this->_mIndexOpaque);
-				this->_mIndexOpaque = nullptr;
-				this->_needbufferUpdate.set();
-				return;
-			}
-		}
-
-		if (vertexTransparent.size() != 0)
-		{
-			this->indexCountTransparent = indexTransparent.size();
-			size_t indexMemorySize = indexCountTransparent * sizeof(uint16_t);
-			size_t vertMemorySize = vertexTransparent.size() * sizeof(Vertex);
-			if (this->_mIndexTransparent != nullptr && indexMemorySize > this->_mIndexTransparent->bufferSize)
-			{
-				auto ptr = this->_mIndexTransparent;
-				this->_mIndexTransparent = nullptr;
-				mManager->ReleaseBuffer(ptr);
-				this->_needbufferUpdate[Front::Rendering::SyncObjects::GetInstance().GetCurrentFrame()] = true;
-			}
-			if (this->_mVertTransparent != nullptr && vertMemorySize > this->_mVertTransparent->bufferSize)
-			{
-				auto ptr = this->_mVertTransparent;
-				this->_mVertTransparent = nullptr;
-				mManager->ReleaseBuffer(ptr);
-			}
-			if (_mIndexTransparent == nullptr)
-				this->_mIndexTransparent = mManager->GetBufferOfSize(indexMemorySize, VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
-			if (_mIndexTransparent == nullptr)
-				return;
-			if (this->_mVertTransparent == nullptr)
-				this->_mVertTransparent = mManager->GetBufferOfSize(vertMemorySize, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
-			if (this->_mVertTransparent == nullptr)
-			{
-				mManager->ReleaseBuffer(this->_mIndexTransparent);
-				this->_mIndexTransparent = nullptr;
-				this->_needbufferUpdate.set();
-				return;
-			}
-		}
-	}
-
 	void VoxelChunck::UpdateBufferObject()
 	{
-		if (this->isVisible == false && (this->_mIndexOpaque != nullptr || this->_mIndexTransparent != nullptr))
+		if (this->isVisible == false && this->_bufferIndex <= Utils::Defines::CHUNCK_AMOUNT)
 		{
 			if (this->_bufferIndex < Utils::Defines::CHUNCK_AMOUNT)
 			{
 				World::WorldManager::GetInstance().ReleaseChunkBuffer(this->_bufferIndex);
-				// this->_bufferIndex = CHUNCK_BUFFER_AMOUNT;
 				this->_isDirty[0] = false;
 				this->_isDirty[1] = false;
 			}
 			this->_bufferIndex = Utils::Defines::CHUNCK_AMOUNT;
-			this->DeleteBuffers();
 			return;
 		}
-		else if (this->isVisible == true && (this->_mIndexOpaque == nullptr && this->_mIndexTransparent == nullptr))
+		else if (this->isVisible == true && this->_bufferIndex >= Utils::Defines::CHUNCK_AMOUNT)
 		{
 			if (this->_bufferIndex >= Utils::Defines::CHUNCK_AMOUNT)
 			{
@@ -443,11 +300,9 @@ namespace Vox::Game::World::Chuncks
 			}
 			if (this->_bufferIndex >= Utils::Defines::CHUNCK_AMOUNT)
 			{
-				// if (this->_bufferIndex > Utils::Defines::CHUNCK_AMOUNT)
 				LoggerLib::LogDebug("Trying To Refresh Buffer but too big: ", this->_bufferIndex);
 				return;
 			}
-			this->RefreshBuffers();
 			this->_isDirty[0] = true;
 			this->_isDirty[1] = true;
 		}
@@ -469,10 +324,11 @@ namespace Vox::Game::World::Chuncks
 	{
 		if (this->isVisible == false)
 			return false;
+		return false ;
 		using namespace Front::Rendering;
 		auto frame = SyncObjects::GetInstance().GetCurrentFrame();
-		if ((this->_mIndexOpaque == nullptr && this->_mIndexTransparent == nullptr) || this->_isDirty[frame] == true ||
-			this->_bufferIndex == Utils::Defines::CHUNCK_AMOUNT)
+		if (this->_isDirty[frame] == true ||
+			this->_bufferIndex >= Utils::Defines::CHUNCK_AMOUNT)
 			return true;
 		uint32_t dynamicOffset = this->_bufferIndex * Utils::Vulkan::GetAlignedChunckSize();
 
@@ -482,12 +338,12 @@ namespace Vox::Game::World::Chuncks
 			auto pipeline = Pipelines::PipelinesManager::GetInstance().operator[]<Pipelines::VoxelPipeline>("Voxel");
 			if (pipeline == nullptr)
 				return true;
-			VkDeviceSize offset = {0};
+			// VkDeviceSize offset = {0};
 			// // LoggerLib::LogDebug("Rendering opaque buffer at ", this->_bufferIndex);
 			vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->GetLayout(), 0, 1,
 									&pipeline->GetSet(frame), 1, &dynamicOffset);
-			vkCmdBindVertexBuffers(buffer, 0, 1, &this->_mVertOpaque->buffer->GetBuffer(frame), &offset);
-			vkCmdBindIndexBuffer(buffer, this->_mIndexOpaque->buffer->GetBuffer(frame), 0, VK_INDEX_TYPE_UINT16);
+			// vkCmdBindVertexBuffers(buffer, 0, 1, &this->_mVertOpaque->buffer->GetBuffer(frame), &offset);
+			// vkCmdBindIndexBuffer(buffer, this->_mIndexOpaque->buffer->GetBuffer(frame), 0, VK_INDEX_TYPE_UINT16);
 			vkCmdDrawIndexed(buffer, indexCountOpaque, 1, 0, 0, 0);
 		}
 		else if (toRender == 1 && this->indexCountTransparent != 0)
@@ -496,12 +352,12 @@ namespace Vox::Game::World::Chuncks
 				"Voxel_Transparent");
 			if (pipeline == nullptr)
 				return true;
-			VkDeviceSize offset = {0};
+			// VkDeviceSize offset = {0};
 			// // LoggerLib::LogDebug("Rendering transparent buffer at ", this->_bufferIndex);
 			vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->GetLayout(), 0, 1,
 									&pipeline->GetSet(frame), 1, &dynamicOffset);
-			vkCmdBindVertexBuffers(buffer, 0, 1, &this->_mVertTransparent->buffer->GetBuffer(frame), &offset);
-			vkCmdBindIndexBuffer(buffer, this->_mIndexTransparent->buffer->GetBuffer(frame), 0, VK_INDEX_TYPE_UINT16);
+			// vkCmdBindVertexBuffers(buffer, 0, 1, &this->_mVertTransparent->buffer->GetBuffer(frame), &offset);
+			// vkCmdBindIndexBuffer(buffer, this->_mIndexTransparent->buffer->GetBuffer(frame), 0, VK_INDEX_TYPE_UINT16);
 			vkCmdDrawIndexed(buffer, indexCountTransparent, 1, 0, 0, 0);
 		}
 		return true;
@@ -568,6 +424,5 @@ namespace Vox::Game::World::Chuncks
 			this->_bufferIndex = Utils::Defines::CHUNCK_AMOUNT;
 			World::WorldManager::GetInstance().ReleaseChunkBuffer(index);
 		}
-		this->DeleteBuffers();
 	}
 } // namespace Vox::Game::World::Chuncks

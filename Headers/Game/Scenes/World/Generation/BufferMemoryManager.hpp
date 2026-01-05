@@ -51,4 +51,5 @@ namespace Vox::Game::Rendering
 			/* private */
 	};
 } // namespace Vox::Game::Rendering
+
 #endif // __BUFFERMEMORYMANAGER_HPP__

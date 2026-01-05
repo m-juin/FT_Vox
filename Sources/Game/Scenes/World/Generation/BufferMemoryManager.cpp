@@ -21,17 +21,6 @@ namespace Vox::Game::Rendering
 	std::vector<std::shared_ptr<BufferMemory>>::iterator BufferMemoryManager::FindAvalaibleMemory(
 		VkDeviceSize requiredSize, VkBufferUsageFlagBits usage)
 	{
-		// // LoggerLib::LogDebug("Searching buffer: requiredSize=", requiredSize, ", usage=", static_cast<int>(usage));
-		// // LoggerLib::LogDebug("FreePool has ", freePool.size(), " buffers");
-
-		// size_t count = 0;
-		// for (const auto &memory : freePool)
-		// {
-		// 	// LoggerLib::LogDebug("  Buffer ", count++, ": size=", memory->bufferSize,
-		// 						", usage=", static_cast<int>(memory->usage), ", match size? ",
-		// 						(memory->bufferSize >= requiredSize ? "YES" : "NO"), ", match usage? ",
-		// 						(memory->usage == usage ? "YES" : "NO"));
-		// }
 
 		auto it = std::find_if(freePool.begin(), freePool.end(),
 							   [requiredSize, usage](const std::shared_ptr<BufferMemory> &memory)

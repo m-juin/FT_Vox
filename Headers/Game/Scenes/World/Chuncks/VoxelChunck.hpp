@@ -39,7 +39,6 @@ namespace Vox::Game::World::Chuncks
 			friend class ChunckCluster;
 
 			using LocalVector = MGL::Vectors::Vector3<uint8_t>;
-			std::bitset<2> _needbufferUpdate;
 			VoxelChunck() = delete;
 			VoxelChunck(const Vector3Int &defaultPos = {0, 0, 0});
 			~VoxelChunck();
@@ -68,6 +67,7 @@ namespace Vox::Game::World::Chuncks
 
 			uint16_t indexCountOpaque;
 			uint16_t indexCountTransparent;
+
 			Vector3Int _chunckPos;
 			void AddFace(const std::vector<Game::Datas::Textures::TextureInfo> &textInfo, const Faces &face,
 						 const LocalVector &facePos, const Game::Datas::Blocks::BlockType &blockType,
@@ -84,16 +84,8 @@ namespace Vox::Game::World::Chuncks
 
 			void BuildMesh();
 			size_t _bufferIndex;
-			std::shared_ptr<Game::Rendering::BufferMemory> _mVertOpaque;
-			std::shared_ptr<Game::Rendering::BufferMemory> _mIndexOpaque;
-			std::shared_ptr<Game::Rendering::BufferMemory> _mVertTransparent;
-			std::shared_ptr<Game::Rendering::BufferMemory> _mIndexTransparent;
-			void RefreshBuffers();
-			void DeleteBuffers();
 
 			void  UpdateVisibility();
-
-			void EnsureBuffer();
 
 			/* private */
 	};

@@ -17,7 +17,6 @@
 
 namespace Vox::Game::World::Chuncks
 {
-
 	Game::Generation::Utils::ChunckCache ChunckCluster::GenerateCache(
 		const uint32_t seed, const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl)
 	{
