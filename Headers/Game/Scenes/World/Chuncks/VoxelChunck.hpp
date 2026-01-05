@@ -2,7 +2,7 @@
 #define __VOXELCHUNCK_HPP__
 
 #include "MathGraphicalLib/Matrix/Matrix4.hpp"
-#include "Game/Scenes/World/Utils/Defines.hpp"
+// #include "Game/Scenes/World/Utils/Defines.hpp"
 #include "./E_GenerationState.hpp"
 #include "Game/Models/DynamicObject.hpp"
 #include <unordered_map>
@@ -71,7 +71,7 @@ namespace Vox::Game::World::Chuncks
 			Vector3Int _chunckPos;
 			void AddFace(const std::vector<Game::Datas::Textures::TextureInfo> &textInfo, const Faces &face,
 						 const LocalVector &facePos, const Game::Datas::Blocks::BlockType &blockType,
-						 const Vector3Float &faceColor = {1.0, 1.0, 1.0}, bool target = 0, float faceOffsef = 1.0);
+						 const Vector3float &faceColor = {1.0, 1.0, 1.0}, bool target = 0, float faceOffsef = 1.0);
 			bool AssignModel() override;
 			std::bitset<CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE> BuildContent(
 				const uint8_t hMap[Generation::Utils::CACHE_SIZE * Generation::Utils::CACHE_SIZE]);

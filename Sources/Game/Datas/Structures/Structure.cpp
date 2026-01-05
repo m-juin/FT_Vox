@@ -110,7 +110,7 @@ namespace Vox::Game::Datas::Structures
 		return pos[0] + (pos[1] * this->_structureSize[0]) +
 			   (pos[2] * this->_structureSize[0] * this->_structureSize[1]);
 	}
-	size_t Structure::GetLocalIndex(MGL::Vectors::Vector3<int> pos) const
+	size_t Structure::GetLocalIndex(Vector3Int pos) const
 	{
 		return pos[0] + (pos[1] * this->_structureSize[0]) +
 			   (pos[2] * this->_structureSize[0] * this->_structureSize[1]);

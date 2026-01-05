@@ -4,10 +4,11 @@
 #include "Game/Datas/Blocks/BlocksType.hpp"
 
 #include <vector>
-#include "MathGraphicalLib/Vectors/Vector3.hpp"
+#include "MathGraphicalLib/Vectors/Defines.hpp"
 
 namespace Vox::Game::Datas::Structures
 {
+    using namespace MGL::Vectors::Types;
     class Structure
     {
         public:
@@ -19,7 +20,7 @@ namespace Vox::Game::Datas::Structures
             MGL::Vectors::Vector3<size_t> _structureSize;
             MGL::Vectors::Vector3<size_t> _anchorPoint;
             size_t GetLocalIndex(MGL::Vectors::Vector3<size_t> pos) const;
-            size_t GetLocalIndex(MGL::Vectors::Vector3<int> pos) const;
+            size_t GetLocalIndex(Vector3Int pos) const;
             MGL::Vectors::Vector3<size_t> FromIndexToVector(size_t index) const;
         private:
             void BuildContent(std::vector<std::string> fileData, const std::map<std::string, Game::Datas::Blocks::BlockType> &mapping);

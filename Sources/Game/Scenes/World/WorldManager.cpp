@@ -91,7 +91,7 @@ namespace Vox::Game::World
 		{
 			for (int y = -Utils::Defines::RENDER_DISTANCE; y < Utils::Defines::RENDER_DISTANCE; y++)
 			{
-				Utils::Defines::ChunckCoord coord = {x, y};
+				Vector2Int coord = {x, y};
 				if (this->_gManager->IsChunckPresent(coord) == true || _chuncks.find(coord) != _chuncks.end())
 				{
 					continue;
@@ -156,7 +156,7 @@ namespace Vox::Game::World
 #ifdef TRACY_ENABLE
 		ZoneScopedNC("Chekc Chunk Creation Update", tracy::Color::Purple1);
 #endif
-		Utils::Defines::ChunckCoord effectiveCoord;
+		Vector2Int effectiveCoord;
 		for (int x = -Utils::Defines::RENDER_DISTANCE; x < Utils::Defines::RENDER_DISTANCE; x++)
 		{
 			effectiveCoord[0] = _playerChunck[0] + x;
@@ -200,7 +200,7 @@ namespace Vox::Game::World
 #ifdef TRACY_ENABLE
 		ZoneScopedNC("Check Chunck Deletion", tracy::Color::Aquamarine);
 #endif
-		std::vector<Utils::Defines::ChunckCoord> toDelete;
+		std::vector<Vector2Int> toDelete;
 		for (auto _pair : this->_chuncks)
 		{
 			if (MGL::Vectors::Dist(_pair.first, _playerChunck) >= Utils::Defines::SQUARE_RENDER_DISTANCE)
@@ -221,8 +221,8 @@ namespace Vox::Game::World
 		ZoneScopedNC("Update Player Pos Update", tracy::Color::VioletRed);
 #endif
 		auto playerPos = _camera.GetPosition();
-		const Utils::Defines::ChunckCoord playerCoord =
-			Utils::Defines::ChunckCoord(std::floor(playerPos[0] / Utils::Defines::CHUNCK_SIZE),
+		const Vector2Int playerCoord =
+			Vector2Int(std::floor(playerPos[0] / Utils::Defines::CHUNCK_SIZE),
 										std::floor(playerPos[2] / Utils::Defines::CHUNCK_SIZE));
 
 		if (playerCoord == _playerChunck)
@@ -236,7 +236,7 @@ namespace Vox::Game::World
 			this->_chuncks[chunck->GetPosition()] = chunck;
 	}
 
-	std::shared_ptr<Chuncks::ChunckCluster> WorldManager::GetCluster(Utils::Defines::ChunckCoord coord)
+	std::shared_ptr<Chuncks::ChunckCluster> WorldManager::GetCluster(Vector2Int coord)
 	{
 		auto it = this->_chuncks.find(coord);
 		if (it == this->_chuncks.end())

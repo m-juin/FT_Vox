@@ -24,6 +24,8 @@
 #include "./Generation/BufferManager.hpp"
 #include "./Generation/GenerationManager.hpp"
 
+#include "MathGraphicalLib/Vectors/Defines.hpp"
+
 namespace Vox::Game::Scenes::World
 {
 	class Sc_World;
@@ -31,6 +33,7 @@ namespace Vox::Game::Scenes::World
 
 namespace Vox::Game::World
 {
+	using namespace MGL::Vectors::Types;
 	class WorldManager : public virtual Vox::Utils::AUpdatable, public virtual Vox::Utils::ALateUpdatable
 	{
 		public:
@@ -51,7 +54,7 @@ namespace Vox::Game::World
 			void Render();
 			void AddEndedChunck(std::shared_ptr<Chuncks::ChunckCluster> chunck);
 
-			std::shared_ptr<Chuncks::ChunckCluster> GetCluster(Utils::Defines::ChunckCoord coord);
+			std::shared_ptr<Chuncks::ChunckCluster> GetCluster(Vector2Int coord);
 
 			size_t GetLoadedChunckData()
 			{
@@ -80,7 +83,7 @@ namespace Vox::Game::World
 				this->RequestChunckRefresh();
 			};
 
-			const Utils::Defines::ChunckCoord & GetPlayerChunck() {return this->_playerChunck;};
+			const Vector2Int & GetPlayerChunck() {return this->_playerChunck;};
 
 			void ReleaseChunkBuffer(const size_t &bufferIndex);
 			size_t RequestChunkBuffer();
@@ -93,9 +96,9 @@ namespace Vox::Game::World
 			std::unique_ptr<Generation::BufferManager> _bManager;
 			std::unique_ptr<Generation::GenerationManager> _gManager;
 
-			Utils::Defines::ChunckCoord _playerChunck = {0, 0};
+			Vector2Int _playerChunck = {0, 0};
 
-			std::unordered_map<const Utils::Defines::ChunckCoord, std::shared_ptr<Chuncks::ChunckCluster>,
+			std::unordered_map<const Vector2Int, std::shared_ptr<Chuncks::ChunckCluster>,
 							   MGL::Vectors::Vector2Hash<int>>
 				_chuncks;
 			Scenes::World::Player::Camera _camera;

@@ -12,14 +12,17 @@
 #include "Game/Datas/Structures/StructuresTypes.hpp"
 #include "Game/Scenes/World/Generation/Utils.hpp"
 
+#include "MathGraphicalLib/Vectors/Defines.hpp"
+
 namespace Vox::Game::World::Chuncks
 {
+	using namespace MGL::Vectors::Types;
 	class ChunckCluster : public Generation::Threads::ThreadObject, public Vox::Utils::AUpdatable
 	{
 		private:
 			std::array<VoxelChunck *, WORLD_HEIGHT / CHUNCK_SIZE> _clusterContent;
 
-			ChunckCoord _clusterPos;
+			Vector2Int _clusterPos;
 
 			void GenerateTree(const Vox::Game::Generation::Utils::ChunckCache &cache, const uint32_t seed);
 			void GenerateClusterDecoration(
@@ -40,16 +43,16 @@ namespace Vox::Game::World::Chuncks
 									 const std::vector<Game::Datas::Textures::TextureInfo> &textInfo,
 									 const std::vector<Game::Datas::Textures::TextureInfo> &transparenttextInfo,
 									 const uint32_t seed);
-			ChunckCoord GetPosition();
+			Vector2Int GetPosition();
 
 			void SetBlock(MGL::Vectors::Vector3<uint8_t> localPos, Game::Datas::Blocks::BlockType type);
-			void SetBlocks(std::unordered_map<MGL::Vectors::Vector3<int>, Game::Datas::Blocks::BlockType, MGL::Vectors::Vector3Hash<int>> &, bool);
+			void SetBlocks(std::unordered_map<Vector3Int, Game::Datas::Blocks::BlockType, MGL::Vectors::Vector3Hash<int>> &, bool);
 
 			void BuildBuffers();
 			void GenerateHeightMap(const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl,
 								   const uint32_t seed, uint8_t hMap[CHUNCK_SIZE * CHUNCK_SIZE]);
 
-			ChunckCluster(const ChunckCoord &coord);
+			ChunckCluster(const Vector2Int &coord);
 			~ChunckCluster();
 	};
 } // namespace Vox::Game::World::Chuncks

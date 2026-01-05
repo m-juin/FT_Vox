@@ -74,7 +74,7 @@ namespace Vox::Game::Scenes::World::Interfaces
 			if (_running == false)
 				break;
 
-			MGL::Vectors::Vector2<int> requestPos = {static_cast<int>(this->_requestedPos[0]), static_cast<int>(this->_requestedPos[2])};
+			Vector2Int requestPos = {static_cast<int>(this->_requestedPos[0]), static_cast<int>(this->_requestedPos[2])};
 			uint32_t requestSeed = this->_requestedSeed;
 			float requestScale = _requestedScale;
 			uint8_t map = _requestedMap;
@@ -89,7 +89,7 @@ namespace Vox::Game::Scenes::World::Interfaces
 		}
 	}
 
-	void M_Minimap::Generate(std::vector<uint8_t> &targetBuffer, MGL::Vectors::Vector2<int> playerPos, uint32_t seed, float scale, uint8_t map)
+	void M_Minimap::Generate(std::vector<uint8_t> &targetBuffer, Vector2Int playerPos, uint32_t seed, float scale, uint8_t map)
 	{
 		if (map == 0)
         	Game::Generation::Perlins::GenerateBiomeImage(targetBuffer, playerPos, seed, 400, scale);

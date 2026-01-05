@@ -1,8 +1,7 @@
 #ifndef __CHUNKOVERFLOWMANAGER_HPP__
 #define __CHUNKOVERFLOWMANAGER_HPP__
 
-#include "MathGraphicalLib/Vectors/Vector3.hpp"
-#include "MathGraphicalLib/Vectors/Vector2.hpp"
+#include "MathGraphicalLib/Vectors/Defines.hpp"
 
 #include "Game/Datas/Blocks/BlocksType.hpp"
 
@@ -12,8 +11,7 @@
 
 namespace Vox::Game::Generation
 {
-    using Vector3Int = MGL::Vectors::Vector3<int>;
-    using Vector2Int = MGL::Vectors::Vector2<int>;
+    using namespace MGL::Vectors::Types;
     using BlockType = Game::Datas::Blocks::BlockType;
 
     struct ChunkOverflowBlock

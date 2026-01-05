@@ -14,9 +14,6 @@ namespace Vox::Game::Utils::Defines
     using dbuffer = Vox::Front::Rendering::Utils::Buffers::DynamicBuffer;
     using sbuffer = Vox::Front::Rendering::Utils::Buffers::StaticBuffer;
     using Vertex = Vox::Front::Rendering::Utils::Vertex::VoxelVertex;
-    using Vector3Float = MGL::Vectors::Vector3<float>;
-    using Vector3Int = MGL::Vectors::Vector3<int>;
-    using ChunckCoord = MGL::Vectors::Vector2<int>;
     using Matrix = MGL::Matrix::Matrix4;
 
         

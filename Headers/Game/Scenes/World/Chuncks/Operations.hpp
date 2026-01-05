@@ -1,37 +1,34 @@
 #ifndef __CHUNK_OPERATIONS_HPP__
 #define __CHUNK_OPERATIONS_HPP__
 
-#include "MathGraphicalLib/Vectors/Vector2.hpp"
-#include "MathGraphicalLib/Vectors/Vector3.hpp"
+#include "MathGraphicalLib/Vectors/Defines.hpp"
+
 
 #include "Game/Scenes/World/Utils/Defines.hpp"
 
 namespace Vox::Game::Chuncks::Operations
 {
-	using WorldCoord = MGL::Vectors::Vector3<int>;
-	using ClusterCoord = MGL::Vectors::Vector2<int>;
+	using namespace MGL::Vectors::Types;
 
-	using ChunkCoord = MGL::Vectors::Vector3<uint8_t>;
-
-	inline ChunkCoord WorldToChunk(WorldCoord coord)
+	inline Vector3uint8 WorldToChunk(Vector3Int coord)
 	{
-		ChunkCoord ret;
+		Vector3uint8 ret;
 		for (int i = 0; i < 3; i++)
 			ret[i] = (coord[i] + static_cast<int>(Game::Utils::Defines::CHUNCK_SIZE)) % static_cast<int>(Game::Utils::Defines::CHUNCK_SIZE);
 		return ret;
 	}
 
-	inline WorldCoord ChunkToWorld(ChunkCoord coord, WorldCoord chunckPos)
+	inline Vector3Int ChunkToWorld(Vector3uint8 coord, Vector3Int chunckPos)
 	{
-		WorldCoord ret;
+		Vector3Int ret;
 		for (int i = 0; i < 3; i++)
             ret[i] = chunckPos[i] * Game::Utils::Defines::CHUNCK_SIZE + coord[i];
 		return ret;
 	}
 
-	inline ClusterCoord WorldToCluster(WorldCoord blockPos)
+	inline Vector2Int WorldToCluster(Vector3Int blockPos)
 	{
-		ClusterCoord ret(std::floor(static_cast<float>(blockPos[0]) / static_cast<float>(Game::Utils::Defines::CHUNCK_SIZE)), std::floor(static_cast<float>(blockPos[2]) / static_cast<float>(Game::Utils::Defines::CHUNCK_SIZE)));
+		Vector2Int ret(std::floor(static_cast<float>(blockPos[0]) / static_cast<float>(Game::Utils::Defines::CHUNCK_SIZE)), std::floor(static_cast<float>(blockPos[2]) / static_cast<float>(Game::Utils::Defines::CHUNCK_SIZE)));
 		return ret;
 	}
 } // namespace Vox::Game::Chuncks::Operations

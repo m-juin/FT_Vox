@@ -2,7 +2,8 @@
 #define __PERLIN_HPP__
 #include <cstdint>
 
-#include "MathGraphicalLib/Vectors/Vector2.hpp"
+// #include "MathGraphicalLib/Vectors/Vector2.hpp"
+#include "MathGraphicalLib/Vectors/Defines.hpp"
 
 #include "./PerlinUtils.hpp"
 
@@ -15,10 +16,11 @@
 
 namespace Vox::Game::Generation::Perlins
 {
+	using namespace MGL::Vectors::Types;
 	namespace
 	{
 		constexpr uint32_t WORLD_CENTER = 125000;
-		static inline MGL::Vectors::Vector2<float> randomGradient(int ix, int iy, uint32_t seed)
+		static inline Vector2float randomGradient(int ix, int iy, uint32_t seed)
 		{
 			const unsigned w = 8 * sizeof(unsigned);
 			const unsigned s = w / 2;

@@ -6,10 +6,13 @@
 #include "Utils/AUpdatable.hpp"
 #include "./M_Minimap.hpp"
 
+#include "MathGraphicalLib/Vectors/Defines.hpp"
+
 using namespace Vox::Front::Interfaces;
 
 namespace Vox::Game::Scenes::World::Interfaces
 {
+    using namespace MGL::Vectors::Types;
     class I_Generation : public virtual AInterface, public virtual Vox::Utils::AUpdatable
     {
         public:
@@ -20,7 +23,7 @@ namespace Vox::Game::Scenes::World::Interfaces
         private:
             M_Minimap _mMinimap;
 
-            void UpdateMap(MGL::Vectors::Vector2<int> playerPos);
+            void UpdateMap(Vector2Int playerPos);
 			void SetPos(const Vox::Front::Interfaces::Elements::Vector2 newPos) override;
 			void SetSize(const Vox::Front::Interfaces::Elements::Vector2 newSize) override;
             void OnHover() override {};

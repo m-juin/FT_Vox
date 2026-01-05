@@ -19,6 +19,8 @@
 
 #include "Front/Rendering/Utils/Buffers/StaticBuffer.hpp"
 
+#include "MathGraphicalLib/Vectors/Defines.hpp"
+
 namespace Vox::Game::Scenes::World::Player
 {
 	struct CameraInfo
@@ -28,18 +30,19 @@ namespace Vox::Game::Scenes::World::Player
 	};
 
 	using namespace Game::Utils::Defines;
+	using namespace MGL::Vectors::Types;
 	class Camera : public Vox::Utils::AUpdatable
 	{
 		public:
 			void PushConstant(int target);
 			Camera() = delete;
-			Camera(Vector3Float defaultPos = {0.0, 0.0, 0.0}, Vector3Float defaultRot = {0.0f, 0.0f, 0.0f});
+			Camera(Vector3float defaultPos = {0.0, 0.0, 0.0}, Vector3float defaultRot = {0.0f, 0.0f, 0.0f});
 			~Camera() {};
 
 			void HandleMouseMovement(const double &xOffSet, const double &yOffSet);
-			void Move(const Vector3Float &axis);
+			void Move(const Vector3float &axis);
 
-			Vector3Float GetPosition() const;
+			Vector3float GetPosition() const;
 
 			const Front::Rendering::Frustum::Frustum &GetFrustum() {return this->_viewingfrustum;}
 
@@ -56,8 +59,8 @@ namespace Vox::Game::Scenes::World::Player
 			CameraInfo _worldInfo;
 			CameraInfo _skyInfo;
 			bool _isDirty;
-			Vector3Float _position;
-			Vector3Float _rotation;
+			Vector3float _position;
+			Vector3float _rotation;
 
 			float _cameraSpeed = 0.5f;
 
@@ -65,11 +68,11 @@ namespace Vox::Game::Scenes::World::Player
 			float _pitch = 0.0;
 			float _sensitivity = 0.05f;
 
-			Vector3Float _front;
-			Vector3Float _up = Vector3Float(0.0f, 1.0f, 0.0f);
-			Vector3Float _rightDir;
-			Vector3Float _worldUp = Vector3Float(0.0f, 1.0, 0.0f);
-			Vector3Float _target = Vector3Float(0.0f, 0.0f, -1.0f);
+			Vector3float _front;
+			Vector3float _up = Vector3float(0.0f, 1.0f, 0.0f);
+			Vector3float _rightDir;
+			Vector3float _worldUp = Vector3float(0.0f, 1.0, 0.0f);
+			Vector3float _target = Vector3float(0.0f, 0.0f, -1.0f);
 
 			Front::Rendering::Frustum::Frustum _viewingfrustum;
 

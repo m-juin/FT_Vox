@@ -4,10 +4,11 @@
 #include <unordered_map>
 #include <fstream>
 
-#include "MathGraphicalLib/Vectors/Vector3.hpp"
-
+// #include "MathGraphicalLib/Vectors/Vector3.hpp"
+#include "MathGraphicalLib/Vectors/Defines.hpp"
 namespace Vox::Game::Datas::Biomes
 {
+	using namespace MGL::Vectors::Types;
 	enum class Biomes
 	{
 		Frozen_Ocean = 0,
@@ -147,7 +148,7 @@ namespace Vox::Game::Datas::Biomes
 		}
 	}
 
-	inline std::unordered_map<Biomes, MGL::Vectors::Vector3<int>> biomesColors = {
+	inline std::unordered_map<Biomes, Vector3Int> biomesColors = {
 		{Biomes::Ocean, {0, 77, 153}},
 		{Biomes::Deep_Ocean, {0, 51, 102}},
 		{Biomes::Warm_Ocean, {0, 128, 153}},

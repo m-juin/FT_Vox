@@ -9,6 +9,7 @@
 #include "Front/Interfaces/Elements/Text.hpp"
 
 #include "MathGraphicalLib/Utils.hpp"
+#include "MathGraphicalLib/Vectors/Defines.hpp"
 
 #include "Game/Scenes/World/WorldManager.hpp"
 
@@ -26,6 +27,7 @@
 namespace Vox::Game::Scenes::World::Interfaces
 {
 	using namespace Front::Interfaces::Elements;
+	using namespace MGL::Vectors::Types;
 	I_Generation::I_Generation(Vox::Front::Interfaces::Elements::Vector2 pos,
 							   Vox::Front::Interfaces::Elements::Vector2 size)
 		: AInterface(pos, size), AUpdatable(1), _mMinimap({400, 400})
@@ -264,14 +266,14 @@ namespace Vox::Game::Scenes::World::Interfaces
 			ifPm.defaultValue = "0";
 			this->AddElement("IF_Map_IMG_Biomes", std::make_unique<InputField>(ifPm), 1, false);
 		}
-		static Vox::Game::Utils::Defines::ChunckCoord playerPos = {100, -100};
+		static Vector2Int playerPos = {100, -100};
 		this->_mMinimap.Start();
 		this->onUpdate.AddCallBack(
 			[this]()
 			{
 				float scale = std::atof(this->GetElement<InputField>("IF_Scale_IMG_Biomes")->GetValue().c_str());
 				const uint8_t map = std::atoi(this->GetElement<InputField>("IF_Map_IMG_Biomes")->GetValue().c_str());
-				Vox::Game::Utils::Defines::ChunckCoord coord = Game::World::WorldManager::GetInstance().GetPlayerChunck();
+				Vector2Int coord = Game::World::WorldManager::GetInstance().GetPlayerChunck();
 				if (map == 10 && coord != playerPos)
 				{
 					playerPos = coord;
@@ -296,7 +298,7 @@ namespace Vox::Game::Scenes::World::Interfaces
 
 	I_Generation::~I_Generation() {}
 
-	void I_Generation::UpdateMap(MGL::Vectors::Vector2<int> playerPos)
+	void I_Generation::UpdateMap(Vector2Int playerPos)
 	{
 		auto img = this->GetElement<DynamicImage>("IMG_Biome");
 		auto newData = Game::Generation::Perlins::GenerateBiomeImage(

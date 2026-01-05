@@ -198,7 +198,7 @@ namespace Vox::Game::World::Chuncks
 		Vector3Int sSize = {static_cast<int>(s._structureSize[0]), static_cast<int>(s._structureSize[1]),
 							static_cast<int>(s._structureSize[2])};
 
-		MGL::Vectors::Vector3<int> sPos{};
+		Vector3Int sPos{};
 		std::unordered_map<Vox::Game::Generation::Vector2Int, std::vector<Game::Generation::ChunkOverflowBlock>,
 						   MGL::Vectors::Vector2Hash<int>>
 			overflowContent;
@@ -270,7 +270,7 @@ namespace Vox::Game::World::Chuncks
 		if (blocks.size() == 0)
 			return;
 
-		std::array<std::unordered_map<Vox::Game::Chuncks::Operations::ChunkCoord, Game::Datas::Blocks::BlockType,
+		std::array<std::unordered_map<Vector3uint8, Game::Datas::Blocks::BlockType,
 									  MGL::Vectors::Vector3Hash<uint8_t>>,
 				   WORLD_HEIGHT / CHUNCK_SIZE>
 			localMap;
@@ -292,7 +292,7 @@ namespace Vox::Game::World::Chuncks
 		}
 	}
 
-	ChunckCoord ChunckCluster::GetPosition()
+	Vector2Int ChunckCluster::GetPosition()
 	{
 		return this->_clusterPos;
 	}
@@ -317,7 +317,7 @@ namespace Vox::Game::World::Chuncks
 		this->_currentState = Generation::E_GenerationState::End;
 	}
 
-	ChunckCluster::ChunckCluster(const ChunckCoord &coord) : _clusterContent{}
+	ChunckCluster::ChunckCluster(const Vector2Int &coord) : _clusterContent{}
 	{
 		_clusterPos = coord;
 		this->onUpdate.AddCallBack(

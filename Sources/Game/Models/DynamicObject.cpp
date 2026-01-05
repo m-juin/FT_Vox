@@ -4,7 +4,7 @@
 
 namespace Vox::Game::Models
 {
-	DynamicObject::DynamicObject(Vector3Float defaultPos, Vector3Float defaultRot, uint32_t updateDelay) : AUpdatable(updateDelay)
+	DynamicObject::DynamicObject(Vector3float defaultPos, Vector3float defaultRot, uint32_t updateDelay) : AUpdatable(updateDelay)
 	{
 		this->_position = defaultPos;
 		this->_rotation = defaultRot;
@@ -38,9 +38,9 @@ namespace Vox::Game::Models
 			Matrix rot3;
 			rot3.SetIdentity();
 
-			rot1 = MGL::Matrix::Operations::Rotate(rot1, this->_rotation[0], Vector3Float(1.0f, 0.0f, 0.0f));
-			rot2 = MGL::Matrix::Operations::Rotate(rot2, this->_rotation[1], Vector3Float(0.0f, 1.0f, 0.0f));
-			rot3 = MGL::Matrix::Operations::Rotate(rot3, this->_rotation[2], Vector3Float(0.0f, 0.0f, 1.0f));
+			rot1 = MGL::Matrix::Operations::Rotate(rot1, this->_rotation[0], Vector3float(1.0f, 0.0f, 0.0f));
+			rot2 = MGL::Matrix::Operations::Rotate(rot2, this->_rotation[1], Vector3float(0.0f, 1.0f, 0.0f));
+			rot3 = MGL::Matrix::Operations::Rotate(rot3, this->_rotation[2], Vector3float(0.0f, 0.0f, 1.0f));
 
 			rot = rot1 * rot2 * rot3;
 		}
@@ -55,7 +55,7 @@ namespace Vox::Game::Models
 		return Matrix(pos * rot);
 	}
 
-	void DynamicObject::SetPos(Vector3Float newPos)
+	void DynamicObject::SetPos(Vector3float newPos)
 	{
 		if (newPos == this->_position)
 			return;
@@ -64,7 +64,7 @@ namespace Vox::Game::Models
 		this->_isDirty.fill(true);
 	}
 
-	void DynamicObject::SetRot(Vector3Float newRot)
+	void DynamicObject::SetRot(Vector3float newRot)
 	{
 		if (newRot == this->_rotation)
 			return;
@@ -72,13 +72,13 @@ namespace Vox::Game::Models
 		this->_isDirty.fill(true);
 	}
 
-	void DynamicObject::Move(Vector3Float moveValue)
+	void DynamicObject::Move(Vector3float moveValue)
 	{
 		this->_position += moveValue;
 		this->_isDirty.fill(true);
 	}
 
-	void DynamicObject::Rotate(Vector3Float rotValue)
+	void DynamicObject::Rotate(Vector3float rotValue)
 	{
 		this->_rotation += rotValue;
 		this->_isDirty.fill(true);

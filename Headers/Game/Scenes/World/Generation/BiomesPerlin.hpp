@@ -464,14 +464,14 @@ namespace Vox::Game::Generation::Perlins
 		}
 	}
 
-	inline std::vector<uint8_t> GenerateBiomeImage(MGL::Vectors::Vector2<int> center, uint32_t seed, uint16_t imgSize,
+	inline std::vector<uint8_t> GenerateBiomeImage(Vector2Int center, uint32_t seed, uint16_t imgSize,
 												   float scale)
 	{
 		std::vector<uint8_t> dataArray;
 		dataArray.resize(imgSize * imgSize * 4);
 		uint16_t halfSize = imgSize / 2;
 
-		MGL::Vectors::Vector2<int> effectivePos = center;
+		Vector2Int effectivePos = center;
 		for (int x = -halfSize; x < halfSize; x++)
 		{
 			effectivePos[0] = center[0] + (x * scale);
@@ -481,7 +481,7 @@ namespace Vox::Game::Generation::Perlins
 				effectivePos[1] = center[1] + (y * scale);
 				effectivePos[1] += 125000;
 				Biomes biome = GetBiomeAtPoint(effectivePos[0], effectivePos[1], seed);
-				MGL::Vectors::Vector3<int> color = biomesColors[biome];
+				Vector3Int color = biomesColors[biome];
 
 				uint64_t index = ((imgSize * (y + halfSize)) + (x + halfSize)) * 4;
 				dataArray[index] = color[0];
@@ -493,12 +493,12 @@ namespace Vox::Game::Generation::Perlins
 		return dataArray;
 	}
 
-	inline void GenerateBiomeImage(std::vector<uint8_t> &target, MGL::Vectors::Vector2<int> center, uint32_t seed,
+	inline void GenerateBiomeImage(std::vector<uint8_t> &target, Vector2Int center, uint32_t seed,
 								   uint16_t imgSize, float scale)
 	{
 		uint16_t halfSize = imgSize / 2;
 
-		MGL::Vectors::Vector2<int> effectivePos = center;
+		Vector2Int effectivePos = center;
 		for (int x = -halfSize; x < halfSize; x++)
 		{
 			effectivePos[0] = center[0] + (x * scale);
@@ -508,7 +508,7 @@ namespace Vox::Game::Generation::Perlins
 				effectivePos[1] = center[1] + (y * scale);
 				effectivePos[1] += 125000;
 				Biomes biome = GetBiomeAtPoint(effectivePos[0], effectivePos[1], seed);
-				MGL::Vectors::Vector3<int> color = biomesColors[biome];
+				Vector3Int color = biomesColors[biome];
 
 				uint64_t index = ((imgSize * (y + halfSize)) + (x + halfSize)) * 4;
 				target[index] = color[0];
@@ -539,7 +539,7 @@ namespace Vox::Game::Generation::Perlins
 			return Utils::ContinentalnessData;
 		}
 	};
-	inline void GeneratePerlinImage(std::vector<uint8_t> &target, MGL::Vectors::Vector2<int> center, uint32_t seed,
+	inline void GeneratePerlinImage(std::vector<uint8_t> &target, Vector2Int center, uint32_t seed,
 							 uint16_t imgSize, float scale, uint8_t perlin)
 	{
 		auto data = GetData(perlin);
@@ -550,7 +550,7 @@ namespace Vox::Game::Generation::Perlins
 		center[1] += 125000;
 		uint16_t halfSize = imgSize / 2;
 
-		MGL::Vectors::Vector2<int> effectivePos = center;
+		Vector2Int effectivePos = center;
 		for (int x = -halfSize; x < halfSize; x++)
 		{
 			effectivePos[0] = center[0] + (x * scale);
@@ -561,7 +561,7 @@ namespace Vox::Game::Generation::Perlins
 				effectivePos[1] += 125000;
 				auto value = GetPerlinValue(effectivePos[0], effectivePos[1], seed, data, range);
 				int inted = std::round(Spline::GetNormalizedRangedValue(value, range, {0, 255}));;
-				MGL::Vectors::Vector3<int> color = {inted, inted, inted};
+				Vector3Int color = {inted, inted, inted};
 
 				uint64_t index = ((imgSize * (y + halfSize)) + (x + halfSize)) * 4;
 				target[index] = color[0];

@@ -12,6 +12,8 @@
 // #include "Game/Scenes/World/Generation/BuffersCleanupManager.hpp"
 #include "Game/Scenes/World/Generation/BufferMemoryManager.hpp"
 
+#include "MathGraphicalLib/Vectors/Defines.hpp"
+
 namespace Vox::World::Generation
 {
 	class BuffersCleanupManager;
@@ -23,15 +25,16 @@ namespace Vox::Game::World::Chuncks
 } // namespace Vox::Game::World::Chuncks
 namespace Vox::Game::Generation
 {
+	using namespace MGL::Vectors::Types;
 	class GenerationManager : public virtual Vox::Utils::AUpdatable, public virtual Vox::Utils::ALateUpdatable
 	{
 		public:
 			GenerationManager(const uint64_t seed);
 			~GenerationManager() {};
-			bool IsChunckPresent(const Vox::Game::Utils::Defines::ChunckCoord &coord);
+			bool IsChunckPresent(const Vector2Int &coord);
 
-            void RequestChuncksGeneration(Game::Utils::Defines::ChunckCoord coord);
-			void SetPlayerPos(Vox::Game::Utils::Defines::ChunckCoord coord) {this->_playerPos = coord;};
+            void RequestChuncksGeneration(Vector2Int coord);
+			void SetPlayerPos(Vector2Int coord) {this->_playerPos = coord;};
 
 			size_t GetWaitingData() const;
 
@@ -53,7 +56,7 @@ namespace Vox::Game::Generation
 			void CheckForPoolRebuild();
 			bool _needThreadRefresh = false;
 			uint64_t _seed; 
-			Vox::Game::Utils::Defines::ChunckCoord _playerPos;
+			Vector2Int _playerPos;
             void UpdateGeneration();
 			std::list<std::shared_ptr<World::Chuncks::ChunckCluster>> _waitingChuncks;
 	};

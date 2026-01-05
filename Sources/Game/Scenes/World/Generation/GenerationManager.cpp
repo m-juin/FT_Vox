@@ -22,14 +22,14 @@ namespace Vox::Game::Generation
 		this->onLateUpdate.AddCallBack([this](){this->_mManager->LateUpdate();});
 	}
 
-	bool GenerationManager::IsChunckPresent(const Vox::Game::Utils::Defines::ChunckCoord &coord)
+	bool GenerationManager::IsChunckPresent(const Vector2Int &coord)
 	{
 		return std::find_if(this->_waitingChuncks.begin(), this->_waitingChuncks.end(),
 							[coord](std::shared_ptr<World::Chuncks::ChunckCluster> cluster)
 							{ return (cluster->GetPosition() == coord); }) != this->_waitingChuncks.end();
 	}
 
-	void GenerationManager::RequestChuncksGeneration(Game::Utils::Defines::ChunckCoord coord)
+	void GenerationManager::RequestChuncksGeneration(Vector2Int coord)
 	{
 		if (_needThreadRefresh == true)
 			return ;
