@@ -13,11 +13,11 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 	class I_MenuWorld : public virtual Front::Interfaces::AInterface
 	{
 		public:
-			I_MenuWorld(Vox::Front::Interfaces::Elements::Vector2 pos = {0, 0}, Vox::Front::Interfaces::Elements::Vector2 size = {0, 0});
+			I_MenuWorld(Vox::Front::Interfaces::Elements::Vector2Float pos = {0, 0}, Vox::Front::Interfaces::Elements::Vector2Float size = {0, 0});
 			~I_MenuWorld();
 
-			void SetPos(const Vox::Front::Interfaces::Elements::Vector2 newPos) override;
-			void SetSize(const Vox::Front::Interfaces::Elements::Vector2 newSize) override;
+			void SetPos(const Vox::Front::Interfaces::Elements::Vector2Float newPos) override;
+			void SetSize(const Vox::Front::Interfaces::Elements::Vector2Float newSize) override;
 			void Render() override;
 
 

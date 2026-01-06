@@ -8,6 +8,8 @@
 #include <unordered_map>
 #include <vector>
 
+#include "MathGraphicalLib/Vectors/Defines.hpp"
+
 namespace Vox::Front::Interfaces::Elements::Bases
 {
 	struct ContainerElement
@@ -54,7 +56,7 @@ namespace Vox::Front::Interfaces::Elements::Bases
 
 			virtual void Draw() override;
 			virtual void OnClick(const int &button, const int &action) override;
-			bool IsHover(const Vector2 &mousePos) override;
+			bool IsHover(const Vector2Float &mousePos) override;
 
 		protected:
 			Vox::Utils::CallBacksManager<AElement&> onElementAdd;

@@ -270,7 +270,7 @@ namespace Vox::Game::World::Chuncks
 		if (blocks.size() == 0)
 			return;
 
-		std::array<std::unordered_map<Vector3uint8, Game::Datas::Blocks::BlockType,
+		std::array<std::unordered_map<Vector3Uint8, Game::Datas::Blocks::BlockType,
 									  MGL::Vectors::Vector3Hash<uint8_t>>,
 				   WORLD_HEIGHT / CHUNCK_SIZE>
 			localMap;
@@ -284,7 +284,7 @@ namespace Vox::Game::World::Chuncks
 			auto array = localMap[cIndex];
 			for (size_t bIndex = 0; bIndex < array.size(); bIndex++)
 			{
-				std::unordered_map<MGL::Vectors::Vector3<uint8_t>, Game::Datas::Blocks::BlockType,
+				std::unordered_map<Vector3Uint8, Game::Datas::Blocks::BlockType,
 								   MGL::Vectors::Vector3Hash<uint8_t>>::iterator it = array.begin();
 				std::advance(it, bIndex);
 				this->_clusterContent[cIndex]->SetBlockDatas(it->first, it->second, bIndex == array.size() - 1);

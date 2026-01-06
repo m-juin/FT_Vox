@@ -7,6 +7,8 @@
 #include <memory>
 #include <vector>
 
+#include "MathGraphicalLib/Vectors/Defines.hpp"
+
 namespace Vox::Front::Interfaces::Elements::Bases
 {
 	struct IndexedContainerElement
@@ -54,7 +56,7 @@ namespace Vox::Front::Interfaces::Elements::Bases
 
 			virtual void Draw() override;
 			virtual void OnClick(const int &button, const int &action) override;
-			virtual bool IsHover(const Vector2 &mousePos) override;
+			virtual bool IsHover(const Vector2Float &mousePos) override;
 
 			template <typename T> int GetElementIndex(T *elemPtr)
 			{

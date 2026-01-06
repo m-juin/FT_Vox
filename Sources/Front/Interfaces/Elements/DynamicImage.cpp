@@ -33,14 +33,14 @@ namespace Vox::Front::Interfaces::Elements
 		this->CreateVulkanImage();
 	}
 
-	void DynamicImage::SetPos(const Vector2 newPos)
+	void DynamicImage::SetPos(const Vector2Float newPos)
 	{
 		if (this->_pos == newPos)
 			return;
 		this->_pos = newPos;
 	}
 
-	void DynamicImage::SetSize(const Vector2 newSize)
+	void DynamicImage::SetSize(const Vector2Float newSize)
 	{
 		if (this->_size == newSize)
 			return;
@@ -55,7 +55,7 @@ namespace Vox::Front::Interfaces::Elements
 
 	void DynamicImage::ResetVertex()
 	{
-		const Vector2 screenSize(Rendering::SwapChain::GetInstance().GetExtent().width,
+		const Vector2Float screenSize(Rendering::SwapChain::GetInstance().GetExtent().width,
 								 Rendering::SwapChain::GetInstance().GetExtent().height);
 
 		this->_uvMappingData.uvMin[0] = 0.0f;

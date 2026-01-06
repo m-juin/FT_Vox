@@ -59,7 +59,7 @@ namespace Vox::Front::Interfaces::Elements::Bases
 		}
 	}
 
-	bool AContainer::IsHover(const Vector2 &mousePos)
+	bool AContainer::IsHover(const Vector2Float &mousePos)
 	{
 		if (this->_enabled == false) return false;
 		for (auto elem = this->_content.rbegin(); elem != this->_content.rend(); ++elem)

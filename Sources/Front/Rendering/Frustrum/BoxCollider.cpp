@@ -4,7 +4,7 @@
 
 namespace Vox::Front::Rendering::Frustum::Colliders
 {
-	BoxCollider::BoxCollider(Frustum::Vector3Float origin_, Frustum::Vector3Float size)
+	BoxCollider::BoxCollider(Vector3Float origin_, Vector3Float size)
 		: origin(origin_), max(origin_ + size) {};
 
 	bool BoxCollider::IsOnFrustum(const Frustum &Frustum)
@@ -14,7 +14,7 @@ namespace Vox::Front::Rendering::Frustum::Colliders
 	}
 	bool BoxCollider::IsOnForwardPlane(const Frustum::FrustumPlane &plane)
 	{
-		Frustum::Vector3Float positiveVertex = this->max;
+		Vector3Float positiveVertex = this->max;
 
 		for (uint8_t index = 0; index < 3; index++)
 			if (plane.normal[index] < 0)

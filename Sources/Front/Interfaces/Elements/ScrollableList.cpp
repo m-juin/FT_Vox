@@ -40,7 +40,7 @@ namespace Vox::Front::Interfaces::Elements
 		IContainer::OnClick(button, action);
 	}
 	
-	bool ScrollableList::IsHover(const Vector2& mousePos)
+	bool ScrollableList::IsHover(const Vector2Float& mousePos)
 	{
 		if (this->_enabled == false)
 			return false;
@@ -89,7 +89,7 @@ namespace Vox::Front::Interfaces::Elements
 		this->_fullSize = curOffset;
 	}
 
-	void ScrollableList::SetPos(const Vector2 newPos)
+	void ScrollableList::SetPos(const Vector2Float newPos)
 	{
 		if (newPos == this->_pos)
 			return;
@@ -97,7 +97,7 @@ namespace Vox::Front::Interfaces::Elements
 		RebuildList();
 	}
 
-	void ScrollableList::SetSize(const Vector2 newSize)
+	void ScrollableList::SetSize(const Vector2Float newSize)
 	{
 		if (newSize == this->_size)
 			return;

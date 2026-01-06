@@ -15,8 +15,8 @@ namespace Vox::Front::Interfaces::Elements
 		public:
 			struct Vox_Text_Constructor
 			{
-					Vector2 pos;
-					Vector2 size;
+					Vector2Float pos;
+					Vector2Float size;
 					Color color;
 					std::string content;
 					float scale;
@@ -34,21 +34,21 @@ namespace Vox::Front::Interfaces::Elements
 
 			Text() = delete;
 			Text(const Vox_Text_Constructor &st);
-			Text(Vector2 pos = {0, 0}, Vector2 size = {100, 50}, Color color = {1.0f, 1.0f, 1.0f, 1.0f},
+			Text(Vector2Float pos = {0, 0}, Vector2Float size = {100, 50}, Color color = {1.0f, 1.0f, 1.0f, 1.0f},
 				 std::string content = "", float scale = 0.5);
 			~Text();
 
 			void ResetVertex() override;
 			void Draw() override;
-			void SetPos(const Vector2 newPos) override;
-			void SetSize(const Vector2 newSize) override;
+			void SetPos(const Vector2Float newPos) override;
+			void SetSize(const Vector2Float newSize) override;
 
 			void SetColor(const Color &newColor);
 
 			void SetContent(const std::string &newContent);
 
-			static Vector2 GetTextSize(const std::string &content, const float &scale, const float letterSpace = 0.0f);
-			Vector2 GetTextSize();
+			static Vector2Float GetTextSize(const std::string &content, const float &scale, const float letterSpace = 0.0f);
+			Vector2Float GetTextSize();
 			const std::string &GetContent() {return this->_textContent;};
 
 		private:

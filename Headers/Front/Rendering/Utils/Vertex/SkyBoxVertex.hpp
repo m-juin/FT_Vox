@@ -1,7 +1,7 @@
 #ifndef __SKYBOX_VERTEX_HPP__
 #define __SKYBOX_VERTEX_HPP__
 
-#include "MathGraphicalLib/Vectors/Vector3.hpp"
+#include "MathGraphicalLib/Vectors/Defines.hpp"
 
 #include <vulkan/vulkan.h>
 #include <array>
@@ -10,7 +10,7 @@
 
 namespace Vox::Front::Rendering::Utils::Vertex
 {
-	using Vector3Float = MGL::Vectors::Vector3<float>;
+	using namespace MGL::Vectors::Types;
 	struct SkyBoxVertex
 	{
 			Vector3Float vertPos;

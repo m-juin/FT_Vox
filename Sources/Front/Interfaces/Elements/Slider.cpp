@@ -47,7 +47,7 @@ namespace Vox::Front::Interfaces::Elements
 		else if (newVal < this->_range.first || newVal > this->_range.second)
 			throw std::runtime_error("Invalid slider value.");
 		this->_value = newVal;
-		this->GetElement<Image>("IMG_Handle")->SetPos(Vector2(this->GetHandlePos(), this->_pos[1]));
+		this->GetElement<Image>("IMG_Handle")->SetPos(Vector2Float(this->GetHandlePos(), this->_pos[1]));
 		std::stringstream ss;
 		ss << std::setprecision(2) << this->_value;
 		this->GetElement<Text>("TXT_Value")->SetContent(ss.str());
@@ -119,32 +119,32 @@ namespace Vox::Front::Interfaces::Elements
 		std::stringstream ss;
 		ss << std::setprecision(2) << this->_value;
 		this->GetElement<Text>("TXT_Value")->SetContent(ss.str());
-		this->GetElement<Image>("IMG_Handle")->SetPos(Vector2(this->GetHandlePos(), this->_pos[1]));
+		this->GetElement<Image>("IMG_Handle")->SetPos(Vector2Float(this->GetHandlePos(), this->_pos[1]));
 		this->onValueChange.Notify(this->_value, prevVal);
 	}
 
-	bool Slider::IsHover(const Vector2 &mousePos)
+	bool Slider::IsHover(const Vector2Float &mousePos)
 	{
 		return AClickable::IsHover(mousePos);
 	}
 
-	void Slider::SetPos(Vector2 newPos)
+	void Slider::SetPos(Vector2Float newPos)
 	{
 		if (newPos == this->_pos)
 			return;
 		this->_pos = newPos;
-		this->GetElement<Image>("IMG_BG")->SetPos(Vector2(this->_pos[0], this->_pos[1] + this->_size[1] / 4));
-		this->GetElement<Image>("IMG_Handle")->SetPos(Vector2(this->GetHandlePos(), this->_pos[1]));
+		this->GetElement<Image>("IMG_BG")->SetPos(Vector2Float(this->_pos[0], this->_pos[1] + this->_size[1] / 4));
+		this->GetElement<Image>("IMG_Handle")->SetPos(Vector2Float(this->GetHandlePos(), this->_pos[1]));
 		this->GetElement<Image>("TXT_Value")->SetPos({this->_pos[0] + this->_size[0] + 25, this->_pos[1] + 16});
 	}
 
-	void Slider::SetSize(Vector2 newSize)
+	void Slider::SetSize(Vector2Float newSize)
 	{
 		if (newSize == this->_size)
 			return;
 		this->_size = newSize;
-		this->GetElement<Image>("IMG_BG")->SetSize(Vector2(this->_size[0], this->_size[1] / 2));
-		this->GetElement<Image>("IMG_Handle")->SetSize(Vector2(this->_size[1] / 2));
+		this->GetElement<Image>("IMG_BG")->SetSize(Vector2Float(this->_size[0], this->_size[1] / 2));
+		this->GetElement<Image>("IMG_Handle")->SetSize(Vector2Float(this->_size[1] / 2));
 	}
 
 	Slider::Slider(const Constructor &st)
@@ -152,13 +152,13 @@ namespace Vox::Front::Interfaces::Elements
 		  _handleColor(st.HandleColor), _FocusedHandleColor(st.HandleSlidingColor)
 	{
 		this->AddElement("IMG_BG",
-						 std::make_unique<Image>("", "", Vector2(this->_pos[0], this->_pos[1] + this->_size[1] / 4),
-												 Vector2(this->_size[0], this->_size[1] / 2), st.BGColor),
+						 std::make_unique<Image>("", "", Vector2Float(this->_pos[0], this->_pos[1] + this->_size[1] / 4),
+												 Vector2Float(this->_size[0], this->_size[1] / 2), st.BGColor),
 						 0);
 
 		this->AddElement("IMG_Handle",
-						 std::make_unique<Image>("", "", Vector2(this->GetHandlePos(), this->_pos[1]),
-												 Vector2(this->_size[1]), st.HandleColor),
+						 std::make_unique<Image>("", "", Vector2Float(this->GetHandlePos(), this->_pos[1]),
+												 Vector2Float(this->_size[1]), st.HandleColor),
 						 1);
 
 		{

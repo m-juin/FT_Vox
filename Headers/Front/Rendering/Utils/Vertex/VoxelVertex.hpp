@@ -1,8 +1,7 @@
 #ifndef __VOXELVERTEX_HPP__
 #define __VOXELVERTEX_HPP__
 
-#include "MathGraphicalLib/Vectors/Vector3.hpp"
-#include "MathGraphicalLib/Vectors/Vector2.hpp"
+#include "MathGraphicalLib/Vectors/Defines.hpp"
 
 #include <vulkan/vulkan.h>
 #include <array>
@@ -11,8 +10,7 @@
 
 namespace Vox::Front::Rendering::Utils::Vertex
 {
-	using Vector3Float = MGL::Vectors::Vector3<float>;
-	using Vector2Float = MGL::Vectors::Vector2<float>;
+	using namespace MGL::Vectors::Types;
 	struct VoxelVertex
 	{
 			Vector3Float vertPos;

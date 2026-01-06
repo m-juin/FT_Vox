@@ -12,14 +12,14 @@ namespace Vox::Game::Scenes::World::Interfaces
     class I_F3 : public virtual AInterface, public virtual Vox::Utils::AUpdatable
     {
         public:
-            I_F3(Vox::Front::Interfaces::Elements::Vector2 pos, Vox::Front::Interfaces::Elements::Vector2 size);
+            I_F3(Vox::Front::Interfaces::Elements::Vector2Float pos, Vox::Front::Interfaces::Elements::Vector2Float size);
             I_F3() = delete;
             ~I_F3();
     
         private:
 
-			void SetPos(const Vox::Front::Interfaces::Elements::Vector2 newPos) override;
-			void SetSize(const Vox::Front::Interfaces::Elements::Vector2 newSize) override;
+			void SetPos(const Vox::Front::Interfaces::Elements::Vector2Float newPos) override;
+			void SetSize(const Vox::Front::Interfaces::Elements::Vector2Float newSize) override;
             void OnHover() override {};
             void OnHoverLeave() override {};
             void Render() override;

@@ -43,7 +43,7 @@ namespace Vox::Game::Scenes::World::Interfaces
 			this->_process.join();
 	}
 
-	void M_Minimap::RequestUpdate(MGL::Vectors::Vector3<float> newPlayerPos, const uint32_t &newSeed, const float &newScale, const uint8_t &newMap)
+	void M_Minimap::RequestUpdate(Vector3Float newPlayerPos, const uint32_t &newSeed, const float &newScale, const uint8_t &newMap)
 	{
 		{
 			std::lock_guard<std::mutex> lock(_processMutex);

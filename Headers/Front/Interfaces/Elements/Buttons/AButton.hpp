@@ -18,8 +18,8 @@ namespace Vox::Front::Interfaces::Elements
 			public:
 				struct Vox_Button_Constructor
 				{
-						Vector2 pos;
-						Vector2 size;
+						Vector2Float pos;
+						Vector2Float size;
 
 						std::string content;
 						Color textColor;
@@ -38,7 +38,7 @@ namespace Vox::Front::Interfaces::Elements
 				AButton(const std::string &content_ = "Button", Color textColor_ = {0.0, 0.0, 0.0, 1.0});
 				AButton(const Vox_Button_Constructor &st);
 				virtual ~AButton();
-				inline virtual bool IsHover(const Vector2 &mousePos) override
+				inline virtual bool IsHover(const Vector2Float &mousePos) override
 				{
 					return AClickable::IsHover(mousePos);
 				}
@@ -47,8 +47,8 @@ namespace Vox::Front::Interfaces::Elements
 				{
 					AClickable::OnClick(button, action);
 				}
-				virtual void SetPos(Vector2 newPos) override;
-				virtual void SetSize(Vector2 newSize) override;
+				virtual void SetPos(Vector2Float newPos) override;
+				virtual void SetSize(Vector2Float newSize) override;
 
 				void ResetVertex() override;
 

@@ -10,15 +10,15 @@ namespace Vox::Game::Chuncks::Operations
 {
 	using namespace MGL::Vectors::Types;
 
-	inline Vector3uint8 WorldToChunk(Vector3Int coord)
+	inline Vector3Uint8 WorldToChunk(Vector3Int coord)
 	{
-		Vector3uint8 ret;
+		Vector3Uint8 ret;
 		for (int i = 0; i < 3; i++)
 			ret[i] = (coord[i] + static_cast<int>(Game::Utils::Defines::CHUNCK_SIZE)) % static_cast<int>(Game::Utils::Defines::CHUNCK_SIZE);
 		return ret;
 	}
 
-	inline Vector3Int ChunkToWorld(Vector3uint8 coord, Vector3Int chunckPos)
+	inline Vector3Int ChunkToWorld(Vector3Uint8 coord, Vector3Int chunckPos)
 	{
 		Vector3Int ret;
 		for (int i = 0; i < 3; i++)

@@ -9,13 +9,13 @@ namespace Vox::Game::Scenes::Menu::Interfaces::Elements
     WorldDataDisplayer::WorldDataDisplayer(const Vox_WorldDataDisplayer_Constructor &st) : Bases::AElement(st.pos, st.size), AClickable(), Bases::AContainer(), _linkedWorld(st.sd)
     {
         this->AddElement("IMG_BG", std::make_unique<Image>("Menu_Main", "Dirt", this->_pos, this->_size,
-												 Color(0.7f, 0.7f, 0.7f, 1.0f), Vector2(2, 2)), 0);
+												 Color(0.7f, 0.7f, 0.7f, 1.0f), Vector2Float(2, 2)), 0);
 
-        Vector2 elemPos = {this->_pos[0] + 5, this->_pos[1] + 5};
-        Vector2 elemSize = {this->_size[1] - 10};
+        Vector2Float elemPos = {this->_pos[0] + 5, this->_pos[1] + 5};
+        Vector2Float elemSize = {this->_size[1] - 10};
 
         this->AddElement("IMG_Preview", std::make_unique<Image>("", "", elemPos, elemSize,
-												 Color(1.0f, 1.0f, 1.0f, 1.0f), Vector2(1, 1)), 1);
+												 Color(1.0f, 1.0f, 1.0f, 1.0f), Vector2Float(1, 1)), 1);
 
         {
             Text::Vox_Text_Constructor ElemSt{};
@@ -31,15 +31,15 @@ namespace Vox::Game::Scenes::Menu::Interfaces::Elements
         }
     }
 
-    void WorldDataDisplayer::SetPos(const Vector2 newPos)
+    void WorldDataDisplayer::SetPos(const Vector2Float newPos)
     {
         if (newPos == this->_pos) return ;
         this->_pos = newPos;
 
         this->GetElement<Image>("IMG_BG")->SetPos(this->_pos);
 
-        Vector2 elemPos = {this->_pos[0] + 5, this->_pos[1] + 5};
-        Vector2 elemSize = {this->_size[1] - 10};
+        Vector2Float elemPos = {this->_pos[0] + 5, this->_pos[1] + 5};
+        Vector2Float elemSize = {this->_size[1] - 10};
 
         this->GetElement<Image>("IMG_Preview")->SetPos(elemPos);
 
@@ -50,14 +50,14 @@ namespace Vox::Game::Scenes::Menu::Interfaces::Elements
         txt->SetPos(elemPos);
     }
     
-    void WorldDataDisplayer::SetSize(const Vector2 newSize)
+    void WorldDataDisplayer::SetSize(const Vector2Float newSize)
     {
         if (newSize == this->_size) return ;
         this->_size = newSize;
 
         this->GetElement<Image>("IMG_BG")->SetSize(this->_size);
 
-        Vector2 elemSize = {this->_size[1] - 10};
+        Vector2Float elemSize = {this->_size[1] - 10};
 
         this->GetElement<Image>("IMG_Preview")->SetSize(elemSize);
     }
@@ -67,7 +67,7 @@ namespace Vox::Game::Scenes::Menu::Interfaces::Elements
 		AClickable::OnClick(button, action);
 	}
 
-	bool WorldDataDisplayer::IsHover(const Vector2 &mousePos)
+	bool WorldDataDisplayer::IsHover(const Vector2Float &mousePos)
 	{
 		return AClickable::IsHover(mousePos);
 	}

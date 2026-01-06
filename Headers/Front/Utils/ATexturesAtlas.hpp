@@ -10,10 +10,13 @@
 
 #include <cstring>
 
+#include "MathGraphicalLib/Vectors/Defines.hpp"
+
 namespace Vox::Front::Utils
 {
 	using TextureInfo = Game::Datas::Textures::TextureInfo;
 	using namespace Vox::Front::Rendering::Images;
+	using namespace MGL::Vectors::Types;
 
 	class ATexturesAtlas
 	{
@@ -41,8 +44,8 @@ namespace Vox::Front::Utils
 		public:
 			struct alignas(16) uvData
 			{
-					MGL::Vectors::Vector2<float> uvMin;
-					MGL::Vectors::Vector2<float> uvMax;
+					Vector2Float uvMin;
+					Vector2Float uvMax;
 					MGL::Vectors::Vector2<uint16_t> atlasSize;
 					int textureID;
 			};

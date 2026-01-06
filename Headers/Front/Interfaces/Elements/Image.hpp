@@ -7,6 +7,10 @@
 
 #include "Front/Utils/TexturesAtlas.hpp"
 
+#include "MathGraphicalLib/Vectors/Defines.hpp"
+
+#include "./Utils/Defines.hpp"
+
 using E_ImageType = Vox::Front::Rendering::Utils::Vertex::E_ImageType;
 
 namespace Vox::Front::Interfaces::Elements
@@ -27,16 +31,16 @@ namespace Vox::Front::Interfaces::Elements
 			std::string _atlasKey;
 
 			Color _colorMod;
-			Vector2 _textureRepeat;
+			Vector2Float _textureRepeat;
 
 			Front::Utils::TexturesAtlas::TexturesAtlas::uvData _uvMappingData;
 		public:
-			Image(std::string atlas = "", std::string key = "", Vector2 pos = {0, 0}, Vector2 size = {100, 50}, Color colorMod = {1.0, 1.0, 1.0, 1.0}, Vector2 textureRepeat = {1, 1});
+			Image(std::string atlas = "", std::string key = "", Vector2Float pos = {0, 0}, Vector2Float size = {100, 50}, Color colorMod = {1.0, 1.0, 1.0, 1.0}, Vector2Float textureRepeat = {1, 1});
 			~Image();
 
 			void Draw() override;
-			void SetPos(const Vector2 newPos) override;
-			void SetSize(const Vector2 newSize) override;
+			void SetPos(const Vector2Float newPos) override;
+			void SetSize(const Vector2Float newSize) override;
 
 			void SetColor(const Color &newColor);
 			void SetTexture(const std::string &newAtlas, const std::string &newKey);

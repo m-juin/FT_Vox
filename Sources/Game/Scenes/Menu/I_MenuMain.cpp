@@ -17,14 +17,14 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 {
 	using namespace Front::Interfaces::Elements;
 
-	I_MenuMain::I_MenuMain(Vox::Front::Interfaces::Elements::Vector2 pos, Vox::Front::Interfaces::Elements::Vector2 size) : AInterface(pos, size, true)
+	I_MenuMain::I_MenuMain(Vox::Front::Interfaces::Elements::Vector2Float pos, Vox::Front::Interfaces::Elements::Vector2Float size) : AInterface(pos, size, true)
 	{
 		_size[0] = MGL::Utils::findNextMultiple(size[0], 16.f);
 		_size[1] = MGL::Utils::findNextMultiple(size[1], 16.f);
 		this->_inputMask |= Game::Utils::Datas::InputMask::Mouse | Game::Utils::Datas::InputMask::KeyBoard;
 		this->AddElement("IMG_BG",
 						 std::make_unique<Image>("Menu_Main", "Dirt", this->_pos, this->_size,
-												 Color(1.0f, 1.0f, 1.0f, 1.0f), Vox::Front::Interfaces::Elements::Vector2(16, 16)),
+												 Color(1.0f, 1.0f, 1.0f, 1.0f), Vox::Front::Interfaces::Elements::Vector2Float(16, 16)),
 						 0);
 
 		{
@@ -77,7 +77,7 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 
 	I_MenuMain::~I_MenuMain() {}
 
-	void I_MenuMain::SetPos(const Vox::Front::Interfaces::Elements::Vector2 newPos)
+	void I_MenuMain::SetPos(const Vox::Front::Interfaces::Elements::Vector2Float newPos)
 	{
 		if (newPos == this->_pos)
 			return;
@@ -85,7 +85,7 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 		this->FindElement("IMG_BG")->elem->SetPos(this->_pos);
 	}
 
-	void I_MenuMain::SetSize(const Vox::Front::Interfaces::Elements::Vector2 newSize)
+	void I_MenuMain::SetSize(const Vox::Front::Interfaces::Elements::Vector2Float newSize)
 	{
 		if (newSize == this->_size)
 			return;

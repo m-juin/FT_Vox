@@ -20,7 +20,7 @@ namespace Vox::Front::Interfaces::Elements
 		ResetVertex();
 	}
 
-	Text::Text(Vector2 pos, Vector2 size, Color color, std::string content, float scale) : AElement(pos, size)
+	Text::Text(Vector2Float pos, Vector2Float size, Color color, std::string content, float scale) : AElement(pos, size)
 	{
 		this->_textColor = color;
 		this->_textContent = content;
@@ -44,7 +44,7 @@ namespace Vox::Front::Interfaces::Elements
 		auto &font =
 			Front::Scenes::TexturesManager::GetInstance().GetFont();
 
-		const Vector2 screenSize(Rendering::SwapChain::GetInstance().GetExtent().width,
+		const Vector2Float screenSize(Rendering::SwapChain::GetInstance().GetExtent().width,
 								 Rendering::SwapChain::GetInstance().GetExtent().height);
 
 		auto imgType = E_ImageType::Font;
@@ -132,7 +132,7 @@ namespace Vox::Front::Interfaces::Elements
 		vkCmdDrawIndexed(cmdBuffer, static_cast<uint32_t>(_indexCount), 1, 0, 0, 0);
 	}
 
-	void Text::SetPos(const Vector2 newPos)
+	void Text::SetPos(const Vector2Float newPos)
 	{
 		if (this->_pos == newPos)
 			return;
@@ -140,7 +140,7 @@ namespace Vox::Front::Interfaces::Elements
 		this->ResetVertex();
 	}
 
-	void Text::SetSize(const Vector2 newSize)
+	void Text::SetSize(const Vector2Float newSize)
 	{
 		if (this->_size == newSize)
 			return;
@@ -165,9 +165,9 @@ namespace Vox::Front::Interfaces::Elements
 		this->ResetVertex();
 	}
 
-	Vector2 Text::GetTextSize(const std::string &content, const float &scale, const float letterSpace)
+	Vector2Float Text::GetTextSize(const std::string &content, const float &scale, const float letterSpace)
 	{
-		Vector2 size;
+		Vector2Float size;
 		auto &font =
 			Game::GameManager::GetInstance().GetTexturesManager().GetFont();
 
@@ -183,9 +183,9 @@ namespace Vox::Front::Interfaces::Elements
 		return size;
 	}
 	
-	Vector2 Text::GetTextSize()
+	Vector2Float Text::GetTextSize()
 	{
-		Vector2 size;
+		Vector2Float size;
 		auto &font =
 			Game::GameManager::GetInstance().GetTexturesManager().GetFont();
 

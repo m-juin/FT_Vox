@@ -10,11 +10,11 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
-#include "MathGraphicalLib/Vectors/Vector2.hpp"
+#include "MathGraphicalLib/Vectors/Defines.hpp"
 
 namespace Vox::Front::Rendering::Images
 {
-	template <typename T> using Vector2 = MGL::Vectors::Vector2<T>;
+	using namespace MGL::Vectors::Types;
 	struct Character
 	{
 			int x;
@@ -28,8 +28,8 @@ namespace Vox::Front::Rendering::Images
 
 	struct TextureBounds
 	{
-			Vector2<float> topLeft;
-			Vector2<float> bottomRight;
+			Vector2Float topLeft;
+			Vector2Float bottomRight;
 	};
 
 	class FontImage : public VulkanImage
@@ -58,7 +58,7 @@ namespace Vox::Front::Rendering::Images
 			void CreateAtlas(FT_Face &face);
 			void FillAtlas(FT_Face &face);
 
-			Vector2<size_t> _atlasSize;
+			Vector2SizeT _atlasSize;
 			std::vector<uint8_t> _atlas;
 			std::unordered_map<char, Character> _fontDictionnary;
 

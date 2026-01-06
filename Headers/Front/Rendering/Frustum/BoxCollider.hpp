@@ -7,10 +7,10 @@ namespace Vox::Front::Rendering::Frustum::Colliders
 {
     struct BoxCollider : public Collider
     {
-        Frustum::Vector3Float origin;
-        Frustum::Vector3Float max;
+        Vector3Float origin;
+        Vector3Float max;
 
-        BoxCollider(Frustum::Vector3Float, Frustum::Vector3Float);
+        BoxCollider(Vector3Float, Vector3Float);
 
         bool IsOnFrustum(const Frustum &Frustum) override;
         bool IsOnForwardPlane(const Frustum::FrustumPlane &plane);

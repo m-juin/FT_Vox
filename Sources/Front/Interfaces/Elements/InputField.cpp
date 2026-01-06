@@ -31,12 +31,12 @@ namespace Vox::Front::Interfaces::Elements
 
 		this->AddElement("IMG_PosIndicator",
 						 std::make_unique<Image>(
-							 "", "", Vector2(this->_pos[0] + this->_size[0] / 2., this->_pos[1] + this->_size[1] / 4.),
-							 Vector2(3., this->_size[1] / 2)),
+							 "", "", Vector2Float(this->_pos[0] + this->_size[0] / 2., this->_pos[1] + this->_size[1] / 4.),
+							 Vector2Float(3., this->_size[1] / 2)),
 						 2);
 	}
 
-	void InputField::SetPos(const Vector2 newPos)
+	void InputField::SetPos(const Vector2Float newPos)
 	{
 		if (newPos == this->_pos)
 			return;
@@ -49,7 +49,7 @@ namespace Vox::Front::Interfaces::Elements
 		return this->GetElement<Text>("TXT_Input")->GetContent();
 	}
 
-	void InputField::SetSize(const Vector2 newSize)
+	void InputField::SetSize(const Vector2Float newSize)
 	{
 		if (newSize == this->_size)
 			return;
@@ -131,12 +131,12 @@ namespace Vox::Front::Interfaces::Elements
 		auto txt = this->GetElement<Text>("TXT_Input");
 
 		if (txt->GetContent().size() == 0)
-			indicator->SetPos(Vector2(this->_pos[0] + this->_size[0] / 2., this->_pos[1] + this->_size[1] / 4.));
+			indicator->SetPos(Vector2Float(this->_pos[0] + this->_size[0] / 2., this->_pos[1] + this->_size[1] / 4.));
 		else
 		{
 			auto txtSize = Text::GetTextSize(txt->GetContent().substr(0, curPos), this->_inputScale, 5);
 
-			Vector2 newPos = {txt->GetPos()[0] + txtSize[0] - 2, indicator->GetPos()[1]};
+			Vector2Float newPos = {txt->GetPos()[0] + txtSize[0] - 2, indicator->GetPos()[1]};
 			indicator->SetPos(newPos);
 		}
 	}

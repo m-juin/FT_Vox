@@ -16,8 +16,8 @@ namespace Vox::World::Generation::Decorations
 {
 	using namespace MGL::Vectors::Types;
 
-	static bool IsValid(Vector2float candidate, float sqrRadius, Vector2Int region, int gridWidth, int gridHeight,
-						float cellSize, std::vector<Vector2float> &points, std::vector<int> &grid)
+	static bool IsValid(Vector2Float candidate, float sqrRadius, Vector2Int region, int gridWidth, int gridHeight,
+						float cellSize, std::vector<Vector2Float> &points, std::vector<int> &grid)
 	{
 		if (candidate[0] >= 0 && candidate[0] < region[0] && candidate[1] >= 0 && candidate[1] < region[1])
 		{
@@ -36,7 +36,7 @@ namespace Vox::World::Generation::Decorations
 					int index = grid[x + y * gridWidth];
 					if (index >= 0 && index < static_cast<int>(points.size()))
 					{
-						Vector2float point = points[index];
+						Vector2Float point = points[index];
 						float dx = candidate[0] - point[0];
 						float dy = candidate[1] - point[1];
 						float dst = dx * dx + dy * dy;
@@ -50,7 +50,7 @@ namespace Vox::World::Generation::Decorations
 		return false;
 	}
 
-	inline std::vector<Vector2float> GenerateDiskTree(uint64_t seed, float radius = 2.f,
+	inline std::vector<Vector2Float> GenerateDiskTree(uint64_t seed, float radius = 2.f,
 												 Vector2Int region = {Game::Utils::Defines::CHUNCK_SIZE,
 																	  Game::Utils::Defines::CHUNCK_SIZE},
 												 size_t tryBeforeRejection = 30)
@@ -66,23 +66,23 @@ namespace Vox::World::Generation::Decorations
 		int gridSize = gridWidth * gridHeight;
 
 		std::vector<int> grid(gridSize, 0);
-		std::vector<Vector2float> points;
-		std::vector<Vector2float> spawnPoints;
+		std::vector<Vector2Float> points;
+		std::vector<Vector2Float> spawnPoints;
 
 		spawnPoints.push_back({region[0] / 2.f, region[1] / 2.f});
 
 		while (!spawnPoints.empty())
 		{
 			size_t spawnIndex = static_cast<size_t>(dist(gen) * spawnPoints.size());
-			Vector2float spawnCenter = spawnPoints[spawnIndex];
+			Vector2Float spawnCenter = spawnPoints[spawnIndex];
 			bool candidateAccepted = false;
 
 			for (size_t i = 0; i < tryBeforeRejection; i++)
 			{
 				float angle = dist(gen) * M_PI * 2;
-				Vector2float dir = {std::sin(angle), std::cos(angle)};
+				Vector2Float dir = {std::sin(angle), std::cos(angle)};
 				float distance = radius + dist(gen) * radius;
-				Vector2float candidate = {spawnCenter[0] + dir[0] * distance, spawnCenter[1] + dir[1] * distance};
+				Vector2Float candidate = {spawnCenter[0] + dir[0] * distance, spawnCenter[1] + dir[1] * distance};
 
 				if (IsValid(candidate, sqrRadius, region, gridWidth, gridHeight, cellSize, points, grid))
 				{
@@ -112,7 +112,7 @@ namespace Vox::World::Generation::Decorations
 	/// @param regionRadius the number of chunck around the target one
 	/// @param tryBeforeRejection the try amount to find a suitable spawnPoint
 	/// @return
-inline std::vector<Vector2float> GetChunckDiskSampling(
+inline std::vector<Vector2Float> GetChunckDiskSampling(
     Vector2Int worldChunk, 
     uint64_t seed, 
     float radius = 2.f, 
@@ -136,7 +136,7 @@ inline std::vector<Vector2float> GetChunckDiskSampling(
         static_cast<int>(chunkInRegion[1] * Game::Utils::Defines::CHUNCK_SIZE)
     };
     
-    std::vector<Vector2float> localTrees;
+    std::vector<Vector2Float> localTrees;
     for (const auto& tree : regionTrees) 
     {
         if (tree[0] >= chunkStartInRegion[0] && 

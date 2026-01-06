@@ -16,7 +16,7 @@ namespace Vox::Game::Scenes::World::Interfaces
     class I_Generation : public virtual AInterface, public virtual Vox::Utils::AUpdatable
     {
         public:
-            I_Generation(Vox::Front::Interfaces::Elements::Vector2 pos, Vox::Front::Interfaces::Elements::Vector2 size);
+            I_Generation(Vox::Front::Interfaces::Elements::Vector2Float pos, Vox::Front::Interfaces::Elements::Vector2Float size);
             I_Generation() = delete;
             ~I_Generation();
     
@@ -24,8 +24,8 @@ namespace Vox::Game::Scenes::World::Interfaces
             M_Minimap _mMinimap;
 
             void UpdateMap(Vector2Int playerPos);
-			void SetPos(const Vox::Front::Interfaces::Elements::Vector2 newPos) override;
-			void SetSize(const Vox::Front::Interfaces::Elements::Vector2 newSize) override;
+			void SetPos(const Vox::Front::Interfaces::Elements::Vector2Float newPos) override;
+			void SetSize(const Vox::Front::Interfaces::Elements::Vector2Float newSize) override;
             void OnHover() override {};
             void OnHoverLeave() override {};
             void Render() override;

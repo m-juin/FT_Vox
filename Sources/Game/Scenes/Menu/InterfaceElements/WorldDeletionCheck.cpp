@@ -26,7 +26,7 @@ namespace Vox::Game::Scenes::Menu::Interfaces::Elements
 
 		this->AddElement("IMG_BG",
 						 std::make_unique<Image>("Menu_Main", "Dirt", this->_pos, this->_size,
-												 Color(0.6f, 0.6f, 0.6f, 1.0f), Vector2(4, 4)),
+												 Color(0.6f, 0.6f, 0.6f, 1.0f), Vector2Float(4, 4)),
 						 1);
 
 		{ // TXT_Confirm + TXT_WN
@@ -78,7 +78,7 @@ namespace Vox::Game::Scenes::Menu::Interfaces::Elements
 		}
 	}
 
-	void WorldDeletionCheck::SetPos(const Vector2 newPos)
+	void WorldDeletionCheck::SetPos(const Vector2Float newPos)
 	{
 		if (newPos == this->_pos)
 			return;
@@ -92,7 +92,7 @@ namespace Vox::Game::Scenes::Menu::Interfaces::Elements
 		txt->SetPos({this->_pos[0] + this->_size[0] / 2 - txt->GetTextSize()[0] / 2, this->_pos[1] + 90});
 	}
 
-	void WorldDeletionCheck::SetSize(const Vector2 newSize)
+	void WorldDeletionCheck::SetSize(const Vector2Float newSize)
 	{
 		if (newSize == this->_size)
 			return;

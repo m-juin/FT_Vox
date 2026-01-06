@@ -14,13 +14,13 @@ namespace Vox::Game::Scenes::Menu::Interfaces::Elements
 		public:
 			struct Vox_WorldDataDisplayer_Constructor
 			{
-					Vector2 pos;
-					Vector2 size;
+					Vector2Float pos;
+					Vector2Float size;
 					Saves::WorldData sd;
 			};
 
-			void SetPos(const Vector2 newPos) override;
-			void SetSize(const Vector2 newSize) override;
+			void SetPos(const Vector2Float newPos) override;
+			void SetSize(const Vector2Float newSize) override;
 
 			WorldDataDisplayer() = delete;
 			WorldDataDisplayer(const Vox_WorldDataDisplayer_Constructor &st);
@@ -28,7 +28,7 @@ namespace Vox::Game::Scenes::Menu::Interfaces::Elements
 
 			void Select();
 			void UnSelect();
-			virtual bool IsHover(const Vector2 &mousePos) override;
+			virtual bool IsHover(const Vector2Float &mousePos) override;
 			virtual void OnClick(const int &button, const int &action) override;
 
 			Saves::WorldData GetWorld() {return this->_linkedWorld;};

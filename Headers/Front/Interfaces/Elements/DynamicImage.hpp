@@ -7,15 +7,18 @@
 
 #include "Front/Rendering/Images/VulkanImage.hpp"
 
+#include "MathGraphicalLib/Vectors/Defines.hpp"
+
 namespace Vox::Front::Interfaces::Elements
 {
+	using namespace MGL::Vectors::Types;
 	class DynamicImage : public virtual Bases::AElement, public virtual Rendering::Images::VulkanImage
 	{
 		public:
 			struct Constructor
 			{
-					Vector2 pos;
-					Vector2 size;
+					Vector2Float pos;
+					Vector2Float size;
                     Color colorMod;
 					std::vector<uint8_t> defaultData;
 
@@ -24,8 +27,8 @@ namespace Vox::Front::Interfaces::Elements
 
 			DynamicImage() = delete;
 			DynamicImage(const Constructor &st);
-			void SetPos(const Vector2 newPos) override;
-			void SetSize(const Vector2 newSize) override;
+			void SetPos(const Vector2Float newPos) override;
+			void SetSize(const Vector2Float newSize) override;
 
 			void Draw() override;
 

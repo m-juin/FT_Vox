@@ -3,14 +3,15 @@
 
 #include "MathGraphicalLib/Matrix/Matrix4.hpp"
 #include "MathGraphicalLib/Vectors/Operations.hpp"
+#include "MathGraphicalLib/Vectors/Defines.hpp"
 
 #include <vector>
 
 namespace Vox::Front::Rendering::Frustum
 {
+	using namespace MGL::Vectors::Types;
 	struct Frustum
 	{
-			using Vector3Float = MGL::Vectors::Vector3<float>;
 			struct FrustumPlane
 			{
 					Vector3Float normal;

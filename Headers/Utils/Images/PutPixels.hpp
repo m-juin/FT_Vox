@@ -1,18 +1,19 @@
 #ifndef __PUTPIXELS_HPP__
 #define __PUTPIXELS_HPP__
 
-#include "MathGraphicalLib/Vectors/Vector2.hpp"
-#include "MathGraphicalLib/Vectors/Vector3.hpp"
 #include "MathGraphicalLib/Vectors/Vector4.hpp"
+#include "MathGraphicalLib/Vectors/Defines.hpp"
 
 #include <cstdint>
 #include <vector>
 
 namespace Vox::Utils::Images
 {
-	inline void PutPixel(std::vector<uint8_t> &image, MGL::Vectors::Vector2<size_t> &imgSize,
-						 const MGL::Vectors::Vector2<size_t> &pixelCoord, bool opacity = false,
-						 const MGL::Vectors::Vector3<float> &pixelColor = {255, 255, 255})
+	using namespace MGL::Vectors::Types;
+
+	inline void PutPixel(std::vector<uint8_t> &image, Vector2SizeT &imgSize,
+						 const Vector2SizeT &pixelCoord, bool opacity = false,
+						 const Vector3Float &pixelColor = {255, 255, 255})
 	{
 		(void)opacity;
 		size_t rPixelIndex = pixelCoord[1] * 4 * imgSize[0] + (pixelCoord[0] * 4);

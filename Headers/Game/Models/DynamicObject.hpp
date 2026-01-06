@@ -19,24 +19,24 @@ namespace Vox::Game::Models
     class DynamicObject : public virtual Vox::Utils::AUpdatable
     {
         public:
-            DynamicObject(Vector3float defaultPos = {0.0f, 0.0f, 0.0f}, Vector3float defaultRot = {0.0f, 0.0f, 0.0f}, uint32_t updateDelay = 1);
+            DynamicObject(Vector3Float defaultPos = {0.0f, 0.0f, 0.0f}, Vector3Float defaultRot = {0.0f, 0.0f, 0.0f}, uint32_t updateDelay = 1);
             virtual ~DynamicObject();
     
             virtual bool AssignModel() = 0;
             Matrix GetModel();
 
-            void SetPos(Vector3float newPos);
-            void SetRot(Vector3float newRot);
-            void Move(Vector3float moveValue);
-            void Rotate(Vector3float rotValue);
+            void SetPos(Vector3Float newPos);
+            void SetRot(Vector3Float newRot);
+            void Move(Vector3Float moveValue);
+            void Rotate(Vector3Float rotValue);
 
-            Vector3float GetPosition() {return this->_position;}
+            Vector3Float GetPosition() {return this->_position;}
 
         protected:
             std::array<bool, MAX_FRAMES_IN_FLIGHT> _isDirty;
 
-            Vector3float _position;
-            Vector3float _rotation;
+            Vector3Float _position;
+            Vector3Float _rotation;
     
     };
 }

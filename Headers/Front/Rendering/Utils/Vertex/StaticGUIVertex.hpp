@@ -4,11 +4,13 @@
 #include <array>
 #include <vulkan/vulkan.h>
 
-#include "MathGraphicalLib/Vectors/Vector2.hpp"
 #include "MathGraphicalLib/Vectors/Vector4.hpp"
+
+#include "MathGraphicalLib/Vectors/Defines.hpp"
 
 namespace Vox::Front::Rendering::Utils::Vertex
 {
+	using namespace MGL::Vectors::Types;
 	enum class E_ImageType {
 		Font = 0,
 		Texture = 1,
@@ -18,17 +20,17 @@ namespace Vox::Front::Rendering::Utils::Vertex
 
 	struct StaticGUIVertex
 	{
-			MGL::Vectors::Vector2<float> position;
-			MGL::Vectors::Vector2<float> texCoord;
+			Vector2Float position;
+			Vector2Float texCoord;
 			MGL::Vectors::Vector4<float> texColor;
 			E_ImageType imageType;
 
-			StaticGUIVertex(MGL::Vectors::Vector2<float> position, MGL::Vectors::Vector2<float> texCoord,
+			StaticGUIVertex(Vector2Float position, Vector2Float texCoord,
 							MGL::Vectors::Vector4<float> texColor, E_ImageType imageType_ = E_ImageType::Texture)
 				: position(position), texCoord(texCoord), texColor(texColor), imageType(imageType_) {};
 			StaticGUIVertex()
-				: position(MGL::Vectors::Vector2<float>(0.0f)),
-				  texCoord(MGL::Vectors::Vector2<float>(0.0f)),
+				: position(Vector2Float(0.0f)),
+				  texCoord(Vector2Float(0.0f)),
 				  texColor(MGL::Vectors::Vector4<float>(1.0f)),
 				  imageType(E_ImageType::Texture) {};
 

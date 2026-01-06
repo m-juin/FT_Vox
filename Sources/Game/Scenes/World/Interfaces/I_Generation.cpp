@@ -28,8 +28,8 @@ namespace Vox::Game::Scenes::World::Interfaces
 {
 	using namespace Front::Interfaces::Elements;
 	using namespace MGL::Vectors::Types;
-	I_Generation::I_Generation(Vox::Front::Interfaces::Elements::Vector2 pos,
-							   Vox::Front::Interfaces::Elements::Vector2 size)
+	I_Generation::I_Generation(Vox::Front::Interfaces::Elements::Vector2Float pos,
+							   Vox::Front::Interfaces::Elements::Vector2Float size)
 		: AInterface(pos, size), AUpdatable(1), _mMinimap({400, 400})
 	{
 		{ // IF_Seed
@@ -306,14 +306,14 @@ namespace Vox::Game::Scenes::World::Interfaces
 		img->SetData(newData);
 	}
 
-	void I_Generation::SetPos(const Vox::Front::Interfaces::Elements::Vector2 newPos)
+	void I_Generation::SetPos(const Vox::Front::Interfaces::Elements::Vector2Float newPos)
 	{
 		if (newPos == this->_pos)
 			return;
 		this->FindElement("TXT_Seed")->elem->SetPos({this->_pos[0] + 50, this->_pos[1] + 50});
 	}
 
-	void I_Generation::SetSize(const Vox::Front::Interfaces::Elements::Vector2 newSize)
+	void I_Generation::SetSize(const Vox::Front::Interfaces::Elements::Vector2Float newSize)
 	{
 		if (newSize == this->_size)
 			return;

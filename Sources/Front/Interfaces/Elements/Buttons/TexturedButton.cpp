@@ -8,7 +8,7 @@ namespace Vox::Front::Interfaces::Elements::Buttons
 
 	TexturedButton::TexturedButton(const Vox_TexturedButton_Constructor &st) : AElement(st.pos, st.size), AClickable(), AContainer(), AButton(st)
 	{
-		this->AddElement("IMG_BackGround", std::make_unique<Image>(st.atlas, st.atlasKey, this->_pos, this->_size, Color(1.0f, 1.0f, 1.0f, 1.0f), Vector2(1, 1)), 0);
+		this->AddElement("IMG_BackGround", std::make_unique<Image>(st.atlas, st.atlasKey, this->_pos, this->_size, Color(1.0f, 1.0f, 1.0f, 1.0f), Vector2Float(1, 1)), 0);
 
 		this->_onHoverCallbacks.AddCallBack(
 			[this, st](void)

@@ -11,7 +11,7 @@ namespace Vox::Front::Interfaces
 	class AInterface : public virtual Elements::Bases::AContainer, public virtual Elements::Bases::AScrollable
 	{
 		public:
-			AInterface(Elements::Vector2 pos = {0, 0}, Elements::Vector2 size = {0, 0}, bool isEnabled = true) : AElement(pos, size), AClickable(), AContainer(), AScrollable()
+			AInterface(Elements::Vector2Float pos = {0, 0}, Elements::Vector2Float size = {0, 0}, bool isEnabled = true) : AElement(pos, size), AClickable(), AContainer(), AScrollable()
 			{
 				_enabled = isEnabled;
 				this->onScrollCallBacks.AddCallBack([this](const double &xOff, const double &yOff){

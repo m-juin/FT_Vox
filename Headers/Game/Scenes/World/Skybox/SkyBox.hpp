@@ -10,7 +10,6 @@
 namespace Vox::Game::World::Skybox
 {
     using Vertex = Front::Rendering::Utils::Vertex::SkyBoxVertex;
-    using Vector3 = Front::Rendering::Utils::Vertex::Vector3Float;
     using sbuffer = Vox::Front::Rendering::Utils::Buffers::StaticBuffer;
 	class SkyBox
 	{

@@ -13,8 +13,8 @@ namespace Vox::Front::Interfaces::Elements
 		public:
 			struct Constructor
 			{
-					Vector2 pos;
-					Vector2 size;
+					Vector2Float pos;
+					Vector2Float size;
 
 					Color BGColor;
 					Color HandleColor;
@@ -38,8 +38,8 @@ namespace Vox::Front::Interfaces::Elements
 			void SetStep(const float &newStep);
 			void SetValue(const float &newVal);
 
-			void SetPos(Vector2 newPos) override;
-			void SetSize(Vector2 newSize) override;
+			void SetPos(Vector2Float newPos) override;
+			void SetSize(Vector2Float newSize) override;
 
 			const float &GetMinVal()
 			{
@@ -60,7 +60,7 @@ namespace Vox::Front::Interfaces::Elements
 			~Slider() {};
 
 			void OnClick(const int &button, const int &action) override;
-			bool IsHover(const Vector2 &mousePos) override;
+			bool IsHover(const Vector2Float &mousePos) override;
 
 			void HandleMovement(float xPos);
 

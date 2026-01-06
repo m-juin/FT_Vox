@@ -14,7 +14,7 @@
 namespace Vox::Front::Interfaces::Elements
 {
 
-	Image::Image(std::string atlas, std::string key, Vector2 pos, Vector2 size, Color colorMod, Vector2 textureRepeat)
+	Image::Image(std::string atlas, std::string key, Vector2Float pos, Vector2Float size, Color colorMod, Vector2Float textureRepeat)
 		: Bases::AElement(pos, size), _atlas(atlas), _atlasKey(key), _colorMod(colorMod), _textureRepeat(textureRepeat)
 	{
 		this->ResetVertex();
@@ -57,7 +57,7 @@ namespace Vox::Front::Interfaces::Elements
 	void Image::ResetVertex()
 	{
 
-		const Vector2 screenSize(Rendering::SwapChain::GetInstance().GetExtent().width,
+		const Vector2Float screenSize(Rendering::SwapChain::GetInstance().GetExtent().width,
 								 Rendering::SwapChain::GetInstance().GetExtent().height);
 
 		this->_uvMappingData.textureID = 0;
@@ -116,12 +116,12 @@ namespace Vox::Front::Interfaces::Elements
 		vkCmdDrawIndexed(cmdBuffer, 6, 1, 0, 0, 0);
 	}
 
-	void Image::SetPos(const Vector2 newPos)
+	void Image::SetPos(const Vector2Float newPos)
 	{
 		if (newPos == this->_pos)
 			return;
 		this->_pos = newPos;
-		const Vector2 screenSize(Rendering::SwapChain::GetInstance().GetExtent().width,
+		const Vector2Float screenSize(Rendering::SwapChain::GetInstance().GetExtent().width,
 								 Rendering::SwapChain::GetInstance().GetExtent().height);
 		this->_vertex[0].position = PointPixelToVulkan(this->_pos, screenSize);
 		this->_vertex[1].position = PointPixelToVulkan({this->_pos[0] + this->_size[0], this->_pos[1]}, screenSize);
@@ -131,7 +131,7 @@ namespace Vox::Front::Interfaces::Elements
 		this->B_Vertices->Update(&this->_vertex, 4 * sizeof(Vertex));
 	}
 
-	void Image::SetSize(const Vector2 newSize)
+	void Image::SetSize(const Vector2Float newSize)
 	{
 		if (newSize == this->_size)
 			return;

@@ -25,7 +25,7 @@ namespace Vox::Front::Interfaces::Elements::Buttons
 		Text::Vox_Text_Constructor stText{};
 		stText.color = st.textColor;
 		stText.content = st.content;
-		Vector2 textSize = Text::GetTextSize(st.content, st.textScale);
+		Vector2Float textSize = Text::GetTextSize(st.content, st.textScale);
 		stText.pos = {this->_pos[0] + (this->_size[0] / 2) - textSize[0] / 2,
 					  this->_pos[1] + (size_t)((this->_size[1] / 2) + (8 * st.textScale))};
 		stText.size = this->_size;
@@ -37,7 +37,7 @@ namespace Vox::Front::Interfaces::Elements::Buttons
 	AButton::~AButton() {}
 
 
-	void AButton::SetPos(Vector2 newPos)
+	void AButton::SetPos(Vector2Float newPos)
 	{
 		if (newPos == this->_pos)
 			return;
@@ -46,7 +46,7 @@ namespace Vox::Front::Interfaces::Elements::Buttons
 		this->_content[1].elem.get()->SetPos(this->_pos);
 	}
 
-	void AButton::SetSize(Vector2 newSize)
+	void AButton::SetSize(Vector2Float newSize)
 	{
 		if (newSize == this->_size)
 			return;

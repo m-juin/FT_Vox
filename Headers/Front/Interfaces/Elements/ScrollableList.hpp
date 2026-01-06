@@ -11,8 +11,8 @@ namespace Vox::Front::Interfaces::Elements
 		public:
 			struct Vox_ScrollableList_Constructor
 			{
-				Vector2 pos;
-				Vector2 size;
+				Vector2Float pos;
+				Vector2Float size;
                 
                 std::vector<std::unique_ptr<AElement>> content;
 			};
@@ -21,10 +21,10 @@ namespace Vox::Front::Interfaces::Elements
 			ScrollableList(Vox_ScrollableList_Constructor &st) ;
 			
 			virtual void OnClick(const int &button, const int &action) override;
-			virtual bool IsHover(const Vector2& mousePos) override;
+			virtual bool IsHover(const Vector2Float& mousePos) override;
 
-			void SetPos(const Vector2 newPos) override;
-			void SetSize(const Vector2 newSize) override;
+			void SetPos(const Vector2Float newPos) override;
+			void SetSize(const Vector2Float newSize) override;
 
             void Draw() override;
 			~ScrollableList() {};

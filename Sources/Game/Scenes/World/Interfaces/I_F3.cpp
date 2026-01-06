@@ -14,7 +14,7 @@
 namespace Vox::Game::Scenes::World::Interfaces
 {
 	using namespace Front::Interfaces::Elements;
-	I_F3::I_F3(Vox::Front::Interfaces::Elements::Vector2 pos, Vox::Front::Interfaces::Elements::Vector2 size)
+	I_F3::I_F3(Vox::Front::Interfaces::Elements::Vector2Float pos, Vox::Front::Interfaces::Elements::Vector2Float size)
 		: AInterface(pos, size), AUpdatable(2)
 	{
 		{
@@ -105,14 +105,14 @@ namespace Vox::Game::Scenes::World::Interfaces
 
 	I_F3::~I_F3() {}
 
-	void I_F3::SetPos(const Vox::Front::Interfaces::Elements::Vector2 newPos)
+	void I_F3::SetPos(const Vox::Front::Interfaces::Elements::Vector2Float newPos)
 	{
 		if (newPos == this->_pos)
 			return;
 		this->FindElement("TXT_PlayerCoord")->elem->SetPos({this->_pos[0] + 100, this->_pos[1] + 100});
 	}
 
-	void I_F3::SetSize(const Vox::Front::Interfaces::Elements::Vector2 newSize)
+	void I_F3::SetSize(const Vox::Front::Interfaces::Elements::Vector2Float newSize)
 	{
 		if (newSize == this->_size)
 			return;

@@ -5,13 +5,16 @@
 #include "Front/Rendering/Pipelines/SkyBoxPipeline.hpp"
 #include "Front/Rendering/SyncObjects.hpp"
 
+#include "MathGraphicalLib/Vectors/Defines.hpp"
+
 namespace Vox::Game::World::Skybox
 {
+	using namespace MGL::Vectors::Types;
 	SkyBox::SkyBox()
 	{
-		this->_vertex = {Vector3(-1.0f, 1.0f, -1.0f), Vector3(-1.0f, -1.0f, -1.0f), Vector3(1.0f, -1.0f, -1.0f),
-						 Vector3(1.0f, 1.0f, -1.0f),  Vector3(-1.0f, 1.0f, 1.0f),	Vector3(-1.0f, -1.0f, 1.0f),
-						 Vector3(1.0f, -1.0f, 1.0f),  Vector3(1.0f, 1.0f, 1.0f)};
+		this->_vertex = {Vector3Float(-1.0f, 1.0f, -1.0f), Vector3Float(-1.0f, -1.0f, -1.0f), Vector3Float(1.0f, -1.0f, -1.0f),
+						 Vector3Float(1.0f, 1.0f, -1.0f),  Vector3Float(-1.0f, 1.0f, 1.0f),	Vector3Float(-1.0f, -1.0f, 1.0f),
+						 Vector3Float(1.0f, -1.0f, 1.0f),  Vector3Float(1.0f, 1.0f, 1.0f)};
 		this->_index = {
 						0, 1, 2, 2, 3, 0,
 						4, 5, 6, 6, 7, 4,

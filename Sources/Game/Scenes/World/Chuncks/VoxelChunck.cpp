@@ -32,11 +32,11 @@
 namespace Vox::Game::World::Chuncks
 {
 	VoxelChunck::VoxelChunck(const Vector3Int &defaultPos)
-		: DynamicObject(Vector3float(defaultPos[0] * static_cast<int>(Utils::Defines::CHUNCK_SIZE),
+		: DynamicObject(Vector3Float(defaultPos[0] * static_cast<int>(Utils::Defines::CHUNCK_SIZE),
 									 defaultPos[1] * static_cast<int>(Utils::Defines::CHUNCK_SIZE),
 									 defaultPos[2] * static_cast<int>(Utils::Defines::CHUNCK_SIZE))),
 		  Front::Rendering::Frustum::Colliders::BoxCollider(
-			  Vector3float(defaultPos[0] * static_cast<int>(Utils::Defines::CHUNCK_SIZE),
+			  Vector3Float(defaultPos[0] * static_cast<int>(Utils::Defines::CHUNCK_SIZE),
 						   defaultPos[1] * static_cast<int>(Utils::Defines::CHUNCK_SIZE),
 						   defaultPos[2] * static_cast<int>(Utils::Defines::CHUNCK_SIZE)),
 			  {CHUNCK_SIZE, CHUNCK_SIZE, CHUNCK_SIZE}),
@@ -246,7 +246,7 @@ namespace Vox::Game::World::Chuncks
 	void VoxelChunck::BuildMesh()
 	{
 		LocalVector it(0);
-		Vector3float color(1.0, 1.0, 1.0);
+		Vector3Float color(1.0, 1.0, 1.0);
 		const auto &tManagers = Vox::Front::Scenes::TexturesManager::GetInstance();
 		for (it[0] = 0; it[0] < CHUNCK_SIZE; it[0]++)
 		{
@@ -339,7 +339,7 @@ namespace Vox::Game::World::Chuncks
 			if (pipeline == nullptr)
 				return true;
 			// VkDeviceSize offset = {0};
-			// // LoggerLib::LogDebug("Rendering opaque buffer at ", this->_bufferIndex);
+			// LoggerLib::LogDebug("Rendering opaque buffer at ", this->_bufferIndex);
 			vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->GetLayout(), 0, 1,
 									&pipeline->GetSet(frame), 1, &dynamicOffset);
 			// vkCmdBindVertexBuffers(buffer, 0, 1, &this->_mVertOpaque->buffer->GetBuffer(frame), &offset);
@@ -370,7 +370,7 @@ namespace Vox::Game::World::Chuncks
 
 	void VoxelChunck::AddFace(const std::vector<Game::Datas::Textures::TextureInfo> &textInfo, const Faces &face,
 							  const LocalVector &facePos, const Game::Datas::Blocks::BlockType &blockType,
-							  const Vector3float &faceColor, bool target, float faceOffsef)
+							  const Vector3Float &faceColor, bool target, float faceOffsef)
 	{
 		std::array<Vertex, 4> toAdd = defaultFacesPos.at(face);
 

@@ -4,6 +4,7 @@
 #include "./AElement.hpp"
 
 #include "Utils/CallBacksManager.hpp"
+#include "MathGraphicalLib/Vectors/Defines.hpp"
 
 namespace Vox::Front::Interfaces
 {
@@ -22,7 +23,7 @@ namespace Vox::Front::Interfaces::Elements::Bases
 			virtual void OnHover();
 			virtual void OnClick(const int &button, const int &action);
 			virtual void OnHoverLeave();
-			virtual bool IsHover(const Vector2 &mousePos);
+			virtual bool IsHover(const Vector2Float &mousePos);
 
 			virtual void ChangeEnableState(bool newState);
 
@@ -79,7 +80,7 @@ namespace Vox::Front::Interfaces::Elements::Bases
 		this->_onHoverLeaveCallbacks.Notify();
 	}
 
-	inline bool AClickable::IsHover(const Vector2 &mousePos)
+	inline bool AClickable::IsHover(const Vector2Float &mousePos)
 	{
 		if (this->_enabled == false)
 			return false;

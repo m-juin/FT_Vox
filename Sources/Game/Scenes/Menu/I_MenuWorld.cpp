@@ -54,8 +54,8 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 		return lst;
 	}
 
-	I_MenuWorld::I_MenuWorld(Vox::Front::Interfaces::Elements::Vector2 pos,
-							 Vox::Front::Interfaces::Elements::Vector2 size)
+	I_MenuWorld::I_MenuWorld(Vox::Front::Interfaces::Elements::Vector2Float pos,
+							 Vox::Front::Interfaces::Elements::Vector2Float size)
 		: AInterface(pos, size, false)
 	{
 		this->_inputMask |= Game::Utils::Datas::InputMask::Mouse | Game::Utils::Datas::InputMask::KeyBoard;
@@ -64,7 +64,7 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 		this->AddElement("IMG_BG",
 						 std::make_unique<Image>("Menu_Main", "Dirt", this->_pos, this->_size,
 												 Color(0.3f, 0.3f, 0.3f, 1.0f),
-												 Vox::Front::Interfaces::Elements::Vector2(16, 16)),
+												 Vox::Front::Interfaces::Elements::Vector2Float(16, 16)),
 						 0);
 		{ // TXT_Choose
 			Text::Vox_Text_Constructor pm{};
@@ -193,7 +193,7 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 
 	I_MenuWorld::~I_MenuWorld() {}
 
-	void I_MenuWorld::SetPos(const Vox::Front::Interfaces::Elements::Vector2 newPos)
+	void I_MenuWorld::SetPos(const Vox::Front::Interfaces::Elements::Vector2Float newPos)
 	{
 		if (newPos == this->_pos)
 			return;
@@ -201,7 +201,7 @@ namespace Vox::Game::Scenes::Menu::Interfaces
 		this->FindElement("IMG_BG")->elem->SetPos(this->_pos);
 	}
 
-	void I_MenuWorld::SetSize(const Vox::Front::Interfaces::Elements::Vector2 newSize)
+	void I_MenuWorld::SetSize(const Vox::Front::Interfaces::Elements::Vector2Float newSize)
 	{
 		if (newSize == this->_size)
 			return;

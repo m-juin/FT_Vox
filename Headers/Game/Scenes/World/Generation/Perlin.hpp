@@ -20,7 +20,7 @@ namespace Vox::Game::Generation::Perlins
 	namespace
 	{
 		constexpr uint32_t WORLD_CENTER = 125000;
-		static inline Vector2float randomGradient(int ix, int iy, uint32_t seed)
+		static inline Vector2Float randomGradient(int ix, int iy, uint32_t seed)
 		{
 			const unsigned w = 8 * sizeof(unsigned);
 			const unsigned s = w / 2;
@@ -34,7 +34,7 @@ namespace Vox::Game::Generation::Perlins
 			a *= 2048419325;
 			float random = a * (3.14159265 / ~(~0u >> 1));
 
-			MGL::Vectors::Vector2<float> v;
+			Vector2Float v;
 			v[0] = sin(random);
 			v[1] = cos(random);
 
@@ -43,7 +43,7 @@ namespace Vox::Game::Generation::Perlins
 
 		static inline float dotGridGradient(int ix, int iy, float x, float y, uint32_t seed)
 		{
-			MGL::Vectors::Vector2<float> gradient = randomGradient(ix, iy, seed);
+			Vector2Float gradient = randomGradient(ix, iy, seed);
 
 			float dx = x - (float)ix;
 			float dy = y - (float)iy;

@@ -13,16 +13,16 @@ namespace Vox::Game::Scenes::Menu::Interfaces::Elements
         public:
 			struct Vox_WorldDeletionCheck_Constructor
 			{
-                Vector2 pos;
-                Vector2 size;
+                Vector2Float pos;
+                Vector2Float size;
                 Saves::WorldData sd;
 			};
 
             WorldDeletionCheck() = delete;
             WorldDeletionCheck(const Vox_WorldDeletionCheck_Constructor &st);
 
-			void SetPos(const Vector2 newPos) override;
-			void SetSize(const Vector2 newSize) override;
+			void SetPos(const Vector2Float newPos) override;
+			void SetSize(const Vector2Float newSize) override;
 
             ~WorldDeletionCheck() {};
     

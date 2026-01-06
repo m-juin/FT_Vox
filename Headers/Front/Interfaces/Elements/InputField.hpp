@@ -21,8 +21,8 @@ namespace Vox::Front::Interfaces::Elements
 			};
 			struct Constructor
 			{
-					Vector2 pos;
-					Vector2 size;
+					Vector2Float pos;
+					Vector2Float size;
 
 					std::string BGAtlas;
 					std::string BGAtlasKey;
@@ -35,12 +35,12 @@ namespace Vox::Front::Interfaces::Elements
 
 			InputField(const Constructor &st);
 			~InputField() {};
-			void SetPos(const Vector2 newPos) override;
-			void SetSize(const Vector2 newSize) override;
+			void SetPos(const Vector2Float newPos) override;
+			void SetSize(const Vector2Float newSize) override;
 
 			void Draw() override;
 
-			inline bool IsHover(const Vector2 &mousePos) override
+			inline bool IsHover(const Vector2Float &mousePos) override
 			{
 				return AClickable::IsHover(mousePos);
 			};
