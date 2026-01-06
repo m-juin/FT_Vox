@@ -4,6 +4,8 @@
 #include "./Vector2.hpp"
 #include "./Vector3.hpp"
 
+#include <cstdint>
+
 namespace MGL::Vectors::Types
 {
 using Vector2Int = Vector2<int>;
