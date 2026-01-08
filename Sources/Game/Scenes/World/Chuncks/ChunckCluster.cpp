@@ -67,9 +67,9 @@ namespace Vox::Game::World::Chuncks
 		size_t tried = 0;
 		// if (this->GetGenerationState() != Generation::E_GenerationState::End)
 		// 	return {0, 0};
-		for (auto ch : this->_clusterContent)
+		for (auto &ch : this->_clusterContent)
 		{
-			if (ch)
+			if (ch != nullptr)
 			{
 				if (ch->Render(toRender))
 					rendered++;
@@ -111,7 +111,7 @@ namespace Vox::Game::World::Chuncks
 		{
 			if (this->IsGenerationCancelled())
 				return;
-			this->_clusterContent[y] = new VoxelChunck(Vector3Int(this->_clusterPos[0], y, this->_clusterPos[1]));
+			this->_clusterContent[y] = std::make_unique<VoxelChunck>(Vector3Int(this->_clusterPos[0], y, this->_clusterPos[1]));
 
 			this->_clusterContent[y]->BuildVoxelObject(st, seed);
 		}
@@ -291,6 +291,11 @@ namespace Vox::Game::World::Chuncks
 			}
 		}
 	}
+	
+	VoxelChunck* ChunckCluster::GetChunk(Vector2Uint8)
+	{
+		return nullptr;
+	}
 
 	Vector2Int ChunckCluster::GetPosition()
 	{
@@ -310,8 +315,8 @@ namespace Vox::Game::World::Chuncks
 		{
 			// int localIndex = chunksPerCluster - 1 - y;
 			// int globalIndex = _bufferIndex * chunksPerCluster + localIndex;
-			auto ch = this->_clusterContent[y];
-			if (ch)
+			auto &ch = this->_clusterContent[y];
+			if (ch != nullptr)
 				ch->UpdateBufferObject();
 		}
 		this->_currentState = Generation::E_GenerationState::End;
@@ -333,9 +338,9 @@ namespace Vox::Game::World::Chuncks
 					this->UpdateClusterIfNeeded();
 				}
 
-				for (auto ch : this->_clusterContent)
+				for (auto &ch : this->_clusterContent)
 				{
-					if (ch)
+					if (ch != nullptr)
 					{
 #ifdef TRACY_ENABLE
 						ZoneScopedNC("Chunk Update", tracy::Color::Green1);
@@ -351,10 +356,10 @@ namespace Vox::Game::World::Chuncks
 
 	ChunckCluster::~ChunckCluster()
 	{
-		for (auto ch : this->_clusterContent)
-		{
-			if (ch)
-				delete ch;
-		}
+		// for (auto &ch : this->_clusterContent)
+		// {
+		// 	if (ch != nullptr)
+		// 		delete ch.release();
+		// }
 	}
 } // namespace Vox::Game::World::Chuncks
