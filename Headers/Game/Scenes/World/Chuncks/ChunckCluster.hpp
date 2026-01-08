@@ -20,7 +20,7 @@ namespace Vox::Game::World::Chuncks
 	class ChunckCluster : public Generation::Threads::ThreadObject, public Vox::Utils::AUpdatable
 	{
 		private:
-			std::array<VoxelChunck *, WORLD_HEIGHT / CHUNCK_SIZE> _clusterContent;
+			std::array<std::unique_ptr<VoxelChunck>, WORLD_HEIGHT / CHUNCK_SIZE> _clusterContent;
 
 			Vector2Int _clusterPos;
 
@@ -35,6 +35,9 @@ namespace Vox::Game::World::Chuncks
 			void UpdateClusterIfNeeded();
 
 		public:
+			VoxelChunck *GetChunkFromWorld(uint8_t);
+			VoxelChunck *GetChunkFromlocal(uint8_t);
+
 			Game::Generation::Utils::ChunckCache GenerateCache(
 				const uint32_t seed,
 				const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl);
@@ -54,6 +57,8 @@ namespace Vox::Game::World::Chuncks
 
 			ChunckCluster(const Vector2Int &coord);
 			~ChunckCluster();
+
+
 	};
 } // namespace Vox::Game::World::Chuncks
 #endif //__CHUNCKCLUSTER_HPP__

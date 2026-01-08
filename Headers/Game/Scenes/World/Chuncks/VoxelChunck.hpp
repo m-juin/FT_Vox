@@ -56,6 +56,8 @@ namespace Vox::Game::World::Chuncks
 			static size_t GetLocalIndex(const LocalVector &vec);
 			static LocalVector GetLocalVector(const size_t &index);
 
+			Game::Datas::Blocks::BlockData &GetBlockData(Vector3Uint8);
+
 		private:
 			bool isVisible = false;
 

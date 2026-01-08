@@ -320,6 +320,11 @@ namespace Vox::Game::World::Chuncks
 			((index / Utils::Defines::CHUNCK_SIZE) / Utils::Defines::CHUNCK_SIZE) % Utils::Defines::CHUNCK_SIZE);
 	}
 
+	Game::Datas::Blocks::BlockData& VoxelChunck::GetBlockData(Vector3Uint8 chPos)
+	{
+		return this->_blocksDatas[this->GetLocalIndex(chPos)];	
+	}
+
 	bool VoxelChunck::Render(uint8_t toRender)
 	{
 		if (this->isVisible == false)

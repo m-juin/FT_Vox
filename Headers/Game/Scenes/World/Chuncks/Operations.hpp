@@ -31,6 +31,12 @@ namespace Vox::Game::Chuncks::Operations
 		Vector2Int ret(std::floor(static_cast<float>(blockPos[0]) / static_cast<float>(Game::Utils::Defines::CHUNCK_SIZE)), std::floor(static_cast<float>(blockPos[2]) / static_cast<float>(Game::Utils::Defines::CHUNCK_SIZE)));
 		return ret;
 	}
+
+	inline Vector3Uint8 ClusterToChunk(Vector3Uint8 clPos)
+	{
+		return {clPos[0], std::floor(static_cast<float>(clPos[1]) / static_cast<float>(Game::Utils::Defines::CHUNCK_SIZE)), clPos[2]};
+	}
+
 } // namespace Vox::Game::Chuncks::Operations
 
 #endif // __CHUNK_OPERATIONS_HPP__

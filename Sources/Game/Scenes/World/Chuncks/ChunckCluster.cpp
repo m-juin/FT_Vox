@@ -292,9 +292,20 @@ namespace Vox::Game::World::Chuncks
 		}
 	}
 	
-	VoxelChunck* ChunckCluster::GetChunk(Vector2Uint8)
+	/// @brief Get a pointer over a chunk from its worldHeight.
+	/// @param wHeight the chunk world height;
+	/// @return 
+	VoxelChunck* ChunckCluster::GetChunkFromWorld(uint8_t wHeight)
 	{
-		return nullptr;
+		return this->_clusterContent[wHeight / CHUNCK_SIZE].get();
+	}
+
+	/// @brief Get a pointer over a chunk from its localHeight.
+	/// @param lHeight the chunk local height;
+	/// @return 
+	VoxelChunck* ChunckCluster::GetChunkFromlocal(uint8_t lHeight)
+	{
+		return this->_clusterContent[lHeight].get();
 	}
 
 	Vector2Int ChunckCluster::GetPosition()
