@@ -26,7 +26,6 @@ namespace Vox::Engine::Meshs
 		this->_vertexMemData.memorySize = Align(vert.size() * sizeof(Vertex));
         this->_vertexMemData.memoryOffset = 0;
 
-        bool 
 	}
 
 	bool VoxelMesh::Draw()
