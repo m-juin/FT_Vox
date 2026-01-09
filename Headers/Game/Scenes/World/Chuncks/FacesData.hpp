@@ -5,10 +5,12 @@
 #include "MathGraphicalLib/Vectors/Defines.hpp"
 #include <unordered_map>
 
+#include "Front/Rendering/Utils/Vertex/VoxelVertex.hpp"
+
 namespace Vox::Game::World::Chuncks
 {
-	using namespace Utils::Defines;
 	using namespace MGL::Vectors::Types;
+	using Vertex = Front::Rendering::Utils::Vertex::VoxelVertex;
 	enum class Faces
 	{
 		TOP = 0,

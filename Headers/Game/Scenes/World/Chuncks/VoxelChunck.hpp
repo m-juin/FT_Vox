@@ -1,21 +1,22 @@
 #ifndef __VOXELCHUNCK_HPP__
 #define __VOXELCHUNCK_HPP__
 
-#include "MathGraphicalLib/Matrix/Matrix4.hpp"
-// #include "Game/Scenes/World/Utils/Defines.hpp"
+#include "./BlockData.hpp"
 #include "./E_GenerationState.hpp"
-#include "Game/Models/DynamicObject.hpp"
-#include <unordered_map>
-#include "Game/Scenes/World/Generation/ThreadObject.hpp"
 #include "./FacesData.hpp"
+#include "Front/Rendering/Frustum/BoxCollider.hpp"
+#include "Game/Datas/TexturesData.hpp"
+#include "Game/Models/DynamicObject.hpp"
+#include "Game/Scenes/World/Generation/ThreadObject.hpp"
+#include "Game/Scenes/World/Generation/Utils.hpp"
+#include "MathGraphicalLib/Matrix/Matrix4.hpp"
 #include "Spline/Spline.hpp"
 #include <bitset>
-#include "Game/Datas/TexturesData.hpp"
-#include "Game/Scenes/World/Generation/Utils.hpp"
-#include "./BlockData.hpp"
-#include "Front/Rendering/Frustum/BoxCollider.hpp"
+#include <unordered_map>
 
 #include "Game/Scenes/World/Generation/BufferMemoryManager.hpp"
+
+#include "Engine/Meshs/VoxelMesh.hpp"
 
 namespace Vox::Game::Scenes::World::Player
 {
@@ -62,32 +63,34 @@ namespace Vox::Game::World::Chuncks
 			bool isVisible = false;
 
 			std::array<Game::Datas::Blocks::BlockData, CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE> _blocksDatas;
-			std::vector<uint16_t> indexOpaque;
-			std::vector<Vertex> vertexOpaque;
-			std::vector<uint16_t> indexTransparent;
-			std::vector<Vertex> vertexTransparent;
 
-			uint16_t indexCountOpaque;
-			uint16_t indexCountTransparent;
+			Engine::Meshs::VoxelMesh _opaqueMesh;
+			Engine::Meshs::VoxelMesh _transparentMesh;
 
 			Vector3Int _chunckPos;
-			void AddFace(const std::vector<Game::Datas::Textures::TextureInfo> &textInfo, const Faces &face,
-						 const LocalVector &facePos, const Game::Datas::Blocks::BlockType &blockType,
-						 const Vector3Float &faceColor = {1.0, 1.0, 1.0}, bool target = 0, float faceOffsef = 1.0);
+
 			bool AssignModel() override;
+
 			std::bitset<CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE> BuildContent(
 				const uint8_t hMap[Generation::Utils::CACHE_SIZE * Generation::Utils::CACHE_SIZE]);
 
 			void SetBlocksDatas(const Generation::Utils::ChunckCache &cache,
 								std::bitset<CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE> &clusterContent);
-			void SetBlockDatas(const LocalVector &, Vox::Game::Datas::Blocks::BlockType, bool = false);
+
+			void SetBlockDatas(const LocalVector &, Vox::Game::Datas::Blocks::BlockType);
+
 			void FacesCulling(const Generation::Utils::ChunckCache &cache);
+
 			Vox::Game::Datas::Blocks::BlockType GetBlockDatas(const LocalVector &localPos);
+
+			void AddFace(const std::vector<Game::Datas::Textures::TextureInfo> &, std::vector<Engine::Meshs::Vertex> &,
+						 std::vector<uint16_t> &, const Faces &, const LocalVector &,
+						 const Game::Datas::Blocks::BlockType &, const Vector3Float &, float);
 
 			void BuildMesh();
 			size_t _bufferIndex;
 
-			void  UpdateVisibility();
+			void UpdateVisibility();
 
 			/* private */
 	};

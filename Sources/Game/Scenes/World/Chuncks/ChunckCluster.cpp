@@ -235,7 +235,7 @@ namespace Vox::Game::World::Chuncks
 					this->_clusterContent[chunckIndex]->SetBlockDatas({static_cast<uint8_t>(oPos[0]),
 																	   static_cast<uint8_t>(localHeight),
 																	   static_cast<uint8_t>(oPos[2])},
-																	  bType, false);
+																	  bType);
 				}
 			}
 		}
@@ -257,7 +257,7 @@ namespace Vox::Game::World::Chuncks
 				Game::Chuncks::Operations::WorldToChunk(block.worldCoord);
 			if (this->_clusterContent[chunckIndex]->GetBlockDatas(localPos) != Vox::Game::Datas::Blocks::BlockType::Air)
 				continue;
-			this->_clusterContent[chunckIndex]->SetBlockDatas(localPos, block.type, false);
+			this->_clusterContent[chunckIndex]->SetBlockDatas(localPos, block.type);
 		}
 	}
 
@@ -287,7 +287,7 @@ namespace Vox::Game::World::Chuncks
 				std::unordered_map<Vector3Uint8, Game::Datas::Blocks::BlockType,
 								   MGL::Vectors::Vector3Hash<uint8_t>>::iterator it = array.begin();
 				std::advance(it, bIndex);
-				this->_clusterContent[cIndex]->SetBlockDatas(it->first, it->second, bIndex == array.size() - 1);
+				this->_clusterContent[cIndex]->SetBlockDatas(it->first, it->second);
 			}
 		}
 	}

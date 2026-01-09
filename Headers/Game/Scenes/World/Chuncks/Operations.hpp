@@ -34,7 +34,7 @@ namespace Vox::Game::Chuncks::Operations
 
 	inline Vector3Uint8 ClusterToChunk(Vector3Uint8 clPos)
 	{
-		return {clPos[0], std::floor(static_cast<float>(clPos[1]) / static_cast<float>(Game::Utils::Defines::CHUNCK_SIZE)), clPos[2]};
+		return {clPos[0], static_cast<uint8_t>(std::floor(static_cast<float>(clPos[1]) / static_cast<float>(Game::Utils::Defines::CHUNCK_SIZE))), clPos[2]};
 	}
 
 } // namespace Vox::Game::Chuncks::Operations

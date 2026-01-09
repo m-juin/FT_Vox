@@ -9,7 +9,7 @@
 #include "Front/Rendering/Pipelines/VoxelPipeline.hpp"
 #include "Front/Rendering/SyncObjects.hpp"
 
-#include "Front/Rendering/Utils/Vertex/VoxelVertex.hpp"
+// #include "Front/Rendering/Utils/Vertex/VoxelVertex.hpp"
 
 #include "MathGraphicalLib/Matrix/Operations.hpp"
 
@@ -43,9 +43,6 @@ namespace Vox::Game::World::Chuncks
 		  _chunckPos(defaultPos)
 	{
 		this->_bufferIndex = CHUNCK_AMOUNT;
-
-		indexCountOpaque = 0;
-		indexCountTransparent = 0;
 
 		this->onUpdate.AddCallBack(
 			[this](void)
@@ -139,25 +136,25 @@ namespace Vox::Game::World::Chuncks
 		}
 	}
 
-	void VoxelChunck::SetBlockDatas(const LocalVector &localPos, Vox::Game::Datas::Blocks::BlockType newType,
-									bool refreshMesh)
+	void VoxelChunck::SetBlockDatas(const LocalVector &localPos, Vox::Game::Datas::Blocks::BlockType newType)
 	{
-		(void)refreshMesh;
-		size_t index = this->GetLocalIndex(localPos);
-		this->_blocksDatas[index].type = newType;
-		bool isTransparent = newType == Game::Datas::Blocks::BlockType::Air ||
-							 newType == Game::Datas::Blocks::BlockType::Water ||
-							 newType == Game::Datas::Blocks::BlockType::Oak_Leaves;
-		this->_blocksDatas[index].UpdateFacesTransparency(
-			{isTransparent, isTransparent, isTransparent, isTransparent, isTransparent, isTransparent});
+		(void)localPos;
+		(void)newType;
+		// size_t index = this->GetLocalIndex(localPos);
+		// this->_blocksDatas[index].type = newType;
+		// bool isTransparent = newType == Game::Datas::Blocks::BlockType::Air ||
+		// 					 newType == Game::Datas::Blocks::BlockType::Water ||
+		// 					 newType == Game::Datas::Blocks::BlockType::Oak_Leaves;
+		// this->_blocksDatas[index].UpdateFacesTransparency(
+		// 	{isTransparent, isTransparent, isTransparent, isTransparent, isTransparent, isTransparent});
 
-		const auto &tManagers = Vox::Front::Scenes::TexturesManager::GetInstance();
-		for (auto &face : this->_blocksDatas[index].GetFacesData())
-		{
-			this->AddFace((face.isTransparent ? tManagers.operator[]("A_Blocks_Transparent").GetTextureInfo()
-											  : tManagers.operator[]("A_Blocks").GetTextureInfo()),
-						  face.faceDirection, localPos, newType, {1.f, 1.f, 1.f}, isTransparent);
-		}
+		// const auto &tManagers = Vox::Front::Scenes::TexturesManager::GetInstance();
+		// for (auto &face : this->_blocksDatas[index].GetFacesData())
+		// {
+		// 	this->AddFace((face.isTransparent ? tManagers.operator[]("A_Blocks_Transparent").GetTextureInfo()
+		// 									  : tManagers.operator[]("A_Blocks").GetTextureInfo()),
+		// 				  face.faceDirection, localPos, newType, {1.f, 1.f, 1.f}, isTransparent);
+		// }
 	}
 
 	void VoxelChunck::FacesCulling(const Generation::Utils::ChunckCache &cache)
@@ -243,42 +240,6 @@ namespace Vox::Game::World::Chuncks
 		return this->_blocksDatas[index].type;
 	}
 
-	void VoxelChunck::BuildMesh()
-	{
-		LocalVector it(0);
-		Vector3Float color(1.0, 1.0, 1.0);
-		const auto &tManagers = Vox::Front::Scenes::TexturesManager::GetInstance();
-		for (it[0] = 0; it[0] < CHUNCK_SIZE; it[0]++)
-		{
-			for (it[2] = 0; it[2] < CHUNCK_SIZE; it[2]++)
-			{
-				for (it[1] = 0; it[1] < CHUNCK_SIZE; it[1]++)
-				{
-					uint16_t mapIndex = GetLocalIndex(it);
-					auto data = this->_blocksDatas[mapIndex];
-					if (data.type == Vox::Game::Datas::Blocks::BlockType::Air)
-						continue;
-					auto faces = data.GetFacesData();
-
-					for (auto face : faces)
-					{
-						if (face.isVisible == false)
-							continue;
-						this->AddFace((face.isTransparent
-										   ? tManagers.operator[]("A_Blocks_Transparent").GetTextureInfo()
-										   : tManagers.operator[]("A_Blocks").GetTextureInfo()),
-									  face.faceDirection, it, data.type, color, face.isTransparent);
-					}
-				}
-			}
-		}
-	}
-
-	void VoxelChunck::UpdateVisibility()
-	{
-		this->isVisible = this->IsOnFrustum(Game::World::WorldManager::GetCamera().GetFrustum());
-	}
-
 	void VoxelChunck::UpdateBufferObject()
 	{
 		if (this->isVisible == false && this->_bufferIndex <= Utils::Defines::CHUNCK_AMOUNT)
@@ -320,52 +281,53 @@ namespace Vox::Game::World::Chuncks
 			((index / Utils::Defines::CHUNCK_SIZE) / Utils::Defines::CHUNCK_SIZE) % Utils::Defines::CHUNCK_SIZE);
 	}
 
-	Game::Datas::Blocks::BlockData& VoxelChunck::GetBlockData(Vector3Uint8 chPos)
+	Game::Datas::Blocks::BlockData &VoxelChunck::GetBlockData(Vector3Uint8 chPos)
 	{
-		return this->_blocksDatas[this->GetLocalIndex(chPos)];	
+		return this->_blocksDatas[this->GetLocalIndex(chPos)];
 	}
 
 	bool VoxelChunck::Render(uint8_t toRender)
 	{
 		if (this->isVisible == false)
 			return false;
-		return false ;
+		return false;
 		using namespace Front::Rendering;
 		auto frame = SyncObjects::GetInstance().GetCurrentFrame();
-		if (this->_isDirty[frame] == true ||
-			this->_bufferIndex >= Utils::Defines::CHUNCK_AMOUNT)
+		if (this->_isDirty[frame] == true || this->_bufferIndex >= Utils::Defines::CHUNCK_AMOUNT)
 			return true;
-		uint32_t dynamicOffset = this->_bufferIndex * Utils::Vulkan::GetAlignedChunckSize();
 
-		auto buffer = CommandsPool::GetInstance().GetBuffer(frame);
-		if (toRender == 0 && this->indexCountOpaque != 0)
-		{
-			auto pipeline = Pipelines::PipelinesManager::GetInstance().operator[]<Pipelines::VoxelPipeline>("Voxel");
-			if (pipeline == nullptr)
-				return true;
-			// VkDeviceSize offset = {0};
-			// LoggerLib::LogDebug("Rendering opaque buffer at ", this->_bufferIndex);
-			vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->GetLayout(), 0, 1,
-									&pipeline->GetSet(frame), 1, &dynamicOffset);
-			// vkCmdBindVertexBuffers(buffer, 0, 1, &this->_mVertOpaque->buffer->GetBuffer(frame), &offset);
-			// vkCmdBindIndexBuffer(buffer, this->_mIndexOpaque->buffer->GetBuffer(frame), 0, VK_INDEX_TYPE_UINT16);
-			vkCmdDrawIndexed(buffer, indexCountOpaque, 1, 0, 0, 0);
-		}
-		else if (toRender == 1 && this->indexCountTransparent != 0)
-		{
-			auto pipeline = Pipelines::PipelinesManager::GetInstance().operator[]<Pipelines::TransparentVoxelPipeline>(
-				"Voxel_Transparent");
-			if (pipeline == nullptr)
-				return true;
-			// VkDeviceSize offset = {0};
-			// // LoggerLib::LogDebug("Rendering transparent buffer at ", this->_bufferIndex);
-			vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->GetLayout(), 0, 1,
-									&pipeline->GetSet(frame), 1, &dynamicOffset);
-			// vkCmdBindVertexBuffers(buffer, 0, 1, &this->_mVertTransparent->buffer->GetBuffer(frame), &offset);
-			// vkCmdBindIndexBuffer(buffer, this->_mIndexTransparent->buffer->GetBuffer(frame), 0, VK_INDEX_TYPE_UINT16);
-			vkCmdDrawIndexed(buffer, indexCountTransparent, 1, 0, 0, 0);
-		}
-		return true;
+		(void)toRender;
+		// uint32_t dynamicOffset = this->_bufferIndex * Utils::Vulkan::GetAlignedChunckSize();
+
+		// auto buffer = CommandsPool::GetInstance().GetBuffer(frame);
+		// if (toRender == 0 && this->indexCountOpaque != 0)
+		// {
+		// auto pipeline = Pipelines::PipelinesManager::GetInstance().operator[]<Pipelines::VoxelPipeline>("Voxel");
+		// if (pipeline == nullptr)
+		// return true;
+		// VkDeviceSize offset = {0};
+		// LoggerLib::LogDebug("Rendering opaque buffer at ", this->_bufferIndex);
+		// vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->GetLayout(), 0, 1,
+		// &pipeline->GetSet(frame), 1, &dynamicOffset);
+		// ;(buffer, 0, 1, &this->_mVertOpaque->buffer->GetBuffer(frame), &offset);
+		// vkCmdBindIndexBuffer(buffer, this->_mIndexOpaque->buffer->GetBuffer(frame), 0, VK_INDEX_TYPE_UINT16);
+		// vkCmdDrawIndexed(buffer, indexCountOpaque, 1, 0, 0, 0);
+		// }
+		// else if (toRender == 1 && this->indexCountTransparent != 0)
+		// {
+		// auto pipeline = Pipelines::PipelinesManager::GetInstance().operator[]<Pipelines::TransparentVoxelPipeline>(
+		// "Voxel_Transparent");
+		// if (pipeline == nullptr)
+		// return true;
+		// VkDeviceSize offset = {0};
+		// // LoggerLib::LogDebug("Rendering transparent buffer at ", this->_bufferIndex);
+		// vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->GetLayout(), 0, 1,
+		// &pipeline->GetSet(frame), 1, &dynamicOffset);
+		// vkCmdBindVertexBuffers(buffer, 0, 1, &this->_mVertTransparent->buffer->GetBuffer(frame), &offset);
+		// vkCmdBindIndexBuffer(buffer, this->_mIndexTransparent->buffer->GetBuffer(frame), 0, VK_INDEX_TYPE_UINT16);
+		// vkCmdDrawIndexed(buffer, indexCountTransparent, 1, 0, 0, 0);
+		// }
+		// return true;
 	}
 
 	uint16_t VoxelChunck::GetBuffer() const
@@ -373,11 +335,12 @@ namespace Vox::Game::World::Chuncks
 		return this->_bufferIndex;
 	}
 
-	void VoxelChunck::AddFace(const std::vector<Game::Datas::Textures::TextureInfo> &textInfo, const Faces &face,
+	void VoxelChunck::AddFace(const std::vector<Game::Datas::Textures::TextureInfo> &textInfo,
+							  std::vector<Engine::Meshs::Vertex> &vert, std::vector<uint16_t> &idx, const Faces &face,
 							  const LocalVector &facePos, const Game::Datas::Blocks::BlockType &blockType,
-							  const Vector3Float &faceColor, bool target, float faceOffsef)
+							  const Vector3Float &faceColor, float faceOffsef)
 	{
-		std::array<Vertex, 4> toAdd = defaultFacesPos.at(face);
+		std::array<Engine::Meshs::Vertex, 4> toAdd = defaultFacesPos.at(face);
 
 		auto texture = Game::Generation::Utils::GetFaceTextureInfo(textInfo, blockType, face);
 
@@ -391,34 +354,63 @@ namespace Vox::Game::World::Chuncks
 			ref.vertPos[1] += (1 - faceOffsef);
 			ref.vertCoord[0] = texture.uOffset + ref.vertCoord[0] * texture.uSize;
 			ref.vertCoord[1] = texture.vOffset + ref.vertCoord[1] * texture.vSize;
-			if (blockType == Game::Datas::Blocks::BlockType::Grass)
-				ref.isColorAffected = 1;
 		}
 
-		if (target == false)
+		auto beg = vert.end();
+		vert.insert(beg, toAdd.begin(), toAdd.end());
+		uint32_t size = idx.empty() ? 0 : idx[idx.size() - 1] + 1;
+		idx.push_back(size);
+		idx.push_back(size + 1);
+		idx.push_back(size + 2);
+		idx.push_back(size);
+		idx.push_back(size + 2);
+		idx.push_back(size + 3);
+	}
+
+	void VoxelChunck::BuildMesh()
+	{
+		LocalVector it(0);
+		Vector3Float color(1.0, 1.0, 1.0);
+		const auto &tManagers = Vox::Front::Scenes::TexturesManager::GetInstance();
+
+		std::vector<Engine::Meshs::Vertex> oVert;
+		std::vector<Engine::Meshs::Vertex> tVert;
+
+		std::vector<uint16_t> oIdx;
+		std::vector<uint16_t> tIdx;
+
+		for (it[0] = 0; it[0] < CHUNCK_SIZE; it[0]++)
 		{
-			auto beg = vertexOpaque.end();
-			vertexOpaque.insert(beg, toAdd.begin(), toAdd.end());
-			uint32_t size = indexOpaque.empty() ? 0 : indexOpaque[indexOpaque.size() - 1] + 1;
-			indexOpaque.push_back(size);
-			indexOpaque.push_back(size + 1);
-			indexOpaque.push_back(size + 2);
-			indexOpaque.push_back(size);
-			indexOpaque.push_back(size + 2);
-			indexOpaque.push_back(size + 3);
+			for (it[2] = 0; it[2] < CHUNCK_SIZE; it[2]++)
+			{
+				for (it[1] = 0; it[1] < CHUNCK_SIZE; it[1]++)
+				{
+					uint16_t mapIndex = GetLocalIndex(it);
+					auto data = this->_blocksDatas[mapIndex];
+					if (data.type == Vox::Game::Datas::Blocks::BlockType::Air)
+						continue;
+					auto faces = data.GetFacesData();
+
+					for (auto face : faces)
+					{
+						if (face.isVisible == false)
+							continue;
+
+						if (face.isTransparent)
+							this->AddFace(tManagers.operator[]("A_Blocks_Transparent").GetTextureInfo(), tVert, tIdx,
+										  face.faceDirection, it, data.type, color, face.isTransparent ? 0.1 : 0);
+					}
+				}
+			}
 		}
-		else
-		{
-			auto beg = vertexTransparent.end();
-			vertexTransparent.insert(beg, toAdd.begin(), toAdd.end());
-			uint32_t size = indexTransparent.empty() ? 0 : indexTransparent[indexTransparent.size() - 1] + 1;
-			indexTransparent.push_back(size);
-			indexTransparent.push_back(size + 1);
-			indexTransparent.push_back(size + 2);
-			indexTransparent.push_back(size);
-			indexTransparent.push_back(size + 2);
-			indexTransparent.push_back(size + 3);
-		}
+
+		this->_opaqueMesh.SetMeshDatas(oVert, oIdx);
+		this->_transparentMesh.SetMeshDatas(tVert, tIdx);
+	}
+
+	void VoxelChunck::UpdateVisibility()
+	{
+		this->isVisible = this->IsOnFrustum(Game::World::WorldManager::GetCamera().GetFrustum());
 	}
 
 	VoxelChunck::~VoxelChunck()
