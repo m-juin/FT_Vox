@@ -62,12 +62,11 @@ namespace Vox::Game::World::Chuncks
 		return true;
 	}
 
-	void VoxelChunck::BuildVoxelObject(const Generation::Utils::ChunckCache &cache, const uint32_t &seed)
+	void VoxelChunck::BuildVoxelObject(const Generation::Utils::ChunckCache &cache)
 	{
-		(void)seed;
 		std::bitset<CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE> clusterContent = this->BuildContent(cache.heightMap);
 		this->SetBlocksDatas(cache, clusterContent);
-		this->FacesCulling(cache);
+		// this->FacesCulling(cache);
 	}
 
 	std::bitset<CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE> VoxelChunck::BuildContent(

@@ -45,7 +45,7 @@ namespace Vox::Game::World::Chuncks
 			~VoxelChunck();
 
 			bool Render(uint8_t toRender);
-			void BuildVoxelObject(const Generation::Utils::ChunckCache &cache, const uint32_t &seed);
+			void BuildVoxelObject(const Generation::Utils::ChunckCache &cache);
 			void UpdateBufferObject();
 
 			Vector3Int GetChunckPosition()

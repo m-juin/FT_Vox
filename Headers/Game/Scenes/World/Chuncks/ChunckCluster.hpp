@@ -17,45 +17,65 @@
 namespace Vox::Game::World::Chuncks
 {
 	using namespace MGL::Vectors::Types;
+	const uint8_t ChunkPerCluster = WORLD_HEIGHT / CHUNCK_SIZE;
+
 	class ChunckCluster : public Generation::Threads::ThreadObject, public Vox::Utils::AUpdatable
 	{
 		private:
+#pragma region Constructor
+			ChunckCluster() = delete;
+#pragma endregion
+
+#pragma region Variables
 			std::array<std::unique_ptr<VoxelChunck>, WORLD_HEIGHT / CHUNCK_SIZE> _clusterContent;
-
 			Vector2Int _clusterPos;
-
-			void GenerateTree(const Vox::Game::Generation::Utils::ChunckCache &cache, const uint32_t seed);
-			void GenerateClusterDecoration(
-				const Vox::Game::Generation::Utils::ChunckCache &cache,
-				const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl,
-				const uint32_t seed);
-			void SpawnStructure(Game::Datas::Structures::StructuresType type, Vector3Int Pos);
-			void GetOverflowBlocks();
+#pragma endregion
 
 			void UpdateClusterIfNeeded();
 
+#pragma region Generation
+			Game::Generation::Utils::ChunckCache GEN_Cache(
+				const uint32_t,
+				const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &);
+			void GEN_CreateChunks();
+
+			void GEN_TerrainShape(const Vox::Game::Generation::Utils::ChunckCache &);
+			void GEN_Mesh();
+
+			void GEN_TerrainDecoration(const Vox::Game::Generation::Utils::ChunckCache &, const uint32_t);
+			void DGEN_Tree(const Vox::Game::Generation::Utils::ChunckCache &, const uint32_t);
+			void DGEN_SpawnStruct(Game::Datas::Structures::StructuresType, Vector3Int);
+			void DGEN_Overflow();
+
+#pragma endregion
+
 		public:
+#pragma region Getters
 			VoxelChunck *GetChunkFromWorld(uint8_t);
 			VoxelChunck *GetChunkFromlocal(uint8_t);
-
-			Game::Generation::Utils::ChunckCache GenerateCache(
-				const uint32_t seed,
-				const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl);
-			std::pair<size_t, size_t> Render(uint8_t toRender);
-			void BuildClusterContent(const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl,
-									 const uint32_t seed);
 			Vector2Int GetPosition();
+#pragma endregion
 
-			void SetBlock(MGL::Vectors::Vector3<uint8_t> localPos, Game::Datas::Blocks::BlockType type);
+#pragma region Setters
+			void SetBlock(MGL::Vectors::Vector3<uint8_t>, Game::Datas::Blocks::BlockType);
 			void SetBlocks(
 				std::unordered_map<Vector3Int, Game::Datas::Blocks::BlockType, MGL::Vectors::Vector3Hash<int>> &, bool);
+#pragma endregion
 
+#pragma region Other
+			std::pair<size_t, size_t> Render(uint8_t);
 			void BuildBuffers();
-			void GenerateHeightMap(const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl,
-								   const uint32_t seed, uint8_t hMap[CHUNCK_SIZE * CHUNCK_SIZE]);
+#pragma endregion
 
-			ChunckCluster(const Vector2Int &coord);
+#pragma region Generation
+			void GEN_Generate(const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &,
+									 const uint32_t);
+#pragma endregion
+
+#pragma region Constructor
+			ChunckCluster(const Vector2Int &);
 			~ChunckCluster();
+#pragma endregion
 	};
 } // namespace Vox::Game::World::Chuncks
 #endif //__CHUNCKCLUSTER_HPP__

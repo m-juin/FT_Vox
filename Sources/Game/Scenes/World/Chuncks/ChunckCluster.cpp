@@ -17,7 +17,27 @@
 
 namespace Vox::Game::World::Chuncks
 {
-	Game::Generation::Utils::ChunckCache ChunckCluster::GenerateCache(
+	std::pair<size_t, size_t> ChunckCluster::Render(uint8_t toRender)
+	{
+		size_t rendered = 0;
+		size_t tried = 0;
+		for (auto &ch : this->_clusterContent)
+		{
+			if (ch != nullptr)
+			{
+				if (ch->Render(toRender))
+					rendered++;
+				tried++;
+			}
+		}
+		return {tried, rendered};
+	}
+
+	/// @brief Generate the cluster cache.
+	/// @param seed The world seed.
+	/// @param spl The generation spline. (Will probably be delete)
+	/// @return ChunckCache structure containing all perlins of the cluster + 8 on each size.
+	Game::Generation::Utils::ChunckCache ChunckCluster::GEN_Cache(
 		const uint32_t seed, const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl)
 	{
 		Game::Generation::Utils::ChunckCache cacheSt;
@@ -61,71 +81,48 @@ namespace Vox::Game::World::Chuncks
 		return cacheSt;
 	}
 
-	std::pair<size_t, size_t> ChunckCluster::Render(uint8_t toRender)
+	/// @brief Create the instance of all chunks present in the cluster. (using the const variable ChunkPerCluster.)
+	void ChunckCluster::GEN_CreateChunks()
 	{
-		size_t rendered = 0;
-		size_t tried = 0;
-		// if (this->GetGenerationState() != Generation::E_GenerationState::End)
-		// 	return {0, 0};
-		for (auto &ch : this->_clusterContent)
+		for (uint8_t idx = ChunkPerCluster; idx >= 0; --idx)
 		{
-			if (ch != nullptr)
-			{
-				if (ch->Render(toRender))
-					rendered++;
-				tried++;
-			}
-		}
-		return {tried, rendered};
-	}
-
-	void ChunckCluster::GenerateHeightMap(
-		const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl, const uint32_t seed,
-		uint8_t hMap[CHUNCK_SIZE * CHUNCK_SIZE])
-	{
-		int baseX = static_cast<int>(this->_clusterPos[0] * CHUNCK_SIZE);
-		int baseZ = static_cast<int>(this->_clusterPos[1] * CHUNCK_SIZE);
-
-		for (size_t x = 0; x < CHUNCK_SIZE; x++)
-		{
-			for (size_t z = 0; z < CHUNCK_SIZE; z++)
-			{
-				hMap[x * CHUNCK_SIZE + z] = Generation::Perlins::GetHeightAt(baseX + x, baseZ + z, seed, spl);
-			}
+			if (this->IsGenerationCancelled() == true)
+				return;
+			this->_clusterContent[idx] =
+				std::make_unique<VoxelChunck>(Vector3Int(this->_clusterPos[0], idx, this->_clusterPos[1]));
 		}
 	}
 
-	void ChunckCluster::BuildClusterContent(
-		const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl, const uint32_t seed)
+	/// @brief Process the cluster generation. 
+	/// @param spl The generation spline. (Will probably be delete)
+	/// @param seed The world seed.
+	void ChunckCluster::GEN_Generate(const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl,
+									 const uint32_t seed)
 	{
+		this->ChangeGenerationState(Generation::E_GenerationState::Cache);
+		auto st = GEN_Cache(seed, spl);
+
+		this->GEN_CreateChunks();
+		if (this->IsGenerationCancelled() == true)
+			return;
+		this->ChangeGenerationState(Generation::E_GenerationState::Terrain);
+
+		this->GEN_TerrainShape(st);
+		if (this->IsGenerationCancelled() == true)
+			return;
+
 		this->ChangeGenerationState(Generation::E_GenerationState::Mesh);
-
-		auto st = GenerateCache(seed, spl);
-
-		int chunksPerCluster = WORLD_HEIGHT / CHUNCK_SIZE;
-		for (int y = chunksPerCluster - 1; y >= 0; y--)
-		{
-			if (this->IsGenerationCancelled())
-				return;
-			this->_clusterContent[y] = std::make_unique<VoxelChunck>(Vector3Int(this->_clusterPos[0], y, this->_clusterPos[1]));
-
-			this->_clusterContent[y]->BuildVoxelObject(st, seed);
-		}
-		if (this->IsGenerationCancelled())
+		this->GEN_Mesh();
+		if (this->IsGenerationCancelled() == true)
 			return;
-		for (int y = chunksPerCluster - 1; y >= 0; y--)
-		{
-			if (this->IsGenerationCancelled())
-				return;
-			this->_clusterContent[y]->BuildMesh();
-		}
-		if (this->IsGenerationCancelled())
-			return;
-		this->GenerateClusterDecoration(st, spl, seed);
+
+		this->ChangeGenerationState(Generation::E_GenerationState::Decoration);
+		this->GEN_TerrainDecoration(st, seed);
+
 		this->ChangeGenerationState(Generation::E_GenerationState::WaitingBuffer);
 	}
 
-	void ChunckCluster::GenerateTree(const Vox::Game::Generation::Utils::ChunckCache &cache, const uint32_t seed)
+	void ChunckCluster::DGEN_Tree(const Vox::Game::Generation::Utils::ChunckCache &cache, const uint32_t seed)
 	{
 		std::seed_seq seed_seq{seed, static_cast<uint32_t>(_clusterPos[0]), static_cast<uint32_t>(_clusterPos[1])};
 		thread_local std::mt19937 generator(seed_seq);
@@ -166,24 +163,46 @@ namespace Vox::Game::World::Chuncks
 				auto type = Vox::Game::Generation::Datas::Biomes::RulesManager::GetTreeType(biome, val);
 				if (type == Game::Datas::Structures::StructuresType::None)
 					continue;
-				this->SpawnStructure(type, {static_cast<uint8_t>(treePos[0]), static_cast<uint8_t>(worldHeight + 1),
+				this->DGEN_SpawnStruct(type, {static_cast<uint8_t>(treePos[0]), static_cast<uint8_t>(worldHeight + 1),
 											static_cast<uint8_t>(treePos[1])});
 			}
 		}
 	}
 
-	void ChunckCluster::GenerateClusterDecoration(
-		const Vox::Game::Generation::Utils::ChunckCache &cache,
-		const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl, const uint32_t seed)
+	void ChunckCluster::GEN_TerrainShape(const Vox::Game::Generation::Utils::ChunckCache &cache)
 	{
-		(void)spl;
-		(void)cache;
-		(void)seed;
-		GenerateTree(cache, seed);
-		GetOverflowBlocks();
+		for (uint8_t idx = ChunkPerCluster; idx >= 0; --idx)
+		{
+			if (this->IsGenerationCancelled() == true)
+				return;
+			this->_clusterContent[idx]->BuildVoxelObject(cache);
+		}
+
+		for (uint8_t idx = ChunkPerCluster; idx >= 0; --idx)
+		{
+			if (this->IsGenerationCancelled() == true)
+				return;
+			this->_clusterContent[idx]->FacesCulling(cache);
+		}
+	}
+	
+	void ChunckCluster::GEN_Mesh()
+	{
+		for (uint8_t idx = ChunkPerCluster; idx >= 0; --idx)
+		{
+			if (this->IsGenerationCancelled() == true)
+				return;
+			this->_clusterContent[idx]->BuildMesh();
+		}
+	}
+	
+	void ChunckCluster::GEN_TerrainDecoration(const Vox::Game::Generation::Utils::ChunckCache &cache , const uint32_t seed)
+	{
+		DGEN_Tree(cache, seed);
+		DGEN_Overflow();
 	}
 
-	void ChunckCluster::SpawnStructure(Game::Datas::Structures::StructuresType type, Vector3Int pos)
+	void ChunckCluster::DGEN_SpawnStruct(Game::Datas::Structures::StructuresType type, Vector3Int pos)
 	{
 		auto &gManager = Game::World::WorldManager::GetInstance().GetGenerationManager();
 
@@ -240,7 +259,7 @@ namespace Vox::Game::World::Chuncks
 			oManager->AddBlocks(clusterPos.first, clusterPos.second);
 		}
 	}
-	void ChunckCluster::GetOverflowBlocks()
+	void ChunckCluster::DGEN_Overflow()
 	{
 		auto &gManager = Game::World::WorldManager::GetInstance().GetGenerationManager();
 
@@ -266,8 +285,7 @@ namespace Vox::Game::World::Chuncks
 		if (blocks.size() == 0)
 			return;
 
-		std::array<std::unordered_map<Vector3Uint8, Game::Datas::Blocks::BlockType,
-									  MGL::Vectors::Vector3Hash<uint8_t>>,
+		std::array<std::unordered_map<Vector3Uint8, Game::Datas::Blocks::BlockType, MGL::Vectors::Vector3Hash<uint8_t>>,
 				   WORLD_HEIGHT / CHUNCK_SIZE>
 			localMap;
 		for (auto block : blocks)
@@ -287,19 +305,19 @@ namespace Vox::Game::World::Chuncks
 			}
 		}
 	}
-	
+
 	/// @brief Get a pointer over a chunk from its worldHeight.
 	/// @param wHeight the chunk world height;
-	/// @return 
-	VoxelChunck* ChunckCluster::GetChunkFromWorld(uint8_t wHeight)
+	/// @return
+	VoxelChunck *ChunckCluster::GetChunkFromWorld(uint8_t wHeight)
 	{
 		return this->_clusterContent[wHeight / CHUNCK_SIZE].get();
 	}
 
 	/// @brief Get a pointer over a chunk from its localHeight.
 	/// @param lHeight the chunk local height;
-	/// @return 
-	VoxelChunck* ChunckCluster::GetChunkFromlocal(uint8_t lHeight)
+	/// @return
+	VoxelChunck *ChunckCluster::GetChunkFromlocal(uint8_t lHeight)
 	{
 		return this->_clusterContent[lHeight].get();
 	}
@@ -317,11 +335,11 @@ namespace Vox::Game::World::Chuncks
 
 	void ChunckCluster::BuildBuffers()
 	{
-		int chunksPerCluster = WORLD_HEIGHT / CHUNCK_SIZE;
-		for (int y = chunksPerCluster - 1; y >= 0; y--)
+		int ChunkPerCluster = WORLD_HEIGHT / CHUNCK_SIZE;
+		for (int y = ChunkPerCluster - 1; y >= 0; y--)
 		{
-			// int localIndex = chunksPerCluster - 1 - y;
-			// int globalIndex = _bufferIndex * chunksPerCluster + localIndex;
+			// int localIndex = ChunkPerCluster - 1 - y;
+			// int globalIndex = _bufferIndex * ChunkPerCluster + localIndex;
 			auto &ch = this->_clusterContent[y];
 			if (ch != nullptr)
 				ch->UpdateBufferObject();
@@ -361,12 +379,5 @@ namespace Vox::Game::World::Chuncks
 		this->_currentState = Generation::E_GenerationState::WaitingThread;
 	}
 
-	ChunckCluster::~ChunckCluster()
-	{
-		// for (auto &ch : this->_clusterContent)
-		// {
-		// 	if (ch != nullptr)
-		// 		delete ch.release();
-		// }
-	}
+	ChunckCluster::~ChunckCluster() {}
 } // namespace Vox::Game::World::Chuncks
