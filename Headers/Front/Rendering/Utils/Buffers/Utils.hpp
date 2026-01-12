@@ -1,9 +1,8 @@
-#ifndef __BUFFER_HPP__
-#define __BUFFER_HPP__
+#ifndef __BUFFERUTILS_HPP__
+#define __BUFFERUTILS_HPP__
 
 #include <stdexcept>
 #include <vulkan/vulkan.h>
-
 
 namespace Vox::Front::Rendering::Utils::Buffers::Utils
 {
@@ -96,4 +95,4 @@ namespace Vox::Front::Rendering::Utils::Buffers::Utils
 
 } // namespace Vox::Front::Rendering::Utils::Buffer
 
-#endif // __BUFFER_HPP__
+#endif // __BUFFERUTILS_HPP__

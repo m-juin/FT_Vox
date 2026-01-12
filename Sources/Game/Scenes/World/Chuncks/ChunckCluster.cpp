@@ -21,17 +21,17 @@ namespace Vox::Game::World::Chuncks
 	{
 		(void)toRender;
 		size_t rendered = 0;
-		size_t tried = 0;
+		size_t tryed = 0;
 		for (auto &ch : this->_clusterContent)
 		{
 			if (ch != nullptr)
 			{
 				if (ch->Draw())
 					rendered++;
-				tried++;
+				tryed++;
 			}
 		}
-		return {tried, rendered};
+		return {tryed, rendered};
 	}
 
 	/// @brief Generate the cluster cache.
@@ -39,7 +39,7 @@ namespace Vox::Game::World::Chuncks
 	/// @param spl The generation spline. (Will probably be delete)
 	/// @return ChunckCache structure containing all perlins of the cluster + 8 on each size.
 	Game::Generation::Utils::ChunckCache ChunckCluster::GEN_Cache(
-		const uint32_t seed, const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl)
+	const uint32_t seed, const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl)
 	{
 		Game::Generation::Utils::ChunckCache cacheSt;
 
@@ -407,4 +407,9 @@ namespace Vox::Game::World::Chuncks
 	}
 
 	ChunckCluster::~ChunckCluster() {}
+	
+	void MEM_CreateBuffers()
+	{
+		
+	}
 } // namespace Vox::Game::World::Chuncks

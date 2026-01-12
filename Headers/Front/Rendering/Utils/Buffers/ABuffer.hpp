@@ -22,6 +22,7 @@ namespace Vox::Front::Rendering::Utils::Buffers
             VkBuffer &GetBuffer(size_t frame) {return _buffers[frame];};
 
 		protected:
+    
             std::vector<VkBuffer> _buffers;
             std::vector<VkDeviceMemory> _memories;
 

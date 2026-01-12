@@ -31,16 +31,15 @@ namespace Vox::Game::World::Chuncks
 			Vector2Int _clusterPos;
 #pragma endregion
 
-			void UpdateClusterIfNeeded();
-
 #pragma region Generation
 			Game::Generation::Utils::ChunckCache GEN_Cache(
-				const uint32_t,
-				const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &);
+				const uint32_t, const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &);
 			void GEN_CreateChunks();
 
-			std::vector<std::unique_ptr<std::bitset<CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE>>> GEN_TerrainShape(const Vox::Game::Generation::Utils::ChunckCache &);
-			void GEN_TerrainDatas(std::vector<std::unique_ptr<std::bitset<CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE>>> &, const Vox::Game::Generation::Utils::ChunckCache &);
+			std::vector<std::unique_ptr<std::bitset<CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE>>> GEN_TerrainShape(
+				const Vox::Game::Generation::Utils::ChunckCache &);
+			void GEN_TerrainDatas(std::vector<std::unique_ptr<std::bitset<CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE>>> &,
+								  const Vox::Game::Generation::Utils::ChunckCache &);
 			void GEN_FacesCulling(const Vox::Game::Generation::Utils::ChunckCache &);
 			void GEN_Mesh();
 
@@ -50,6 +49,8 @@ namespace Vox::Game::World::Chuncks
 			void DGEN_Overflow();
 
 #pragma endregion
+
+			void UpdateClusterIfNeeded();
 
 		public:
 #pragma region Getters
@@ -71,7 +72,7 @@ namespace Vox::Game::World::Chuncks
 
 #pragma region Generation
 			void GEN_Generate(const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &,
-									 const uint32_t);
+							  const uint32_t);
 #pragma endregion
 
 #pragma region Constructor
@@ -79,5 +80,13 @@ namespace Vox::Game::World::Chuncks
 			~ChunckCluster();
 #pragma endregion
 	};
+
+#pragma region Memory
+
+	
+
+	void MEM_CreateBuffers();
+	void MEM_FillBuffers();
+
 } // namespace Vox::Game::World::Chuncks
 #endif //__CHUNCKCLUSTER_HPP__
