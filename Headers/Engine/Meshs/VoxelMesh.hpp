@@ -3,17 +3,13 @@
 
 #include <vector>
 
-// #include "MathGraphicalLib/Vectors/Defines.hpp"
 #include "Engine/Rendering/IDrawable.hpp"
 
 #include "Front/Rendering/Utils/Vertex/VoxelVertex.hpp"
 
-
-
 namespace Vox::Engine::Meshs
 {
     using Vertex = Vox::Front::Rendering::Utils::Vertex::VoxelVertex;
-    // using namespace MGL::Vectors::Types;
     class VoxelMesh : public Rendering::IDrawable
     {
         public:
@@ -33,9 +29,6 @@ namespace Vox::Engine::Meshs
 
             MemoryData _vertexMemData;
             MemoryData _indexMemData;
-
-            // std::vector<Vertex> _vertexs;
-            // std::vector<uint16_t> _indexs;
 
             /* private */
     

@@ -39,7 +39,9 @@ namespace Vox::Game::World::Chuncks
 				const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &);
 			void GEN_CreateChunks();
 
-			void GEN_TerrainShape(const Vox::Game::Generation::Utils::ChunckCache &);
+			std::vector<std::unique_ptr<std::bitset<CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE>>> GEN_TerrainShape(const Vox::Game::Generation::Utils::ChunckCache &);
+			void GEN_TerrainDatas(std::vector<std::unique_ptr<std::bitset<CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE>>> &, const Vox::Game::Generation::Utils::ChunckCache &);
+			void GEN_FacesCulling(const Vox::Game::Generation::Utils::ChunckCache &);
 			void GEN_Mesh();
 
 			void GEN_TerrainDecoration(const Vox::Game::Generation::Utils::ChunckCache &, const uint32_t);

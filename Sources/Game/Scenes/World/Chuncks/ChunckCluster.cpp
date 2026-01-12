@@ -19,13 +19,14 @@ namespace Vox::Game::World::Chuncks
 {
 	std::pair<size_t, size_t> ChunckCluster::Render(uint8_t toRender)
 	{
+		(void)toRender;
 		size_t rendered = 0;
 		size_t tried = 0;
 		for (auto &ch : this->_clusterContent)
 		{
 			if (ch != nullptr)
 			{
-				if (ch->Render(toRender))
+				if (ch->Draw())
 					rendered++;
 				tried++;
 			}
@@ -84,7 +85,7 @@ namespace Vox::Game::World::Chuncks
 	/// @brief Create the instance of all chunks present in the cluster. (using the const variable ChunkPerCluster.)
 	void ChunckCluster::GEN_CreateChunks()
 	{
-		for (uint8_t idx = ChunkPerCluster; idx >= 0; --idx)
+		for (uint8_t idx = 0; idx < ChunkPerCluster; idx++)
 		{
 			if (this->IsGenerationCancelled() == true)
 				return;
@@ -107,11 +108,18 @@ namespace Vox::Game::World::Chuncks
 			return;
 		this->ChangeGenerationState(Generation::E_GenerationState::Terrain);
 
-		this->GEN_TerrainShape(st);
+		std::vector<std::unique_ptr<std::bitset<CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE>>> bs = this->GEN_TerrainShape(st);
+		if (this->IsGenerationCancelled() == true)
+			return;
+
+		this->GEN_TerrainDatas(bs, st);
 		if (this->IsGenerationCancelled() == true)
 			return;
 
 		this->ChangeGenerationState(Generation::E_GenerationState::Mesh);
+
+		this->GEN_FacesCulling(st);
+
 		this->GEN_Mesh();
 		if (this->IsGenerationCancelled() == true)
 			return;
@@ -169,30 +177,48 @@ namespace Vox::Game::World::Chuncks
 		}
 	}
 
-	void ChunckCluster::GEN_TerrainShape(const Vox::Game::Generation::Utils::ChunckCache &cache)
+	std::vector<std::unique_ptr<std::bitset<CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE>>> ChunckCluster::GEN_TerrainShape(const Vox::Game::Generation::Utils::ChunckCache &cache)
 	{
-		for (uint8_t idx = ChunkPerCluster; idx >= 0; --idx)
+		std::vector<std::unique_ptr<std::bitset<CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE>>> lst;
+		lst.reserve(ChunkPerCluster);
+
+		for (uint8_t idx = 0; idx < ChunkPerCluster; idx++)
 		{
 			if (this->IsGenerationCancelled() == true)
-				return;
-			this->_clusterContent[idx]->BuildVoxelObject(cache);
+				return {};
+			lst.push_back(this->_clusterContent[idx]->GEN_ContentBitset(cache.heightMap));
 		}
 
-		for (uint8_t idx = ChunkPerCluster; idx >= 0; --idx)
+		return lst;
+	}
+	
+	void ChunckCluster::GEN_TerrainDatas(std::vector<std::unique_ptr<std::bitset<CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE>>> &bs, const Vox::Game::Generation::Utils::ChunckCache &cache)
+	{
+		for (uint8_t idx = 0; idx < ChunkPerCluster; idx++)
 		{
 			if (this->IsGenerationCancelled() == true)
 				return;
-			this->_clusterContent[idx]->FacesCulling(cache);
+			this->_clusterContent[idx]->GEN_TerrainData(*bs[idx], cache);
+		}
+	}
+	
+	void ChunckCluster::GEN_FacesCulling(const Vox::Game::Generation::Utils::ChunckCache &cache)
+	{
+		for (uint8_t idx = 0; idx < ChunkPerCluster; idx++)
+		{
+			if (this->IsGenerationCancelled() == true)
+				return;
+			this->_clusterContent[idx]->GEN_FacesCulling(cache);
 		}
 	}
 	
 	void ChunckCluster::GEN_Mesh()
 	{
-		for (uint8_t idx = ChunkPerCluster; idx >= 0; --idx)
+		for (uint8_t idx = 0; idx < ChunkPerCluster; idx++)
 		{
 			if (this->IsGenerationCancelled() == true)
 				return;
-			this->_clusterContent[idx]->BuildMesh();
+			this->_clusterContent[idx]->GEN_BuildMesh();
 		}
 	}
 	
@@ -259,6 +285,7 @@ namespace Vox::Game::World::Chuncks
 			oManager->AddBlocks(clusterPos.first, clusterPos.second);
 		}
 	}
+	
 	void ChunckCluster::DGEN_Overflow()
 	{
 		auto &gManager = Game::World::WorldManager::GetInstance().GetGenerationManager();
@@ -268,7 +295,7 @@ namespace Vox::Game::World::Chuncks
 		for (auto block : blocks)
 		{
 			auto chunckIndex = block.worldCoord[1] / CHUNCK_SIZE;
-			const Vox::Game::World::Chuncks::VoxelChunck::LocalVector localPos =
+			const Vector3Uint8 localPos =
 				Game::Chuncks::Operations::WorldToChunk(block.worldCoord);
 			if (this->_clusterContent[chunckIndex]->GetBlockDatas(localPos) != Vox::Game::Datas::Blocks::BlockType::Air)
 				continue;
