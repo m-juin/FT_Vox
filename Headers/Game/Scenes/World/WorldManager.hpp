@@ -38,15 +38,12 @@ namespace Vox::Game::World
 	{
 		public:
 			WorldManager() = delete;
-
 			WorldManager(const Scenes::Menu::Saves::WorldData &wd);
-
 			~WorldManager();
 
 			void InitWorld();
 
 			static WorldManager &GetInstance();
-
 			static Scenes::World::Player::Camera &GetCamera();
 
 			void UpdateBuffer(const size_t &index, const Chuncks::VoxelChunck::ChunckUniform &uniform);

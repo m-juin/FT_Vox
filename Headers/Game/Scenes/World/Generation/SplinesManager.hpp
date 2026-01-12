@@ -17,6 +17,7 @@ namespace Vox::Game::Generation
             std::unordered_map<std::string, float> GetSplinesWeight() const; 
 
             std::unordered_map<std::string, std::pair<const Spline::Spline, float>> GetSplinesCopy() const;
+            std::unordered_map<std::string, std::pair<const Spline::Spline *, float>> GetSplines() const {return this->_splines;};
     
             void SetNewWeight(std::unordered_map<std::string, float> weightMap);
         private:

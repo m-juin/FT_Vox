@@ -38,7 +38,7 @@ namespace Vox::Game::Generation
 
 		auto seed = this->_seed;
 		Game::GameManager::GetInstance().GetThreadManager().EnQueue(
-			[ch, seed](std::unordered_map<std::string, std::pair<const Spline::Spline, float>> spl, std::vector<Game::Datas::Textures::TextureInfo> textInfo, std::vector<Game::Datas::Textures::TextureInfo> transparent) { ch->BuildClusterContent(spl, textInfo, transparent, seed);});
+			[ch, seed](std::unordered_map<std::string, std::pair<const Spline::Spline, float>> spl) { ch->BuildClusterContent(spl, seed);});
 	}
 
 	size_t GenerationManager::GetWaitingData() const
@@ -103,8 +103,6 @@ namespace Vox::Game::Generation
 		}
 		for (auto ch : endedCluster)
 		{
-				// ch->BuildBuffers();
-
 				this->_waitingChuncks.erase(std::find(this->_waitingChuncks.begin(), this->_waitingChuncks.end(), ch));
 				wm.AddEndedChunck(ch);
 		}

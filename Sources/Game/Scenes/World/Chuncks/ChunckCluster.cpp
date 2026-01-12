@@ -96,12 +96,8 @@ namespace Vox::Game::World::Chuncks
 	}
 
 	void ChunckCluster::BuildClusterContent(
-		const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl,
-		const std::vector<Game::Datas::Textures::TextureInfo> &textInfo,
-		const std::vector<Game::Datas::Textures::TextureInfo> &transparenttextInfo, const uint32_t seed)
+		const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl, const uint32_t seed)
 	{
-		(void)textInfo;
-		(void)transparenttextInfo;
 		this->ChangeGenerationState(Generation::E_GenerationState::Mesh);
 
 		auto st = GenerateCache(seed, spl);

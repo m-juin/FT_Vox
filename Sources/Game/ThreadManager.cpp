@@ -18,7 +18,7 @@ namespace Vox::Game
 	}
 
 	void ThreadManager::EnQueue(
-		std::function<void(std::unordered_map<std::string, std::pair<const Spline::Spline, float>>, std::vector<Game::Datas::Textures::TextureInfo>,  std::vector<Game::Datas::Textures::TextureInfo>)> newTask)
+		std::function<void(std::unordered_map<std::string, std::pair<const Spline::Spline, float>>)> newTask)
 	{
 		{
 			std::unique_lock lock(this->_queueMutex);
@@ -51,7 +51,7 @@ namespace Vox::Game
 					this->print("[DEBUG] Thread ", std::this_thread::get_id(), " launched.");
 					while (1)
 					{
-						std::function<void(std::unordered_map<std::string, std::pair<const Spline::Spline, float>>, std::vector<Game::Datas::Textures::TextureInfo>, std::vector<Game::Datas::Textures::TextureInfo>)>
+						std::function<void(std::unordered_map<std::string, std::pair<const Spline::Spline, float>>)>
 							task;
 						{
 							std::unique_lock<std::mutex> lock(this->_queueMutex);
@@ -63,7 +63,7 @@ namespace Vox::Game
 							_tasks.pop();
 							lock.unlock();
 						}
-						task(copy, textInfo, transparent);
+						task(copy);
 					}
 				});
 		}
@@ -77,7 +77,7 @@ namespace Vox::Game
 		}
 		_cv.notify_all();
 
-		std::queue<std::function<void(std::unordered_map<std::string, std::pair<const Spline::Spline, float>>, std::vector<Game::Datas::Textures::TextureInfo>, std::vector<Game::Datas::Textures::TextureInfo>)>> empty;
+		std::queue<std::function<void(std::unordered_map<std::string, std::pair<const Spline::Spline, float>>)>> empty;
 		std::swap(this->_tasks, empty);
 		for (std::thread &thread : this->_pool)
 			thread.join();

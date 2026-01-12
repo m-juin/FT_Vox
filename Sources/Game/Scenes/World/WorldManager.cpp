@@ -166,10 +166,8 @@ namespace Vox::Game::World
 
 				if (MGL::Vectors::Dist(effectiveCoord, _playerChunck) >= Utils::Defines::SQUARE_RENDER_DISTANCE)
 					continue;
-
 				if (_chuncks.find(effectiveCoord) != _chuncks.end() || _gManager->IsChunckPresent(effectiveCoord))
 					continue;
-
 				_gManager->RequestChuncksGeneration(effectiveCoord);
 			}
 		}
