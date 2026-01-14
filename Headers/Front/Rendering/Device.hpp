@@ -5,7 +5,8 @@
 
 #include <vector>
 
-#include "Headers/Utils/Singleton.hpp"
+#include "Utils/Singleton.hpp"
+
 namespace Vox::Front::Rendering
 {
 	const std::vector<const char *> deviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};

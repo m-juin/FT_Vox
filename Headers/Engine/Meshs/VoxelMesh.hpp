@@ -3,44 +3,55 @@
 
 #include <vector>
 
+#include "Engine/Rendering/Buffers/Buffer.hpp"
 #include "Engine/Rendering/IDrawable.hpp"
 
 #include "Front/Rendering/Utils/Vertex/VoxelVertex.hpp"
 
 namespace Vox::Engine::Meshs
 {
-    using Vertex = Vox::Front::Rendering::Utils::Vertex::VoxelVertex;
-    class VoxelMesh : public Rendering::IDrawable
-    {
+	using Vertex = Vox::Front::Rendering::Utils::Vertex::VoxelVertex;
+	class VoxelMesh : public Rendering::IDrawable
+	{
 
-        private:
-            struct MemoryData {
-                size_t elemCount = 0;
-                VkDeviceSize memorySize = 0;
-                VkDeviceSize memoryOffset = 0;
-                VkDeviceSize memoryReserved = 0;
-            };
+		private:
+			template <typename T>
+            struct MemoryData
+			{
+					size_t elemCount = 0;
+					VkDeviceSize memorySize = 0;
+					VkDeviceSize memoryOffset = 0;
+					VkDeviceSize memoryReserved = 0;
 
-            MemoryData _vertexMemData;
-            MemoryData _indexMemData;
+					std::vector<T> datas;
+			};
 
-        public:
-            VoxelMesh();
-            ~VoxelMesh();
+			MemoryData<Vertex> _vertexMemData;
+			MemoryData<uint16_t> _indexMemData;
 
-            void SetMeshDatas(const std::vector<Vertex> &, const std::vector<uint16_t> &);
+		public:
+			VoxelMesh();
+			~VoxelMesh();
 
-            bool Draw() override;
+			void SetMeshDatas(const std::vector<Vertex> &, const std::vector<uint16_t> &);
 
-            const MemoryData GetVertexDatas() {return this->_vertexMemData;}
-            const MemoryData GetIndexDatas() {return this->_indexMemData;}
+			bool Draw() override;
 
-            void SetMemoryDatas(VkDeviceSize, VkDeviceSize, VkDeviceSize, VkDeviceSize);
+			const MemoryData<Vertex> GetVertexDatas()
+			{
+				return this->_vertexMemData;
+			}
+			const MemoryData<uint16_t> GetIndexDatas()
+			{
+				return this->_indexMemData;
+			}
 
-            /* private */
-    
-    };
-} // namespace Vox::Engine
+			void SetMemoryDatas(VkDeviceSize, VkDeviceSize, VkDeviceSize, VkDeviceSize);
 
+			void WriteInBuffers(Engine::Rendering::Buffers::Buffer &, Engine::Rendering::Buffers::Buffer &);
+
+			/* private */
+	};
+} // namespace Vox::Engine::Meshs
 
 #endif // __VOXELMESH_HPP__

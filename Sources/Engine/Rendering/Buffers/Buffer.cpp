@@ -68,9 +68,19 @@ namespace Vox::Engine::Rendering::Buffers
 		}
 	}
 
-	void Buffer::Update(void *newData, VkDeviceSize newDataSize) {}
+	void Buffer::Update(void *newData, VkDeviceSize newDataSize)
+	{
+		(void)newData;
+		(void)newDataSize;
+	}
 
-	void Buffer::UpdateAtOffset(size_t frameIndex, size_t offset, void *newData, VkDeviceSize dataSize) {}
+	void Buffer::UpdateAtOffset(size_t frameIndex, size_t offset, void *newData, VkDeviceSize dataSize)
+	{
+		(void)frameIndex;
+		(void)offset;
+		(void)newData;
+		(void)dataSize;
+	}
 
 	void Buffer::Clear()
 	{

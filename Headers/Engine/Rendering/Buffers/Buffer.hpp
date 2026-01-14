@@ -40,7 +40,7 @@ namespace Vox::Engine::Rendering::Buffers
 
 			VkDeviceSize _size;
 			VkBufferUsageFlags _usage;
-			VkMemoryPropertyFlags _memoryProprety;
+			// VkMemoryPropertyFlags _memoryProprety;
 #pragma endregion
 
 			/* private */

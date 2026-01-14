@@ -414,11 +414,9 @@ namespace Vox::Game::World::Chuncks
 
 	void ChunckCluster::MEM_CreateBuffers()
 	{
-
 		const VkDeviceSize MIN_CHUNK_RESERVATION = 2048; // 2 Ko
-		const VkDeviceSize ALIGNMENT = 16;
 
-		if (this->GetGenerationState() != Generation::E_GenerationState::End)
+		if (this->GetGenerationState() != Generation::E_GenerationState::WaitingBuffer)
 		{
 			LoggerLib::LogWarning("Requesting vulkan buffer creation while cluster generation wasn't ended.");
 			return;
@@ -465,6 +463,12 @@ namespace Vox::Game::World::Chuncks
 			1, transparentVertexOffset, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
 		this->_transparentIndexBuffer = std::make_unique<Engine::Rendering::Buffers::Buffer>(
 			1, transparentIndexOffset, VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
+
+		for (auto &chunk : this->_clusterContent)
+		{
+			chunk->_opaqueMesh.WriteInBuffers(*this->_opaqueVertexBuffer, *this->_opaqueIndexBuffer);
+			chunk->_transparentMesh.WriteInBuffers(*this->_transparentVertexBuffer, *this->_transparentIndexBuffer);
+		}
 	}
 
 	/// @brief Clear the vulkan buffer(s) containing the cluster meshs datas
