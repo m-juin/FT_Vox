@@ -12,6 +12,18 @@ namespace Vox::Engine::Meshs
     using Vertex = Vox::Front::Rendering::Utils::Vertex::VoxelVertex;
     class VoxelMesh : public Rendering::IDrawable
     {
+
+        private:
+            struct MemoryData {
+                size_t elemCount = 0;
+                VkDeviceSize memorySize = 0;
+                VkDeviceSize memoryOffset = 0;
+                VkDeviceSize memoryReserved = 0;
+            };
+
+            MemoryData _vertexMemData;
+            MemoryData _indexMemData;
+
         public:
             VoxelMesh();
             ~VoxelMesh();
@@ -20,15 +32,10 @@ namespace Vox::Engine::Meshs
 
             bool Draw() override;
 
-        private:
-            struct MemoryData {
-                size_t elemCount = 0;
-                VkDeviceSize memorySize = 0;
-                VkDeviceSize memoryOffset = 0;
-            };
+            const MemoryData GetVertexDatas() {return this->_vertexMemData;}
+            const MemoryData GetIndexDatas() {return this->_indexMemData;}
 
-            MemoryData _vertexMemData;
-            MemoryData _indexMemData;
+            void SetMemoryDatas(VkDeviceSize, VkDeviceSize, VkDeviceSize, VkDeviceSize);
 
             /* private */
     

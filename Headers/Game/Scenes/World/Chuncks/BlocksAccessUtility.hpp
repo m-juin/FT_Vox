@@ -102,10 +102,6 @@ namespace Vox::World::BlocksAccessUtility
 		if (auto it = wd.find(clPos); it != wd.end())
 		{
 			return GetBlockType(Vector3Uint8(clPos[0], wp[1], clPos[2]), it->second);
-			// TODO Get Cluster Chunk
-			// TODO Get Block Data
-			// PC if [l-1] == null return blockType::Air
-			// TODO Return BlockDataType;
 		}
 		else
 			return blockType::Air;

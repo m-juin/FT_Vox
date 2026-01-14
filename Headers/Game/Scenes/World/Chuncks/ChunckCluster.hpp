@@ -14,6 +14,8 @@
 
 #include "MathGraphicalLib/Vectors/Defines.hpp"
 
+#include "Engine/Rendering/Buffers/Buffer.hpp"
+
 namespace Vox::Game::World::Chuncks
 {
 	using namespace MGL::Vectors::Types;
@@ -29,6 +31,11 @@ namespace Vox::Game::World::Chuncks
 #pragma region Variables
 			std::array<std::unique_ptr<VoxelChunck>, WORLD_HEIGHT / CHUNCK_SIZE> _clusterContent;
 			Vector2Int _clusterPos;
+
+			std::unique_ptr<Engine::Rendering::Buffers::Buffer> _opaqueVertexBuffer;
+			std::unique_ptr<Engine::Rendering::Buffers::Buffer> _opaqueIndexBuffer;
+			std::unique_ptr<Engine::Rendering::Buffers::Buffer> _transparentVertexBuffer;
+			std::unique_ptr<Engine::Rendering::Buffers::Buffer> _transparentIndexBuffer;
 #pragma endregion
 
 #pragma region Generation
@@ -79,14 +86,16 @@ namespace Vox::Game::World::Chuncks
 			ChunckCluster(const Vector2Int &);
 			~ChunckCluster();
 #pragma endregion
-	};
 
 #pragma region Memory
 
-	
-
 	void MEM_CreateBuffers();
 	void MEM_FillBuffers();
+
+	void MEM_ClearBuffers(uint8_t);
+#pragma endregion
+
+};
 
 } // namespace Vox::Game::World::Chuncks
 #endif //__CHUNCKCLUSTER_HPP__

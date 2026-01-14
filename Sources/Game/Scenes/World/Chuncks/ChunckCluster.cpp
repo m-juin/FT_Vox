@@ -39,7 +39,7 @@ namespace Vox::Game::World::Chuncks
 	/// @param spl The generation spline. (Will probably be delete)
 	/// @return ChunckCache structure containing all perlins of the cluster + 8 on each size.
 	Game::Generation::Utils::ChunckCache ChunckCluster::GEN_Cache(
-	const uint32_t seed, const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl)
+		const uint32_t seed, const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl)
 	{
 		Game::Generation::Utils::ChunckCache cacheSt;
 
@@ -94,7 +94,7 @@ namespace Vox::Game::World::Chuncks
 		}
 	}
 
-	/// @brief Process the cluster generation. 
+	/// @brief Process the cluster generation.
 	/// @param spl The generation spline. (Will probably be delete)
 	/// @param seed The world seed.
 	void ChunckCluster::GEN_Generate(const std::unordered_map<std::string, std::pair<const Spline::Spline, float>> &spl,
@@ -108,7 +108,8 @@ namespace Vox::Game::World::Chuncks
 			return;
 		this->ChangeGenerationState(Generation::E_GenerationState::Terrain);
 
-		std::vector<std::unique_ptr<std::bitset<CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE>>> bs = this->GEN_TerrainShape(st);
+		std::vector<std::unique_ptr<std::bitset<CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE>>> bs =
+			this->GEN_TerrainShape(st);
 		if (this->IsGenerationCancelled() == true)
 			return;
 
@@ -172,12 +173,13 @@ namespace Vox::Game::World::Chuncks
 				if (type == Game::Datas::Structures::StructuresType::None)
 					continue;
 				this->DGEN_SpawnStruct(type, {static_cast<uint8_t>(treePos[0]), static_cast<uint8_t>(worldHeight + 1),
-											static_cast<uint8_t>(treePos[1])});
+											  static_cast<uint8_t>(treePos[1])});
 			}
 		}
 	}
 
-	std::vector<std::unique_ptr<std::bitset<CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE>>> ChunckCluster::GEN_TerrainShape(const Vox::Game::Generation::Utils::ChunckCache &cache)
+	std::vector<std::unique_ptr<std::bitset<CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE>>> ChunckCluster::GEN_TerrainShape(
+		const Vox::Game::Generation::Utils::ChunckCache &cache)
 	{
 		std::vector<std::unique_ptr<std::bitset<CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE>>> lst;
 		lst.reserve(ChunkPerCluster);
@@ -191,8 +193,10 @@ namespace Vox::Game::World::Chuncks
 
 		return lst;
 	}
-	
-	void ChunckCluster::GEN_TerrainDatas(std::vector<std::unique_ptr<std::bitset<CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE>>> &bs, const Vox::Game::Generation::Utils::ChunckCache &cache)
+
+	void ChunckCluster::GEN_TerrainDatas(
+		std::vector<std::unique_ptr<std::bitset<CHUNCK_SIZE * CHUNCK_SIZE * CHUNCK_SIZE>>> &bs,
+		const Vox::Game::Generation::Utils::ChunckCache &cache)
 	{
 		for (uint8_t idx = 0; idx < ChunkPerCluster; idx++)
 		{
@@ -201,7 +205,7 @@ namespace Vox::Game::World::Chuncks
 			this->_clusterContent[idx]->GEN_TerrainData(*bs[idx], cache);
 		}
 	}
-	
+
 	void ChunckCluster::GEN_FacesCulling(const Vox::Game::Generation::Utils::ChunckCache &cache)
 	{
 		for (uint8_t idx = 0; idx < ChunkPerCluster; idx++)
@@ -211,7 +215,7 @@ namespace Vox::Game::World::Chuncks
 			this->_clusterContent[idx]->GEN_FacesCulling(cache);
 		}
 	}
-	
+
 	void ChunckCluster::GEN_Mesh()
 	{
 		for (uint8_t idx = 0; idx < ChunkPerCluster; idx++)
@@ -221,8 +225,9 @@ namespace Vox::Game::World::Chuncks
 			this->_clusterContent[idx]->GEN_BuildMesh();
 		}
 	}
-	
-	void ChunckCluster::GEN_TerrainDecoration(const Vox::Game::Generation::Utils::ChunckCache &cache , const uint32_t seed)
+
+	void ChunckCluster::GEN_TerrainDecoration(const Vox::Game::Generation::Utils::ChunckCache &cache,
+											  const uint32_t seed)
 	{
 		DGEN_Tree(cache, seed);
 		DGEN_Overflow();
@@ -285,7 +290,7 @@ namespace Vox::Game::World::Chuncks
 			oManager->AddBlocks(clusterPos.first, clusterPos.second);
 		}
 	}
-	
+
 	void ChunckCluster::DGEN_Overflow()
 	{
 		auto &gManager = Game::World::WorldManager::GetInstance().GetGenerationManager();
@@ -295,8 +300,7 @@ namespace Vox::Game::World::Chuncks
 		for (auto block : blocks)
 		{
 			auto chunckIndex = block.worldCoord[1] / CHUNCK_SIZE;
-			const Vector3Uint8 localPos =
-				Game::Chuncks::Operations::WorldToChunk(block.worldCoord);
+			const Vector3Uint8 localPos = Game::Chuncks::Operations::WorldToChunk(block.worldCoord);
 			if (this->_clusterContent[chunckIndex]->GetBlockDatas(localPos) != Vox::Game::Datas::Blocks::BlockType::Air)
 				continue;
 			this->_clusterContent[chunckIndex]->SetBlockDatas(localPos, block.type);
@@ -407,9 +411,79 @@ namespace Vox::Game::World::Chuncks
 	}
 
 	ChunckCluster::~ChunckCluster() {}
-	
-	void MEM_CreateBuffers()
+
+	void ChunckCluster::MEM_CreateBuffers()
 	{
-		
+
+		const VkDeviceSize MIN_CHUNK_RESERVATION = 2048; // 2 Ko
+		const VkDeviceSize ALIGNMENT = 16;
+
+		if (this->GetGenerationState() != Generation::E_GenerationState::End)
+		{
+			LoggerLib::LogWarning("Requesting vulkan buffer creation while cluster generation wasn't ended.");
+			return;
+		}
+		VkDeviceSize opaqueVertexOffset = 0;
+		VkDeviceSize opaqueIndexOffset = 0;
+
+		VkDeviceSize transparentVertexOffset = 0;
+		VkDeviceSize transparentIndexOffset = 0;
+
+		for (auto &chunk : this->_clusterContent)
+		{
+			VkDeviceSize vActualSize = chunk->_opaqueMesh.GetVertexDatas().memorySize;
+			VkDeviceSize vReserved = std::max(static_cast<VkDeviceSize>(vActualSize * 1.2f), MIN_CHUNK_RESERVATION);
+			
+			vReserved = Engine::Memory::Align(vReserved);
+			VkDeviceSize iActualSize = chunk->_opaqueMesh.GetIndexDatas().memorySize;
+			VkDeviceSize iReserved = std::max(static_cast<VkDeviceSize>(iActualSize * 1.2f), MIN_CHUNK_RESERVATION);
+			
+			iReserved = Engine::Memory::Align(iReserved);
+			chunk->_opaqueMesh.SetMemoryDatas(opaqueVertexOffset, vReserved, opaqueIndexOffset, iReserved);
+			opaqueVertexOffset += vReserved;
+			opaqueIndexOffset += iReserved;
+
+			vActualSize = chunk->_transparentMesh.GetVertexDatas().memorySize;
+			vReserved = std::max(static_cast<VkDeviceSize>(vActualSize * 1.2f), MIN_CHUNK_RESERVATION);
+			
+			vReserved = Engine::Memory::Align(vReserved);
+			iActualSize = chunk->_transparentMesh.GetIndexDatas().memorySize;
+			iReserved = std::max(static_cast<VkDeviceSize>(iActualSize * 1.2f), MIN_CHUNK_RESERVATION);
+			
+			iReserved = Engine::Memory::Align(iReserved);
+			chunk->_transparentMesh.SetMemoryDatas(transparentVertexOffset, vReserved, transparentIndexOffset, iReserved);
+			transparentVertexOffset += vReserved;
+			transparentIndexOffset += iReserved;
+		}
+
+		this->_opaqueVertexBuffer = std::make_unique<Engine::Rendering::Buffers::Buffer>(
+			1, opaqueVertexOffset, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
+		this->_opaqueIndexBuffer = std::make_unique<Engine::Rendering::Buffers::Buffer>(
+			1, opaqueIndexOffset, VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
+
+		this->_transparentVertexBuffer = std::make_unique<Engine::Rendering::Buffers::Buffer>(
+			1, transparentVertexOffset, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
+		this->_transparentIndexBuffer = std::make_unique<Engine::Rendering::Buffers::Buffer>(
+			1, transparentIndexOffset, VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
+	}
+
+	/// @brief Clear the vulkan buffer(s) containing the cluster meshs datas
+	/// @param clearMode Defines if opaque (0) buffers need to be clear or transparent (1) or both (2)
+	void ChunckCluster::MEM_ClearBuffers(uint8_t clearMode)
+	{
+		if (clearMode == 2 || clearMode == 0)
+		{
+			if (this->_opaqueIndexBuffer != nullptr)
+				this->_opaqueIndexBuffer.reset();
+			if (this->_opaqueVertexBuffer != nullptr)
+				this->_opaqueVertexBuffer.reset();
+		}
+		if (clearMode == 2 || clearMode == 1)
+		{
+			if (this->_transparentIndexBuffer != nullptr)
+				this->_transparentIndexBuffer.reset();
+			if (this->_transparentVertexBuffer != nullptr)
+				this->_transparentVertexBuffer.reset();
+		}
 	}
 } // namespace Vox::Game::World::Chuncks

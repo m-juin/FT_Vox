@@ -20,6 +20,7 @@
 #include "Engine/Meshs/VoxelMesh.hpp"
 
 #include "Engine/Rendering/IDrawable.hpp"
+#include "Engine/Memory/Align.hpp"
 
 namespace Vox::Game::Scenes::World::Player
 {
