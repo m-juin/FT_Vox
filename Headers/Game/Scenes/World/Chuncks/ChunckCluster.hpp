@@ -15,13 +15,14 @@
 #include "MathGraphicalLib/Vectors/Defines.hpp"
 
 #include "Engine/Rendering/Buffers/Buffer.hpp"
+#include "Engine/Rendering/IDrawable.hpp"
 
 namespace Vox::Game::World::Chuncks
 {
 	using namespace MGL::Vectors::Types;
 	const uint8_t ChunkPerCluster = WORLD_HEIGHT / CHUNCK_SIZE;
 
-	class ChunckCluster : public Generation::Threads::ThreadObject, public Vox::Utils::AUpdatable
+	class ChunckCluster : public Generation::Threads::ThreadObject, public Vox::Utils::AUpdatable, public Engine::Rendering::IDrawable
 	{
 		private:
 #pragma region Constructor
@@ -75,6 +76,7 @@ namespace Vox::Game::World::Chuncks
 #pragma region Other
 			std::pair<size_t, size_t> Render(uint8_t);
 			void BuildBuffers();
+			bool Draw() override;
 #pragma endregion
 
 #pragma region Generation

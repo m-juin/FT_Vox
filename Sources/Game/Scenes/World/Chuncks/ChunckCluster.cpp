@@ -15,6 +15,9 @@
 
 #include "Utils/TracyUtils.hpp"
 
+#include "Front/Rendering/Pipelines/PipelinesManager.hpp"
+#include "Front/Rendering/Pipelines/VoxelPipeline.hpp"
+
 namespace Vox::Game::World::Chuncks
 {
 	std::pair<size_t, size_t> ChunckCluster::Render(uint8_t toRender)
@@ -32,6 +35,26 @@ namespace Vox::Game::World::Chuncks
 			}
 		}
 		return {tryed, rendered};
+	}
+
+	bool ChunckCluster::Draw()
+	{
+		if (this->GetGenerationState() != Generation::E_GenerationState::End)
+			return false;
+		
+		auto frame = Front::Rendering::SyncObjects::GetInstance().GetNextFrame();
+		auto buffer = Front::Rendering::CommandsPool::GetInstance().GetBuffer(frame);
+		VkDeviceSize offset = {0};
+		vkCmdBindVertexBuffers(buffer, 0, 1, &this->_transparentIndexBuffer->GetBuffer(0), &offset);
+		vkCmdBindIndexBuffer(buffer, this->_opaqueIndexBuffer->GetBuffer(0), 0, VK_INDEX_TYPE_UINT16);
+		for (auto &ch : this->_clusterContent)
+		{
+			if (ch != nullptr)
+			{
+				ch->Draw();
+			}
+		}
+		return true;
 	}
 
 	/// @brief Generate the cluster cache.
@@ -431,11 +454,11 @@ namespace Vox::Game::World::Chuncks
 		{
 			VkDeviceSize vActualSize = chunk->_opaqueMesh.GetVertexDatas().memorySize;
 			VkDeviceSize vReserved = std::max(static_cast<VkDeviceSize>(vActualSize * 1.2f), MIN_CHUNK_RESERVATION);
-			
+
 			vReserved = Engine::Memory::Align(vReserved);
 			VkDeviceSize iActualSize = chunk->_opaqueMesh.GetIndexDatas().memorySize;
 			VkDeviceSize iReserved = std::max(static_cast<VkDeviceSize>(iActualSize * 1.2f), MIN_CHUNK_RESERVATION);
-			
+
 			iReserved = Engine::Memory::Align(iReserved);
 			chunk->_opaqueMesh.SetMemoryDatas(opaqueVertexOffset, vReserved, opaqueIndexOffset, iReserved);
 			opaqueVertexOffset += vReserved;
@@ -443,13 +466,14 @@ namespace Vox::Game::World::Chuncks
 
 			vActualSize = chunk->_transparentMesh.GetVertexDatas().memorySize;
 			vReserved = std::max(static_cast<VkDeviceSize>(vActualSize * 1.2f), MIN_CHUNK_RESERVATION);
-			
+
 			vReserved = Engine::Memory::Align(vReserved);
 			iActualSize = chunk->_transparentMesh.GetIndexDatas().memorySize;
 			iReserved = std::max(static_cast<VkDeviceSize>(iActualSize * 1.2f), MIN_CHUNK_RESERVATION);
-			
+
 			iReserved = Engine::Memory::Align(iReserved);
-			chunk->_transparentMesh.SetMemoryDatas(transparentVertexOffset, vReserved, transparentIndexOffset, iReserved);
+			chunk->_transparentMesh.SetMemoryDatas(transparentVertexOffset, vReserved, transparentIndexOffset,
+												   iReserved);
 			transparentVertexOffset += vReserved;
 			transparentIndexOffset += iReserved;
 		}
@@ -469,6 +493,8 @@ namespace Vox::Game::World::Chuncks
 			chunk->_opaqueMesh.WriteInBuffers(*this->_opaqueVertexBuffer, *this->_opaqueIndexBuffer);
 			chunk->_transparentMesh.WriteInBuffers(*this->_transparentVertexBuffer, *this->_transparentIndexBuffer);
 		}
+
+		this->_currentState = Generation::E_GenerationState::End;
 	}
 
 	/// @brief Clear the vulkan buffer(s) containing the cluster meshs datas

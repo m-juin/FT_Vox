@@ -31,8 +31,23 @@
 
 namespace Vox::Game::World::Chuncks
 {
-	bool VoxelChunck::Draw() {
-		return false;
+	bool VoxelChunck::Draw()
+	{
+		if (this->isVisible == false)
+			return false;
+		if (this->_bufferIndex >= Utils::Defines::CHUNCK_AMOUNT)
+			return false;
+		// VkDeviceSize offset = {0};
+		uint32_t dynamicOffset = this->_bufferIndex * Utils::Vulkan::GetAlignedChunckSize();
+		auto frame = Front::Rendering::SyncObjects::GetInstance().GetNextFrame();
+		auto buffer = Front::Rendering::CommandsPool::GetInstance().GetBuffer(frame);
+		auto pipeline = Front::Rendering::Pipelines::PipelinesManager::GetInstance()
+							.operator[]<Front::Rendering::Pipelines::VoxelPipeline>("Voxel");
+		vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->GetLayout(), 0, 1,
+								&pipeline->GetSet(Front::Rendering::SyncObjects::GetInstance().GetNextFrame()), 1,
+								&dynamicOffset);
+		this->_opaqueMesh.Draw();
+		return true;
 	}
 
 	VoxelChunck::VoxelChunck(const Vector3Int &defaultPos)

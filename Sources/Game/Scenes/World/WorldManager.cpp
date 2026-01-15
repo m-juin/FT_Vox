@@ -133,20 +133,20 @@ namespace Vox::Game::World
 		this->_skyBox->Render();
 		Front::Rendering::Pipelines::PipelinesManager::GetInstance().BindPipeline("Voxel");
 		this->_camera.PushConstant(0);
-		std::pair<size_t, size_t> counters = {0, 0};
+		// std::pair<size_t, size_t> counters = {0, 0};
 		for (auto &_pair : this->_chuncks)
 		{
 			if (_pair.second)
 			{
-				auto pair2 = _pair.second->Render(0);
-				counters.first += pair2.first;
-				counters.second += pair2.second;
+				_pair.second->Draw();
+				// counters.first += pair2.first;
+				// counters.second += pair2.second;
 			}
 		}
-		Front::Rendering::Pipelines::PipelinesManager::GetInstance().BindPipeline("Voxel_Transparent");
-		for (auto &_pair : this->_chuncks)
-			if (_pair.second)
-				_pair.second->Render(1);
+		// Front::Rendering::Pipelines::PipelinesManager::GetInstance().BindPipeline("Voxel_Transparent");
+		// for (auto &_pair : this->_chuncks)
+		// 	if (_pair.second)
+		// 		_pair.second->Render(1);
 
 		// // LoggerLib::LogDebug("Try : ", counters.first, " | ", "Effectives : ", counters.second);
 	}
@@ -154,7 +154,7 @@ namespace Vox::Game::World
 	void WorldManager::CheckCreation()
 	{
 #ifdef TRACY_ENABLE
-		ZoneScopedNC("Chekc Chunk Creation Update", tracy::Color::Purple1);
+		ZoneScopedNC("Check Chunk Creation Update", tracy::Color::Purple1);
 #endif
 		Vector2Int effectiveCoord;
 		for (int x = -Utils::Defines::RENDER_DISTANCE; x < Utils::Defines::RENDER_DISTANCE; x++)
