@@ -5,6 +5,7 @@
 #include "Utils/TracyUtils.hpp"
 
 #include <algorithm>
+#include "LoggerLib/UtilityFunctions.hpp"
 
 namespace Vox::World::Generation
 {
